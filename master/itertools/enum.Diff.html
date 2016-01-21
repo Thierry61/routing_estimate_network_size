@@ -9,6 +9,7 @@
 
     <title>itertools::Diff - Rust</title>
 
+    <link rel="stylesheet" type="text/css" href="../rustdoc.css">
     <link rel="stylesheet" type="text/css" href="../main.css">
 
     
@@ -47,9 +48,9 @@
             </a>
         </span><a id='src-1169' class='srclink' href='../src/itertools/diff.rs.html#14-25' title='goto source code'>[src]</a></span></h1>
 <pre class='rust enum'>pub enum Diff&lt;I, J&gt; <span class='where'>where I: <a class='trait' href='https://doc.rust-lang.org/nightly/core/iter/trait.Iterator.html' title='core::iter::Iterator'>Iterator</a>, J: <a class='trait' href='https://doc.rust-lang.org/nightly/core/iter/trait.Iterator.html' title='core::iter::Iterator'>Iterator</a></span> {
-    FirstMismatch(<a href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>, <a class='struct' href='../itertools/struct.PutBack.html' title='itertools::PutBack'>PutBack</a>&lt;I&gt;, <a class='struct' href='../itertools/struct.PutBack.html' title='itertools::PutBack'>PutBack</a>&lt;J&gt;),
-    Shorter(<a href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>, <a class='struct' href='../itertools/struct.PutBack.html' title='itertools::PutBack'>PutBack</a>&lt;I&gt;),
-    Longer(<a href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>, <a class='struct' href='../itertools/struct.PutBack.html' title='itertools::PutBack'>PutBack</a>&lt;J&gt;),
+    FirstMismatch(<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>, <a class='struct' href='../itertools/struct.PutBack.html' title='itertools::PutBack'>PutBack</a>&lt;I&gt;, <a class='struct' href='../itertools/struct.PutBack.html' title='itertools::PutBack'>PutBack</a>&lt;J&gt;),
+    Shorter(<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>, <a class='struct' href='../itertools/struct.PutBack.html' title='itertools::PutBack'>PutBack</a>&lt;I&gt;),
+    Longer(<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>, <a class='struct' href='../itertools/struct.PutBack.html' title='itertools::PutBack'>PutBack</a>&lt;J&gt;),
 }</pre><div class='docblock'><p>A type returned by the <a href="./fn.diff_with.html"><code>diff_with</code></a> function.</p>
 
 <p><code>Diff</code> represents the way in which the elements yielded by the iterator <code>I</code> differ to some
@@ -118,6 +119,6 @@ starting with the first mis-match.</p>
     <script src="../jquery.js"></script>
     <script src="../main.js"></script>
     
-    <script async src="../search-index.js"></script>
+    <script defer src="../search-index.js"></script>
 </body>
 </html>
