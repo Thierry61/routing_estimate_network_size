@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["StructuredData","StructuredData These types may be stored unsigned with previous and current owner keys set to the same keys. Updates though require a signature to validate"]]});
