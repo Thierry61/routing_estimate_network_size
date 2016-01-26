@@ -244,7 +244,6 @@
 <span id="201">201</span>
 <span id="202">202</span>
 <span id="203">203</span>
-<span id="204">204</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2015 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -309,7 +308,7 @@
 <span class='doccomment'>//!</span>
 <span class='doccomment'>//! let (sender, _receiver) = mpsc::channel::&lt;Event&gt;();</span>
 <span class='doccomment'>//! let full_id = FullId::new(); // Generate new keys.</span>
-<span class='doccomment'>//! let client = Client::new(sender, Some(full_id.clone())).unwrap();</span>
+<span class='doccomment'>//! let _ = Client::new(sender, Some(full_id.clone())).unwrap();</span>
 <span class='doccomment'>//!</span>
 <span class='doccomment'>//! let _ = full_id.public_id().name();</span>
 <span class='doccomment'>//! ```</span>
@@ -433,7 +432,6 @@
 <span class='kw'>mod</span> <span class='ident'>node</span>;
 <span class='kw'>mod</span> <span class='ident'>plain_data</span>;
 <span class='kw'>mod</span> <span class='ident'>structured_data</span>;
-<span class='kw'>mod</span> <span class='ident'>tests</span>;
 <span class='kw'>mod</span> <span class='ident'>types</span>;
 <span class='kw'>mod</span> <span class='ident'>utils</span>;
 
