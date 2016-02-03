@@ -46,7 +46,7 @@
             <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                 [<span class='inner'>&#x2212;</span>]
             </a>
-        </span><a id='src-1898' class='srclink' href='../src/routing/error.rs.html#48-111' title='goto source code'>[src]</a></span></h1>
+        </span><a id='src-1865' class='srclink' href='../src/routing/error.rs.html#48-113' title='goto source code'>[src]</a></span></h1>
 <pre class='rust enum'>pub enum RoutingError {
     NotBootstrapped,
     Terminated,
@@ -62,6 +62,7 @@
     RejectedPublicId,
     RefusedFromRoutingTable,
     RejectedGetCloseGroup,
+    RejectedGetNetworkName,
     Utf8(<a class='struct' href='https://doc.rust-lang.org/nightly/core/str/struct.Utf8Error.html' title='core::str::Utf8Error'>Utf8Error</a>),
     Interface(<a class='enum' href='../routing/enum.InterfaceError.html' title='routing::InterfaceError'>InterfaceError</a>),
     Io(<a class='struct' href='https://doc.rust-lang.org/nightly/std/io/error/struct.Error.html' title='std::io::error::Error'>Error</a>),
@@ -96,6 +97,7 @@
 because it did not improve the routing table</p>
 </div></td></tr><tr><td id='variant.RejectedGetCloseGroup'><code>RejectedGetCloseGroup</code></td><td><div class='docblock'><p>Rejected providing the close group, because the destination address does not match any of
 the sender&#39;s buckets</p>
+</div></td></tr><tr><td id='variant.RejectedGetNetworkName'><code>RejectedGetNetworkName</code></td><td><div class='docblock'><p>A client with <code>client_restriction == true</code> tried to relocate.</p>
 </div></td></tr><tr><td id='variant.Utf8'><code>Utf8</code></td><td><div class='docblock'><p>String errors</p>
 </div></td></tr><tr><td id='variant.Interface'><code>Interface</code></td><td><div class='docblock'><p>Interface error</p>
 </div></td></tr><tr><td id='variant.Io'><code>Io</code></td><td><div class='docblock'><p>i/o error</p>
