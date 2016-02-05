@@ -213,9 +213,9 @@
     <span class='doccomment'>/// Returns the `Destination` for the `RoutingTable`.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>to_destination</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>Destination</span> {
         <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>is_group</span>() {
-            <span class='ident'>Destination</span>::<span class='ident'>Group</span>(<span class='self'>self</span>.<span class='ident'>name</span>())
+            <span class='ident'>Destination</span>::<span class='ident'>Group</span>(<span class='op'>*</span><span class='self'>self</span>.<span class='ident'>name</span>())
         } <span class='kw'>else</span> {
-            <span class='ident'>Destination</span>::<span class='ident'>Node</span>(<span class='self'>self</span>.<span class='ident'>name</span>())
+            <span class='ident'>Destination</span>::<span class='ident'>Node</span>(<span class='op'>*</span><span class='self'>self</span>.<span class='ident'>name</span>())
         }
     }
 }
