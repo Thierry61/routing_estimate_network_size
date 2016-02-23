@@ -407,6 +407,7 @@
 <span class='attribute'>#<span class='op'>!</span>[<span class='ident'>cfg_attr</span>(<span class='ident'>feature</span><span class='op'>=</span><span class='string'>&quot;clippy&quot;</span>, <span class='ident'>feature</span>(<span class='ident'>plugin</span>))]</span>
 <span class='attribute'>#<span class='op'>!</span>[<span class='ident'>cfg_attr</span>(<span class='ident'>feature</span><span class='op'>=</span><span class='string'>&quot;clippy&quot;</span>, <span class='ident'>plugin</span>(<span class='ident'>clippy</span>))]</span>
 <span class='attribute'>#<span class='op'>!</span>[<span class='ident'>cfg_attr</span>(<span class='ident'>feature</span><span class='op'>=</span><span class='string'>&quot;clippy&quot;</span>, <span class='ident'>deny</span>(<span class='ident'>clippy</span>, <span class='ident'>clippy_pedantic</span>))]</span>
+<span class='attribute'>#<span class='op'>!</span>[<span class='ident'>cfg_attr</span>(<span class='ident'>feature</span><span class='op'>=</span><span class='string'>&quot;clippy&quot;</span>, <span class='ident'>allow</span>(<span class='ident'>shadow_unrelated</span>, <span class='ident'>use_debug</span>))]</span>
 
 <span class='attribute'>#[<span class='ident'>macro_use</span>]</span>
 <span class='kw'>extern</span> <span class='kw'>crate</span> <span class='ident'>log</span>;
@@ -415,7 +416,6 @@
 <span class='kw'>extern</span> <span class='kw'>crate</span> <span class='ident'>accumulator</span>;
 <span class='kw'>extern</span> <span class='kw'>crate</span> <span class='ident'>cbor</span>;
 <span class='kw'>extern</span> <span class='kw'>crate</span> <span class='ident'>crust</span>;
-<span class='kw'>extern</span> <span class='kw'>crate</span> <span class='ident'>ip</span>;
 <span class='kw'>extern</span> <span class='kw'>crate</span> <span class='ident'>itertools</span>;
 <span class='kw'>extern</span> <span class='kw'>crate</span> <span class='ident'>lru_time_cache</span>;
 <span class='kw'>extern</span> <span class='kw'>crate</span> <span class='ident'>kademlia_routing_table</span>;
@@ -426,7 +426,6 @@
 <span class='kw'>extern</span> <span class='kw'>crate</span> <span class='ident'>time</span>;
 <span class='kw'>extern</span> <span class='kw'>crate</span> <span class='ident'>xor_name</span>;
 
-<span class='kw'>mod</span> <span class='ident'>acceptors</span>;
 <span class='kw'>mod</span> <span class='ident'>action</span>;
 <span class='kw'>mod</span> <span class='ident'>authority</span>;
 <span class='kw'>mod</span> <span class='ident'>client</span>;
@@ -440,6 +439,7 @@
 <span class='kw'>mod</span> <span class='ident'>node</span>;
 <span class='kw'>mod</span> <span class='ident'>plain_data</span>;
 <span class='kw'>mod</span> <span class='ident'>structured_data</span>;
+<span class='kw'>mod</span> <span class='ident'>timer</span>;
 <span class='kw'>mod</span> <span class='ident'>types</span>;
 <span class='kw'>mod</span> <span class='ident'>utils</span>;
 

@@ -46,7 +46,7 @@
             <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                 [<span class='inner'>&#x2212;</span>]
             </a>
-        </span><a id='src-0' class='srclink' href='../src/kademlia_routing_table/lib.rs.html#18-1200' title='goto source code'>[src]</a></span></h1>
+        </span><a id='src-0' class='srclink' href='../src/kademlia_routing_table/lib.rs.html#18-1232' title='goto source code'>[src]</a></span></h1>
 <div class='docblock'><p>A routing table to manage contacts for a node in a <a href="https://en.wikipedia.org/wiki/Kademlia">Kademlia</a> distributed hash table.</p>
 
 <p>This crate uses the Kademlia mechanism for routing messages in a peer-to-peer network, and
@@ -85,7 +85,7 @@ length of the remainder, without the common prefix, the <em>bucket distance</em>
 Often <code>y ^ x &lt; z ^ x</code>, even if the bucket distances are equal. The XOR distance ranges from 0
 to 2<sup>512</sup> (exclusive), while the bucket distance ranges from 0 to 512 (inclusive).</p>
 
-<h1 id='guarantees-for-routing' class='section-header'><a href='#guarantees-for-routing'>Guarantees for routing</a></h1>
+<h1 id='guarantees' class='section-header'><a href='#guarantees'>Guarantees</a></h1>
 <p>The routing table provides functions to decide, for a message with a given destination, which
 nodes in the table to pass the message on to, so that it is guaranteed that:</p>
 
@@ -181,6 +181,16 @@ the same content.</p>
                                title='kademlia_routing_table::PARALLELISM'>PARALLELISM</a></td>
                         <td class='docblock short'>
                              <p>The number of nodes a message is sent to in each hop for redundancy.</p>
+
+                        </td>
+                    </tr>
+                </table><h2 id='traits' class='section-header'><a href="#traits">Traits</a></h2>
+<table>
+                    <tr class=' module-item'>
+                        <td><a class='trait' href='trait.ContactInfo.html'
+                               title='kademlia_routing_table::ContactInfo'>ContactInfo</a></td>
+                        <td class='docblock short'>
+                             <p>Contact info about a node in the network.</p>
 
                         </td>
                     </tr>
