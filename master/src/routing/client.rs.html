@@ -189,6 +189,17 @@
 <span id="146">146</span>
 <span id="147">147</span>
 <span id="148">148</span>
+<span id="149">149</span>
+<span id="150">150</span>
+<span id="151">151</span>
+<span id="152">152</span>
+<span id="153">153</span>
+<span id="154">154</span>
+<span id="155">155</span>
+<span id="156">156</span>
+<span id="157">157</span>
+<span id="158">158</span>
+<span id="159">159</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2015 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -299,23 +310,34 @@
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>send_get_request</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>,
                             <span class='ident'>dst</span>: <span class='ident'>Authority</span>,
                             <span class='ident'>data_request</span>: <span class='ident'>DataRequest</span>)
-                            <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span>(), <span class='ident'>InterfaceError</span><span class='op'>&gt;</span> {
-        <span class='self'>self</span>.<span class='ident'>send_action</span>(<span class='ident'>RequestContent</span>::<span class='ident'>Get</span>(<span class='ident'>data_request</span>, <span class='ident'>MessageId</span>::<span class='ident'>new</span>()), <span class='ident'>dst</span>)
+                            <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>MessageId</span>, <span class='ident'>InterfaceError</span><span class='op'>&gt;</span> {
+        <span class='kw'>let</span> <span class='ident'>message_id</span> <span class='op'>=</span> <span class='ident'>MessageId</span>::<span class='ident'>new</span>();
+        <span class='macro'>try</span><span class='macro'>!</span>(<span class='self'>self</span>.<span class='ident'>send_action</span>(<span class='ident'>RequestContent</span>::<span class='ident'>Get</span>(<span class='ident'>data_request</span>, <span class='ident'>message_id</span>), <span class='ident'>dst</span>));
+        <span class='prelude-val'>Ok</span>(<span class='ident'>message_id</span>)
     }
 
     <span class='doccomment'>/// Add something to the network</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>send_put_request</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>dst</span>: <span class='ident'>Authority</span>, <span class='ident'>data</span>: <span class='ident'>Data</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span>(), <span class='ident'>InterfaceError</span><span class='op'>&gt;</span> {
-        <span class='self'>self</span>.<span class='ident'>send_action</span>(<span class='ident'>RequestContent</span>::<span class='ident'>Put</span>(<span class='ident'>data</span>, <span class='ident'>MessageId</span>::<span class='ident'>new</span>()), <span class='ident'>dst</span>)
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>send_put_request</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>dst</span>: <span class='ident'>Authority</span>, <span class='ident'>data</span>: <span class='ident'>Data</span>)
+        <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>MessageId</span>, <span class='ident'>InterfaceError</span><span class='op'>&gt;</span> {
+        <span class='kw'>let</span> <span class='ident'>message_id</span> <span class='op'>=</span> <span class='ident'>MessageId</span>::<span class='ident'>new</span>();
+        <span class='macro'>try</span><span class='macro'>!</span>(<span class='self'>self</span>.<span class='ident'>send_action</span>(<span class='ident'>RequestContent</span>::<span class='ident'>Put</span>(<span class='ident'>data</span>, <span class='ident'>message_id</span>), <span class='ident'>dst</span>));
+        <span class='prelude-val'>Ok</span>(<span class='ident'>message_id</span>)
     }
 
     <span class='doccomment'>/// Change something already on the network</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>send_post_request</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>dst</span>: <span class='ident'>Authority</span>, <span class='ident'>data</span>: <span class='ident'>Data</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span>(), <span class='ident'>InterfaceError</span><span class='op'>&gt;</span> {
-        <span class='self'>self</span>.<span class='ident'>send_action</span>(<span class='ident'>RequestContent</span>::<span class='ident'>Post</span>(<span class='ident'>data</span>, <span class='ident'>MessageId</span>::<span class='ident'>new</span>()), <span class='ident'>dst</span>)
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>send_post_request</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>dst</span>: <span class='ident'>Authority</span>, <span class='ident'>data</span>: <span class='ident'>Data</span>)
+        <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>MessageId</span>, <span class='ident'>InterfaceError</span><span class='op'>&gt;</span> {
+        <span class='kw'>let</span> <span class='ident'>message_id</span> <span class='op'>=</span> <span class='ident'>MessageId</span>::<span class='ident'>new</span>();
+        <span class='macro'>try</span><span class='macro'>!</span>(<span class='self'>self</span>.<span class='ident'>send_action</span>(<span class='ident'>RequestContent</span>::<span class='ident'>Post</span>(<span class='ident'>data</span>, <span class='ident'>message_id</span>), <span class='ident'>dst</span>));
+        <span class='prelude-val'>Ok</span>(<span class='ident'>message_id</span>)
     }
 
     <span class='doccomment'>/// Remove something from the network</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>send_delete_request</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>dst</span>: <span class='ident'>Authority</span>, <span class='ident'>data</span>: <span class='ident'>Data</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span>(), <span class='ident'>InterfaceError</span><span class='op'>&gt;</span> {
-        <span class='self'>self</span>.<span class='ident'>send_action</span>(<span class='ident'>RequestContent</span>::<span class='ident'>Delete</span>(<span class='ident'>data</span>, <span class='ident'>MessageId</span>::<span class='ident'>new</span>()), <span class='ident'>dst</span>)
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>send_delete_request</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>dst</span>: <span class='ident'>Authority</span>, <span class='ident'>data</span>: <span class='ident'>Data</span>)
+        <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>MessageId</span>, <span class='ident'>InterfaceError</span><span class='op'>&gt;</span> {
+        <span class='kw'>let</span> <span class='ident'>message_id</span> <span class='op'>=</span> <span class='ident'>MessageId</span>::<span class='ident'>new</span>();
+        <span class='macro'>try</span><span class='macro'>!</span>(<span class='self'>self</span>.<span class='ident'>send_action</span>(<span class='ident'>RequestContent</span>::<span class='ident'>Delete</span>(<span class='ident'>data</span>, <span class='ident'>message_id</span>), <span class='ident'>dst</span>));
+        <span class='prelude-val'>Ok</span>(<span class='ident'>message_id</span>)
     }
 
     <span class='kw'>fn</span> <span class='ident'>send_action</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>content</span>: <span class='ident'>RequestContent</span>, <span class='ident'>dst</span>: <span class='ident'>Authority</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span>(), <span class='ident'>InterfaceError</span><span class='op'>&gt;</span> {

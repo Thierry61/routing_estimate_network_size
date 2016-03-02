@@ -172,7 +172,7 @@
 
 <span class='kw'>use</span> <span class='ident'>kademlia_routing_table</span>::<span class='ident'>Destination</span>;
 <span class='kw'>use</span> <span class='ident'>sodiumoxide</span>::<span class='ident'>crypto</span>::{<span class='ident'>hash</span>, <span class='ident'>sign</span>};
-<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>fmt</span>::{<span class='ident'>Debug</span>, <span class='ident'>Formatter</span>};
+<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>fmt</span>::{<span class='self'>self</span>, <span class='ident'>Debug</span>, <span class='ident'>Formatter</span>};
 <span class='kw'>use</span> <span class='ident'>xor_name</span>::<span class='ident'>XorName</span>;
 
 <span class='doccomment'>/// An entity that can act as a source or destination of a message.</span>
@@ -236,15 +236,15 @@
 }
 
 <span class='kw'>impl</span> <span class='ident'>Debug</span> <span class='kw'>for</span> <span class='ident'>Authority</span> {
-    <span class='kw'>fn</span> <span class='ident'>fmt</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>f</span>: <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>Formatter</span>) <span class='op'>-&gt;</span> ::<span class='ident'>std</span>::<span class='ident'>fmt</span>::<span class='prelude-ty'>Result</span> {
+    <span class='kw'>fn</span> <span class='ident'>fmt</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>formatter</span>: <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>Formatter</span>) <span class='op'>-&gt;</span> <span class='ident'>fmt</span>::<span class='prelude-ty'>Result</span> {
         <span class='kw'>match</span> <span class='op'>*</span><span class='self'>self</span> {
-            <span class='ident'>Authority</span>::<span class='ident'>ClientManager</span>(<span class='kw-2'>ref</span> <span class='ident'>name</span>) <span class='op'>=&gt;</span> <span class='macro'>write</span><span class='macro'>!</span>(<span class='ident'>f</span>, <span class='string'>&quot;ClientManager(name:{:?})&quot;</span>, <span class='ident'>name</span>),
-            <span class='ident'>Authority</span>::<span class='ident'>NaeManager</span>(<span class='kw-2'>ref</span> <span class='ident'>name</span>) <span class='op'>=&gt;</span> <span class='macro'>write</span><span class='macro'>!</span>(<span class='ident'>f</span>, <span class='string'>&quot;NaeManager(name:{:?})&quot;</span>, <span class='ident'>name</span>),
-            <span class='ident'>Authority</span>::<span class='ident'>NodeManager</span>(<span class='kw-2'>ref</span> <span class='ident'>name</span>) <span class='op'>=&gt;</span> <span class='macro'>write</span><span class='macro'>!</span>(<span class='ident'>f</span>, <span class='string'>&quot;NodeManager(name:{:?})&quot;</span>, <span class='ident'>name</span>),
-            <span class='ident'>Authority</span>::<span class='ident'>ManagedNode</span>(<span class='kw-2'>ref</span> <span class='ident'>name</span>) <span class='op'>=&gt;</span> <span class='macro'>write</span><span class='macro'>!</span>(<span class='ident'>f</span>, <span class='string'>&quot;ManagedNode(name:{:?})&quot;</span>, <span class='ident'>name</span>),
+            <span class='ident'>Authority</span>::<span class='ident'>ClientManager</span>(<span class='kw-2'>ref</span> <span class='ident'>name</span>) <span class='op'>=&gt;</span> <span class='macro'>write</span><span class='macro'>!</span>(<span class='ident'>formatter</span>, <span class='string'>&quot;ClientManager(name: {})&quot;</span>, <span class='ident'>name</span>),
+            <span class='ident'>Authority</span>::<span class='ident'>NaeManager</span>(<span class='kw-2'>ref</span> <span class='ident'>name</span>) <span class='op'>=&gt;</span> <span class='macro'>write</span><span class='macro'>!</span>(<span class='ident'>formatter</span>, <span class='string'>&quot;NaeManager(name: {})&quot;</span>, <span class='ident'>name</span>),
+            <span class='ident'>Authority</span>::<span class='ident'>NodeManager</span>(<span class='kw-2'>ref</span> <span class='ident'>name</span>) <span class='op'>=&gt;</span> <span class='macro'>write</span><span class='macro'>!</span>(<span class='ident'>formatter</span>, <span class='string'>&quot;NodeManager(name: {})&quot;</span>, <span class='ident'>name</span>),
+            <span class='ident'>Authority</span>::<span class='ident'>ManagedNode</span>(<span class='kw-2'>ref</span> <span class='ident'>name</span>) <span class='op'>=&gt;</span> <span class='macro'>write</span><span class='macro'>!</span>(<span class='ident'>formatter</span>, <span class='string'>&quot;ManagedNode(name: {})&quot;</span>, <span class='ident'>name</span>),
             <span class='ident'>Authority</span>::<span class='ident'>Client</span> { <span class='kw-2'>ref</span> <span class='ident'>client_key</span>, <span class='kw-2'>ref</span> <span class='ident'>proxy_node_name</span>, <span class='kw-2'>ref</span> <span class='ident'>peer_id</span> } <span class='op'>=&gt;</span> {
-                <span class='macro'>write</span><span class='macro'>!</span>(<span class='ident'>f</span>,
-                       <span class='string'>&quot;Client {{ client_name: {:?}, proxy_node_name: {:?}, peer_id: {:?} }}&quot;</span>,
+                <span class='macro'>write</span><span class='macro'>!</span>(<span class='ident'>formatter</span>,
+                       <span class='string'>&quot;Client {{ client_name: {}, proxy_node_name: {}, peer_id: {:?} }}&quot;</span>,
                        <span class='ident'>XorName</span>::<span class='ident'>new</span>(<span class='ident'>hash</span>::<span class='ident'>sha512</span>::<span class='ident'>hash</span>(<span class='kw-2'>&amp;</span><span class='ident'>client_key</span>[..]).<span class='number'>0</span>),
                        <span class='ident'>proxy_node_name</span>,
                        <span class='ident'>peer_id</span>)
