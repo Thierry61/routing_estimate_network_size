@@ -449,6 +449,21 @@
 <span id="406">406</span>
 <span id="407">407</span>
 <span id="408">408</span>
+<span id="409">409</span>
+<span id="410">410</span>
+<span id="411">411</span>
+<span id="412">412</span>
+<span id="413">413</span>
+<span id="414">414</span>
+<span id="415">415</span>
+<span id="416">416</span>
+<span id="417">417</span>
+<span id="418">418</span>
+<span id="419">419</span>
+<span id="420">420</span>
+<span id="421">421</span>
+<span id="422">422</span>
+<span id="423">423</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2015 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -470,6 +485,8 @@
 <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>not</span>(<span class='ident'>feature</span> <span class='op'>=</span> <span class='string'>&quot;use-mock-crust&quot;</span>))]</span>
 <span class='kw'>use</span> <span class='ident'>maidsafe_utilities</span>::<span class='ident'>thread</span>::<span class='ident'>RaiiThreadJoiner</span>;
 <span class='kw'>use</span> <span class='ident'>sodiumoxide</span>;
+<span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>feature</span> <span class='op'>=</span> <span class='string'>&quot;use-mock-crust&quot;</span>)]</span>
+<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>cell</span>::<span class='ident'>RefCell</span>;
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>sync</span>::<span class='ident'>mpsc</span>::{<span class='ident'>Receiver</span>, <span class='ident'>Sender</span>, <span class='ident'>channel</span>};
 
 <span class='kw'>use</span> <span class='ident'>action</span>::<span class='ident'>Action</span>;
@@ -499,7 +516,7 @@
     <span class='ident'>action_sender</span>: ::<span class='ident'>types</span>::<span class='ident'>RoutingActionSender</span>,
 
     <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>feature</span> <span class='op'>=</span> <span class='string'>&quot;use-mock-crust&quot;</span>)]</span>
-    <span class='ident'>core</span>: <span class='ident'>Core</span>,
+    <span class='ident'>core</span>: <span class='ident'>RefCell</span><span class='op'>&lt;</span><span class='ident'>Core</span><span class='op'>&gt;</span>,
 
     <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>not</span>(<span class='ident'>feature</span> <span class='op'>=</span> <span class='string'>&quot;use-mock-crust&quot;</span>))]</span>
     <span class='ident'>_raii_joiner</span>: ::<span class='ident'>maidsafe_utilities</span>::<span class='ident'>thread</span>::<span class='ident'>RaiiThreadJoiner</span>,
@@ -545,14 +562,14 @@
             <span class='ident'>interface_result_tx</span>: <span class='ident'>tx</span>,
             <span class='ident'>interface_result_rx</span>: <span class='ident'>rx</span>,
             <span class='ident'>action_sender</span>: <span class='ident'>action_sender</span>,
-            <span class='ident'>core</span>: <span class='ident'>core</span>,
+            <span class='ident'>core</span>: <span class='ident'>RefCell</span>::<span class='ident'>new</span>(<span class='ident'>core</span>),
         })
     }
 
     <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>feature</span> <span class='op'>=</span> <span class='string'>&quot;use-mock-crust&quot;</span>)]</span>
     <span class='attribute'>#[<span class='ident'>allow</span>(<span class='ident'>missing_docs</span>)]</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>poll</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> {
-        <span class='self'>self</span>.<span class='ident'>core</span>.<span class='ident'>poll</span>()
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>poll</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> {
+        <span class='self'>self</span>.<span class='ident'>core</span>.<span class='ident'>borrow_mut</span>().<span class='ident'>poll</span>()
     }
 
     <span class='doccomment'>/// Send a `Get` request to `dst` to retrieve data from the network.</span>
@@ -779,14 +796,16 @@
             <span class='ident'>name</span>: <span class='ident'>name</span>,
             <span class='ident'>result_tx</span>: <span class='ident'>result_tx</span>,
         }));
-        <span class='prelude-val'>Ok</span>(<span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>result_rx</span>.<span class='ident'>recv</span>()))
+
+        <span class='self'>self</span>.<span class='ident'>receive_action_result</span>(<span class='kw-2'>&amp;</span><span class='ident'>result_rx</span>)
     }
 
     <span class='doccomment'>/// Returns the name of this node.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>name</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>XorName</span>, <span class='ident'>InterfaceError</span><span class='op'>&gt;</span> {
         <span class='kw'>let</span> (<span class='ident'>result_tx</span>, <span class='ident'>result_rx</span>) <span class='op'>=</span> <span class='ident'>channel</span>();
         <span class='macro'>try</span><span class='macro'>!</span>(<span class='self'>self</span>.<span class='ident'>action_sender</span>.<span class='ident'>send</span>(<span class='ident'>Action</span>::<span class='ident'>Name</span> { <span class='ident'>result_tx</span>: <span class='ident'>result_tx</span> }));
-        <span class='prelude-val'>Ok</span>(<span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>result_rx</span>.<span class='ident'>recv</span>()))
+
+        <span class='self'>self</span>.<span class='ident'>receive_action_result</span>(<span class='kw-2'>&amp;</span><span class='ident'>result_rx</span>)
     }
 
     <span class='kw'>fn</span> <span class='ident'>send_action</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>routing_msg</span>: <span class='ident'>RoutingMessage</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span>(), <span class='ident'>InterfaceError</span><span class='op'>&gt;</span> {
@@ -795,7 +814,18 @@
             <span class='ident'>result_tx</span>: <span class='self'>self</span>.<span class='ident'>interface_result_tx</span>.<span class='ident'>clone</span>(),
         }));
 
-        <span class='macro'>try</span><span class='macro'>!</span>(<span class='self'>self</span>.<span class='ident'>interface_result_rx</span>.<span class='ident'>recv</span>())
+        <span class='macro'>try</span><span class='macro'>!</span>(<span class='self'>self</span>.<span class='ident'>receive_action_result</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='ident'>interface_result_rx</span>))
+    }
+
+    <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>not</span>(<span class='ident'>feature</span> <span class='op'>=</span> <span class='string'>&quot;use-mock-crust&quot;</span>))]</span>
+    <span class='kw'>fn</span> <span class='ident'>receive_action_result</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>rx</span>: <span class='kw-2'>&amp;</span><span class='ident'>Receiver</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>T</span>, <span class='ident'>InterfaceError</span><span class='op'>&gt;</span> {
+        <span class='prelude-val'>Ok</span>(<span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>rx</span>.<span class='ident'>recv</span>()))
+    }
+
+    <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>feature</span> <span class='op'>=</span> <span class='string'>&quot;use-mock-crust&quot;</span>)]</span>
+    <span class='kw'>fn</span> <span class='ident'>receive_action_result</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>rx</span>: <span class='kw-2'>&amp;</span><span class='ident'>Receiver</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>T</span>, <span class='ident'>InterfaceError</span><span class='op'>&gt;</span> {
+        <span class='kw'>while</span> <span class='self'>self</span>.<span class='ident'>poll</span>() {}
+        <span class='prelude-val'>Ok</span>(<span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>rx</span>.<span class='ident'>recv</span>()))
     }
 }
 

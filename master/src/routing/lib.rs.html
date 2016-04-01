@@ -256,6 +256,7 @@
 <span id="213">213</span>
 <span id="214">214</span>
 <span id="215">215</span>
+<span id="216">216</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2015 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -455,8 +456,9 @@
 <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>all</span>(<span class='ident'>test</span>, <span class='ident'>feature</span> <span class='op'>=</span> <span class='string'>&quot;use-mock-crust&quot;</span>))]</span>
 <span class='kw'>mod</span> <span class='ident'>core_tests</span>;
 
+<span class='doccomment'>/// Mock crust</span>
 <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>feature</span> <span class='op'>=</span> <span class='string'>&quot;use-mock-crust&quot;</span>)]</span>
-<span class='kw'>mod</span> <span class='ident'>mock_crust</span>;
+<span class='kw'>pub</span> <span class='kw'>mod</span> <span class='ident'>mock_crust</span>;
 
 <span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>authority</span>::<span class='ident'>Authority</span>;
 <span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>client</span>::<span class='ident'>Client</span>;
