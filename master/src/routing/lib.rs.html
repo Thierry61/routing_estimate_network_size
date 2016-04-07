@@ -257,6 +257,7 @@
 <span id="214">214</span>
 <span id="215">215</span>
 <span id="216">216</span>
+<span id="217">217</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2015 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -321,7 +322,7 @@
 <span class='doccomment'>//!</span>
 <span class='doccomment'>//! let (sender, _receiver) = mpsc::channel::&lt;Event&gt;();</span>
 <span class='doccomment'>//! let full_id = FullId::new(); // Generate new keys.</span>
-<span class='doccomment'>//! let _ = Client::new(sender, Some(full_id.clone())).unwrap();</span>
+<span class='doccomment'>//! let _ = Client::new(sender, Some(full_id.clone()), true).unwrap();</span>
 <span class='doccomment'>//!</span>
 <span class='doccomment'>//! let _ = full_id.public_id().name();</span>
 <span class='doccomment'>//! ```</span>
@@ -339,7 +340,7 @@
 <span class='doccomment'>//! use routing::{Node, Event};</span>
 <span class='doccomment'>//!</span>
 <span class='doccomment'>//! let (sender, _receiver) = mpsc::channel::&lt;Event&gt;();</span>
-<span class='doccomment'>//! let _ = Node::new(sender).unwrap();</span>
+<span class='doccomment'>//! let _ = Node::new(sender, true).unwrap();</span>
 <span class='doccomment'>//! ```</span>
 <span class='doccomment'>//!</span>
 <span class='doccomment'>//! Upon creation, the node will first connect to the network as a client. Once it has client</span>
@@ -450,6 +451,7 @@
 <span class='kw'>mod</span> <span class='ident'>plain_data</span>;
 <span class='kw'>mod</span> <span class='ident'>structured_data</span>;
 <span class='kw'>mod</span> <span class='ident'>timer</span>;
+<span class='kw'>mod</span> <span class='ident'>tunnels</span>;
 <span class='kw'>mod</span> <span class='ident'>types</span>;
 <span class='kw'>mod</span> <span class='ident'>utils</span>;
 
