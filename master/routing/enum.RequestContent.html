@@ -46,7 +46,7 @@
             <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                 [<span class='inner'>&#x2212;</span>]
             </a>
-        </span><a id='src-4131' class='srclink' href='../src/routing/messages.rs.html#257-312' title='goto source code'>[src]</a></span></h1>
+        </span><a id='src-4136' class='srclink' href='../src/routing/messages.rs.html#257-312' title='goto source code'>[src]</a></span></h1>
 <pre class='rust enum'>pub enum RequestContent {
     GetNetworkName {
         current_id: <a class='struct' href='../routing/struct.PublicId.html' title='routing::PublicId'>PublicId</a>,
@@ -68,7 +68,7 @@
         encrypted_connection_info: <a class='struct' href='https://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u8.html'>u8</a>&gt;,
         nonce_bytes: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.array.html'>[<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u8.html'>u8</a>; box_::NONCEBYTES]</a>,
     },
-    Refresh(<a class='struct' href='https://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u8.html'>u8</a>&gt;),
+    Refresh(<a class='struct' href='https://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u8.html'>u8</a>&gt;, <a class='struct' href='../routing/struct.MessageId.html' title='routing::MessageId'>MessageId</a>),
     Get(<a class='enum' href='../routing/enum.DataRequest.html' title='routing::DataRequest'>DataRequest</a>, <a class='struct' href='../routing/struct.MessageId.html' title='routing::MessageId'>MessageId</a>),
     Put(<a class='enum' href='../routing/enum.Data.html' title='routing::Data'>Data</a>, <a class='struct' href='../routing/struct.MessageId.html' title='routing::MessageId'>MessageId</a>),
     Post(<a class='enum' href='../routing/enum.Data.html' title='routing::Data'>Data</a>, <a class='struct' href='../routing/struct.MessageId.html' title='routing::MessageId'>MessageId</a>),

@@ -674,6 +674,9 @@
 <span id="631">631</span>
 <span id="632">632</span>
 <span id="633">633</span>
+<span id="634">634</span>
+<span id="635">635</span>
+<span id="636">636</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2015 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -976,7 +979,7 @@
         <span class='ident'>nonce_bytes</span>: [<span class='ident'>u8</span>; <span class='ident'>box_</span>::<span class='ident'>NONCEBYTES</span>],
     },
     <span class='doccomment'>/// Message from upper layers sending network state on any network churn event.</span>
-    <span class='ident'>Refresh</span>(<span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>u8</span><span class='op'>&gt;</span>),
+    <span class='ident'>Refresh</span>(<span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>u8</span><span class='op'>&gt;</span>, <span class='ident'>MessageId</span>),
     <span class='comment'>// ---------- External ------------</span>
     <span class='doccomment'>/// Ask for data from network, passed from API with data name as parameter</span>
     <span class='ident'>Get</span>(<span class='ident'>DataRequest</span>, <span class='ident'>MessageId</span>),
@@ -1159,8 +1162,11 @@
             <span class='ident'>RequestContent</span>::<span class='ident'>GetPublicIdWithConnectionInfo</span> { .. } <span class='op'>=&gt;</span> {
                 <span class='macro'>write</span><span class='macro'>!</span>(<span class='ident'>formatter</span>, <span class='string'>&quot;GetPublicIdWithConnectionInfo {{ .. }}&quot;</span>)
             }
-            <span class='ident'>RequestContent</span>::<span class='ident'>Refresh</span>(<span class='kw-2'>ref</span> <span class='ident'>data</span>) <span class='op'>=&gt;</span> {
-                <span class='macro'>write</span><span class='macro'>!</span>(<span class='ident'>formatter</span>, <span class='string'>&quot;Refresh({})&quot;</span>, <span class='ident'>utils</span>::<span class='ident'>format_binary_array</span>(<span class='ident'>data</span>))
+            <span class='ident'>RequestContent</span>::<span class='ident'>Refresh</span>(<span class='kw-2'>ref</span> <span class='ident'>data</span>, <span class='kw-2'>ref</span> <span class='ident'>message_id</span>) <span class='op'>=&gt;</span> {
+                <span class='macro'>write</span><span class='macro'>!</span>(<span class='ident'>formatter</span>,
+                       <span class='string'>&quot;Refresh({}, {:?})&quot;</span>,
+                       <span class='ident'>utils</span>::<span class='ident'>format_binary_array</span>(<span class='ident'>data</span>),
+                       <span class='ident'>message_id</span>)
             }
             <span class='ident'>RequestContent</span>::<span class='ident'>Get</span>(<span class='kw-2'>ref</span> <span class='ident'>data_request</span>, <span class='kw-2'>ref</span> <span class='ident'>message_id</span>) <span class='op'>=&gt;</span> {
                 <span class='macro'>write</span><span class='macro'>!</span>(<span class='ident'>formatter</span>, <span class='string'>&quot;Get({:?}, {:?})&quot;</span>, <span class='ident'>data_request</span>, <span class='ident'>message_id</span>)
