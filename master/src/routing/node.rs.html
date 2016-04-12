@@ -470,6 +470,9 @@
 <span id="427">427</span>
 <span id="428">428</span>
 <span id="429">429</span>
+<span id="430">430</span>
+<span id="431">431</span>
+<span id="432">432</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2015 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -676,12 +679,13 @@
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>send_put_success</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>,
                             <span class='ident'>src</span>: <span class='ident'>Authority</span>,
                             <span class='ident'>dst</span>: <span class='ident'>Authority</span>,
+                            <span class='ident'>name</span>: <span class='ident'>XorName</span>,
                             <span class='ident'>id</span>: <span class='ident'>MessageId</span>)
                             <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span>(), <span class='ident'>InterfaceError</span><span class='op'>&gt;</span> {
         <span class='kw'>let</span> <span class='ident'>routing_msg</span> <span class='op'>=</span> <span class='ident'>RoutingMessage</span>::<span class='ident'>Response</span>(<span class='ident'>ResponseMessage</span> {
             <span class='ident'>src</span>: <span class='ident'>src</span>,
             <span class='ident'>dst</span>: <span class='ident'>dst</span>,
-            <span class='ident'>content</span>: <span class='ident'>ResponseContent</span>::<span class='ident'>PutSuccess</span>(<span class='ident'>id</span>),
+            <span class='ident'>content</span>: <span class='ident'>ResponseContent</span>::<span class='ident'>PutSuccess</span>(<span class='ident'>name</span>, <span class='ident'>id</span>),
         });
         <span class='self'>self</span>.<span class='ident'>send_action</span>(<span class='ident'>routing_msg</span>)
     }
@@ -710,12 +714,13 @@
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>send_post_success</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>,
                              <span class='ident'>src</span>: <span class='ident'>Authority</span>,
                              <span class='ident'>dst</span>: <span class='ident'>Authority</span>,
+                             <span class='ident'>name</span>: <span class='ident'>XorName</span>,
                              <span class='ident'>id</span>: <span class='ident'>MessageId</span>)
                              <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span>(), <span class='ident'>InterfaceError</span><span class='op'>&gt;</span> {
         <span class='kw'>let</span> <span class='ident'>routing_msg</span> <span class='op'>=</span> <span class='ident'>RoutingMessage</span>::<span class='ident'>Response</span>(<span class='ident'>ResponseMessage</span> {
             <span class='ident'>src</span>: <span class='ident'>src</span>,
             <span class='ident'>dst</span>: <span class='ident'>dst</span>,
-            <span class='ident'>content</span>: <span class='ident'>ResponseContent</span>::<span class='ident'>PostSuccess</span>(<span class='ident'>id</span>),
+            <span class='ident'>content</span>: <span class='ident'>ResponseContent</span>::<span class='ident'>PostSuccess</span>(<span class='ident'>name</span>, <span class='ident'>id</span>),
         });
         <span class='self'>self</span>.<span class='ident'>send_action</span>(<span class='ident'>routing_msg</span>)
     }
@@ -744,12 +749,13 @@
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>send_delete_success</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>,
                                <span class='ident'>src</span>: <span class='ident'>Authority</span>,
                                <span class='ident'>dst</span>: <span class='ident'>Authority</span>,
+                               <span class='ident'>name</span>: <span class='ident'>XorName</span>,
                                <span class='ident'>id</span>: <span class='ident'>MessageId</span>)
                                <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span>(), <span class='ident'>InterfaceError</span><span class='op'>&gt;</span> {
         <span class='kw'>let</span> <span class='ident'>routing_msg</span> <span class='op'>=</span> <span class='ident'>RoutingMessage</span>::<span class='ident'>Response</span>(<span class='ident'>ResponseMessage</span> {
             <span class='ident'>src</span>: <span class='ident'>src</span>,
             <span class='ident'>dst</span>: <span class='ident'>dst</span>,
-            <span class='ident'>content</span>: <span class='ident'>ResponseContent</span>::<span class='ident'>DeleteSuccess</span>(<span class='ident'>id</span>),
+            <span class='ident'>content</span>: <span class='ident'>ResponseContent</span>::<span class='ident'>DeleteSuccess</span>(<span class='ident'>name</span>, <span class='ident'>id</span>),
         });
         <span class='self'>self</span>.<span class='ident'>send_action</span>(<span class='ident'>routing_msg</span>)
     }
