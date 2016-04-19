@@ -397,7 +397,7 @@
             <span class='prelude-val'>Ok</span>(<span class='ident'>structured_data</span>) <span class='op'>=&gt;</span> {
                 <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>structured_data</span>.<span class='ident'>clone</span>().<span class='ident'>name</span>(),
                            <span class='ident'>Data</span>::<span class='ident'>Structured</span>(<span class='ident'>structured_data</span>.<span class='ident'>clone</span>()).<span class='ident'>name</span>());
-                <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>DataIdentifier</span>::<span class='ident'>Structured</span>(<span class='ident'>structured_data</span>.<span class='ident'>name</span>(),
+                <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>DataIdentifier</span>::<span class='ident'>Structured</span>(<span class='op'>*</span><span class='ident'>structured_data</span>.<span class='ident'>get_identifier</span>(),
                                                       <span class='ident'>structured_data</span>.<span class='ident'>get_type_tag</span>()),
                            <span class='ident'>structured_data</span>.<span class='ident'>identifier</span>());
             }

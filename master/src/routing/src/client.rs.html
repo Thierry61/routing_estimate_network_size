@@ -337,10 +337,10 @@
     <span class='doccomment'>/// Send a Get message with a `DataIdentifier` to an `Authority`, signed with given keys.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>send_get_request</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>,
                             <span class='ident'>dst</span>: <span class='ident'>Authority</span>,
-                            <span class='ident'>data_request</span>: <span class='ident'>DataIdentifier</span>,
+                            <span class='ident'>data_id</span>: <span class='ident'>DataIdentifier</span>,
                             <span class='ident'>message_id</span>: <span class='ident'>MessageId</span>)
                             <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span>(), <span class='ident'>InterfaceError</span><span class='op'>&gt;</span> {
-        <span class='self'>self</span>.<span class='ident'>send_action</span>(<span class='ident'>RequestContent</span>::<span class='ident'>Get</span>(<span class='ident'>data_request</span>, <span class='ident'>message_id</span>), <span class='ident'>dst</span>)
+        <span class='self'>self</span>.<span class='ident'>send_action</span>(<span class='ident'>RequestContent</span>::<span class='ident'>Get</span>(<span class='ident'>data_id</span>, <span class='ident'>message_id</span>), <span class='ident'>dst</span>)
     }
 
     <span class='doccomment'>/// Add something to the network</span>
