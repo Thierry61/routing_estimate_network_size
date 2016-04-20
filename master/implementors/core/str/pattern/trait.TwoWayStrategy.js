@@ -1,5 +1,5 @@
 (function() {var implementors = {};
-implementors['regex_syntax'] = [];implementors['libc'] = [];implementors['bitflags'] = [];implementors['regex'] = [];implementors['mio'] = [];implementors['socket_addr'] = [];implementors['hyper'] = [];implementors['igd'] = [];implementors['crust'] = [];
+implementors['libc'] = [];implementors['bitflags'] = [];implementors['regex_syntax'] = [];implementors['socket_addr'] = [];implementors['mio'] = [];implementors['regex'] = [];implementors['hyper'] = [];implementors['igd'] = [];implementors['crust'] = [];
 
             if (window.register_implementors) {
                 window.register_implementors(implementors);
