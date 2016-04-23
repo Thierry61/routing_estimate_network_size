@@ -83,6 +83,10 @@
 <span id="40">40</span>
 <span id="41">41</span>
 <span id="42">42</span>
+<span id="43">43</span>
+<span id="44">44</span>
+<span id="45">45</span>
+<span id="46">46</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2015 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -125,6 +129,10 @@
     <span class='ident'>Connected</span>,
     <span class='doccomment'>/// We have disconnected from the network.</span>
     <span class='ident'>Disconnected</span>,
+    <span class='doccomment'>/// We failed to relocate as a new node in the network.</span>
+    <span class='ident'>GetNetworkNameFailed</span>,
+    <span class='doccomment'>/// We failed to start listening for incoming connections as the first node.</span>
+    <span class='ident'>NetworkStartupFailed</span>,
 }
 </pre>
 </section>
