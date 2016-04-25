@@ -259,6 +259,8 @@
 <span id="216">216</span>
 <span id="217">217</span>
 <span id="218">218</span>
+<span id="219">219</span>
+<span id="220">220</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2015 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -279,7 +281,7 @@
 
 <span class='doccomment'>//! Client and node implementations for a resilient decentralised network.</span>
 <span class='doccomment'>//!</span>
-<span class='doccomment'>//! The network is based on the [kademlia_routing_table][1] and uses the XOR metric to define the</span>
+<span class='doccomment'>//! The network is based on the [`kademlia_routing_table`][1] and uses the XOR metric to define the</span>
 <span class='doccomment'>//! &quot;distance&quot; between two [`XorName`][2]s. `XorName`s are used as addresses of nodes, clients as</span>
 <span class='doccomment'>//! well as data.</span>
 <span class='doccomment'>//!</span>
@@ -417,7 +419,8 @@
 
 <span class='attribute'>#<span class='op'>!</span>[<span class='ident'>cfg_attr</span>(<span class='ident'>feature</span><span class='op'>=</span><span class='string'>&quot;clippy&quot;</span>, <span class='ident'>feature</span>(<span class='ident'>plugin</span>))]</span>
 <span class='attribute'>#<span class='op'>!</span>[<span class='ident'>cfg_attr</span>(<span class='ident'>feature</span><span class='op'>=</span><span class='string'>&quot;clippy&quot;</span>, <span class='ident'>plugin</span>(<span class='ident'>clippy</span>))]</span>
-<span class='attribute'>#<span class='op'>!</span>[<span class='ident'>cfg_attr</span>(<span class='ident'>feature</span><span class='op'>=</span><span class='string'>&quot;clippy&quot;</span>, <span class='ident'>deny</span>(<span class='ident'>clippy</span>, <span class='ident'>clippy_pedantic</span>))]</span>
+<span class='attribute'>#<span class='op'>!</span>[<span class='ident'>cfg_attr</span>(<span class='ident'>feature</span><span class='op'>=</span><span class='string'>&quot;clippy&quot;</span>, <span class='ident'>deny</span>(<span class='ident'>clippy</span>, <span class='ident'>unicode_not_nfc</span>, <span class='ident'>wrong_pub_self_convention</span>,
+                                   <span class='ident'>option_unwrap_used</span>))]</span>
 <span class='attribute'>#<span class='op'>!</span>[<span class='ident'>cfg_attr</span>(<span class='ident'>feature</span><span class='op'>=</span><span class='string'>&quot;clippy&quot;</span>, <span class='ident'>allow</span>(<span class='ident'>use_debug</span>))]</span>
 
 <span class='attribute'>#[<span class='ident'>macro_use</span>]</span>
@@ -464,6 +467,7 @@
 <span class='kw'>pub</span> <span class='kw'>mod</span> <span class='ident'>mock_crust</span>;
 
 <span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>authority</span>::<span class='ident'>Authority</span>;
+<span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>core</span>::<span class='ident'>NodeInfo</span>;
 <span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>client</span>::<span class='ident'>Client</span>;
 <span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>data</span>::{<span class='ident'>Data</span>, <span class='ident'>DataIdentifier</span>};
 <span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>error</span>::{<span class='ident'>InterfaceError</span>, <span class='ident'>RoutingError</span>};

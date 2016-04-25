@@ -46,12 +46,12 @@
             <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                 [<span class='inner'>&#x2212;</span>]
             </a>
-        </span><a id='src-2877' class='srclink' href='../src/routing/src/event.rs.html#29-46' title='goto source code'>[src]</a></span></h1>
+        </span><a id='src-2879' class='srclink' href='../src/routing/src/event.rs.html#32-49' title='goto source code'>[src]</a></span></h1>
 <pre class='rust enum'>pub enum Event {
     Request(<a class='struct' href='../routing/struct.RequestMessage.html' title='routing::RequestMessage'>RequestMessage</a>),
     Response(<a class='struct' href='../routing/struct.ResponseMessage.html' title='routing::ResponseMessage'>ResponseMessage</a>),
-    NodeAdded(<a class='struct' href='../xor_name/struct.XorName.html' title='xor_name::XorName'>XorName</a>),
-    NodeLost(<a class='struct' href='../xor_name/struct.XorName.html' title='xor_name::XorName'>XorName</a>),
+    NodeAdded(<a class='struct' href='../xor_name/struct.XorName.html' title='xor_name::XorName'>XorName</a>, <a class='struct' href='../kademlia_routing_table/struct.RoutingTable.html' title='kademlia_routing_table::RoutingTable'>RoutingTable</a>&lt;<a class='struct' href='../routing/struct.NodeInfo.html' title='routing::NodeInfo'>NodeInfo</a>&gt;),
+    NodeLost(<a class='struct' href='../xor_name/struct.XorName.html' title='xor_name::XorName'>XorName</a>, <a class='struct' href='../kademlia_routing_table/struct.RoutingTable.html' title='kademlia_routing_table::RoutingTable'>RoutingTable</a>&lt;<a class='struct' href='../routing/struct.NodeInfo.html' title='routing::NodeInfo'>NodeInfo</a>&gt;),
     Connected,
     Disconnected,
     GetNetworkNameFailed,

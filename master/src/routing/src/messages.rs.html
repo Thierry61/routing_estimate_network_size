@@ -697,6 +697,8 @@
 <span id="654">654</span>
 <span id="655">655</span>
 <span id="656">656</span>
+<span id="657">657</span>
+<span id="658">658</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2015 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -1137,7 +1139,9 @@
             }
             <span class='ident'>DirectMessage</span>::<span class='ident'>NodeIdentify</span> { .. } <span class='op'>=&gt;</span> <span class='macro'>write</span><span class='macro'>!</span>(<span class='ident'>formatter</span>, <span class='string'>&quot;NodeIdentify {{ .. }}&quot;</span>),
             <span class='ident'>DirectMessage</span>::<span class='ident'>NewNode</span>(<span class='kw-2'>ref</span> <span class='ident'>public_id</span>) <span class='op'>=&gt;</span> <span class='macro'>write</span><span class='macro'>!</span>(<span class='ident'>formatter</span>, <span class='string'>&quot;NewNode({:?})&quot;</span>, <span class='ident'>public_id</span>),
-            <span class='ident'>DirectMessage</span>::<span class='ident'>ConnectionUnneeded</span>(<span class='kw-2'>ref</span> <span class='ident'>name</span>) <span class='op'>=&gt;</span> <span class='macro'>write</span><span class='macro'>!</span>(<span class='ident'>formatter</span>, <span class='string'>&quot;ConnectionUnneeded({:?})&quot;</span>, <span class='ident'>name</span>),
+            <span class='ident'>DirectMessage</span>::<span class='ident'>ConnectionUnneeded</span>(<span class='kw-2'>ref</span> <span class='ident'>name</span>) <span class='op'>=&gt;</span> {
+                <span class='macro'>write</span><span class='macro'>!</span>(<span class='ident'>formatter</span>, <span class='string'>&quot;ConnectionUnneeded({:?})&quot;</span>, <span class='ident'>name</span>)
+            }
             <span class='ident'>DirectMessage</span>::<span class='ident'>Heartbeat</span> <span class='op'>=&gt;</span> <span class='macro'>write</span><span class='macro'>!</span>(<span class='ident'>formatter</span>, <span class='string'>&quot;Heartbeat&quot;</span>),
             <span class='ident'>DirectMessage</span>::<span class='ident'>TunnelRequest</span>(<span class='ident'>peer_id</span>) <span class='op'>=&gt;</span> {
                 <span class='macro'>write</span><span class='macro'>!</span>(<span class='ident'>formatter</span>, <span class='string'>&quot;TunnelRequest({:?})&quot;</span>, <span class='ident'>peer_id</span>)
