@@ -2620,6 +2620,8 @@
 <span id="2577">2577</span>
 <span id="2578">2578</span>
 <span id="2579">2579</span>
+<span id="2580">2580</span>
+<span id="2581">2581</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2015 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -4826,7 +4828,9 @@
             <span class='macro'>error</span><span class='macro'>!</span>(<span class='string'>&quot;Failed to get GetNetworkName response&quot;</span>);
             <span class='kw'>let</span> _ <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>event_sender</span>.<span class='ident'>send</span>(<span class='ident'>Event</span>::<span class='ident'>Disconnected</span>);
         } <span class='kw'>else</span> <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>heartbeat_timer_token</span> <span class='op'>==</span> <span class='ident'>token</span> {
-            <span class='self'>self</span>.<span class='ident'>request_bucket_close_groups</span>();
+            <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>state</span> <span class='op'>==</span> <span class='ident'>State</span>::<span class='ident'>Node</span> {
+                <span class='self'>self</span>.<span class='ident'>request_bucket_close_groups</span>();
+            }
             <span class='kw'>let</span> <span class='ident'>now</span> <span class='op'>=</span> <span class='ident'>SteadyTime</span>::<span class='ident'>now</span>();
             <span class='kw'>let</span> <span class='ident'>stale_peers</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>peer_map</span>
                                   .<span class='ident'>iter</span>()
