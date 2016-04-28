@@ -2621,6 +2621,10 @@
 <span id="2578">2578</span>
 <span id="2579">2579</span>
 <span id="2580">2580</span>
+<span id="2581">2581</span>
+<span id="2582">2582</span>
+<span id="2583">2583</span>
+<span id="2584">2584</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2015 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -2865,6 +2869,8 @@
     <span class='ident'>tunnels</span>: <span class='ident'>Tunnels</span>,
     <span class='ident'>stats</span>: <span class='ident'>Stats</span>,
     <span class='ident'>send_filter</span>: <span class='ident'>LruCache</span><span class='op'>&lt;</span>(<span class='ident'>u64</span>, <span class='ident'>PeerId</span>), ()<span class='op'>&gt;</span>,
+    <span class='doccomment'>/// This is set to `false` as soon as we know we are not the first node.</span>
+    <span class='ident'>maybe_first_node</span>: <span class='ident'>bool</span>,
 }
 
 <span class='attribute'>#[<span class='ident'>cfg_attr</span>(<span class='ident'>feature</span><span class='op'>=</span><span class='string'>&quot;clippy&quot;</span>, <span class='ident'>allow</span>(<span class='ident'>new_ret_no_self</span>))]</span> <span class='comment'>// TODO: Maybe rename `new` to `start`?</span>
@@ -2944,6 +2950,7 @@
             <span class='ident'>tunnels</span>: <span class='ident'>Default</span>::<span class='ident'>default</span>(),
             <span class='ident'>stats</span>: <span class='ident'>Default</span>::<span class='ident'>default</span>(),
             <span class='ident'>send_filter</span>: <span class='ident'>LruCache</span>::<span class='ident'>with_expiry_duration</span>(<span class='ident'>Duration</span>::<span class='ident'>from_secs</span>(<span class='number'>60</span> <span class='op'>*</span> <span class='number'>10</span>)),
+            <span class='ident'>maybe_first_node</span>: <span class='boolval'>true</span>,
         };
 
         (<span class='ident'>action_sender</span>, <span class='ident'>core</span>)
@@ -3150,6 +3157,7 @@
     <span class='kw'>fn</span> <span class='ident'>handle_bootstrap_connect</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>peer_id</span>: <span class='ident'>PeerId</span>) {
         <span class='kw'>let</span> _ <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>peer_map</span>.<span class='ident'>insert</span>(<span class='ident'>peer_id</span>, <span class='ident'>Instant</span>::<span class='ident'>now</span>());
         <span class='self'>self</span>.<span class='ident'>crust_service</span>.<span class='ident'>stop_bootstrap</span>();
+        <span class='self'>self</span>.<span class='ident'>maybe_first_node</span> <span class='op'>=</span> <span class='boolval'>false</span>;
         <span class='kw'>match</span> <span class='self'>self</span>.<span class='ident'>state</span> {
             <span class='ident'>State</span>::<span class='ident'>Disconnected</span> <span class='op'>=&gt;</span> {
                 <span class='kw'>if</span> <span class='op'>!</span><span class='self'>self</span>.<span class='ident'>client_restriction</span> {
@@ -3173,7 +3181,7 @@
     <span class='kw'>fn</span> <span class='ident'>handle_bootstrap_accept</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>peer_id</span>: <span class='ident'>PeerId</span>) {
         <span class='kw'>let</span> _ <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>peer_map</span>.<span class='ident'>insert</span>(<span class='ident'>peer_id</span>, <span class='ident'>Instant</span>::<span class='ident'>now</span>());
         <span class='macro'>trace</span><span class='macro'>!</span>(<span class='string'>&quot;{:?} Received BootstrapAccept from {:?}.&quot;</span>, <span class='self'>self</span>, <span class='ident'>peer_id</span>);
-        <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>state</span> <span class='op'>==</span> <span class='ident'>State</span>::<span class='ident'>Disconnected</span> {
+        <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>state</span> <span class='op'>==</span> <span class='ident'>State</span>::<span class='ident'>Disconnected</span> <span class='op'>&amp;&amp;</span> <span class='self'>self</span>.<span class='ident'>maybe_first_node</span> {
             <span class='comment'>// I am the first node in the network, and I got an incoming connection so I&#39;ll</span>
             <span class='comment'>// promote myself as a node.</span>
             <span class='kw'>let</span> <span class='ident'>new_name</span> <span class='op'>=</span> <span class='ident'>XorName</span>::<span class='ident'>new</span>(<span class='ident'>hash</span>::<span class='ident'>sha512</span>::<span class='ident'>hash</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='ident'>full_id</span>
