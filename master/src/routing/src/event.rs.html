@@ -112,6 +112,10 @@
 <span id="69">69</span>
 <span id="70">70</span>
 <span id="71">71</span>
+<span id="72">72</span>
+<span id="73">73</span>
+<span id="74">74</span>
+<span id="75">75</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2015 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -162,6 +166,9 @@
     <span class='ident'>GetNetworkNameFailed</span>,
     <span class='doccomment'>/// We failed to start listening for incoming connections as the first node.</span>
     <span class='ident'>NetworkStartupFailed</span>,
+    <span class='comment'>// TODO: Find a better solution for periodic tasks.</span>
+    <span class='doccomment'>/// This event is sent periodically every time Routing sends the `Heartbeat` messages.</span>
+    <span class='ident'>Tick</span>,
 }
 
 <span class='kw'>impl</span> <span class='ident'>Debug</span> <span class='kw'>for</span> <span class='ident'>Event</span> {
@@ -181,6 +188,7 @@
             <span class='ident'>Event</span>::<span class='ident'>Disconnected</span> <span class='op'>=&gt;</span> <span class='macro'>write</span><span class='macro'>!</span>(<span class='ident'>formatter</span>, <span class='string'>&quot;Event::Disconnected&quot;</span>),
             <span class='ident'>Event</span>::<span class='ident'>GetNetworkNameFailed</span> <span class='op'>=&gt;</span> <span class='macro'>write</span><span class='macro'>!</span>(<span class='ident'>formatter</span>, <span class='string'>&quot;Event::GetNetworkNameFailed&quot;</span>),
             <span class='ident'>Event</span>::<span class='ident'>NetworkStartupFailed</span> <span class='op'>=&gt;</span> <span class='macro'>write</span><span class='macro'>!</span>(<span class='ident'>formatter</span>, <span class='string'>&quot;Event::NetworkStartupFailed&quot;</span>),
+            <span class='ident'>Event</span>::<span class='ident'>Tick</span> <span class='op'>=&gt;</span> <span class='macro'>write</span><span class='macro'>!</span>(<span class='ident'>formatter</span>, <span class='string'>&quot;Event::Tick&quot;</span>),
         }
     }
 }
