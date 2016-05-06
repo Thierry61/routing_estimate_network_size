@@ -2599,30 +2599,6 @@
 <span id="2556">2556</span>
 <span id="2557">2557</span>
 <span id="2558">2558</span>
-<span id="2559">2559</span>
-<span id="2560">2560</span>
-<span id="2561">2561</span>
-<span id="2562">2562</span>
-<span id="2563">2563</span>
-<span id="2564">2564</span>
-<span id="2565">2565</span>
-<span id="2566">2566</span>
-<span id="2567">2567</span>
-<span id="2568">2568</span>
-<span id="2569">2569</span>
-<span id="2570">2570</span>
-<span id="2571">2571</span>
-<span id="2572">2572</span>
-<span id="2573">2573</span>
-<span id="2574">2574</span>
-<span id="2575">2575</span>
-<span id="2576">2576</span>
-<span id="2577">2577</span>
-<span id="2578">2578</span>
-<span id="2579">2579</span>
-<span id="2580">2580</span>
-<span id="2581">2581</span>
-<span id="2582">2582</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2015 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -2693,10 +2669,8 @@
 <span class='kw'>const</span> <span class='ident'>BOOTSTRAP_TIMEOUT_SECS</span>: <span class='ident'>u64</span> <span class='op'>=</span> <span class='number'>20</span>;
 <span class='doccomment'>/// Time (in seconds) after which a `GetNetworkName` request is resent.</span>
 <span class='kw'>const</span> <span class='ident'>GET_NETWORK_NAME_TIMEOUT_SECS</span>: <span class='ident'>u64</span> <span class='op'>=</span> <span class='number'>30</span>;
-<span class='doccomment'>/// Time (in seconds) after which a `Heartbeat` is sent.</span>
-<span class='kw'>const</span> <span class='ident'>HEARTBEAT_TIMEOUT_SECS</span>: <span class='ident'>u64</span> <span class='op'>=</span> <span class='number'>60</span>;
-<span class='doccomment'>/// Number of missed heartbeats after which a peer is considered disconnected.</span>
-<span class='kw'>const</span> <span class='ident'>HEARTBEAT_ATTEMPTS</span>: <span class='ident'>u64</span> <span class='op'>=</span> <span class='number'>3</span>;
+<span class='doccomment'>/// Time (in seconds) after which a `Tick` event is sent.</span>
+<span class='kw'>const</span> <span class='ident'>TICK_TIMEOUT_SECS</span>: <span class='ident'>u64</span> <span class='op'>=</span> <span class='number'>60</span>;
 <span class='doccomment'>/// Time (in seconds) the new close group waits for a joining node it sent a network name to.</span>
 <span class='kw'>const</span> <span class='ident'>SENT_NETWORK_NAME_TIMEOUT_SECS</span>: <span class='ident'>u64</span> <span class='op'>=</span> <span class='number'>30</span>;
 <span class='doccomment'>/// Initial period for requesting bucket close groups of all non-full buckets. This is doubled each</span>
@@ -2844,7 +2818,7 @@
     <span class='ident'>bucket_refresh_token_and_delay</span>: <span class='prelude-ty'>Option</span><span class='op'>&lt;</span>(<span class='ident'>u64</span>, <span class='ident'>u64</span>)<span class='op'>&gt;</span>,
     <span class='doccomment'>/// The last joining node we have sent a `GetNetworkName` response to, and when.</span>
     <span class='ident'>sent_network_name_to</span>: <span class='prelude-ty'>Option</span><span class='op'>&lt;</span>(<span class='ident'>XorName</span>, <span class='ident'>Instant</span>)<span class='op'>&gt;</span>,
-    <span class='ident'>heartbeat_timer_token</span>: <span class='ident'>u64</span>,
+    <span class='ident'>tick_timer_token</span>: <span class='ident'>u64</span>,
 
     <span class='comment'>// our bootstrap connections</span>
     <span class='ident'>proxy_map</span>: <span class='ident'>HashMap</span><span class='op'>&lt;</span><span class='ident'>PeerId</span>, <span class='ident'>PublicId</span><span class='op'>&gt;</span>,
@@ -2906,10 +2880,6 @@
 
         <span class='kw'>let</span> <span class='ident'>our_info</span> <span class='op'>=</span> <span class='ident'>NodeInfo</span>::<span class='ident'>new</span>(<span class='op'>*</span><span class='ident'>full_id</span>.<span class='ident'>public_id</span>(), <span class='ident'>crust_service</span>.<span class='ident'>id</span>());
 
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>timer</span> <span class='op'>=</span> <span class='ident'>Timer</span>::<span class='ident'>new</span>(<span class='ident'>action_sender2</span>);
-
-        <span class='kw'>let</span> <span class='ident'>heartbeat_timer_token</span> <span class='op'>=</span> <span class='ident'>timer</span>.<span class='ident'>schedule</span>(<span class='ident'>Duration</span>::<span class='ident'>from_secs</span>(<span class='ident'>HEARTBEAT_TIMEOUT_SECS</span>));
-
         <span class='kw'>let</span> <span class='ident'>core</span> <span class='op'>=</span> <span class='ident'>Core</span> {
             <span class='ident'>crust_service</span>: <span class='ident'>crust_service</span>,
             <span class='ident'>client_restriction</span>: <span class='ident'>client_restriction</span>,
@@ -2919,7 +2889,7 @@
             <span class='ident'>action_rx</span>: <span class='ident'>action_rx</span>,
             <span class='ident'>event_sender</span>: <span class='ident'>event_sender</span>,
             <span class='ident'>crust_sender</span>: <span class='ident'>crust_sender</span>,
-            <span class='ident'>timer</span>: <span class='ident'>timer</span>,
+            <span class='ident'>timer</span>: <span class='ident'>Timer</span>::<span class='ident'>new</span>(<span class='ident'>action_sender2</span>),
             <span class='ident'>signed_message_filter</span>: <span class='ident'>MessageFilter</span>::<span class='ident'>with_expiry_duration</span>(<span class='ident'>Duration</span>::<span class='ident'>from_secs</span>(<span class='number'>60</span> <span class='op'>*</span>
                                                                                            <span class='number'>20</span>)),
             <span class='comment'>// TODO Needs further discussion on interval</span>
@@ -2933,7 +2903,7 @@
             <span class='ident'>get_network_name_timer_token</span>: <span class='prelude-val'>None</span>,
             <span class='ident'>bucket_refresh_token_and_delay</span>: <span class='prelude-val'>None</span>,
             <span class='ident'>sent_network_name_to</span>: <span class='prelude-val'>None</span>,
-            <span class='ident'>heartbeat_timer_token</span>: <span class='ident'>heartbeat_timer_token</span>,
+            <span class='ident'>tick_timer_token</span>: <span class='number'>0</span>,
             <span class='ident'>proxy_map</span>: <span class='ident'>HashMap</span>::<span class='ident'>new</span>(),
             <span class='ident'>client_map</span>: <span class='ident'>HashMap</span>::<span class='ident'>new</span>(),
             <span class='ident'>peer_map</span>: <span class='ident'>HashMap</span>::<span class='ident'>new</span>(),
@@ -3189,6 +3159,7 @@
             <span class='comment'>// This will give me a new RT and set state to Relocated</span>
             <span class='self'>self</span>.<span class='ident'>set_self_node_name</span>(<span class='ident'>new_name</span>);
             <span class='self'>self</span>.<span class='ident'>state</span> <span class='op'>=</span> <span class='ident'>State</span>::<span class='ident'>Node</span>;
+            <span class='self'>self</span>.<span class='ident'>tick_timer_token</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>timer</span>.<span class='ident'>schedule</span>(<span class='ident'>Duration</span>::<span class='ident'>from_secs</span>(<span class='ident'>TICK_TIMEOUT_SECS</span>));
             <span class='macro'>info</span><span class='macro'>!</span>(<span class='string'>&quot;{:?} - Started a new network as a seed node.&quot;</span>, <span class='self'>self</span>)
         }
         <span class='comment'>// TODO: Keep track of that peer to make sure we receive a message from them.</span>
@@ -3243,7 +3214,7 @@
     <span class='kw'>fn</span> <span class='ident'>find_tunnel_for_peer</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>peer_id</span>: <span class='ident'>PeerId</span>, <span class='ident'>name</span>: <span class='ident'>XorName</span>) {
         <span class='kw'>let</span> _ <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>connecting_peers</span>.<span class='ident'>insert</span>(<span class='ident'>peer_id</span>, (<span class='ident'>name</span>, <span class='ident'>ConnectState</span>::<span class='ident'>Tunnel</span>));
         <span class='kw'>for</span> <span class='ident'>node</span> <span class='kw'>in</span> <span class='self'>self</span>.<span class='ident'>routing_table</span>.<span class='ident'>closest_nodes_to</span>(<span class='kw-2'>&amp;</span><span class='ident'>name</span>, <span class='ident'>GROUP_SIZE</span>, <span class='boolval'>false</span>) {
-            <span class='macro'>warn</span><span class='macro'>!</span>(<span class='string'>&quot;Asking {:?} to serve as a tunnel.&quot;</span>, <span class='ident'>node</span>.<span class='ident'>name</span>());
+            <span class='macro'>trace</span><span class='macro'>!</span>(<span class='string'>&quot;Asking {:?} to serve as a tunnel.&quot;</span>, <span class='ident'>node</span>.<span class='ident'>name</span>());
             <span class='kw'>let</span> <span class='ident'>tunnel_request</span> <span class='op'>=</span> <span class='ident'>DirectMessage</span>::<span class='ident'>TunnelRequest</span>(<span class='ident'>peer_id</span>);
             <span class='kw'>if</span> <span class='kw'>let</span> <span class='prelude-val'>Err</span>(<span class='ident'>err</span>) <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>send_direct_message</span>(<span class='kw-2'>&amp;</span><span class='ident'>node</span>.<span class='ident'>peer_id</span>, <span class='ident'>tunnel_request</span>) {
                 <span class='macro'>error</span><span class='macro'>!</span>(<span class='string'>&quot;Failed to send tunnel request: {:?}.&quot;</span>, <span class='ident'>err</span>);
@@ -3995,9 +3966,8 @@
                     <span class='self'>self</span>.<span class='ident'>disconnect_peer</span>(<span class='kw-2'>&amp;</span><span class='ident'>peer_id</span>)
                 }
             }
-            <span class='ident'>DirectMessage</span>::<span class='ident'>Heartbeat</span> <span class='op'>=&gt;</span> <span class='prelude-val'>Ok</span>(()),
             <span class='ident'>DirectMessage</span>::<span class='ident'>NewNode</span>(<span class='ident'>public_id</span>) <span class='op'>=&gt;</span> {
-                <span class='macro'>debug</span><span class='macro'>!</span>(<span class='string'>&quot;Received NewNode({:?}).&quot;</span>, <span class='ident'>public_id</span>);
+                <span class='macro'>trace</span><span class='macro'>!</span>(<span class='string'>&quot;Received NewNode({:?}).&quot;</span>, <span class='ident'>public_id</span>);
                 <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>routing_table</span>.<span class='ident'>need_to_add</span>(<span class='ident'>public_id</span>.<span class='ident'>name</span>()) {
                     <span class='kw'>return</span> <span class='self'>self</span>.<span class='ident'>send_connect_request</span>(<span class='ident'>public_id</span>.<span class='ident'>name</span>());
                 }
@@ -4016,7 +3986,7 @@
                 }
                 <span class='macro'>debug</span><span class='macro'>!</span>(<span class='string'>&quot;Received ConnectionUnneeded from {:?}.&quot;</span>, <span class='ident'>peer_id</span>);
                 <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>routing_table</span>.<span class='ident'>remove_if_unneeded</span>(<span class='ident'>name</span>) {
-                    <span class='macro'>debug</span><span class='macro'>!</span>(<span class='string'>&quot;Dropped {:?} from the routing table.&quot;</span>, <span class='ident'>name</span>);
+                    <span class='macro'>info</span><span class='macro'>!</span>(<span class='string'>&quot;Dropped {:?} from the routing table.&quot;</span>, <span class='ident'>name</span>);
                     <span class='self'>self</span>.<span class='ident'>crust_service</span>.<span class='ident'>disconnect</span>(<span class='kw-2'>&amp;</span><span class='ident'>peer_id</span>);
                 }
                 <span class='prelude-val'>Ok</span>(())
@@ -4182,7 +4152,7 @@
                 <span class='kw'>return</span> <span class='self'>self</span>.<span class='ident'>disconnect_peer</span>(<span class='kw-2'>&amp;</span><span class='ident'>peer_id</span>);
             }
             <span class='prelude-val'>Some</span>(<span class='ident'>AddedNodeDetails</span> { <span class='ident'>must_notify</span>, <span class='ident'>unneeded</span>, .. }) <span class='op'>=&gt;</span> {
-                <span class='macro'>debug</span><span class='macro'>!</span>(<span class='string'>&quot;{:?} Added {:?} to routing table.&quot;</span>, <span class='self'>self</span>, <span class='ident'>name</span>);
+                <span class='macro'>info</span><span class='macro'>!</span>(<span class='string'>&quot;{:?} Added {:?} to routing table.&quot;</span>, <span class='self'>self</span>, <span class='ident'>name</span>);
                 <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>routing_table</span>.<span class='ident'>len</span>() <span class='op'>==</span> <span class='number'>1</span> {
                     <span class='kw'>let</span> _ <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>event_sender</span>.<span class='ident'>send</span>(<span class='ident'>Event</span>::<span class='ident'>Connected</span>);
                 }
@@ -4195,9 +4165,8 @@
                     <span class='macro'>try</span><span class='macro'>!</span>(<span class='self'>self</span>.<span class='ident'>send_direct_message</span>(<span class='kw-2'>&amp;</span><span class='ident'>node_info</span>.<span class='ident'>peer_id</span>,
                                                   <span class='ident'>DirectMessage</span>::<span class='ident'>ConnectionUnneeded</span>(<span class='ident'>our_name</span>)));
                 }
-                <span class='kw'>let</span> <span class='ident'>new_token</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>timer</span>
-                                    .<span class='ident'>schedule</span>(<span class='ident'>Duration</span>::<span class='ident'>from_secs</span>(<span class='ident'>REFRESH_BUCKET_GROUPS_SECS</span>));
-                <span class='self'>self</span>.<span class='ident'>bucket_refresh_token_and_delay</span> <span class='op'>=</span> <span class='prelude-val'>Some</span>((<span class='ident'>new_token</span>, <span class='ident'>REFRESH_BUCKET_GROUPS_SECS</span>));
+
+                <span class='self'>self</span>.<span class='ident'>reset_bucket_refresh_timer</span>();
 
                 <span class='comment'>// TODO: Figure out whether common_groups makes sense: Do we need to send a</span>
                 <span class='comment'>// NodeAdded event for _every_ new peer?</span>
@@ -4208,7 +4177,10 @@
             }
         }
 
-        <span class='self'>self</span>.<span class='ident'>state</span> <span class='op'>=</span> <span class='ident'>State</span>::<span class='ident'>Node</span>;
+        <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>state</span> <span class='op'>!=</span> <span class='ident'>State</span>::<span class='ident'>Node</span> {
+            <span class='self'>self</span>.<span class='ident'>state</span> <span class='op'>=</span> <span class='ident'>State</span>::<span class='ident'>Node</span>;
+            <span class='self'>self</span>.<span class='ident'>tick_timer_token</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>timer</span>.<span class='ident'>schedule</span>(<span class='ident'>Duration</span>::<span class='ident'>from_secs</span>(<span class='ident'>TICK_TIMEOUT_SECS</span>));
+        }
 
         <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>routing_table</span>.<span class='ident'>len</span>() <span class='op'>==</span> <span class='number'>1</span> {
             <span class='self'>self</span>.<span class='ident'>request_bucket_close_groups</span>();
@@ -4228,6 +4200,14 @@
         }
 
         <span class='prelude-val'>Ok</span>(())
+    }
+
+    <span class='kw'>fn</span> <span class='ident'>reset_bucket_refresh_timer</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) {
+        <span class='kw'>if</span> <span class='kw'>let</span> <span class='prelude-val'>Some</span>((_, <span class='ident'>REFRESH_BUCKET_GROUPS_SECS</span>)) <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>bucket_refresh_token_and_delay</span> {
+            <span class='kw'>return</span>; <span class='comment'>// Timer has already been reset.</span>
+        }
+        <span class='kw'>let</span> <span class='ident'>new_token</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>timer</span>.<span class='ident'>schedule</span>(<span class='ident'>Duration</span>::<span class='ident'>from_secs</span>(<span class='ident'>REFRESH_BUCKET_GROUPS_SECS</span>));
+        <span class='self'>self</span>.<span class='ident'>bucket_refresh_token_and_delay</span> <span class='op'>=</span> <span class='prelude-val'>Some</span>((<span class='ident'>new_token</span>, <span class='ident'>REFRESH_BUCKET_GROUPS_SECS</span>));
     }
 
     <span class='doccomment'>/// Sends a `GetCloseGroup` request to the close group with our `bucket_index`-th bucket</span>
@@ -4558,20 +4538,16 @@
                                        <span class='ident'>dst</span>: <span class='ident'>Authority</span>)
                                        <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span>(), <span class='ident'>RoutingError</span><span class='op'>&gt;</span> {
         <span class='kw'>for</span> <span class='ident'>close_node_id</span> <span class='kw'>in</span> <span class='ident'>close_group_ids</span> {
-            <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>node_id_cache</span>.<span class='ident'>insert</span>(<span class='op'>*</span><span class='ident'>close_node_id</span>.<span class='ident'>name</span>(), <span class='ident'>close_node_id</span>).<span class='ident'>is_none</span>() {
-                <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>routing_table</span>.<span class='ident'>contains</span>(<span class='ident'>close_node_id</span>.<span class='ident'>name</span>()) {
-                    <span class='kw'>let</span> _ <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>node_id_cache</span>.<span class='ident'>remove</span>(<span class='ident'>close_node_id</span>.<span class='ident'>name</span>());
-                    <span class='macro'>trace</span><span class='macro'>!</span>(<span class='string'>&quot;Routing table already contains {:?}.&quot;</span>, <span class='ident'>close_node_id</span>);
-                } <span class='kw'>else</span> <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>routing_table</span>.<span class='ident'>need_to_add</span>(<span class='ident'>close_node_id</span>.<span class='ident'>name</span>()) {
+            <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>routing_table</span>.<span class='ident'>need_to_add</span>(<span class='ident'>close_node_id</span>.<span class='ident'>name</span>()) {
+                <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>node_id_cache</span>.<span class='ident'>insert</span>(<span class='op'>*</span><span class='ident'>close_node_id</span>.<span class='ident'>name</span>(), <span class='ident'>close_node_id</span>).<span class='ident'>is_none</span>() {
                     <span class='macro'>debug</span><span class='macro'>!</span>(<span class='string'>&quot;Sending connection info to {:?} on GetCloseGroup response.&quot;</span>,
                            <span class='ident'>close_node_id</span>);
                     <span class='macro'>try</span><span class='macro'>!</span>(<span class='self'>self</span>.<span class='ident'>send_connection_info</span>(<span class='ident'>close_node_id</span>,
                                                    <span class='ident'>dst</span>.<span class='ident'>clone</span>(),
                                                    <span class='ident'>Authority</span>::<span class='ident'>ManagedNode</span>(<span class='op'>*</span><span class='ident'>close_node_id</span>.<span class='ident'>name</span>())));
-                } <span class='kw'>else</span> {
-                    <span class='kw'>let</span> _ <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>node_id_cache</span>.<span class='ident'>remove</span>(<span class='ident'>close_node_id</span>.<span class='ident'>name</span>());
-                    <span class='macro'>trace</span><span class='macro'>!</span>(<span class='string'>&quot;Routing table does not need {:?}.&quot;</span>, <span class='ident'>close_node_id</span>);
                 }
+            } <span class='kw'>else</span> {
+                <span class='macro'>trace</span><span class='macro'>!</span>(<span class='string'>&quot;Routing table does not need {:?}.&quot;</span>, <span class='ident'>close_node_id</span>);
             }
         }
 
@@ -4812,31 +4788,9 @@
         <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>get_network_name_timer_token</span> <span class='op'>==</span> <span class='prelude-val'>Some</span>(<span class='ident'>token</span>) {
             <span class='macro'>error</span><span class='macro'>!</span>(<span class='string'>&quot;Failed to get GetNetworkName response.&quot;</span>);
             <span class='kw'>let</span> _ <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>event_sender</span>.<span class='ident'>send</span>(<span class='ident'>Event</span>::<span class='ident'>GetNetworkNameFailed</span>);
-        } <span class='kw'>else</span> <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>heartbeat_timer_token</span> <span class='op'>==</span> <span class='ident'>token</span> {
-            <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>state</span> <span class='op'>==</span> <span class='ident'>State</span>::<span class='ident'>Node</span> {
-                <span class='kw'>let</span> _ <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>event_sender</span>.<span class='ident'>send</span>(<span class='ident'>Event</span>::<span class='ident'>Tick</span>);
-            }
-            <span class='kw'>let</span> <span class='ident'>now</span> <span class='op'>=</span> <span class='ident'>Instant</span>::<span class='ident'>now</span>();
-            <span class='kw'>let</span> <span class='ident'>stale_peers</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>peer_map</span>
-                                  .<span class='ident'>iter</span>()
-                                  .<span class='ident'>filter</span>(<span class='op'>|</span><span class='kw-2'>&amp;</span>(_, <span class='ident'>timestamp</span>)<span class='op'>|</span> {
-                                      (<span class='ident'>now</span> <span class='op'>-</span> <span class='op'>*</span><span class='ident'>timestamp</span>).<span class='ident'>as_secs</span>() <span class='op'>&gt;</span>
-                                      <span class='ident'>HEARTBEAT_ATTEMPTS</span> <span class='op'>*</span> <span class='ident'>HEARTBEAT_TIMEOUT_SECS</span>
-                                  })
-                                  .<span class='ident'>map</span>(<span class='op'>|</span>(<span class='ident'>peer_id</span>, _)<span class='op'>|</span> <span class='ident'>peer_id</span>)
-                                  .<span class='ident'>cloned</span>()
-                                  .<span class='ident'>collect_vec</span>();
-            <span class='kw'>for</span> <span class='ident'>peer_id</span> <span class='kw'>in</span> <span class='ident'>stale_peers</span> {
-                <span class='macro'>debug</span><span class='macro'>!</span>(<span class='string'>&quot;Heartbeat from {:?} timed out. Calling crust::Service::disconnect.&quot;</span>,
-                       <span class='ident'>peer_id</span>);
-                <span class='self'>self</span>.<span class='ident'>crust_service</span>.<span class='ident'>disconnect</span>(<span class='kw-2'>&amp;</span><span class='ident'>peer_id</span>);
-                <span class='self'>self</span>.<span class='ident'>handle_lost_peer</span>(<span class='ident'>peer_id</span>);
-            }
-            <span class='kw'>for</span> <span class='ident'>peer_id</span> <span class='kw'>in</span> <span class='self'>self</span>.<span class='ident'>peer_map</span>.<span class='ident'>keys</span>().<span class='ident'>cloned</span>().<span class='ident'>collect_vec</span>() {
-                <span class='kw'>let</span> _ <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>send_direct_message</span>(<span class='kw-2'>&amp;</span><span class='ident'>peer_id</span>, <span class='ident'>DirectMessage</span>::<span class='ident'>Heartbeat</span>);
-            }
-            <span class='self'>self</span>.<span class='ident'>heartbeat_timer_token</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>timer</span>
-                                             .<span class='ident'>schedule</span>(<span class='ident'>Duration</span>::<span class='ident'>from_secs</span>(<span class='ident'>HEARTBEAT_TIMEOUT_SECS</span>));
+        } <span class='kw'>else</span> <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>tick_timer_token</span> <span class='op'>==</span> <span class='ident'>token</span> {
+            <span class='kw'>let</span> _ <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>event_sender</span>.<span class='ident'>send</span>(<span class='ident'>Event</span>::<span class='ident'>Tick</span>);
+            <span class='self'>self</span>.<span class='ident'>tick_timer_token</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>timer</span>.<span class='ident'>schedule</span>(<span class='ident'>Duration</span>::<span class='ident'>from_secs</span>(<span class='ident'>TICK_TIMEOUT_SECS</span>));
         } <span class='kw'>else</span> <span class='kw'>if</span> <span class='kw'>let</span> <span class='prelude-val'>Some</span>((<span class='ident'>bucket_token</span>, <span class='ident'>delay</span>)) <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>bucket_refresh_token_and_delay</span> {
             <span class='kw'>if</span> <span class='ident'>bucket_token</span> <span class='op'>==</span> <span class='ident'>token</span> {
                 <span class='self'>self</span>.<span class='ident'>request_bucket_close_groups</span>();
@@ -5150,7 +5104,7 @@
         <span class='kw'>if</span> <span class='kw'>let</span> <span class='prelude-val'>Some</span>(<span class='kw-2'>&amp;</span><span class='ident'>node</span>) <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>routing_table</span>.<span class='ident'>find</span>(<span class='op'>|</span><span class='ident'>node</span><span class='op'>|</span> <span class='ident'>node</span>.<span class='ident'>peer_id</span> <span class='op'>==</span> <span class='op'>*</span><span class='ident'>peer_id</span>) {
             <span class='kw'>if</span> <span class='kw'>let</span> <span class='prelude-val'>Some</span>(<span class='ident'>DroppedNodeDetails</span> { <span class='ident'>incomplete_bucket</span>, <span class='ident'>common_groups</span> }) <span class='op'>=</span>
                    <span class='self'>self</span>.<span class='ident'>routing_table</span>.<span class='ident'>remove</span>(<span class='ident'>node</span>.<span class='ident'>public_id</span>.<span class='ident'>name</span>()) {
-                <span class='macro'>debug</span><span class='macro'>!</span>(<span class='string'>&quot;Dropped {:?} from the routing table.&quot;</span>, <span class='ident'>node</span>.<span class='ident'>name</span>());
+                <span class='macro'>info</span><span class='macro'>!</span>(<span class='string'>&quot;Dropped {:?} from the routing table.&quot;</span>, <span class='ident'>node</span>.<span class='ident'>name</span>());
                 <span class='kw'>if</span> <span class='ident'>common_groups</span> {
                     <span class='comment'>// If the lost node shared some close group with us, send a NodeLost event.</span>
                     <span class='kw'>let</span> <span class='ident'>event</span> <span class='op'>=</span> <span class='ident'>Event</span>::<span class='ident'>NodeLost</span>(<span class='op'>*</span><span class='ident'>node</span>.<span class='ident'>public_id</span>.<span class='ident'>name</span>(), <span class='self'>self</span>.<span class='ident'>routing_table</span>.<span class='ident'>clone</span>());
@@ -5166,13 +5120,11 @@
                                <span class='ident'>e</span>);
                     }
                 }
-                <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>routing_table</span>.<span class='ident'>len</span>() <span class='op'>&lt;</span> <span class='ident'>GROUP_SIZE</span> {
-                    <span class='macro'>debug</span><span class='macro'>!</span>(<span class='string'>&quot;Lost connection, less than {} remaining.&quot;</span>, <span class='ident'>GROUP_SIZE</span>);
+                <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>routing_table</span>.<span class='ident'>len</span>() <span class='op'>&lt;</span> <span class='ident'>GROUP_SIZE</span> <span class='op'>-</span> <span class='number'>1</span> {
+                    <span class='macro'>debug</span><span class='macro'>!</span>(<span class='string'>&quot;Lost connection, less than {} remaining.&quot;</span>, <span class='ident'>GROUP_SIZE</span> <span class='op'>-</span> <span class='number'>1</span>);
                     <span class='kw'>let</span> _ <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>event_sender</span>.<span class='ident'>send</span>(<span class='ident'>Event</span>::<span class='ident'>Disconnected</span>);
                 }
-                <span class='kw'>let</span> <span class='ident'>new_token</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>timer</span>
-                                    .<span class='ident'>schedule</span>(<span class='ident'>Duration</span>::<span class='ident'>from_secs</span>(<span class='ident'>REFRESH_BUCKET_GROUPS_SECS</span>));
-                <span class='self'>self</span>.<span class='ident'>bucket_refresh_token_and_delay</span> <span class='op'>=</span> <span class='prelude-val'>Some</span>((<span class='ident'>new_token</span>, <span class='ident'>REFRESH_BUCKET_GROUPS_SECS</span>));
+                <span class='self'>self</span>.<span class='ident'>reset_bucket_refresh_timer</span>();
             }
         };
     }
@@ -5180,7 +5132,7 @@
     <span class='doccomment'>/// Checks whether the given `name` is allowed to be added to our routing table or is already</span>
     <span class='doccomment'>/// there. If not, returns an error.</span>
     <span class='kw'>fn</span> <span class='ident'>check_address_for_routing_table</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>name</span>: <span class='kw-2'>&amp;</span><span class='ident'>XorName</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span>(), <span class='ident'>RoutingError</span><span class='op'>&gt;</span> {
-        <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>routing_table</span>.<span class='ident'>allow_connection</span>(<span class='ident'>name</span>) {
+        <span class='kw'>if</span> <span class='op'>!</span><span class='self'>self</span>.<span class='ident'>routing_table</span>.<span class='ident'>contains</span>(<span class='ident'>name</span>) <span class='op'>&amp;&amp;</span> <span class='self'>self</span>.<span class='ident'>routing_table</span>.<span class='ident'>allow_connection</span>(<span class='ident'>name</span>) {
             <span class='prelude-val'>Ok</span>(())
         } <span class='kw'>else</span> {
             <span class='prelude-val'>Err</span>(<span class='ident'>RoutingError</span>::<span class='ident'>RefusedFromRoutingTable</span>)
