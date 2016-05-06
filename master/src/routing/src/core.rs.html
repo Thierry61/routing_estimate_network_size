@@ -2599,6 +2599,9 @@
 <span id="2556">2556</span>
 <span id="2557">2557</span>
 <span id="2558">2558</span>
+<span id="2559">2559</span>
+<span id="2560">2560</span>
+<span id="2561">2561</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2015 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -2818,7 +2821,7 @@
     <span class='ident'>bucket_refresh_token_and_delay</span>: <span class='prelude-ty'>Option</span><span class='op'>&lt;</span>(<span class='ident'>u64</span>, <span class='ident'>u64</span>)<span class='op'>&gt;</span>,
     <span class='doccomment'>/// The last joining node we have sent a `GetNetworkName` response to, and when.</span>
     <span class='ident'>sent_network_name_to</span>: <span class='prelude-ty'>Option</span><span class='op'>&lt;</span>(<span class='ident'>XorName</span>, <span class='ident'>Instant</span>)<span class='op'>&gt;</span>,
-    <span class='ident'>tick_timer_token</span>: <span class='ident'>u64</span>,
+    <span class='ident'>tick_timer_token</span>: <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>u64</span><span class='op'>&gt;</span>,
 
     <span class='comment'>// our bootstrap connections</span>
     <span class='ident'>proxy_map</span>: <span class='ident'>HashMap</span><span class='op'>&lt;</span><span class='ident'>PeerId</span>, <span class='ident'>PublicId</span><span class='op'>&gt;</span>,
@@ -2903,7 +2906,7 @@
             <span class='ident'>get_network_name_timer_token</span>: <span class='prelude-val'>None</span>,
             <span class='ident'>bucket_refresh_token_and_delay</span>: <span class='prelude-val'>None</span>,
             <span class='ident'>sent_network_name_to</span>: <span class='prelude-val'>None</span>,
-            <span class='ident'>tick_timer_token</span>: <span class='number'>0</span>,
+            <span class='ident'>tick_timer_token</span>: <span class='prelude-val'>None</span>,
             <span class='ident'>proxy_map</span>: <span class='ident'>HashMap</span>::<span class='ident'>new</span>(),
             <span class='ident'>client_map</span>: <span class='ident'>HashMap</span>::<span class='ident'>new</span>(),
             <span class='ident'>peer_map</span>: <span class='ident'>HashMap</span>::<span class='ident'>new</span>(),
@@ -3159,7 +3162,8 @@
             <span class='comment'>// This will give me a new RT and set state to Relocated</span>
             <span class='self'>self</span>.<span class='ident'>set_self_node_name</span>(<span class='ident'>new_name</span>);
             <span class='self'>self</span>.<span class='ident'>state</span> <span class='op'>=</span> <span class='ident'>State</span>::<span class='ident'>Node</span>;
-            <span class='self'>self</span>.<span class='ident'>tick_timer_token</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>timer</span>.<span class='ident'>schedule</span>(<span class='ident'>Duration</span>::<span class='ident'>from_secs</span>(<span class='ident'>TICK_TIMEOUT_SECS</span>));
+            <span class='kw'>let</span> <span class='ident'>tick_period</span> <span class='op'>=</span> <span class='ident'>Duration</span>::<span class='ident'>from_secs</span>(<span class='ident'>TICK_TIMEOUT_SECS</span>);
+            <span class='self'>self</span>.<span class='ident'>tick_timer_token</span> <span class='op'>=</span> <span class='prelude-val'>Some</span>(<span class='self'>self</span>.<span class='ident'>timer</span>.<span class='ident'>schedule</span>(<span class='ident'>tick_period</span>));
             <span class='macro'>info</span><span class='macro'>!</span>(<span class='string'>&quot;{:?} - Started a new network as a seed node.&quot;</span>, <span class='self'>self</span>)
         }
         <span class='comment'>// TODO: Keep track of that peer to make sure we receive a message from them.</span>
@@ -4179,7 +4183,8 @@
 
         <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>state</span> <span class='op'>!=</span> <span class='ident'>State</span>::<span class='ident'>Node</span> {
             <span class='self'>self</span>.<span class='ident'>state</span> <span class='op'>=</span> <span class='ident'>State</span>::<span class='ident'>Node</span>;
-            <span class='self'>self</span>.<span class='ident'>tick_timer_token</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>timer</span>.<span class='ident'>schedule</span>(<span class='ident'>Duration</span>::<span class='ident'>from_secs</span>(<span class='ident'>TICK_TIMEOUT_SECS</span>));
+            <span class='kw'>let</span> <span class='ident'>tick_period</span> <span class='op'>=</span> <span class='ident'>Duration</span>::<span class='ident'>from_secs</span>(<span class='ident'>TICK_TIMEOUT_SECS</span>);
+            <span class='self'>self</span>.<span class='ident'>tick_timer_token</span> <span class='op'>=</span> <span class='prelude-val'>Some</span>(<span class='self'>self</span>.<span class='ident'>timer</span>.<span class='ident'>schedule</span>(<span class='ident'>tick_period</span>));
         }
 
         <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>routing_table</span>.<span class='ident'>len</span>() <span class='op'>==</span> <span class='number'>1</span> {
@@ -4788,9 +4793,10 @@
         <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>get_network_name_timer_token</span> <span class='op'>==</span> <span class='prelude-val'>Some</span>(<span class='ident'>token</span>) {
             <span class='macro'>error</span><span class='macro'>!</span>(<span class='string'>&quot;Failed to get GetNetworkName response.&quot;</span>);
             <span class='kw'>let</span> _ <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>event_sender</span>.<span class='ident'>send</span>(<span class='ident'>Event</span>::<span class='ident'>GetNetworkNameFailed</span>);
-        } <span class='kw'>else</span> <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>tick_timer_token</span> <span class='op'>==</span> <span class='ident'>token</span> {
+        } <span class='kw'>else</span> <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>tick_timer_token</span> <span class='op'>==</span> <span class='prelude-val'>Some</span>(<span class='ident'>token</span>) {
             <span class='kw'>let</span> _ <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>event_sender</span>.<span class='ident'>send</span>(<span class='ident'>Event</span>::<span class='ident'>Tick</span>);
-            <span class='self'>self</span>.<span class='ident'>tick_timer_token</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>timer</span>.<span class='ident'>schedule</span>(<span class='ident'>Duration</span>::<span class='ident'>from_secs</span>(<span class='ident'>TICK_TIMEOUT_SECS</span>));
+            <span class='kw'>let</span> <span class='ident'>tick_period</span> <span class='op'>=</span> <span class='ident'>Duration</span>::<span class='ident'>from_secs</span>(<span class='ident'>TICK_TIMEOUT_SECS</span>);
+            <span class='self'>self</span>.<span class='ident'>tick_timer_token</span> <span class='op'>=</span> <span class='prelude-val'>Some</span>(<span class='self'>self</span>.<span class='ident'>timer</span>.<span class='ident'>schedule</span>(<span class='ident'>tick_period</span>));
         } <span class='kw'>else</span> <span class='kw'>if</span> <span class='kw'>let</span> <span class='prelude-val'>Some</span>((<span class='ident'>bucket_token</span>, <span class='ident'>delay</span>)) <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>bucket_refresh_token_and_delay</span> {
             <span class='kw'>if</span> <span class='ident'>bucket_token</span> <span class='op'>==</span> <span class='ident'>token</span> {
                 <span class='self'>self</span>.<span class='ident'>request_bucket_close_groups</span>();
