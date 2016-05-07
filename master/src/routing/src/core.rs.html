@@ -2671,7 +2671,7 @@
 <span class='doccomment'>/// Time (in seconds) after which bootstrap is cancelled (and possibly retried).</span>
 <span class='kw'>const</span> <span class='ident'>BOOTSTRAP_TIMEOUT_SECS</span>: <span class='ident'>u64</span> <span class='op'>=</span> <span class='number'>20</span>;
 <span class='doccomment'>/// Time (in seconds) after which a `GetNetworkName` request is resent.</span>
-<span class='kw'>const</span> <span class='ident'>GET_NETWORK_NAME_TIMEOUT_SECS</span>: <span class='ident'>u64</span> <span class='op'>=</span> <span class='number'>30</span>;
+<span class='kw'>const</span> <span class='ident'>GET_NETWORK_NAME_TIMEOUT_SECS</span>: <span class='ident'>u64</span> <span class='op'>=</span> <span class='number'>60</span>;
 <span class='doccomment'>/// Time (in seconds) after which a `Tick` event is sent.</span>
 <span class='kw'>const</span> <span class='ident'>TICK_TIMEOUT_SECS</span>: <span class='ident'>u64</span> <span class='op'>=</span> <span class='number'>60</span>;
 <span class='doccomment'>/// Time (in seconds) the new close group waits for a joining node it sent a network name to.</span>
@@ -2911,7 +2911,7 @@
             <span class='ident'>client_map</span>: <span class='ident'>HashMap</span>::<span class='ident'>new</span>(),
             <span class='ident'>peer_map</span>: <span class='ident'>HashMap</span>::<span class='ident'>new</span>(),
             <span class='ident'>use_data_cache</span>: <span class='ident'>use_data_cache</span>,
-            <span class='ident'>data_cache</span>: <span class='ident'>LruCache</span>::<span class='ident'>with_expiry_duration</span>(<span class='ident'>Duration</span>::<span class='ident'>from_secs</span>(<span class='number'>60</span> <span class='op'>*</span> <span class='number'>10</span>)),
+            <span class='ident'>data_cache</span>: <span class='ident'>LruCache</span>::<span class='ident'>with_capacity</span>(<span class='number'>100</span>),
             <span class='ident'>connection_token_map</span>: <span class='ident'>LruCache</span>::<span class='ident'>with_expiry_duration</span>(<span class='ident'>Duration</span>::<span class='ident'>from_secs</span>(<span class='number'>60</span> <span class='op'>*</span> <span class='number'>5</span>)),
             <span class='ident'>our_connection_info_map</span>: <span class='ident'>LruCache</span>::<span class='ident'>with_expiry_duration</span>(<span class='ident'>Duration</span>::<span class='ident'>from_secs</span>(<span class='number'>60</span> <span class='op'>*</span> <span class='number'>5</span>)),
             <span class='ident'>their_connection_info_map</span>: <span class='ident'>LruCache</span>::<span class='ident'>with_expiry_duration</span>(<span class='ident'>Duration</span>::<span class='ident'>from_secs</span>(<span class='number'>60</span> <span class='op'>*</span> <span class='number'>5</span>)),
