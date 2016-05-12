@@ -473,6 +473,22 @@
 <span id="430">430</span>
 <span id="431">431</span>
 <span id="432">432</span>
+<span id="433">433</span>
+<span id="434">434</span>
+<span id="435">435</span>
+<span id="436">436</span>
+<span id="437">437</span>
+<span id="438">438</span>
+<span id="439">439</span>
+<span id="440">440</span>
+<span id="441">441</span>
+<span id="442">442</span>
+<span id="443">443</span>
+<span id="444">444</span>
+<span id="445">445</span>
+<span id="446">446</span>
+<span id="447">447</span>
+<span id="448">448</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2015 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -500,7 +516,7 @@
 
 <span class='kw'>use</span> <span class='ident'>action</span>::<span class='ident'>Action</span>;
 <span class='kw'>use</span> <span class='ident'>authority</span>::<span class='ident'>Authority</span>;
-<span class='kw'>use</span> <span class='ident'>core</span>::<span class='ident'>Core</span>;
+<span class='kw'>use</span> <span class='ident'>core</span>::{<span class='ident'>Core</span>, <span class='ident'>Role</span>};
 <span class='kw'>use</span> <span class='ident'>data</span>::{<span class='ident'>Data</span>, <span class='ident'>DataIdentifier</span>};
 <span class='kw'>use</span> <span class='ident'>error</span>::{<span class='ident'>InterfaceError</span>, <span class='ident'>RoutingError</span>};
 <span class='kw'>use</span> <span class='ident'>event</span>::<span class='ident'>Event</span>;
@@ -536,13 +552,21 @@
     <span class='doccomment'>/// It will automatically connect to the network in the same way a client does, but then</span>
     <span class='doccomment'>/// request a new name and integrate itself into the network using the new name.</span>
     <span class='doccomment'>///</span>
-    <span class='doccomment'>/// The intial `Node` object will have newly generated keys.</span>
+    <span class='doccomment'>/// The initial `Node` object will have newly generated keys.</span>
     <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>not</span>(<span class='ident'>feature</span> <span class='op'>=</span> <span class='string'>&quot;use-mock-crust&quot;</span>))]</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>(<span class='ident'>event_sender</span>: <span class='ident'>Sender</span><span class='op'>&lt;</span><span class='ident'>Event</span><span class='op'>&gt;</span>, <span class='ident'>use_data_cache</span>: <span class='ident'>bool</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>Node</span>, <span class='ident'>RoutingError</span><span class='op'>&gt;</span> {
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>(<span class='ident'>event_sender</span>: <span class='ident'>Sender</span><span class='op'>&lt;</span><span class='ident'>Event</span><span class='op'>&gt;</span>,
+               <span class='ident'>use_data_cache</span>: <span class='ident'>bool</span>,
+               <span class='ident'>first_node</span>: <span class='ident'>bool</span>)
+               <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>Node</span>, <span class='ident'>RoutingError</span><span class='op'>&gt;</span> {
         <span class='ident'>sodiumoxide</span>::<span class='ident'>init</span>();  <span class='comment'>// enable shared global (i.e. safe to multithread now)</span>
 
+        <span class='kw'>let</span> <span class='ident'>role</span> <span class='op'>=</span> <span class='kw'>if</span> <span class='ident'>first_node</span> {
+            <span class='ident'>Role</span>::<span class='ident'>FirstNode</span>
+        } <span class='kw'>else</span> {
+            <span class='ident'>Role</span>::<span class='ident'>RoutingNode</span>
+        };
         <span class='comment'>// start the handler for routing without a restriction to become a full node</span>
-        <span class='kw'>let</span> (<span class='ident'>action_sender</span>, <span class='kw-2'>mut</span> <span class='ident'>core</span>) <span class='op'>=</span> <span class='ident'>Core</span>::<span class='ident'>new</span>(<span class='ident'>event_sender</span>, <span class='boolval'>false</span>, <span class='prelude-val'>None</span>, <span class='ident'>use_data_cache</span>);
+        <span class='kw'>let</span> (<span class='ident'>action_sender</span>, <span class='kw-2'>mut</span> <span class='ident'>core</span>) <span class='op'>=</span> <span class='ident'>Core</span>::<span class='ident'>new</span>(<span class='ident'>event_sender</span>, <span class='ident'>role</span>, <span class='prelude-val'>None</span>, <span class='ident'>use_data_cache</span>);
         <span class='kw'>let</span> (<span class='ident'>tx</span>, <span class='ident'>rx</span>) <span class='op'>=</span> <span class='ident'>channel</span>();
 
         <span class='kw'>let</span> <span class='ident'>raii_joiner</span> <span class='op'>=</span> <span class='ident'>RaiiThreadJoiner</span>::<span class='ident'>new</span>(<span class='macro'>thread</span><span class='macro'>!</span>(<span class='string'>&quot;Node thread&quot;</span>, <span class='kw'>move</span> <span class='op'>||</span> {
@@ -559,11 +583,19 @@
 
     <span class='doccomment'>/// Create a new `Node` for unit testing.</span>
     <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>feature</span> <span class='op'>=</span> <span class='string'>&quot;use-mock-crust&quot;</span>)]</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>(<span class='ident'>event_sender</span>: <span class='ident'>Sender</span><span class='op'>&lt;</span><span class='ident'>Event</span><span class='op'>&gt;</span>, <span class='ident'>use_data_cache</span>: <span class='ident'>bool</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>Node</span>, <span class='ident'>RoutingError</span><span class='op'>&gt;</span> {
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>(<span class='ident'>event_sender</span>: <span class='ident'>Sender</span><span class='op'>&lt;</span><span class='ident'>Event</span><span class='op'>&gt;</span>,
+               <span class='ident'>use_data_cache</span>: <span class='ident'>bool</span>,
+               <span class='ident'>first_node</span>: <span class='ident'>bool</span>)
+               <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>Node</span>, <span class='ident'>RoutingError</span><span class='op'>&gt;</span> {
         <span class='ident'>sodiumoxide</span>::<span class='ident'>init</span>();  <span class='comment'>// enable shared global (i.e. safe to multithread now)</span>
 
+        <span class='kw'>let</span> <span class='ident'>role</span> <span class='op'>=</span> <span class='kw'>if</span> <span class='ident'>first_node</span> {
+            <span class='ident'>Role</span>::<span class='ident'>FirstNode</span>
+        } <span class='kw'>else</span> {
+            <span class='ident'>Role</span>::<span class='ident'>RoutingNode</span>
+        };
         <span class='comment'>// start the handler for routing without a restriction to become a full node</span>
-        <span class='kw'>let</span> (<span class='ident'>action_sender</span>, <span class='ident'>core</span>) <span class='op'>=</span> <span class='ident'>Core</span>::<span class='ident'>new</span>(<span class='ident'>event_sender</span>, <span class='boolval'>false</span>, <span class='prelude-val'>None</span>, <span class='ident'>use_data_cache</span>);
+        <span class='kw'>let</span> (<span class='ident'>action_sender</span>, <span class='ident'>core</span>) <span class='op'>=</span> <span class='ident'>Core</span>::<span class='ident'>new</span>(<span class='ident'>event_sender</span>, <span class='ident'>role</span>, <span class='prelude-val'>None</span>, <span class='ident'>use_data_cache</span>);
         <span class='kw'>let</span> (<span class='ident'>tx</span>, <span class='ident'>rx</span>) <span class='op'>=</span> <span class='ident'>channel</span>();
 
         <span class='prelude-val'>Ok</span>(<span class='ident'>Node</span> {
