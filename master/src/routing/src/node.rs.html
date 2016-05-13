@@ -563,7 +563,7 @@
         <span class='kw'>let</span> <span class='ident'>role</span> <span class='op'>=</span> <span class='kw'>if</span> <span class='ident'>first_node</span> {
             <span class='ident'>Role</span>::<span class='ident'>FirstNode</span>
         } <span class='kw'>else</span> {
-            <span class='ident'>Role</span>::<span class='ident'>RoutingNode</span>
+            <span class='ident'>Role</span>::<span class='ident'>Node</span>
         };
         <span class='comment'>// start the handler for routing without a restriction to become a full node</span>
         <span class='kw'>let</span> (<span class='ident'>action_sender</span>, <span class='kw-2'>mut</span> <span class='ident'>core</span>) <span class='op'>=</span> <span class='ident'>Core</span>::<span class='ident'>new</span>(<span class='ident'>event_sender</span>, <span class='ident'>role</span>, <span class='prelude-val'>None</span>, <span class='ident'>use_data_cache</span>);
@@ -592,7 +592,7 @@
         <span class='kw'>let</span> <span class='ident'>role</span> <span class='op'>=</span> <span class='kw'>if</span> <span class='ident'>first_node</span> {
             <span class='ident'>Role</span>::<span class='ident'>FirstNode</span>
         } <span class='kw'>else</span> {
-            <span class='ident'>Role</span>::<span class='ident'>RoutingNode</span>
+            <span class='ident'>Role</span>::<span class='ident'>Node</span>
         };
         <span class='comment'>// start the handler for routing without a restriction to become a full node</span>
         <span class='kw'>let</span> (<span class='ident'>action_sender</span>, <span class='ident'>core</span>) <span class='op'>=</span> <span class='ident'>Core</span>::<span class='ident'>new</span>(<span class='ident'>event_sender</span>, <span class='ident'>role</span>, <span class='prelude-val'>None</span>, <span class='ident'>use_data_cache</span>);

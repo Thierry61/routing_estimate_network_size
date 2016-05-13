@@ -2649,6 +2649,8 @@
 <span id="2606">2606</span>
 <span id="2607">2607</span>
 <span id="2608">2608</span>
+<span id="2609">2609</span>
+<span id="2610">2610</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2015 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -2801,7 +2803,7 @@
     <span class='doccomment'>/// Remain a client and not become a full routing node.</span>
     <span class='ident'>Client</span>,
     <span class='doccomment'>/// Join an existing network as a routing node.</span>
-    <span class='ident'>RoutingNode</span>,
+    <span class='ident'>Node</span>,
     <span class='doccomment'>/// Start a new network as its first node.</span>
     <span class='ident'>FirstNode</span>,
 }
@@ -3190,7 +3192,7 @@
         <span class='self'>self</span>.<span class='ident'>crust_service</span>.<span class='ident'>stop_bootstrap</span>();
         <span class='kw'>match</span> <span class='self'>self</span>.<span class='ident'>state</span> {
             <span class='ident'>State</span>::<span class='ident'>Disconnected</span> <span class='op'>=&gt;</span> {
-                <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>role</span> <span class='op'>==</span> <span class='ident'>Role</span>::<span class='ident'>RoutingNode</span> {
+                <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>role</span> <span class='op'>==</span> <span class='ident'>Role</span>::<span class='ident'>Node</span> {
                     <span class='kw'>let</span> _ <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>start_listening</span>();
                 }
                 <span class='macro'>debug</span><span class='macro'>!</span>(<span class='string'>&quot;Received BootstrapConnect from {:?}.&quot;</span>, <span class='ident'>peer_id</span>);
@@ -3212,7 +3214,6 @@
         <span class='self'>self</span>.<span class='ident'>crust_service</span>.<span class='ident'>stop_bootstrap</span>();
         <span class='kw'>let</span> _ <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>start_listening</span>();
         <span class='kw'>let</span> <span class='ident'>new_name</span> <span class='op'>=</span> <span class='ident'>XorName</span>::<span class='ident'>new</span>(<span class='ident'>hash</span>::<span class='ident'>sha512</span>::<span class='ident'>hash</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='ident'>full_id</span>.<span class='ident'>public_id</span>().<span class='ident'>name</span>().<span class='number'>0</span>).<span class='number'>0</span>);
-        <span class='comment'>// This will give me a new RT and set state to Relocated</span>
         <span class='self'>self</span>.<span class='ident'>set_self_node_name</span>(<span class='ident'>new_name</span>);
         <span class='self'>self</span>.<span class='ident'>state</span> <span class='op'>=</span> <span class='ident'>State</span>::<span class='ident'>Node</span>;
         <span class='kw'>let</span> <span class='ident'>tick_period</span> <span class='op'>=</span> <span class='ident'>Duration</span>::<span class='ident'>from_secs</span>(<span class='ident'>TICK_TIMEOUT_SECS</span>);
@@ -4110,7 +4111,7 @@
             <span class='ident'>Role</span>::<span class='ident'>Client</span> <span class='op'>=&gt;</span> {
                 <span class='kw'>let</span> _ <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>event_sender</span>.<span class='ident'>send</span>(<span class='ident'>Event</span>::<span class='ident'>Connected</span>);
             }
-            <span class='ident'>Role</span>::<span class='ident'>RoutingNode</span> <span class='op'>=&gt;</span> <span class='macro'>try</span><span class='macro'>!</span>(<span class='self'>self</span>.<span class='ident'>relocate</span>()),
+            <span class='ident'>Role</span>::<span class='ident'>Node</span> <span class='op'>=&gt;</span> <span class='macro'>try</span><span class='macro'>!</span>(<span class='self'>self</span>.<span class='ident'>relocate</span>()),
             <span class='ident'>Role</span>::<span class='ident'>FirstNode</span> <span class='op'>=&gt;</span> <span class='macro'>error</span><span class='macro'>!</span>(<span class='string'>&quot;Received BootstrapIdentify as the first node.&quot;</span>),
         };
         <span class='prelude-val'>Ok</span>(())
@@ -4628,6 +4629,9 @@
         <span class='prelude-val'>Ok</span>(())
     }
 
+    <span class='comment'>// It is preferable to destructure the message and the request in `handle_request_message`,</span>
+    <span class='comment'>// even if that requires a long list of arguments.</span>
+    <span class='attribute'>#[<span class='ident'>cfg_attr</span>(<span class='ident'>feature</span><span class='op'>=</span><span class='string'>&quot;clippy&quot;</span>, <span class='ident'>allow</span>(<span class='ident'>too_many_arguments</span>))]</span>
     <span class='kw'>fn</span> <span class='ident'>handle_connection_info_from_client</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>,
                                           <span class='ident'>encrypted_connection_info</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>u8</span><span class='op'>&gt;</span>,
                                           <span class='ident'>nonce_bytes</span>: [<span class='ident'>u8</span>; <span class='ident'>box_</span>::<span class='ident'>NONCEBYTES</span>],
@@ -5161,7 +5165,7 @@
             <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>proxy_map</span>.<span class='ident'>is_empty</span>() {
                 <span class='macro'>debug</span><span class='macro'>!</span>(<span class='string'>&quot;Lost connection to last proxy node {:?}&quot;</span>, <span class='ident'>peer_id</span>);
                 <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>role</span> <span class='op'>==</span> <span class='ident'>Role</span>::<span class='ident'>Client</span> <span class='op'>||</span>
-                   (<span class='self'>self</span>.<span class='ident'>role</span> <span class='op'>==</span> <span class='ident'>Role</span>::<span class='ident'>RoutingNode</span> <span class='op'>&amp;&amp;</span> <span class='self'>self</span>.<span class='ident'>routing_table</span>.<span class='ident'>is_empty</span>()) {
+                   (<span class='self'>self</span>.<span class='ident'>role</span> <span class='op'>==</span> <span class='ident'>Role</span>::<span class='ident'>Node</span> <span class='op'>&amp;&amp;</span> <span class='self'>self</span>.<span class='ident'>routing_table</span>.<span class='ident'>is_empty</span>()) {
                     <span class='kw'>let</span> _ <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>event_sender</span>.<span class='ident'>send</span>(<span class='ident'>Event</span>::<span class='ident'>Disconnected</span>);
                     <span class='self'>self</span>.<span class='ident'>retry_bootstrap_with_blacklist</span>(<span class='ident'>peer_id</span>);
                 }
