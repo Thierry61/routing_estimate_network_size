@@ -2503,14 +2503,6 @@
 <span id="2460">2460</span>
 <span id="2461">2461</span>
 <span id="2462">2462</span>
-<span id="2463">2463</span>
-<span id="2464">2464</span>
-<span id="2465">2465</span>
-<span id="2466">2466</span>
-<span id="2467">2467</span>
-<span id="2468">2468</span>
-<span id="2469">2469</span>
-<span id="2470">2470</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2015 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -3013,7 +3005,10 @@
 
     <span class='kw'>fn</span> <span class='ident'>start_new_network</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) {
         <span class='self'>self</span>.<span class='ident'>crust_service</span>.<span class='ident'>stop_bootstrap</span>();
-        <span class='kw'>let</span> _ <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>start_listening</span>();
+        <span class='kw'>if</span> <span class='op'>!</span><span class='self'>self</span>.<span class='ident'>start_listening</span>() {
+            <span class='macro'>error</span><span class='macro'>!</span>(<span class='string'>&quot;Failed to start listening.&quot;</span>);
+            <span class='kw'>let</span> _ <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>event_sender</span>.<span class='ident'>send</span>(<span class='ident'>Event</span>::<span class='ident'>NetworkStartupFailed</span>);
+        }
         <span class='kw'>let</span> <span class='ident'>new_name</span> <span class='op'>=</span> <span class='ident'>XorName</span>::<span class='ident'>new</span>(<span class='ident'>hash</span>::<span class='ident'>sha512</span>::<span class='ident'>hash</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='ident'>full_id</span>.<span class='ident'>public_id</span>().<span class='ident'>name</span>().<span class='number'>0</span>).<span class='number'>0</span>);
         <span class='self'>self</span>.<span class='ident'>set_self_node_name</span>(<span class='ident'>new_name</span>);
         <span class='self'>self</span>.<span class='ident'>state</span> <span class='op'>=</span> <span class='ident'>State</span>::<span class='ident'>Node</span>;
@@ -3636,18 +3631,8 @@
 
     <span class='kw'>fn</span> <span class='ident'>handle_bootstrap_finished</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) {
         <span class='macro'>debug</span><span class='macro'>!</span>(<span class='string'>&quot;{:?} Finished bootstrapping.&quot;</span>, <span class='self'>self</span>);
-        <span class='comment'>// If we have no connections, we should start listening to allow incoming connections</span>
         <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>state</span> <span class='op'>==</span> <span class='ident'>State</span>::<span class='ident'>Disconnected</span> {
-            <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>role</span> <span class='op'>==</span> <span class='ident'>Role</span>::<span class='ident'>Client</span> {
-                <span class='kw'>let</span> _ <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>event_sender</span>.<span class='ident'>send</span>(<span class='ident'>Event</span>::<span class='ident'>Disconnected</span>);
-            } <span class='kw'>else</span> {
-                <span class='macro'>debug</span><span class='macro'>!</span>(<span class='string'>&quot;{:?} Bootstrap finished with no connections. Start Listening to allow \
-                        incoming connections.&quot;</span>,
-                       <span class='self'>self</span>);
-                <span class='kw'>if</span> <span class='op'>!</span><span class='self'>self</span>.<span class='ident'>start_listening</span>() {
-                    <span class='kw'>let</span> _ <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>event_sender</span>.<span class='ident'>send</span>(<span class='ident'>Event</span>::<span class='ident'>NetworkStartupFailed</span>);
-                }
-            }
+            <span class='kw'>let</span> _ <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>event_sender</span>.<span class='ident'>send</span>(<span class='ident'>Event</span>::<span class='ident'>Disconnected</span>);
         }
     }
 
@@ -4898,8 +4883,7 @@
                    <span class='ident'>peer_id</span>);
             <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>peer_mgr</span>.<span class='ident'>default_proxy</span>().<span class='ident'>is_none</span>() {
                 <span class='macro'>debug</span><span class='macro'>!</span>(<span class='string'>&quot;Lost connection to last proxy node {:?}&quot;</span>, <span class='ident'>peer_id</span>);
-                <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>role</span> <span class='op'>==</span> <span class='ident'>Role</span>::<span class='ident'>Client</span> <span class='op'>||</span>
-                   (<span class='self'>self</span>.<span class='ident'>role</span> <span class='op'>==</span> <span class='ident'>Role</span>::<span class='ident'>Node</span> <span class='op'>&amp;&amp;</span> <span class='self'>self</span>.<span class='ident'>routing_table</span>.<span class='ident'>is_empty</span>()) {
+                <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>role</span> <span class='op'>==</span> <span class='ident'>Role</span>::<span class='ident'>Client</span> {
                     <span class='kw'>let</span> _ <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>event_sender</span>.<span class='ident'>send</span>(<span class='ident'>Event</span>::<span class='ident'>Disconnected</span>);
                 }
             }
