@@ -306,13 +306,6 @@
 <span id="263">263</span>
 <span id="264">264</span>
 <span id="265">265</span>
-<span id="266">266</span>
-<span id="267">267</span>
-<span id="268">268</span>
-<span id="269">269</span>
-<span id="270">270</span>
-<span id="271">271</span>
-<span id="272">272</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2015 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -344,14 +337,11 @@
 
 <span class='kw'>const</span> <span class='ident'>NORMAL_TO_SACRIFICIAL</span>: [<span class='ident'>u8</span>; <span class='ident'>XOR_NAME_LEN</span>] <span class='op'>=</span> [<span class='number'>255</span>; <span class='ident'>XOR_NAME_LEN</span>];
 
-<span class='kw'>const</span> <span class='ident'>BACKUP_TO_SACRIFICIAL</span>: [<span class='ident'>u8</span>; <span class='ident'>XOR_NAME_LEN</span>] <span class='op'>=</span> [<span class='number'>127</span>, <span class='number'>255</span>, <span class='number'>255</span>, <span class='number'>255</span>, <span class='number'>255</span>, <span class='number'>255</span>, <span class='number'>255</span>, <span class='number'>255</span>, <span class='number'>255</span>,
-                                                   <span class='number'>255</span>, <span class='number'>255</span>, <span class='number'>255</span>, <span class='number'>255</span>, <span class='number'>255</span>, <span class='number'>255</span>, <span class='number'>255</span>, <span class='number'>255</span>, <span class='number'>255</span>,
-                                                   <span class='number'>255</span>, <span class='number'>255</span>, <span class='number'>255</span>, <span class='number'>255</span>, <span class='number'>255</span>, <span class='number'>255</span>, <span class='number'>255</span>, <span class='number'>255</span>, <span class='number'>255</span>,
-                                                   <span class='number'>255</span>, <span class='number'>255</span>, <span class='number'>255</span>, <span class='number'>255</span>, <span class='number'>255</span>, <span class='number'>255</span>, <span class='number'>255</span>, <span class='number'>255</span>, <span class='number'>255</span>,
-                                                   <span class='number'>255</span>, <span class='number'>255</span>, <span class='number'>255</span>, <span class='number'>255</span>, <span class='number'>255</span>, <span class='number'>255</span>, <span class='number'>255</span>, <span class='number'>255</span>, <span class='number'>255</span>,
-                                                   <span class='number'>255</span>, <span class='number'>255</span>, <span class='number'>255</span>, <span class='number'>255</span>, <span class='number'>255</span>, <span class='number'>255</span>, <span class='number'>255</span>, <span class='number'>255</span>, <span class='number'>255</span>,
-                                                   <span class='number'>255</span>, <span class='number'>255</span>, <span class='number'>255</span>, <span class='number'>255</span>, <span class='number'>255</span>, <span class='number'>255</span>, <span class='number'>255</span>, <span class='number'>255</span>, <span class='number'>255</span>,
-                                                   <span class='number'>255</span>];
+<span class='kw'>const</span> <span class='ident'>BACKUP_TO_SACRIFICIAL</span>: [<span class='ident'>u8</span>; <span class='ident'>XOR_NAME_LEN</span>] <span class='op'>=</span>
+    [<span class='number'>127</span>, <span class='number'>255</span>, <span class='number'>255</span>, <span class='number'>255</span>, <span class='number'>255</span>, <span class='number'>255</span>, <span class='number'>255</span>, <span class='number'>255</span>, <span class='number'>255</span>, <span class='number'>255</span>, <span class='number'>255</span>, <span class='number'>255</span>, <span class='number'>255</span>, <span class='number'>255</span>, <span class='number'>255</span>, <span class='number'>255</span>, <span class='number'>255</span>, <span class='number'>255</span>,
+     <span class='number'>255</span>, <span class='number'>255</span>, <span class='number'>255</span>, <span class='number'>255</span>, <span class='number'>255</span>, <span class='number'>255</span>, <span class='number'>255</span>, <span class='number'>255</span>, <span class='number'>255</span>, <span class='number'>255</span>, <span class='number'>255</span>, <span class='number'>255</span>, <span class='number'>255</span>, <span class='number'>255</span>, <span class='number'>255</span>, <span class='number'>255</span>, <span class='number'>255</span>, <span class='number'>255</span>,
+     <span class='number'>255</span>, <span class='number'>255</span>, <span class='number'>255</span>, <span class='number'>255</span>, <span class='number'>255</span>, <span class='number'>255</span>, <span class='number'>255</span>, <span class='number'>255</span>, <span class='number'>255</span>, <span class='number'>255</span>, <span class='number'>255</span>, <span class='number'>255</span>, <span class='number'>255</span>, <span class='number'>255</span>, <span class='number'>255</span>, <span class='number'>255</span>, <span class='number'>255</span>, <span class='number'>255</span>,
+     <span class='number'>255</span>, <span class='number'>255</span>, <span class='number'>255</span>, <span class='number'>255</span>, <span class='number'>255</span>, <span class='number'>255</span>, <span class='number'>255</span>, <span class='number'>255</span>, <span class='number'>255</span>, <span class='number'>255</span>];
 
 <span class='kw'>fn</span> <span class='ident'>xor</span>(<span class='ident'>lhs</span>: <span class='kw-2'>&amp;</span>[<span class='ident'>u8</span>; <span class='ident'>XOR_NAME_LEN</span>], <span class='kw-2'>mut</span> <span class='ident'>rhs</span>: [<span class='ident'>u8</span>; <span class='ident'>XOR_NAME_LEN</span>]) <span class='op'>-&gt;</span> <span class='ident'>XorName</span> {
     <span class='kw'>for</span> <span class='ident'>i</span> <span class='kw'>in</span> <span class='number'>0</span>..<span class='ident'>XOR_NAME_LEN</span> {
@@ -541,18 +531,16 @@
         <span class='comment'>// Normal</span>
         <span class='kw'>let</span> <span class='ident'>immutable_data</span> <span class='op'>=</span> <span class='ident'>ImmutableData</span>::<span class='ident'>new</span>(<span class='ident'>value</span>);
         <span class='kw'>let</span> <span class='ident'>immutable_data_name</span> <span class='op'>=</span> <span class='ident'>immutable_data</span>.<span class='ident'>name</span>().<span class='number'>0</span>.<span class='ident'>as_ref</span>().<span class='ident'>to_hex</span>();
-        <span class='kw'>let</span> <span class='ident'>expected_immutable_data_name</span> <span class='op'>=</span> <span class='string'>&quot;9f1c9e526f47e36d782de464ea9df0a31a5c19c321f\
-                                            2a5d9c8faacdda4d59abc713445c8c853e1842d7c2c\
-                                            2311650df1ee24107371935b6be88a10cbf4cd2f8f&quot;</span>;
+        <span class='kw'>let</span> <span class='ident'>expected_immutable_data_name</span> <span class='op'>=</span>
+            <span class='string'>&quot;9f1c9e526f47e36d782de464ea9df0a31a5c19c321f2a5d9c8faacdda4d59abc713445c8c853e1842d7c2c2311650df1ee24107371935b6be88a10cbf4cd2f8f&quot;</span>;
 
         <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='kw-2'>&amp;</span><span class='ident'>expected_immutable_data_name</span>, <span class='kw-2'>&amp;</span><span class='ident'>immutable_data_name</span>);
 
         <span class='comment'>// Backup</span>
         <span class='kw'>let</span> <span class='ident'>immutable_data_backup</span> <span class='op'>=</span> <span class='ident'>ImmutableDataBackup</span>::<span class='ident'>new</span>(<span class='ident'>immutable_data</span>.<span class='ident'>clone</span>());
         <span class='kw'>let</span> <span class='ident'>immutable_data_backup_name</span> <span class='op'>=</span> <span class='ident'>immutable_data_backup</span>.<span class='ident'>name</span>().<span class='number'>0</span>.<span class='ident'>as_ref</span>().<span class='ident'>to_hex</span>();
-        <span class='kw'>let</span> <span class='ident'>expected_immutable_data_backup_name</span> <span class='op'>=</span> <span class='string'>&quot;1f1c9e526f47e36d782de464ea9df0a31a5c19c321f\
-                                                   2a5d9c8faacdda4d59abc713445c8c853e1842d7c2c\
-                                                   2311650df1ee24107371935b6be88a10cbf4cd2f8f&quot;</span>;
+        <span class='kw'>let</span> <span class='ident'>expected_immutable_data_backup_name</span> <span class='op'>=</span>
+            <span class='string'>&quot;1f1c9e526f47e36d782de464ea9df0a31a5c19c321f2a5d9c8faacdda4d59abc713445c8c853e1842d7c2c2311650df1ee24107371935b6be88a10cbf4cd2f8f&quot;</span>;
 
         <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='kw-2'>&amp;</span><span class='ident'>expected_immutable_data_backup_name</span>,
                    <span class='kw-2'>&amp;</span><span class='ident'>immutable_data_backup_name</span>);
@@ -560,10 +548,8 @@
         <span class='comment'>// Sacrificial</span>
         <span class='kw'>let</span> <span class='ident'>immutable_data_sacrificial</span> <span class='op'>=</span> <span class='ident'>ImmutableDataSacrificial</span>::<span class='ident'>new</span>(<span class='ident'>immutable_data</span>.<span class='ident'>clone</span>());
         <span class='kw'>let</span> <span class='ident'>immutable_data_sacrificial_name</span> <span class='op'>=</span> <span class='ident'>immutable_data_sacrificial</span>.<span class='ident'>name</span>().<span class='number'>0</span>.<span class='ident'>as_ref</span>().<span class='ident'>to_hex</span>();
-        <span class='kw'>let</span> <span class='ident'>expected_immutable_data_sacrificial_name</span> <span class='op'>=</span> <span class='string'>&quot;60e361ad90b81c9287d21b9b15620f5ce5a3e63cde\
-                                                        0d5a26370553225b2a65438ecbba3737ac1e7bd283\
-                                                        d3dcee9af20e11dbef8c8e6ca4941775ef340b32d0\
-                                                        70&quot;</span>;
+        <span class='kw'>let</span> <span class='ident'>expected_immutable_data_sacrificial_name</span> <span class='op'>=</span>
+            <span class='string'>&quot;60e361ad90b81c9287d21b9b15620f5ce5a3e63cde0d5a26370553225b2a65438ecbba3737ac1e7bd283d3dcee9af20e11dbef8c8e6ca4941775ef340b32d070&quot;</span>;
 
         <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='kw-2'>&amp;</span><span class='ident'>expected_immutable_data_sacrificial_name</span>,
                    <span class='kw-2'>&amp;</span><span class='ident'>immutable_data_sacrificial_name</span>);
