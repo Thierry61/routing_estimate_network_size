@@ -1,1 +1,1 @@
-initSidebarItems({"enum":[["RequestContent","The request types"],["ResponseContent","The response types"],["RoutingMessage","Variant type to hold `either` a request or response."]],"struct":[["RequestMessage","A request message wrapper"],["ResponseMessage","A response message wrapper"],["SignedMessage","Wrapper around a routing message, signed by the originator of the message."]]});
+initSidebarItems({"enum":[["Request","Request message types"],["Response","Response message types"]]});

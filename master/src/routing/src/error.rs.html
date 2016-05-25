@@ -186,14 +186,6 @@
 <span id="143">143</span>
 <span id="144">144</span>
 <span id="145">145</span>
-<span id="146">146</span>
-<span id="147">147</span>
-<span id="148">148</span>
-<span id="149">149</span>
-<span id="150">150</span>
-<span id="151">151</span>
-<span id="152">152</span>
-<span id="153">153</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2015 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -278,7 +270,7 @@
     <span class='doccomment'>/// the sender&#39;s buckets</span>
     <span class='ident'>RejectedGetCloseGroup</span>,
     <span class='doccomment'>/// A client with `client_restriction == true` tried to relocate.</span>
-    <span class='ident'>RejectedGetNetworkName</span>,
+    <span class='ident'>RejectedGetNodeName</span>,
     <span class='doccomment'>/// String errors</span>
     <span class='ident'>Utf8</span>(::<span class='ident'>std</span>::<span class='ident'>str</span>::<span class='ident'>Utf8Error</span>),
     <span class='doccomment'>/// Interface error</span>
@@ -287,8 +279,6 @@
     <span class='ident'>Io</span>(::<span class='ident'>std</span>::<span class='ident'>io</span>::<span class='ident'>Error</span>),
     <span class='doccomment'>/// Channel sending error</span>
     <span class='ident'>SendEventError</span>(<span class='ident'>SendError</span><span class='op'>&lt;</span><span class='ident'>Event</span><span class='op'>&gt;</span>),
-    <span class='doccomment'>/// The bit index for a `XorName` was out of bounds.</span>
-    <span class='ident'>BitIndexOutOfBoundsError</span>,
     <span class='doccomment'>/// Current state is invalid for the operation</span>
     <span class='ident'>InvalidStateForOperation</span>,
     <span class='doccomment'>/// Serialisation Error</span>
@@ -340,12 +330,6 @@
 <span class='kw'>impl</span> <span class='ident'>From</span><span class='op'>&lt;</span>::<span class='ident'>maidsafe_utilities</span>::<span class='ident'>serialisation</span>::<span class='ident'>SerialisationError</span><span class='op'>&gt;</span> <span class='kw'>for</span> <span class='ident'>RoutingError</span> {
     <span class='kw'>fn</span> <span class='ident'>from</span>(<span class='ident'>error</span>: ::<span class='ident'>maidsafe_utilities</span>::<span class='ident'>serialisation</span>::<span class='ident'>SerialisationError</span>) <span class='op'>-&gt;</span> <span class='ident'>RoutingError</span> {
         <span class='ident'>RoutingError</span>::<span class='ident'>SerialisationError</span>(<span class='ident'>error</span>)
-    }
-}
-
-<span class='kw'>impl</span> <span class='ident'>From</span><span class='op'>&lt;</span>::<span class='ident'>xor_name</span>::<span class='ident'>BitIndexOutOfBoundsError</span><span class='op'>&gt;</span> <span class='kw'>for</span> <span class='ident'>RoutingError</span> {
-    <span class='kw'>fn</span> <span class='ident'>from</span>(_: ::<span class='ident'>xor_name</span>::<span class='ident'>BitIndexOutOfBoundsError</span>) <span class='op'>-&gt;</span> <span class='ident'>RoutingError</span> {
-        <span class='ident'>RoutingError</span>::<span class='ident'>BitIndexOutOfBoundsError</span>
     }
 }
 </pre>

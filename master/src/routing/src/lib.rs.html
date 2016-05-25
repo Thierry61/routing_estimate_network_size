@@ -268,8 +268,6 @@
 <span id="225">225</span>
 <span id="226">226</span>
 <span id="227">227</span>
-<span id="228">228</span>
-<span id="229">229</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2015 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -454,7 +452,6 @@
 <span class='kw'>extern</span> <span class='kw'>crate</span> <span class='ident'>rand</span>;
 <span class='kw'>extern</span> <span class='kw'>crate</span> <span class='ident'>rustc_serialize</span>;
 <span class='kw'>extern</span> <span class='kw'>crate</span> <span class='ident'>sodiumoxide</span>;
-<span class='kw'>extern</span> <span class='kw'>crate</span> <span class='ident'>xor_name</span>;
 
 <span class='kw'>mod</span> <span class='ident'>action</span>;
 <span class='kw'>mod</span> <span class='ident'>authority</span>;
@@ -476,6 +473,7 @@
 <span class='kw'>mod</span> <span class='ident'>tunnels</span>;
 <span class='kw'>mod</span> <span class='ident'>types</span>;
 <span class='kw'>mod</span> <span class='ident'>utils</span>;
+<span class='kw'>mod</span> <span class='ident'>xor_name</span>;
 
 <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>all</span>(<span class='ident'>test</span>, <span class='ident'>feature</span> <span class='op'>=</span> <span class='string'>&quot;use-mock-crust&quot;</span>))]</span>
 <span class='kw'>mod</span> <span class='ident'>core_tests</span>;
@@ -485,21 +483,19 @@
 <span class='kw'>pub</span> <span class='kw'>mod</span> <span class='ident'>mock_crust</span>;
 
 <span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>authority</span>::<span class='ident'>Authority</span>;
-<span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>core</span>::<span class='ident'>NodeInfo</span>;
 <span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>client</span>::<span class='ident'>Client</span>;
+<span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>core</span>::<span class='ident'>GROUP_SIZE</span>;
 <span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>data</span>::{<span class='ident'>Data</span>, <span class='ident'>DataIdentifier</span>};
 <span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>error</span>::{<span class='ident'>InterfaceError</span>, <span class='ident'>RoutingError</span>};
 <span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>event</span>::<span class='ident'>Event</span>;
 <span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>id</span>::{<span class='ident'>FullId</span>, <span class='ident'>PublicId</span>};
-<span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>immutable_data</span>::{<span class='ident'>ImmutableData</span>, <span class='ident'>ImmutableDataBackup</span>, <span class='ident'>ImmutableDataSacrificial</span>,
-                         <span class='ident'>normal_to_backup</span>, <span class='ident'>backup_to_normal</span>, <span class='ident'>normal_to_sacrificial</span>,
-                         <span class='ident'>sacrificial_to_normal</span>, <span class='ident'>backup_to_sacrificial</span>, <span class='ident'>sacrificial_to_backup</span>};
-<span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>messages</span>::{<span class='ident'>RequestContent</span>, <span class='ident'>RequestMessage</span>, <span class='ident'>ResponseContent</span>, <span class='ident'>ResponseMessage</span>,
-                   <span class='ident'>RoutingMessage</span>, <span class='ident'>SignedMessage</span>};
+<span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>immutable_data</span>::<span class='ident'>ImmutableData</span>;
+<span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>messages</span>::{<span class='ident'>Request</span>, <span class='ident'>Response</span>};
 <span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>node</span>::<span class='ident'>Node</span>;
 <span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>plain_data</span>::<span class='ident'>PlainData</span>;
 <span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>structured_data</span>::{<span class='ident'>MAX_STRUCTURED_DATA_SIZE_IN_BYTES</span>, <span class='ident'>StructuredData</span>};
 <span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>types</span>::<span class='ident'>MessageId</span>;
+<span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>xor_name</span>::{<span class='ident'>XorName</span>, <span class='ident'>XorNameFromHexError</span>, <span class='ident'>XOR_NAME_LEN</span>, <span class='ident'>XOR_NAME_BITS</span>};
 </pre>
 </section>
     <section id='search' class="content hidden"></section>

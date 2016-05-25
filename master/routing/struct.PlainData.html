@@ -46,18 +46,18 @@
             <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                 [<span class='inner'>&#x2212;</span>]
             </a>
-        </span><a id='src-6598' class='srclink' href='../src/routing/src/plain_data.rs.html#28-31' title='goto source code'>[src]</a></span></h1>
+        </span><a id='src-5956' class='srclink' href='../src/routing/src/plain_data.rs.html#28-31' title='goto source code'>[src]</a></span></h1>
 <pre class='rust struct'>pub struct PlainData {
     // some fields omitted
 }</pre><div class='docblock'><p>Plain data with a name and a value.</p>
 
 <p>Its name is independent of its value and no restrictions on name or value are enforced. These
 are left to the implementation.</p>
-</div><h2 id='methods'>Methods</h2><h3 class='impl'><code>impl <a class='struct' href='../routing/struct.PlainData.html' title='routing::PlainData'>PlainData</a></code></h3><div class='impl-items'><h4 id='method.new' class='method'><code>fn <a href='#method.new' class='fnname'>new</a>(name: <a class='struct' href='../xor_name/struct.XorName.html' title='xor_name::XorName'>XorName</a>, value: <a class='struct' href='https://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u8.html'>u8</a>&gt;) -&gt; <a class='struct' href='../routing/struct.PlainData.html' title='routing::PlainData'>PlainData</a></code></h4>
+</div><h2 id='methods'>Methods</h2><h3 class='impl'><code>impl <a class='struct' href='../routing/struct.PlainData.html' title='routing::PlainData'>PlainData</a></code></h3><div class='impl-items'><h4 id='method.new' class='method'><code>fn <a href='#method.new' class='fnname'>new</a>(name: <a class='struct' href='../routing/struct.XorName.html' title='routing::XorName'>XorName</a>, value: <a class='struct' href='https://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u8.html'>u8</a>&gt;) -&gt; <a class='struct' href='../routing/struct.PlainData.html' title='routing::PlainData'>PlainData</a></code></h4>
 <div class='docblock'><p>Creates a new instance of <code>PlainData</code>.</p>
 </div><h4 id='method.value' class='method'><code>fn <a href='#method.value' class='fnname'>value</a>(&amp;self) -&gt; &amp;<a class='struct' href='https://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u8.html'>u8</a>&gt;</code></h4>
 <div class='docblock'><p>Returns the value.</p>
-</div><h4 id='method.name' class='method'><code>fn <a href='#method.name' class='fnname'>name</a>(&amp;self) -&gt; <a class='struct' href='../xor_name/struct.XorName.html' title='xor_name::XorName'>XorName</a></code></h4>
+</div><h4 id='method.name' class='method'><code>fn <a href='#method.name' class='fnname'>name</a>(&amp;self) -&gt; <a class='struct' href='../routing/struct.XorName.html' title='routing::XorName'>XorName</a></code></h4>
 <div class='docblock'><p>Returns the name.</p>
 </div><h4 id='method.payload_size' class='method'><code>fn <a href='#method.payload_size' class='fnname'>payload_size</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a></code></h4>
 <div class='docblock'><p>Returns the size of the contained data. Equivalent to <code>value().len()</code>.</p>

@@ -489,6 +489,18 @@
 <span id="446">446</span>
 <span id="447">447</span>
 <span id="448">448</span>
+<span id="449">449</span>
+<span id="450">450</span>
+<span id="451">451</span>
+<span id="452">452</span>
+<span id="453">453</span>
+<span id="454">454</span>
+<span id="455">455</span>
+<span id="456">456</span>
+<span id="457">457</span>
+<span id="458">458</span>
+<span id="459">459</span>
+<span id="460">460</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2015 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -520,7 +532,7 @@
 <span class='kw'>use</span> <span class='ident'>data</span>::{<span class='ident'>Data</span>, <span class='ident'>DataIdentifier</span>};
 <span class='kw'>use</span> <span class='ident'>error</span>::{<span class='ident'>InterfaceError</span>, <span class='ident'>RoutingError</span>};
 <span class='kw'>use</span> <span class='ident'>event</span>::<span class='ident'>Event</span>;
-<span class='kw'>use</span> <span class='ident'>messages</span>::{<span class='ident'>RequestContent</span>, <span class='ident'>RequestMessage</span>, <span class='ident'>ResponseContent</span>, <span class='ident'>ResponseMessage</span>, <span class='ident'>RoutingMessage</span>};
+<span class='kw'>use</span> <span class='ident'>messages</span>::{<span class='ident'>MessageContent</span>, <span class='ident'>Request</span>, <span class='ident'>Response</span>, <span class='ident'>RoutingMessage</span>};
 <span class='kw'>use</span> <span class='ident'>xor_name</span>::<span class='ident'>XorName</span>;
 <span class='kw'>use</span> <span class='ident'>types</span>::<span class='ident'>MessageId</span>;
 
@@ -612,6 +624,18 @@
         <span class='self'>self</span>.<span class='ident'>core</span>.<span class='ident'>borrow_mut</span>().<span class='ident'>poll</span>()
     }
 
+    <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>feature</span> <span class='op'>=</span> <span class='string'>&quot;use-mock-crust&quot;</span>)]</span>
+    <span class='doccomment'>/// Resend all unacknowledged messages.</span>
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>resend_unacknowledged</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> {
+        <span class='self'>self</span>.<span class='ident'>core</span>.<span class='ident'>borrow_mut</span>().<span class='ident'>resend_unacknowledged</span>()
+    }
+
+    <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>feature</span> <span class='op'>=</span> <span class='string'>&quot;use-mock-crust&quot;</span>)]</span>
+    <span class='doccomment'>/// Resend all unacknowledged messages.</span>
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>clear_state</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) {
+        <span class='self'>self</span>.<span class='ident'>core</span>.<span class='ident'>borrow_mut</span>().<span class='ident'>clear_state</span>()
+    }
+
     <span class='doccomment'>/// Send a `Get` request to `dst` to retrieve data from the network.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>send_get_request</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>,
                             <span class='ident'>src</span>: <span class='ident'>Authority</span>,
@@ -619,11 +643,11 @@
                             <span class='ident'>data_request</span>: <span class='ident'>DataIdentifier</span>,
                             <span class='ident'>id</span>: <span class='ident'>MessageId</span>)
                             <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span>(), <span class='ident'>InterfaceError</span><span class='op'>&gt;</span> {
-        <span class='kw'>let</span> <span class='ident'>routing_msg</span> <span class='op'>=</span> <span class='ident'>RoutingMessage</span>::<span class='ident'>Request</span>(<span class='ident'>RequestMessage</span> {
+        <span class='kw'>let</span> <span class='ident'>routing_msg</span> <span class='op'>=</span> <span class='ident'>RoutingMessage</span> {
             <span class='ident'>src</span>: <span class='ident'>src</span>,
             <span class='ident'>dst</span>: <span class='ident'>dst</span>,
-            <span class='ident'>content</span>: <span class='ident'>RequestContent</span>::<span class='ident'>Get</span>(<span class='ident'>data_request</span>, <span class='ident'>id</span>),
-        });
+            <span class='ident'>content</span>: <span class='ident'>MessageContent</span>::<span class='ident'>Request</span>(<span class='ident'>Request</span>::<span class='ident'>Get</span>(<span class='ident'>data_request</span>, <span class='ident'>id</span>)),
+        };
         <span class='self'>self</span>.<span class='ident'>send_action</span>(<span class='ident'>routing_msg</span>)
     }
 
@@ -634,11 +658,11 @@
                             <span class='ident'>data</span>: <span class='ident'>Data</span>,
                             <span class='ident'>id</span>: <span class='ident'>MessageId</span>)
                             <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span>(), <span class='ident'>InterfaceError</span><span class='op'>&gt;</span> {
-        <span class='kw'>let</span> <span class='ident'>routing_msg</span> <span class='op'>=</span> <span class='ident'>RoutingMessage</span>::<span class='ident'>Request</span>(<span class='ident'>RequestMessage</span> {
+        <span class='kw'>let</span> <span class='ident'>routing_msg</span> <span class='op'>=</span> <span class='ident'>RoutingMessage</span> {
             <span class='ident'>src</span>: <span class='ident'>src</span>,
             <span class='ident'>dst</span>: <span class='ident'>dst</span>,
-            <span class='ident'>content</span>: <span class='ident'>RequestContent</span>::<span class='ident'>Put</span>(<span class='ident'>data</span>, <span class='ident'>id</span>),
-        });
+            <span class='ident'>content</span>: <span class='ident'>MessageContent</span>::<span class='ident'>Request</span>(<span class='ident'>Request</span>::<span class='ident'>Put</span>(<span class='ident'>data</span>, <span class='ident'>id</span>)),
+        };
         <span class='self'>self</span>.<span class='ident'>send_action</span>(<span class='ident'>routing_msg</span>)
     }
 
@@ -649,11 +673,11 @@
                              <span class='ident'>data</span>: <span class='ident'>Data</span>,
                              <span class='ident'>id</span>: <span class='ident'>MessageId</span>)
                              <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span>(), <span class='ident'>InterfaceError</span><span class='op'>&gt;</span> {
-        <span class='kw'>let</span> <span class='ident'>routing_msg</span> <span class='op'>=</span> <span class='ident'>RoutingMessage</span>::<span class='ident'>Request</span>(<span class='ident'>RequestMessage</span> {
+        <span class='kw'>let</span> <span class='ident'>routing_msg</span> <span class='op'>=</span> <span class='ident'>RoutingMessage</span> {
             <span class='ident'>src</span>: <span class='ident'>src</span>,
             <span class='ident'>dst</span>: <span class='ident'>dst</span>,
-            <span class='ident'>content</span>: <span class='ident'>RequestContent</span>::<span class='ident'>Post</span>(<span class='ident'>data</span>, <span class='ident'>id</span>),
-        });
+            <span class='ident'>content</span>: <span class='ident'>MessageContent</span>::<span class='ident'>Request</span>(<span class='ident'>Request</span>::<span class='ident'>Post</span>(<span class='ident'>data</span>, <span class='ident'>id</span>)),
+        };
         <span class='self'>self</span>.<span class='ident'>send_action</span>(<span class='ident'>routing_msg</span>)
     }
 
@@ -664,11 +688,11 @@
                                <span class='ident'>data</span>: <span class='ident'>Data</span>,
                                <span class='ident'>id</span>: <span class='ident'>MessageId</span>)
                                <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span>(), <span class='ident'>InterfaceError</span><span class='op'>&gt;</span> {
-        <span class='kw'>let</span> <span class='ident'>routing_msg</span> <span class='op'>=</span> <span class='ident'>RoutingMessage</span>::<span class='ident'>Request</span>(<span class='ident'>RequestMessage</span> {
+        <span class='kw'>let</span> <span class='ident'>routing_msg</span> <span class='op'>=</span> <span class='ident'>RoutingMessage</span> {
             <span class='ident'>src</span>: <span class='ident'>src</span>,
             <span class='ident'>dst</span>: <span class='ident'>dst</span>,
-            <span class='ident'>content</span>: <span class='ident'>RequestContent</span>::<span class='ident'>Delete</span>(<span class='ident'>data</span>, <span class='ident'>id</span>),
-        });
+            <span class='ident'>content</span>: <span class='ident'>MessageContent</span>::<span class='ident'>Request</span>(<span class='ident'>Request</span>::<span class='ident'>Delete</span>(<span class='ident'>data</span>, <span class='ident'>id</span>)),
+        };
         <span class='self'>self</span>.<span class='ident'>send_action</span>(<span class='ident'>routing_msg</span>)
     }
 
@@ -679,11 +703,11 @@
                             <span class='ident'>data</span>: <span class='ident'>Data</span>,
                             <span class='ident'>id</span>: <span class='ident'>MessageId</span>)
                             <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span>(), <span class='ident'>InterfaceError</span><span class='op'>&gt;</span> {
-        <span class='kw'>let</span> <span class='ident'>routing_msg</span> <span class='op'>=</span> <span class='ident'>RoutingMessage</span>::<span class='ident'>Response</span>(<span class='ident'>ResponseMessage</span> {
+        <span class='kw'>let</span> <span class='ident'>routing_msg</span> <span class='op'>=</span> <span class='ident'>RoutingMessage</span> {
             <span class='ident'>src</span>: <span class='ident'>src</span>,
             <span class='ident'>dst</span>: <span class='ident'>dst</span>,
-            <span class='ident'>content</span>: <span class='ident'>ResponseContent</span>::<span class='ident'>GetSuccess</span>(<span class='ident'>data</span>, <span class='ident'>id</span>),
-        });
+            <span class='ident'>content</span>: <span class='ident'>MessageContent</span>::<span class='ident'>Response</span>(<span class='ident'>Response</span>::<span class='ident'>GetSuccess</span>(<span class='ident'>data</span>, <span class='ident'>id</span>)),
+        };
         <span class='self'>self</span>.<span class='ident'>send_action</span>(<span class='ident'>routing_msg</span>)
     }
 
@@ -691,19 +715,19 @@
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>send_get_failure</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>,
                             <span class='ident'>src</span>: <span class='ident'>Authority</span>,
                             <span class='ident'>dst</span>: <span class='ident'>Authority</span>,
-                            <span class='ident'>request</span>: <span class='ident'>RequestMessage</span>,
+                            <span class='ident'>data_id</span>: <span class='ident'>DataIdentifier</span>,
                             <span class='ident'>external_error_indicator</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>u8</span><span class='op'>&gt;</span>,
                             <span class='ident'>id</span>: <span class='ident'>MessageId</span>)
                             <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span>(), <span class='ident'>InterfaceError</span><span class='op'>&gt;</span> {
-        <span class='kw'>let</span> <span class='ident'>routing_msg</span> <span class='op'>=</span> <span class='ident'>RoutingMessage</span>::<span class='ident'>Response</span>(<span class='ident'>ResponseMessage</span> {
+        <span class='kw'>let</span> <span class='ident'>routing_msg</span> <span class='op'>=</span> <span class='ident'>RoutingMessage</span> {
             <span class='ident'>src</span>: <span class='ident'>src</span>,
             <span class='ident'>dst</span>: <span class='ident'>dst</span>,
-            <span class='ident'>content</span>: <span class='ident'>ResponseContent</span>::<span class='ident'>GetFailure</span> {
+            <span class='ident'>content</span>: <span class='ident'>MessageContent</span>::<span class='ident'>Response</span>(<span class='ident'>Response</span>::<span class='ident'>GetFailure</span> {
                 <span class='ident'>id</span>: <span class='ident'>id</span>,
-                <span class='ident'>request</span>: <span class='ident'>request</span>,
+                <span class='ident'>data_id</span>: <span class='ident'>data_id</span>,
                 <span class='ident'>external_error_indicator</span>: <span class='ident'>external_error_indicator</span>,
-            },
-        });
+            }),
+        };
         <span class='self'>self</span>.<span class='ident'>send_action</span>(<span class='ident'>routing_msg</span>)
     }
 
@@ -714,11 +738,11 @@
                             <span class='ident'>name</span>: <span class='ident'>DataIdentifier</span>,
                             <span class='ident'>id</span>: <span class='ident'>MessageId</span>)
                             <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span>(), <span class='ident'>InterfaceError</span><span class='op'>&gt;</span> {
-        <span class='kw'>let</span> <span class='ident'>routing_msg</span> <span class='op'>=</span> <span class='ident'>RoutingMessage</span>::<span class='ident'>Response</span>(<span class='ident'>ResponseMessage</span> {
+        <span class='kw'>let</span> <span class='ident'>routing_msg</span> <span class='op'>=</span> <span class='ident'>RoutingMessage</span> {
             <span class='ident'>src</span>: <span class='ident'>src</span>,
             <span class='ident'>dst</span>: <span class='ident'>dst</span>,
-            <span class='ident'>content</span>: <span class='ident'>ResponseContent</span>::<span class='ident'>PutSuccess</span>(<span class='ident'>name</span>, <span class='ident'>id</span>),
-        });
+            <span class='ident'>content</span>: <span class='ident'>MessageContent</span>::<span class='ident'>Response</span>(<span class='ident'>Response</span>::<span class='ident'>PutSuccess</span>(<span class='ident'>name</span>, <span class='ident'>id</span>)),
+        };
         <span class='self'>self</span>.<span class='ident'>send_action</span>(<span class='ident'>routing_msg</span>)
     }
 
@@ -726,19 +750,19 @@
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>send_put_failure</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>,
                             <span class='ident'>src</span>: <span class='ident'>Authority</span>,
                             <span class='ident'>dst</span>: <span class='ident'>Authority</span>,
-                            <span class='ident'>request</span>: <span class='ident'>RequestMessage</span>,
+                            <span class='ident'>data_id</span>: <span class='ident'>DataIdentifier</span>,
                             <span class='ident'>external_error_indicator</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>u8</span><span class='op'>&gt;</span>,
                             <span class='ident'>id</span>: <span class='ident'>MessageId</span>)
                             <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span>(), <span class='ident'>InterfaceError</span><span class='op'>&gt;</span> {
-        <span class='kw'>let</span> <span class='ident'>routing_msg</span> <span class='op'>=</span> <span class='ident'>RoutingMessage</span>::<span class='ident'>Response</span>(<span class='ident'>ResponseMessage</span> {
+        <span class='kw'>let</span> <span class='ident'>routing_msg</span> <span class='op'>=</span> <span class='ident'>RoutingMessage</span> {
             <span class='ident'>src</span>: <span class='ident'>src</span>,
             <span class='ident'>dst</span>: <span class='ident'>dst</span>,
-            <span class='ident'>content</span>: <span class='ident'>ResponseContent</span>::<span class='ident'>PutFailure</span> {
+            <span class='ident'>content</span>: <span class='ident'>MessageContent</span>::<span class='ident'>Response</span>(<span class='ident'>Response</span>::<span class='ident'>PutFailure</span> {
                 <span class='ident'>id</span>: <span class='ident'>id</span>,
-                <span class='ident'>request</span>: <span class='ident'>request</span>,
+                <span class='ident'>data_id</span>: <span class='ident'>data_id</span>,
                 <span class='ident'>external_error_indicator</span>: <span class='ident'>external_error_indicator</span>,
-            },
-        });
+            }),
+        };
         <span class='self'>self</span>.<span class='ident'>send_action</span>(<span class='ident'>routing_msg</span>)
     }
 
@@ -749,11 +773,11 @@
                              <span class='ident'>name</span>: <span class='ident'>DataIdentifier</span>,
                              <span class='ident'>id</span>: <span class='ident'>MessageId</span>)
                              <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span>(), <span class='ident'>InterfaceError</span><span class='op'>&gt;</span> {
-        <span class='kw'>let</span> <span class='ident'>routing_msg</span> <span class='op'>=</span> <span class='ident'>RoutingMessage</span>::<span class='ident'>Response</span>(<span class='ident'>ResponseMessage</span> {
+        <span class='kw'>let</span> <span class='ident'>routing_msg</span> <span class='op'>=</span> <span class='ident'>RoutingMessage</span> {
             <span class='ident'>src</span>: <span class='ident'>src</span>,
             <span class='ident'>dst</span>: <span class='ident'>dst</span>,
-            <span class='ident'>content</span>: <span class='ident'>ResponseContent</span>::<span class='ident'>PostSuccess</span>(<span class='ident'>name</span>, <span class='ident'>id</span>),
-        });
+            <span class='ident'>content</span>: <span class='ident'>MessageContent</span>::<span class='ident'>Response</span>(<span class='ident'>Response</span>::<span class='ident'>PostSuccess</span>(<span class='ident'>name</span>, <span class='ident'>id</span>)),
+        };
         <span class='self'>self</span>.<span class='ident'>send_action</span>(<span class='ident'>routing_msg</span>)
     }
 
@@ -761,19 +785,19 @@
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>send_post_failure</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>,
                              <span class='ident'>src</span>: <span class='ident'>Authority</span>,
                              <span class='ident'>dst</span>: <span class='ident'>Authority</span>,
-                             <span class='ident'>request</span>: <span class='ident'>RequestMessage</span>,
+                             <span class='ident'>data_id</span>: <span class='ident'>DataIdentifier</span>,
                              <span class='ident'>external_error_indicator</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>u8</span><span class='op'>&gt;</span>,
                              <span class='ident'>id</span>: <span class='ident'>MessageId</span>)
                              <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span>(), <span class='ident'>InterfaceError</span><span class='op'>&gt;</span> {
-        <span class='kw'>let</span> <span class='ident'>routing_msg</span> <span class='op'>=</span> <span class='ident'>RoutingMessage</span>::<span class='ident'>Response</span>(<span class='ident'>ResponseMessage</span> {
+        <span class='kw'>let</span> <span class='ident'>routing_msg</span> <span class='op'>=</span> <span class='ident'>RoutingMessage</span> {
             <span class='ident'>src</span>: <span class='ident'>src</span>,
             <span class='ident'>dst</span>: <span class='ident'>dst</span>,
-            <span class='ident'>content</span>: <span class='ident'>ResponseContent</span>::<span class='ident'>PostFailure</span> {
+            <span class='ident'>content</span>: <span class='ident'>MessageContent</span>::<span class='ident'>Response</span>(<span class='ident'>Response</span>::<span class='ident'>PostFailure</span> {
                 <span class='ident'>id</span>: <span class='ident'>id</span>,
-                <span class='ident'>request</span>: <span class='ident'>request</span>,
+                <span class='ident'>data_id</span>: <span class='ident'>data_id</span>,
                 <span class='ident'>external_error_indicator</span>: <span class='ident'>external_error_indicator</span>,
-            },
-        });
+            }),
+        };
         <span class='self'>self</span>.<span class='ident'>send_action</span>(<span class='ident'>routing_msg</span>)
     }
 
@@ -784,11 +808,11 @@
                                <span class='ident'>name</span>: <span class='ident'>DataIdentifier</span>,
                                <span class='ident'>id</span>: <span class='ident'>MessageId</span>)
                                <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span>(), <span class='ident'>InterfaceError</span><span class='op'>&gt;</span> {
-        <span class='kw'>let</span> <span class='ident'>routing_msg</span> <span class='op'>=</span> <span class='ident'>RoutingMessage</span>::<span class='ident'>Response</span>(<span class='ident'>ResponseMessage</span> {
+        <span class='kw'>let</span> <span class='ident'>routing_msg</span> <span class='op'>=</span> <span class='ident'>RoutingMessage</span> {
             <span class='ident'>src</span>: <span class='ident'>src</span>,
             <span class='ident'>dst</span>: <span class='ident'>dst</span>,
-            <span class='ident'>content</span>: <span class='ident'>ResponseContent</span>::<span class='ident'>DeleteSuccess</span>(<span class='ident'>name</span>, <span class='ident'>id</span>),
-        });
+            <span class='ident'>content</span>: <span class='ident'>MessageContent</span>::<span class='ident'>Response</span>(<span class='ident'>Response</span>::<span class='ident'>DeleteSuccess</span>(<span class='ident'>name</span>, <span class='ident'>id</span>)),
+        };
         <span class='self'>self</span>.<span class='ident'>send_action</span>(<span class='ident'>routing_msg</span>)
     }
 
@@ -796,19 +820,19 @@
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>send_delete_failure</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>,
                                <span class='ident'>src</span>: <span class='ident'>Authority</span>,
                                <span class='ident'>dst</span>: <span class='ident'>Authority</span>,
-                               <span class='ident'>request</span>: <span class='ident'>RequestMessage</span>,
+                               <span class='ident'>data_id</span>: <span class='ident'>DataIdentifier</span>,
                                <span class='ident'>external_error_indicator</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>u8</span><span class='op'>&gt;</span>,
                                <span class='ident'>id</span>: <span class='ident'>MessageId</span>)
                                <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span>(), <span class='ident'>InterfaceError</span><span class='op'>&gt;</span> {
-        <span class='kw'>let</span> <span class='ident'>routing_msg</span> <span class='op'>=</span> <span class='ident'>RoutingMessage</span>::<span class='ident'>Response</span>(<span class='ident'>ResponseMessage</span> {
+        <span class='kw'>let</span> <span class='ident'>routing_msg</span> <span class='op'>=</span> <span class='ident'>RoutingMessage</span> {
             <span class='ident'>src</span>: <span class='ident'>src</span>,
             <span class='ident'>dst</span>: <span class='ident'>dst</span>,
-            <span class='ident'>content</span>: <span class='ident'>ResponseContent</span>::<span class='ident'>DeleteFailure</span> {
+            <span class='ident'>content</span>: <span class='ident'>MessageContent</span>::<span class='ident'>Response</span>(<span class='ident'>Response</span>::<span class='ident'>DeleteFailure</span> {
                 <span class='ident'>id</span>: <span class='ident'>id</span>,
-                <span class='ident'>request</span>: <span class='ident'>request</span>,
+                <span class='ident'>data_id</span>: <span class='ident'>data_id</span>,
                 <span class='ident'>external_error_indicator</span>: <span class='ident'>external_error_indicator</span>,
-            },
-        });
+            }),
+        };
         <span class='self'>self</span>.<span class='ident'>send_action</span>(<span class='ident'>routing_msg</span>)
     }
 
@@ -823,11 +847,11 @@
                                 <span class='ident'>content</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>u8</span><span class='op'>&gt;</span>,
                                 <span class='ident'>id</span>: <span class='ident'>MessageId</span>)
                                 <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span>(), <span class='ident'>InterfaceError</span><span class='op'>&gt;</span> {
-        <span class='kw'>let</span> <span class='ident'>routing_msg</span> <span class='op'>=</span> <span class='ident'>RoutingMessage</span>::<span class='ident'>Request</span>(<span class='ident'>RequestMessage</span> {
+        <span class='kw'>let</span> <span class='ident'>routing_msg</span> <span class='op'>=</span> <span class='ident'>RoutingMessage</span> {
             <span class='ident'>src</span>: <span class='ident'>src</span>,
             <span class='ident'>dst</span>: <span class='ident'>dst</span>,
-            <span class='ident'>content</span>: <span class='ident'>RequestContent</span>::<span class='ident'>Refresh</span>(<span class='ident'>content</span>, <span class='ident'>id</span>),
-        });
+            <span class='ident'>content</span>: <span class='ident'>MessageContent</span>::<span class='ident'>Request</span>(<span class='ident'>Request</span>::<span class='ident'>Refresh</span>(<span class='ident'>content</span>, <span class='ident'>id</span>)),
+        };
         <span class='self'>self</span>.<span class='ident'>send_action</span>(<span class='ident'>routing_msg</span>)
     }
 
