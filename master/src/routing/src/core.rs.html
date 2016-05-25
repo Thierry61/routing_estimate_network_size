@@ -2424,10 +2424,6 @@
 <span id="2381">2381</span>
 <span id="2382">2382</span>
 <span id="2383">2383</span>
-<span id="2384">2384</span>
-<span id="2385">2385</span>
-<span id="2386">2386</span>
-<span id="2387">2387</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2015 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -2458,21 +2454,17 @@
 <span class='kw'>use</span> <span class='ident'>itertools</span>::<span class='ident'>Itertools</span>;
 <span class='kw'>use</span> <span class='ident'>kademlia_routing_table</span>::{<span class='ident'>AddedNodeDetails</span>, <span class='ident'>ContactInfo</span>, <span class='ident'>DroppedNodeDetails</span>};
 <span class='kw'>use</span> <span class='ident'>lru_time_cache</span>::<span class='ident'>LruCache</span>;
-<span class='kw'>use</span> <span class='ident'>maidsafe_utilities</span>::<span class='ident'>event_sender</span>::<span class='ident'>MaidSafeEventCategory</span>;
 <span class='kw'>use</span> <span class='ident'>maidsafe_utilities</span>::{<span class='self'>self</span>, <span class='ident'>serialisation</span>};
+<span class='kw'>use</span> <span class='ident'>maidsafe_utilities</span>::<span class='ident'>event_sender</span>::<span class='ident'>MaidSafeEventCategory</span>;
 <span class='kw'>use</span> <span class='ident'>message_filter</span>::<span class='ident'>MessageFilter</span>;
 <span class='kw'>use</span> <span class='ident'>peer_manager</span>::{<span class='ident'>ConnectState</span>, <span class='ident'>PeerManager</span>};
 <span class='kw'>use</span> <span class='ident'>rand</span>;
-<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>cmp</span>;
+<span class='kw'>use</span> <span class='ident'>sodiumoxide</span>::<span class='ident'>crypto</span>::{<span class='ident'>box_</span>, <span class='ident'>hash</span>, <span class='ident'>sign</span>};
+<span class='kw'>use</span> <span class='ident'>std</span>::{<span class='ident'>cmp</span>, <span class='ident'>io</span>, <span class='ident'>iter</span>, <span class='ident'>fmt</span>};
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>collections</span>::<span class='ident'>HashMap</span>;
-<span class='kw'>use</span> <span class='ident'>sodiumoxide</span>::<span class='ident'>crypto</span>::{<span class='ident'>box_</span>, <span class='ident'>sign</span>};
-<span class='kw'>use</span> <span class='ident'>sodiumoxide</span>::<span class='ident'>crypto</span>::<span class='ident'>hash</span>;
-<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>io</span>;
-<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>iter</span>;
-<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>fmt</span>;
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>fmt</span>::{<span class='ident'>Debug</span>, <span class='ident'>Formatter</span>};
-<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>sync</span>::<span class='ident'>mpsc</span>;
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>time</span>::{<span class='ident'>Duration</span>, <span class='ident'>Instant</span>};
+<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>sync</span>::<span class='ident'>mpsc</span>;
 <span class='kw'>use</span> <span class='ident'>tunnels</span>::<span class='ident'>Tunnels</span>;
 <span class='kw'>use</span> <span class='ident'>xor_name</span>::{<span class='ident'>XorName</span>, <span class='ident'>XOR_NAME_BITS</span>};
 
