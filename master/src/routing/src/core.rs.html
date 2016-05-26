@@ -2987,7 +2987,7 @@
             <span class='macro'>error</span><span class='macro'>!</span>(<span class='string'>&quot;{:?} Failed to start listening.&quot;</span>, <span class='self'>self</span>);
             <span class='kw'>let</span> _ <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>event_sender</span>.<span class='ident'>send</span>(<span class='ident'>Event</span>::<span class='ident'>NetworkStartupFailed</span>);
         }
-        <span class='kw'>let</span> <span class='ident'>new_name</span> <span class='op'>=</span> <span class='ident'>XorName</span>(<span class='ident'>hash</span>::<span class='ident'>sha512</span>::<span class='ident'>hash</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='ident'>full_id</span>.<span class='ident'>public_id</span>().<span class='ident'>name</span>().<span class='number'>0</span>).<span class='number'>0</span>);
+        <span class='kw'>let</span> <span class='ident'>new_name</span> <span class='op'>=</span> <span class='ident'>XorName</span>(<span class='ident'>hash</span>::<span class='ident'>sha256</span>::<span class='ident'>hash</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='ident'>full_id</span>.<span class='ident'>public_id</span>().<span class='ident'>name</span>().<span class='number'>0</span>).<span class='number'>0</span>);
         <span class='self'>self</span>.<span class='ident'>set_self_node_name</span>(<span class='ident'>new_name</span>);
         <span class='self'>self</span>.<span class='ident'>state</span> <span class='op'>=</span> <span class='ident'>State</span>::<span class='ident'>Node</span>;
         <span class='kw'>let</span> <span class='ident'>tick_period</span> <span class='op'>=</span> <span class='ident'>Duration</span>::<span class='ident'>from_secs</span>(<span class='ident'>TICK_TIMEOUT_SECS</span>);
@@ -3762,7 +3762,7 @@
                                  <span class='ident'>peer_id</span>: <span class='ident'>PeerId</span>,
                                  <span class='ident'>current_quorum_size</span>: <span class='ident'>usize</span>)
                                  <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span>(), <span class='ident'>RoutingError</span><span class='op'>&gt;</span> {
-        <span class='kw'>if</span> <span class='op'>*</span><span class='ident'>public_id</span>.<span class='ident'>name</span>() <span class='op'>==</span> <span class='ident'>XorName</span>(<span class='ident'>hash</span>::<span class='ident'>sha512</span>::<span class='ident'>hash</span>(<span class='kw-2'>&amp;</span><span class='ident'>public_id</span>.<span class='ident'>signing_public_key</span>().<span class='number'>0</span>).<span class='number'>0</span>) {
+        <span class='kw'>if</span> <span class='op'>*</span><span class='ident'>public_id</span>.<span class='ident'>name</span>() <span class='op'>==</span> <span class='ident'>XorName</span>(<span class='ident'>hash</span>::<span class='ident'>sha256</span>::<span class='ident'>hash</span>(<span class='kw-2'>&amp;</span><span class='ident'>public_id</span>.<span class='ident'>signing_public_key</span>().<span class='number'>0</span>).<span class='number'>0</span>) {
             <span class='macro'>warn</span><span class='macro'>!</span>(<span class='string'>&quot;{:?} Incoming Connection not validated as a proper node - dropping&quot;</span>,
                   <span class='self'>self</span>);
             <span class='kw'>let</span> _ <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>event_sender</span>.<span class='ident'>send</span>(<span class='ident'>Event</span>::<span class='ident'>Disconnected</span>);
@@ -3795,7 +3795,7 @@
                               <span class='ident'>peer_id</span>: <span class='ident'>PeerId</span>,
                               <span class='ident'>client_restriction</span>: <span class='ident'>bool</span>)
                               <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span>(), <span class='ident'>RoutingError</span><span class='op'>&gt;</span> {
-        <span class='kw'>if</span> <span class='op'>*</span><span class='ident'>public_id</span>.<span class='ident'>name</span>() <span class='op'>!=</span> <span class='ident'>XorName</span>(<span class='ident'>hash</span>::<span class='ident'>sha512</span>::<span class='ident'>hash</span>(<span class='kw-2'>&amp;</span><span class='ident'>public_id</span>.<span class='ident'>signing_public_key</span>().<span class='number'>0</span>).<span class='number'>0</span>) {
+        <span class='kw'>if</span> <span class='op'>*</span><span class='ident'>public_id</span>.<span class='ident'>name</span>() <span class='op'>!=</span> <span class='ident'>XorName</span>(<span class='ident'>hash</span>::<span class='ident'>sha256</span>::<span class='ident'>hash</span>(<span class='kw-2'>&amp;</span><span class='ident'>public_id</span>.<span class='ident'>signing_public_key</span>().<span class='number'>0</span>).<span class='number'>0</span>) {
             <span class='macro'>warn</span><span class='macro'>!</span>(<span class='string'>&quot;{:?} Incoming Connection not validated as a proper client - dropping&quot;</span>,
                   <span class='self'>self</span>);
             <span class='kw'>return</span> <span class='self'>self</span>.<span class='ident'>disconnect_peer</span>(<span class='kw-2'>&amp;</span><span class='ident'>peer_id</span>);
@@ -4084,7 +4084,7 @@
                                     <span class='ident'>peer_id</span>: <span class='ident'>PeerId</span>,
                                     <span class='ident'>message_id</span>: <span class='ident'>MessageId</span>)
                                     <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span>(), <span class='ident'>RoutingError</span><span class='op'>&gt;</span> {
-        <span class='kw'>let</span> <span class='ident'>hashed_key</span> <span class='op'>=</span> <span class='ident'>hash</span>::<span class='ident'>sha512</span>::<span class='ident'>hash</span>(<span class='kw-2'>&amp;</span><span class='ident'>client_key</span>.<span class='number'>0</span>);
+        <span class='kw'>let</span> <span class='ident'>hashed_key</span> <span class='op'>=</span> <span class='ident'>hash</span>::<span class='ident'>sha256</span>::<span class='ident'>hash</span>(<span class='kw-2'>&amp;</span><span class='ident'>client_key</span>.<span class='number'>0</span>);
         <span class='kw'>let</span> <span class='ident'>close_group_to_client</span> <span class='op'>=</span> <span class='ident'>XorName</span>(<span class='ident'>hashed_key</span>.<span class='number'>0</span>);
 
         <span class='comment'>// Validate Client (relocating node) has contacted the correct Group-X</span>
@@ -4700,7 +4700,7 @@
     <span class='comment'>// If called more than once with a unique name, this function will assert</span>
     <span class='kw'>fn</span> <span class='ident'>set_self_node_name</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>new_name</span>: <span class='ident'>XorName</span>) {
         <span class='comment'>// Validating this function doesn&#39;t run more that once</span>
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>XorName</span>(<span class='ident'>hash</span>::<span class='ident'>sha512</span>::<span class='ident'>hash</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='ident'>full_id</span>.<span class='ident'>public_id</span>().<span class='ident'>signing_public_key</span>().<span class='number'>0</span>).<span class='number'>0</span>) <span class='op'>!=</span>
+        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>XorName</span>(<span class='ident'>hash</span>::<span class='ident'>sha256</span>::<span class='ident'>hash</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='ident'>full_id</span>.<span class='ident'>public_id</span>().<span class='ident'>signing_public_key</span>().<span class='number'>0</span>).<span class='number'>0</span>) <span class='op'>!=</span>
                 <span class='ident'>new_name</span>);
 
         <span class='self'>self</span>.<span class='ident'>full_id</span>.<span class='ident'>public_id_mut</span>().<span class='ident'>set_name</span>(<span class='ident'>new_name</span>);
