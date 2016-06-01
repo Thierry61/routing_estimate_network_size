@@ -709,11 +709,6 @@
 <span id="665">665</span>
 <span id="666">666</span>
 <span id="667">667</span>
-<span id="668">668</span>
-<span id="669">669</span>
-<span id="670">670</span>
-<span id="671">671</span>
-<span id="672">672</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2015 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -939,11 +934,6 @@
         <span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='ident'>content</span>
     }
 
-    <span class='doccomment'>/// The `MessageContent` of the signed routing message.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>message_content</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='kw-2'>&amp;</span><span class='ident'>MessageContent</span> {
-        <span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='ident'>content</span>.<span class='ident'>content</span>
-    }
-
     <span class='doccomment'>/// The `PublicId` associated with the signed message</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>public_id</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='kw-2'>&amp;</span><span class='ident'>PublicId</span> {
         <span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='ident'>public_id</span>
@@ -1139,7 +1129,7 @@
                        <span class='ident'>close_group_ids</span>,
                        <span class='ident'>message_id</span>)
             }
-            <span class='ident'>MessageContent</span>::<span class='ident'>Ack</span>(<span class='kw-2'>ref</span> <span class='ident'>ack</span>) <span class='op'>=&gt;</span> <span class='macro'>write</span><span class='macro'>!</span>(<span class='ident'>formatter</span>, <span class='string'>&quot;Ack({})&quot;</span>, <span class='ident'>ack</span>),
+            <span class='ident'>MessageContent</span>::<span class='ident'>Ack</span>(<span class='kw-2'>ref</span> <span class='ident'>ack</span>) <span class='op'>=&gt;</span> <span class='macro'>write</span><span class='macro'>!</span>(<span class='ident'>formatter</span>, <span class='string'>&quot;Ack({:x})&quot;</span>, <span class='ident'>ack</span>),
             <span class='ident'>MessageContent</span>::<span class='ident'>Request</span>(<span class='kw-2'>ref</span> <span class='ident'>request</span>) <span class='op'>=&gt;</span> <span class='macro'>write</span><span class='macro'>!</span>(<span class='ident'>formatter</span>, <span class='string'>&quot;Request({:?})&quot;</span>, <span class='ident'>request</span>),
             <span class='ident'>MessageContent</span>::<span class='ident'>Response</span>(<span class='kw-2'>ref</span> <span class='ident'>response</span>) <span class='op'>=&gt;</span> <span class='macro'>write</span><span class='macro'>!</span>(<span class='ident'>formatter</span>, <span class='string'>&quot;Response({:?})&quot;</span>, <span class='ident'>response</span>),
         }
