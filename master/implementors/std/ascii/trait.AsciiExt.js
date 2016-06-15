@@ -1,5 +1,5 @@
 (function() {var implementors = {};
-implementors['mio'] = [];implementors['tmp_mio'] = [];implementors['socket_addr'] = [];
+implementors['socket_addr'] = [];implementors['mio'] = [];implementors['tmp_mio'] = [];
 
             if (window.register_implementors) {
                 window.register_implementors(implementors);
