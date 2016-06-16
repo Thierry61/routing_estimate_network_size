@@ -2439,17 +2439,6 @@
 <span id="2395">2395</span>
 <span id="2396">2396</span>
 <span id="2397">2397</span>
-<span id="2398">2398</span>
-<span id="2399">2399</span>
-<span id="2400">2400</span>
-<span id="2401">2401</span>
-<span id="2402">2402</span>
-<span id="2403">2403</span>
-<span id="2404">2404</span>
-<span id="2405">2405</span>
-<span id="2406">2406</span>
-<span id="2407">2407</span>
-<span id="2408">2408</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2015 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -2784,17 +2773,6 @@
     <span class='doccomment'>/// Returns the `XorName` of this node.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>name</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='kw-2'>&amp;</span><span class='ident'>XorName</span> {
         <span class='self'>self</span>.<span class='ident'>full_id</span>.<span class='ident'>public_id</span>().<span class='ident'>name</span>()
-    }
-
-    <span class='doccomment'>/// Returns the names of all nodes in the close group of this node.</span>
-    <span class='attribute'>#[<span class='ident'>allow</span>(<span class='ident'>unused</span>)]</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>close_group</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>XorName</span><span class='op'>&gt;</span> {
-        <span class='self'>self</span>.<span class='ident'>routing_table</span>
-            .<span class='ident'>other_close_nodes</span>(<span class='self'>self</span>.<span class='ident'>name</span>(), <span class='ident'>GROUP_SIZE</span>)
-            .<span class='ident'>unwrap_or_else</span>(<span class='ident'>Vec</span>::<span class='ident'>new</span>)
-            .<span class='ident'>into_iter</span>()
-            .<span class='ident'>map</span>(<span class='op'>|</span><span class='ident'>info</span><span class='op'>|</span> <span class='op'>*</span><span class='ident'>info</span>.<span class='ident'>name</span>())
-            .<span class='ident'>collect</span>()
     }
 
     <span class='doccomment'>/// Routing table of this node.</span>
