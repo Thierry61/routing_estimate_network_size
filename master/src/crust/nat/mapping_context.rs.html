@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="rustdoc">
-    <meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-88ac128001ac3a9a/crust-0.15.0/src/nat/mapping_context.rs`.">
+    <meta name="description" content="Source to the Rust file `/home/travis/.cargo/git/checkouts/crust-c8dfa13e39bc3355/master/src/nat/mapping_context.rs`.">
     <meta name="keywords" content="rust, rustlang, rust-lang">
 
     <title>mapping_context.rs.html -- source</title>
@@ -155,15 +155,6 @@
 <span id="111">111</span>
 <span id="112">112</span>
 <span id="113">113</span>
-<span id="114">114</span>
-<span id="115">115</span>
-<span id="116">116</span>
-<span id="117">117</span>
-<span id="118">118</span>
-<span id="119">119</span>
-<span id="120">120</span>
-<span id="121">121</span>
-<span id="122">122</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2016 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -187,10 +178,10 @@
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>net</span>::{<span class='ident'>Ipv4Addr</span>, <span class='ident'>Ipv6Addr</span>, <span class='ident'>SocketAddr</span>};
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>time</span>::<span class='ident'>Duration</span>;
 
+<span class='kw'>use</span> <span class='ident'>common</span>::<span class='ident'>get_if_addrs</span>::{<span class='self'>self</span>, <span class='ident'>IfAddr</span>};
 <span class='kw'>use</span> <span class='ident'>crossbeam</span>;
 <span class='kw'>use</span> <span class='ident'>igd</span>::{<span class='self'>self</span>, <span class='ident'>Gateway</span>};
-<span class='kw'>use</span> <span class='ident'>get_if_addrs</span>::{<span class='self'>self</span>, <span class='ident'>IfAddr</span>};
-<span class='kw'>use</span> <span class='ident'>nat</span>::<span class='ident'>MappedAddr</span>;
+<span class='kw'>use</span> <span class='ident'>nat</span>;
 <span class='kw'>use</span> <span class='ident'>super</span>::<span class='ident'>NatError</span>;
 
 <span class='doccomment'>/// Keeps track of information about external mapping servers</span>
@@ -198,7 +189,7 @@
 <span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>MappingContext</span> {
     <span class='ident'>our_ifv4s</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span>(<span class='ident'>Ipv4Addr</span>, <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>Gateway</span><span class='op'>&gt;</span>)<span class='op'>&gt;</span>,
     <span class='ident'>our_ifv6s</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>Ipv6Addr</span><span class='op'>&gt;</span>,
-    <span class='ident'>peer_listeners</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>SocketAddr</span><span class='op'>&gt;</span>,
+    <span class='ident'>peer_stuns</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>SocketAddr</span><span class='op'>&gt;</span>,
 }
 
 <span class='kw'>impl</span> <span class='ident'>MappingContext</span> {
@@ -228,24 +219,15 @@
         <span class='prelude-val'>Ok</span>(<span class='ident'>MappingContext</span> {
             <span class='ident'>our_ifv4s</span>: <span class='ident'>ifv4s</span>,
             <span class='ident'>our_ifv6s</span>: <span class='ident'>ifv6s</span>,
-            <span class='ident'>peer_listeners</span>: <span class='ident'>Vec</span>::<span class='ident'>with_capacity</span>(<span class='number'>10</span>),
+            <span class='ident'>peer_stuns</span>: <span class='ident'>Vec</span>::<span class='ident'>with_capacity</span>(<span class='number'>10</span>),
         })
     }
 
-    <span class='doccomment'>/// Inform the context about external servers</span>
-    <span class='attribute'>#[<span class='ident'>allow</span>(<span class='ident'>unused</span>)]</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>add_peer_listeners</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>potential_peers</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>MappedAddr</span><span class='op'>&gt;</span>) {
-        <span class='kw'>let</span> <span class='ident'>listeners</span> <span class='op'>=</span> <span class='ident'>potential_peers</span>.<span class='ident'>iter</span>()
-            .<span class='ident'>filter</span>(<span class='op'>|</span><span class='ident'>elt</span><span class='op'>|</span> <span class='ident'>elt</span>.<span class='ident'>global</span>() <span class='op'>&amp;&amp;</span> <span class='op'>!</span><span class='ident'>elt</span>.<span class='ident'>nat_restricted</span>)
-            .<span class='ident'>map</span>(<span class='op'>|</span><span class='ident'>elt</span><span class='op'>|</span> <span class='ident'>elt</span>.<span class='ident'>addr</span>())
-            .<span class='ident'>collect</span>::<span class='op'>&lt;</span><span class='ident'>Vec</span><span class='op'>&lt;</span>_<span class='op'>&gt;&gt;</span>();
-        <span class='self'>self</span>.<span class='ident'>peer_listeners</span>.<span class='ident'>extend</span>(<span class='ident'>listeners</span>);
-    }
-
-    <span class='doccomment'>/// Add without sanity check. Caller is responsible for not providing a nat restricted address</span>
-    <span class='doccomment'>/// or not providing a non-global address etc</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>add_peer_listeners_no_check</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>listeners</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>SocketAddr</span><span class='op'>&gt;</span>) {
-        <span class='self'>self</span>.<span class='ident'>peer_listeners</span>.<span class='ident'>extend</span>(<span class='ident'>listeners</span>);
+    <span class='doccomment'>/// Inform the context about external &quot;STUN&quot; servers. Note that crust does not actually use</span>
+    <span class='doccomment'>/// STUN but a custom STUN-like protocol.</span>
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>add_peer_stuns</span><span class='op'>&lt;</span><span class='ident'>A</span>: <span class='ident'>IntoIterator</span><span class='op'>&lt;</span><span class='ident'>Item</span> <span class='op'>=</span> <span class='ident'>SocketAddr</span><span class='op'>&gt;&gt;</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>stun_addrs</span>: <span class='ident'>A</span>) {
+        <span class='kw'>let</span> <span class='ident'>listeners</span> <span class='op'>=</span> <span class='ident'>stun_addrs</span>.<span class='ident'>into_iter</span>().<span class='ident'>filter</span>(<span class='op'>|</span><span class='ident'>elt</span><span class='op'>|</span> <span class='ident'>nat</span>::<span class='ident'>ip_addr_is_global</span>(<span class='kw-2'>&amp;</span><span class='ident'>elt</span>.<span class='ident'>ip</span>()));
+        <span class='self'>self</span>.<span class='ident'>peer_stuns</span>.<span class='ident'>extend</span>(<span class='ident'>listeners</span>);
     }
 
     <span class='doccomment'>/// Get v4 interfaces</span>
@@ -254,8 +236,8 @@
     }
 
     <span class='doccomment'>/// Iterate over the known servers</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>peer_listeners</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='kw-2'>&amp;</span><span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>SocketAddr</span><span class='op'>&gt;</span> {
-        <span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='ident'>peer_listeners</span>
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>peer_stuns</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='kw-2'>&amp;</span><span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>SocketAddr</span><span class='op'>&gt;</span> {
+        <span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='ident'>peer_stuns</span>
     }
 }
 
