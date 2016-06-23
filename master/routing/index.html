@@ -47,7 +47,7 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a id='src-0' class='srclink' href='../src/routing/src/lib.rs.html#18-191' title='goto source code'>[src]</a></span></h1>
+               </span><a id='src-0' class='srclink' href='../src/routing/src/lib.rs.html#18-193' title='goto source code'>[src]</a></span></h1>
 <div class='docblock'><p>Client and node implementations for a resilient decentralised network.</p>
 
 <p>The network is based on the <a href="../kademlia_routing_table/index.html"><code>kademlia_routing_table</code></a> and uses the XOR metric to define the
@@ -285,6 +285,15 @@ routing node.</p>
                                   title='routing::XOR_NAME_LEN'>XOR_NAME_LEN</a></td>
                            <td class='docblock short'>
                                 <p>Constant byte length of <code>XorName</code>.</p>
+                           </td>
+                       </tr></table><h2 id='traits' class='section-header'><a href="#traits">Traits</a></h2>
+<table>
+                       <tr class=' module-item'>
+                           <td><a class='trait' href='trait.Cache.html'
+                                  title='routing::Cache'>Cache</a></td>
+                           <td class='docblock short'>
+                                <p>A cache that stores <code>Response</code>s keyed by <code>Requests</code>. Should be implemented
+by layers above routing.</p>
                            </td>
                        </tr></table></section>
     <section id='search' class="content hidden"></section>

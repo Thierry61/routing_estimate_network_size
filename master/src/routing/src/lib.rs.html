@@ -233,6 +233,8 @@
 <span id="189">189</span>
 <span id="190">190</span>
 <span id="191">191</span>
+<span id="192">192</span>
+<span id="193">193</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2015 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -382,6 +384,7 @@
 <span class='kw'>mod</span> <span class='ident'>authority</span>;
 <span class='kw'>mod</span> <span class='ident'>client</span>;
 
+<span class='kw'>mod</span> <span class='ident'>cache</span>;
 <span class='kw'>mod</span> <span class='ident'>core</span>;
 <span class='kw'>mod</span> <span class='ident'>data</span>;
 <span class='kw'>mod</span> <span class='ident'>error</span>;
@@ -412,6 +415,7 @@
 <span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>core_tests</span>::<span class='ident'>verify_kademlia_invariant</span>;
 
 <span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>authority</span>::<span class='ident'>Authority</span>;
+<span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>cache</span>::<span class='ident'>Cache</span>;
 <span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>client</span>::<span class='ident'>Client</span>;
 <span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>core</span>::{<span class='ident'>GROUP_SIZE</span>, <span class='ident'>QUORUM_SIZE</span>};
 <span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>data</span>::{<span class='ident'>Data</span>, <span class='ident'>DataIdentifier</span>};
