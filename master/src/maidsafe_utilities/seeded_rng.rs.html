@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="rustdoc">
-    <meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-88ac128001ac3a9a/maidsafe_utilities-0.7.0/src/seeded_rng.rs`.">
+    <meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-88ac128001ac3a9a/maidsafe_utilities-0.8.0/src/seeded_rng.rs`.">
     <meta name="keywords" content="rust, rustlang, rust-lang">
 
     <title>seeded_rng.rs.html -- source</title>
@@ -160,6 +160,54 @@
 <span id="116">116</span>
 <span id="117">117</span>
 <span id="118">118</span>
+<span id="119">119</span>
+<span id="120">120</span>
+<span id="121">121</span>
+<span id="122">122</span>
+<span id="123">123</span>
+<span id="124">124</span>
+<span id="125">125</span>
+<span id="126">126</span>
+<span id="127">127</span>
+<span id="128">128</span>
+<span id="129">129</span>
+<span id="130">130</span>
+<span id="131">131</span>
+<span id="132">132</span>
+<span id="133">133</span>
+<span id="134">134</span>
+<span id="135">135</span>
+<span id="136">136</span>
+<span id="137">137</span>
+<span id="138">138</span>
+<span id="139">139</span>
+<span id="140">140</span>
+<span id="141">141</span>
+<span id="142">142</span>
+<span id="143">143</span>
+<span id="144">144</span>
+<span id="145">145</span>
+<span id="146">146</span>
+<span id="147">147</span>
+<span id="148">148</span>
+<span id="149">149</span>
+<span id="150">150</span>
+<span id="151">151</span>
+<span id="152">152</span>
+<span id="153">153</span>
+<span id="154">154</span>
+<span id="155">155</span>
+<span id="156">156</span>
+<span id="157">157</span>
+<span id="158">158</span>
+<span id="159">159</span>
+<span id="160">160</span>
+<span id="161">161</span>
+<span id="162">162</span>
+<span id="163">163</span>
+<span id="164">164</span>
+<span id="165">165</span>
+<span id="166">166</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2016 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -179,13 +227,18 @@
 <span class='comment'>// relating to use of the SAFE Network Software.</span>
 
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>fmt</span>::{<span class='self'>self</span>, <span class='ident'>Debug</span>, <span class='ident'>Display</span>, <span class='ident'>Formatter</span>};
+<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>sync</span>::<span class='ident'>Mutex</span>;
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>thread</span>;
 
 <span class='kw'>use</span> <span class='ident'>rand</span>::{<span class='self'>self</span>, <span class='ident'>Rng</span>, <span class='ident'>SeedableRng</span>, <span class='ident'>XorShiftRng</span>};
 
+<span class='macro'>lazy_static</span><span class='macro'>!</span> {
+    <span class='kw'>static</span> <span class='kw-2'>ref</span> <span class='ident'>SEED</span>: <span class='ident'>Mutex</span><span class='op'>&lt;</span><span class='prelude-ty'>Option</span><span class='op'>&lt;</span>[<span class='ident'>u32</span>; <span class='number'>4</span>]<span class='op'>&gt;&gt;</span> <span class='op'>=</span> <span class='ident'>Mutex</span>::<span class='ident'>new</span>(<span class='prelude-val'>None</span>);
+}
+
 <span class='doccomment'>/// A [fast pseudorandom number generator]</span>
-<span class='doccomment'>/// (https://doc.rust-lang.org/rand/rand/struct.XorShiftRng.html) that allows seeding and prints the</span>
-<span class='doccomment'>/// seed when the thread in which it is created panics.</span>
+<span class='doccomment'>/// (https://doc.rust-lang.org/rand/rand/struct.XorShiftRng.html) for use in tests which allows</span>
+<span class='doccomment'>/// seeding and prints the seed when the thread in which it is created panics.</span>
 <span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>SeededRng</span> {
     <span class='ident'>seed</span>: [<span class='ident'>u32</span>; <span class='number'>4</span>],
     <span class='ident'>inner</span>: <span class='ident'>XorShiftRng</span>,
@@ -194,12 +247,42 @@
 <span class='kw'>impl</span> <span class='ident'>SeededRng</span> {
     <span class='doccomment'>/// Construct a new `SeededRng` using a seed generated from cryptographically secure random</span>
     <span class='doccomment'>/// data.</span>
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// The seed is only set once for the whole process, so every call to this will yield internal</span>
+    <span class='doccomment'>/// RNGs which are all seeded identically.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>() <span class='op'>-&gt;</span> <span class='kw'>Self</span> {
-        <span class='ident'>Self</span>::<span class='ident'>from_seed</span>([<span class='ident'>rand</span>::<span class='ident'>random</span>(), <span class='ident'>rand</span>::<span class='ident'>random</span>(), <span class='ident'>rand</span>::<span class='ident'>random</span>(), <span class='ident'>rand</span>::<span class='ident'>random</span>()])
+        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>optional_seed</span> <span class='op'>=</span> <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='op'>*</span><span class='macro'>unwrap</span><span class='macro'>!</span>(<span class='ident'>SEED</span>.<span class='ident'>lock</span>());
+        <span class='kw'>let</span> <span class='ident'>seed</span> <span class='op'>=</span> <span class='kw'>if</span> <span class='kw'>let</span> <span class='prelude-val'>Some</span>(<span class='ident'>current_seed</span>) <span class='op'>=</span> <span class='op'>*</span><span class='ident'>optional_seed</span> {
+            <span class='ident'>current_seed</span>
+        } <span class='kw'>else</span> {
+            <span class='kw'>let</span> <span class='ident'>new_seed</span> <span class='op'>=</span> [<span class='ident'>rand</span>::<span class='ident'>random</span>(), <span class='ident'>rand</span>::<span class='ident'>random</span>(), <span class='ident'>rand</span>::<span class='ident'>random</span>(), <span class='ident'>rand</span>::<span class='ident'>random</span>()];
+            <span class='op'>*</span><span class='ident'>optional_seed</span> <span class='op'>=</span> <span class='prelude-val'>Some</span>(<span class='ident'>new_seed</span>);
+            <span class='ident'>new_seed</span>
+        };
+        <span class='ident'>SeededRng</span> {
+            <span class='ident'>seed</span>: <span class='ident'>seed</span>,
+            <span class='ident'>inner</span>: <span class='ident'>XorShiftRng</span>::<span class='ident'>from_seed</span>(<span class='ident'>seed</span>),
+        }
     }
 
     <span class='doccomment'>/// Construct a new `SeededRng` using `seed`.</span>
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// If the underlying static seed has already been initialised to a value different to `seed`,</span>
+    <span class='doccomment'>/// then this function will panic.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>from_seed</span>(<span class='ident'>seed</span>: [<span class='ident'>u32</span>; <span class='number'>4</span>]) <span class='op'>-&gt;</span> <span class='kw'>Self</span> {
+        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>optional_seed</span> <span class='op'>=</span> <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='op'>*</span><span class='macro'>unwrap</span><span class='macro'>!</span>(<span class='ident'>SEED</span>.<span class='ident'>lock</span>());
+        <span class='kw'>if</span> <span class='kw'>let</span> <span class='prelude-val'>Some</span>(<span class='ident'>current_seed</span>) <span class='op'>=</span> <span class='op'>*</span><span class='ident'>optional_seed</span> {
+            <span class='kw'>if</span> <span class='ident'>current_seed</span> <span class='op'>!=</span> <span class='ident'>seed</span> {
+                <span class='macro'>panic</span><span class='macro'>!</span>(<span class='string'>&quot;\nThe static seed has already been initialised to a different value via \
+                        a call to `SeededRng::new()`\nor `SeededRng::from_seed(...)`.  This \
+                        could be due to setting a hard-coded value for the seed in a\nsingle \
+                        test case, but running the whole test suite.  If so, try running just \
+                        the single test case.\n&quot;</span>);
+            }
+        } <span class='kw'>else</span> {
+            <span class='op'>*</span><span class='ident'>optional_seed</span> <span class='op'>=</span> <span class='prelude-val'>Some</span>(<span class='ident'>seed</span>);
+        }
+
         <span class='ident'>SeededRng</span> {
             <span class='ident'>seed</span>: <span class='ident'>seed</span>,
             <span class='ident'>inner</span>: <span class='ident'>XorShiftRng</span>::<span class='ident'>from_seed</span>(<span class='ident'>seed</span>),
@@ -257,26 +340,39 @@
     <span class='kw'>use</span> <span class='ident'>super</span>::<span class='op'>*</span>;
     <span class='kw'>use</span> <span class='ident'>rand</span>::<span class='ident'>Rng</span>;
 
+    <span class='comment'>// We need the expected message here to ensure that any assertion failure in the test causes the</span>
+    <span class='comment'>// test to fail.  Only the final statement should cause a panic (calling `from_seed()` with a</span>
+    <span class='comment'>// different seed value).  This check can&#39;t be moved to its own test case since if it runs</span>
+    <span class='comment'>// first it will poison the mutex protecting the static seed, causing this test to fail.</span>
     <span class='attribute'>#[<span class='ident'>test</span>]</span>
+    <span class='attribute'>#[<span class='ident'>should_panic</span>(<span class='ident'>expected</span> <span class='op'>=</span> <span class='string'>&quot;\nThe static seed has already been initialised to a different value \
+                               via a call to `SeededRng::new()`\nor `SeededRng::from_seed(...)`.  \
+                               This could be due to setting a hard-coded value for the seed in \
+                               a\nsingle test case, but running the whole test suite.  If so, try \
+                               running just the single test case.\n&quot;</span>)]</span>
     <span class='kw'>fn</span> <span class='ident'>seeded_rng</span>() {
-        <span class='kw'>let</span> <span class='ident'>seed</span> <span class='op'>=</span> [<span class='number'>0</span>, <span class='number'>1</span>, <span class='number'>2</span>, <span class='number'>3</span>];
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>seeded_rng1</span> <span class='op'>=</span> <span class='ident'>SeededRng</span>::<span class='ident'>from_seed</span>(<span class='ident'>seed</span>);
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>seeded_rng2</span> <span class='op'>=</span> <span class='ident'>SeededRng</span>::<span class='ident'>from_seed</span>(<span class='ident'>seed</span>);
-        <span class='kw'>let</span> <span class='ident'>expected</span> <span class='op'>=</span> <span class='number'>12884903946</span>;
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>seeded_rng1</span>.<span class='ident'>next_u64</span>(), <span class='ident'>expected</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>seeded_rng2</span>.<span class='ident'>next_u64</span>(), <span class='ident'>expected</span>);
+        {
+            <span class='kw'>let</span> <span class='ident'>seed</span> <span class='op'>=</span> [<span class='number'>0</span>, <span class='number'>1</span>, <span class='number'>2</span>, <span class='number'>3</span>];
+            <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>seeded_rng1</span> <span class='op'>=</span> <span class='ident'>SeededRng</span>::<span class='ident'>from_seed</span>(<span class='ident'>seed</span>);
+            <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>seeded_rng2</span> <span class='op'>=</span> <span class='ident'>SeededRng</span>::<span class='ident'>new</span>();
+            <span class='kw'>let</span> <span class='ident'>expected</span> <span class='op'>=</span> <span class='number'>12884903946</span>;
+            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>seeded_rng1</span>.<span class='ident'>next_u64</span>(), <span class='ident'>expected</span>);
+            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>seeded_rng2</span>.<span class='ident'>next_u64</span>(), <span class='ident'>expected</span>);
 
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>rng1_from_seeded_rng1</span> <span class='op'>=</span> <span class='ident'>seeded_rng1</span>.<span class='ident'>new_rng</span>();
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>rng2_from_seeded_rng1</span> <span class='op'>=</span> <span class='ident'>seeded_rng1</span>.<span class='ident'>new_rng</span>();
-        <span class='kw'>let</span> <span class='ident'>expected1</span> <span class='op'>=</span> <span class='number'>36055743652167817</span>;
-        <span class='kw'>let</span> <span class='ident'>expected2</span> <span class='op'>=</span> <span class='number'>19781043125127688</span>;
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>rng1_from_seeded_rng1</span>.<span class='ident'>next_u64</span>(), <span class='ident'>expected1</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>rng2_from_seeded_rng1</span>.<span class='ident'>next_u64</span>(), <span class='ident'>expected2</span>);
+            <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>rng1_from_seeded_rng1</span> <span class='op'>=</span> <span class='ident'>seeded_rng1</span>.<span class='ident'>new_rng</span>();
+            <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>rng2_from_seeded_rng1</span> <span class='op'>=</span> <span class='ident'>seeded_rng1</span>.<span class='ident'>new_rng</span>();
+            <span class='kw'>let</span> <span class='ident'>expected1</span> <span class='op'>=</span> <span class='number'>36055743652167817</span>;
+            <span class='kw'>let</span> <span class='ident'>expected2</span> <span class='op'>=</span> <span class='number'>19781043125127688</span>;
+            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>rng1_from_seeded_rng1</span>.<span class='ident'>next_u64</span>(), <span class='ident'>expected1</span>);
+            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>rng2_from_seeded_rng1</span>.<span class='ident'>next_u64</span>(), <span class='ident'>expected2</span>);
 
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>rng1_from_seeded_rng2</span> <span class='op'>=</span> <span class='ident'>seeded_rng2</span>.<span class='ident'>new_rng</span>();
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>rng2_from_seeded_rng2</span> <span class='op'>=</span> <span class='ident'>seeded_rng2</span>.<span class='ident'>new_rng</span>();
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>rng1_from_seeded_rng2</span>.<span class='ident'>next_u64</span>(), <span class='ident'>expected1</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>rng2_from_seeded_rng2</span>.<span class='ident'>next_u64</span>(), <span class='ident'>expected2</span>);
+            <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>rng1_from_seeded_rng2</span> <span class='op'>=</span> <span class='ident'>seeded_rng2</span>.<span class='ident'>new_rng</span>();
+            <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>rng2_from_seeded_rng2</span> <span class='op'>=</span> <span class='ident'>seeded_rng2</span>.<span class='ident'>new_rng</span>();
+            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>rng1_from_seeded_rng2</span>.<span class='ident'>next_u64</span>(), <span class='ident'>expected1</span>);
+            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>rng2_from_seeded_rng2</span>.<span class='ident'>next_u64</span>(), <span class='ident'>expected2</span>);
+        }
+
+        <span class='kw'>let</span> _ <span class='op'>=</span> <span class='ident'>SeededRng</span>::<span class='ident'>from_seed</span>([<span class='number'>3</span>, <span class='number'>2</span>, <span class='number'>1</span>, <span class='number'>0</span>]);
     }
 }
 </pre>

@@ -2485,6 +2485,16 @@
 <span id="2441">2441</span>
 <span id="2442">2442</span>
 <span id="2443">2443</span>
+<span id="2444">2444</span>
+<span id="2445">2445</span>
+<span id="2446">2446</span>
+<span id="2447">2447</span>
+<span id="2448">2448</span>
+<span id="2449">2449</span>
+<span id="2450">2450</span>
+<span id="2451">2451</span>
+<span id="2452">2452</span>
+<span id="2453">2453</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2015 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -2506,12 +2516,12 @@
 <span class='kw'>use</span> <span class='ident'>accumulator</span>::<span class='ident'>Accumulator</span>;
 
 <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>not</span>(<span class='ident'>feature</span> <span class='op'>=</span> <span class='string'>&quot;use-mock-crust&quot;</span>))]</span>
-<span class='kw'>use</span> <span class='ident'>crust</span>::{<span class='self'>self</span>, <span class='ident'>ConnectionInfoResult</span>, <span class='ident'>CrustError</span>, <span class='ident'>PrivConnectionInfo</span>, <span class='ident'>PeerId</span>, <span class='ident'>Service</span>,
-            <span class='ident'>PubConnectionInfo</span>};
+<span class='kw'>use</span> <span class='ident'>crust</span>::{<span class='self'>self</span>, <span class='ident'>ConnectionInfoResult</span>, <span class='ident'>CrustError</span>, <span class='ident'>PeerId</span>, <span class='ident'>PrivConnectionInfo</span>, <span class='ident'>PubConnectionInfo</span>,
+            <span class='ident'>Service</span>};
 
 <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>feature</span> <span class='op'>=</span> <span class='string'>&quot;use-mock-crust&quot;</span>)]</span>
-<span class='kw'>use</span> <span class='ident'>mock_crust</span>::<span class='ident'>crust</span>::{<span class='self'>self</span>, <span class='ident'>ConnectionInfoResult</span>, <span class='ident'>CrustError</span>, <span class='ident'>PrivConnectionInfo</span>, <span class='ident'>PeerId</span>,
-                        <span class='ident'>Service</span>, <span class='ident'>PubConnectionInfo</span>};
+<span class='kw'>use</span> <span class='ident'>mock_crust</span>::<span class='ident'>crust</span>::{<span class='self'>self</span>, <span class='ident'>ConnectionInfoResult</span>, <span class='ident'>CrustError</span>, <span class='ident'>PeerId</span>, <span class='ident'>PrivConnectionInfo</span>,
+                        <span class='ident'>PubConnectionInfo</span>, <span class='ident'>Service</span>};
 
 <span class='kw'>use</span> <span class='ident'>itertools</span>::<span class='ident'>Itertools</span>;
 <span class='kw'>use</span> <span class='ident'>kademlia_routing_table</span>::{<span class='ident'>AddedNodeDetails</span>, <span class='ident'>ContactInfo</span>, <span class='ident'>DroppedNodeDetails</span>};
@@ -2523,26 +2533,26 @@
 <span class='kw'>use</span> <span class='ident'>rand</span>;
 <span class='kw'>use</span> <span class='ident'>sodiumoxide</span>::<span class='ident'>crypto</span>::{<span class='ident'>box_</span>, <span class='ident'>sign</span>};
 <span class='kw'>use</span> <span class='ident'>sodiumoxide</span>::<span class='ident'>crypto</span>::<span class='ident'>hash</span>::<span class='ident'>sha256</span>;
-<span class='kw'>use</span> <span class='ident'>std</span>::{<span class='ident'>cmp</span>, <span class='ident'>iter</span>, <span class='ident'>fmt</span>};
+<span class='kw'>use</span> <span class='ident'>std</span>::{<span class='ident'>cmp</span>, <span class='ident'>fmt</span>, <span class='ident'>iter</span>};
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>collections</span>::{<span class='ident'>HashMap</span>, <span class='ident'>HashSet</span>};
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>fmt</span>::{<span class='ident'>Debug</span>, <span class='ident'>Formatter</span>};
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>net</span>::<span class='ident'>SocketAddr</span>;
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>sync</span>::<span class='ident'>mpsc</span>;
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>time</span>::{<span class='ident'>Duration</span>, <span class='ident'>Instant</span>};
 <span class='kw'>use</span> <span class='ident'>tunnels</span>::<span class='ident'>Tunnels</span>;
-<span class='kw'>use</span> <span class='ident'>xor_name</span>::{<span class='ident'>XorName</span>, <span class='ident'>XOR_NAME_BITS</span>};
+<span class='kw'>use</span> <span class='ident'>xor_name</span>::{<span class='ident'>XOR_NAME_BITS</span>, <span class='ident'>XorName</span>};
 
 <span class='kw'>use</span> <span class='ident'>action</span>::<span class='ident'>Action</span>;
 <span class='kw'>use</span> <span class='ident'>authority</span>::<span class='ident'>Authority</span>;
 <span class='kw'>use</span> <span class='ident'>cache</span>::<span class='ident'>Cache</span>;
-<span class='kw'>use</span> <span class='ident'>error</span>::{<span class='ident'>RoutingError</span>, <span class='ident'>InterfaceError</span>};
+<span class='kw'>use</span> <span class='ident'>error</span>::{<span class='ident'>InterfaceError</span>, <span class='ident'>RoutingError</span>};
 <span class='kw'>use</span> <span class='ident'>event</span>::<span class='ident'>Event</span>;
 <span class='kw'>use</span> <span class='ident'>id</span>::{<span class='ident'>FullId</span>, <span class='ident'>PublicId</span>};
 <span class='kw'>use</span> <span class='ident'>stats</span>::<span class='ident'>Stats</span>;
 <span class='kw'>use</span> <span class='ident'>timer</span>::<span class='ident'>Timer</span>;
 <span class='kw'>use</span> <span class='ident'>types</span>::{<span class='ident'>MessageId</span>, <span class='ident'>RoutingActionSender</span>};
-<span class='kw'>use</span> <span class='ident'>messages</span>::{<span class='ident'>DirectMessage</span>, <span class='ident'>HopMessage</span>, <span class='ident'>Message</span>, <span class='ident'>MessageContent</span>, <span class='ident'>RoutingMessage</span>, <span class='ident'>SignedMessage</span>,
-               <span class='ident'>UserMessage</span>, <span class='ident'>UserMessageCache</span>, <span class='ident'>DEFAULT_PRIORITY</span>};
+<span class='kw'>use</span> <span class='ident'>messages</span>::{<span class='ident'>DEFAULT_PRIORITY</span>, <span class='ident'>DirectMessage</span>, <span class='ident'>HopMessage</span>, <span class='ident'>Message</span>, <span class='ident'>MessageContent</span>,
+               <span class='ident'>RoutingMessage</span>, <span class='ident'>SignedMessage</span>, <span class='ident'>UserMessage</span>, <span class='ident'>UserMessageCache</span>};
 <span class='kw'>use</span> <span class='ident'>utils</span>;
 
 <span class='doccomment'>/// The group size for the routing table. This is the maximum that can be used for consensus.</span>
@@ -2718,8 +2728,7 @@
                <span class='ident'>role</span>: <span class='ident'>Role</span>,
                <span class='ident'>keys</span>: <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>FullId</span><span class='op'>&gt;</span>,
                <span class='ident'>cache</span>: <span class='ident'>Box</span><span class='op'>&lt;</span><span class='ident'>Cache</span><span class='op'>&gt;</span>)
-               <span class='op'>-&gt;</span> (<span class='ident'>RoutingActionSender</span>, <span class='kw'>Self</span>)
-    {
+               <span class='op'>-&gt;</span> (<span class='ident'>RoutingActionSender</span>, <span class='kw'>Self</span>) {
         <span class='kw'>let</span> (<span class='ident'>crust_tx</span>, <span class='ident'>crust_rx</span>) <span class='op'>=</span> <span class='ident'>mpsc</span>::<span class='ident'>channel</span>();
         <span class='kw'>let</span> (<span class='ident'>action_tx</span>, <span class='ident'>action_rx</span>) <span class='op'>=</span> <span class='ident'>mpsc</span>::<span class='ident'>channel</span>();
         <span class='kw'>let</span> (<span class='ident'>category_tx</span>, <span class='ident'>category_rx</span>) <span class='op'>=</span> <span class='ident'>mpsc</span>::<span class='ident'>channel</span>();
@@ -2755,7 +2764,7 @@
             <span class='ident'>category_rx</span>: <span class='ident'>category_rx</span>,
             <span class='ident'>crust_rx</span>: <span class='ident'>crust_rx</span>,
             <span class='ident'>action_rx</span>: <span class='ident'>action_rx</span>,
-            <span class='ident'>event_sender</span>: <span class='ident'>event_sender</span>,
+            <span class='ident'>event_sender</span>: <span class='ident'>event_sender</span>.<span class='ident'>clone</span>(),
             <span class='ident'>timer</span>: <span class='ident'>Timer</span>::<span class='ident'>new</span>(<span class='ident'>action_sender2</span>),
             <span class='ident'>signed_message_filter</span>: <span class='ident'>MessageFilter</span>::<span class='ident'>with_expiry_duration</span>(<span class='ident'>Duration</span>::<span class='ident'>from_secs</span>(<span class='number'>60</span> <span class='op'>*</span>
                                                                                            <span class='number'>20</span>)),
@@ -2777,7 +2786,8 @@
             <span class='ident'>stats</span>: <span class='ident'>Default</span>::<span class='ident'>default</span>(),
             <span class='ident'>send_filter</span>: <span class='ident'>LruCache</span>::<span class='ident'>with_expiry_duration</span>(<span class='ident'>Duration</span>::<span class='ident'>from_secs</span>(<span class='number'>60</span> <span class='op'>*</span> <span class='number'>10</span>)),
             <span class='ident'>user_msg_cache</span>: <span class='ident'>UserMessageCache</span>::<span class='ident'>with_expiry_duration</span>(<span class='ident'>user_msg_cache_duration</span>),
-            <span class='ident'>cacheable_user_msg_cache</span>: <span class='ident'>UserMessageCache</span>::<span class='ident'>with_expiry_duration</span>(<span class='ident'>user_msg_cache_duration</span>),
+            <span class='ident'>cacheable_user_msg_cache</span>:
+                <span class='ident'>UserMessageCache</span>::<span class='ident'>with_expiry_duration</span>(<span class='ident'>user_msg_cache_duration</span>),
             <span class='ident'>peer_mgr</span>: <span class='ident'>Default</span>::<span class='ident'>default</span>(),
             <span class='ident'>bootstrap_blacklist</span>: <span class='ident'>HashSet</span>::<span class='ident'>new</span>(),
             <span class='ident'>response_cache</span>: <span class='ident'>cache</span>,
@@ -2787,6 +2797,13 @@
         <span class='kw'>if</span> <span class='ident'>role</span> <span class='op'>==</span> <span class='ident'>Role</span>::<span class='ident'>FirstNode</span> {
             <span class='ident'>core</span>.<span class='ident'>start_new_network</span>();
         } <span class='kw'>else</span> {
+            <span class='kw'>if</span> <span class='ident'>role</span> <span class='op'>==</span> <span class='ident'>Role</span>::<span class='ident'>Node</span> <span class='op'>&amp;&amp;</span> <span class='ident'>core</span>.<span class='ident'>crust_service</span>.<span class='ident'>has_peers_on_lan</span>() {
+                <span class='macro'>error</span><span class='macro'>!</span>(<span class='string'>&quot;{:?} More than 1 routing node found on LAN. Currently this is not \
+                        supported&quot;</span>,
+                       <span class='ident'>core</span>);
+                <span class='kw'>let</span> _ <span class='op'>=</span> <span class='ident'>event_sender</span>.<span class='ident'>send</span>(<span class='ident'>Event</span>::<span class='ident'>Terminate</span>);
+                <span class='kw'>return</span> (<span class='ident'>action_sender</span>, <span class='ident'>core</span>);
+            }
             <span class='kw'>let</span> _ <span class='op'>=</span> <span class='ident'>core</span>.<span class='ident'>crust_service</span>.<span class='ident'>start_bootstrap</span>(<span class='ident'>core</span>.<span class='ident'>bootstrap_blacklist</span>.<span class='ident'>clone</span>());
         }
 
@@ -3331,7 +3348,7 @@
             }
 
             <span class='kw'>if</span> <span class='macro'>try</span><span class='macro'>!</span>(<span class='self'>self</span>.<span class='ident'>respond_from_cache</span>(<span class='kw-2'>&amp;</span><span class='ident'>routing_msg</span>, <span class='ident'>route</span>)) {
-                <span class='kw'>return</span> <span class='prelude-val'>Ok</span>(())
+                <span class='kw'>return</span> <span class='prelude-val'>Ok</span>(());
             }
 
             <span class='kw'>if</span> <span class='kw'>let</span> <span class='prelude-val'>Err</span>(<span class='ident'>error</span>) <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>send</span>(<span class='ident'>signed_msg</span>, <span class='ident'>route</span>, <span class='ident'>hop_name</span>, <span class='ident'>sent_to</span>) {
@@ -3360,18 +3377,21 @@
         <span class='prelude-val'>Ok</span>(())
     }
 
-    <span class='kw'>fn</span> <span class='ident'>respond_from_cache</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>routing_msg</span>: <span class='kw-2'>&amp;</span><span class='ident'>RoutingMessage</span>, <span class='ident'>route</span>: <span class='ident'>u8</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>bool</span>, <span class='ident'>RoutingError</span><span class='op'>&gt;</span> {
+    <span class='kw'>fn</span> <span class='ident'>respond_from_cache</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>,
+                          <span class='ident'>routing_msg</span>: <span class='kw-2'>&amp;</span><span class='ident'>RoutingMessage</span>,
+                          <span class='ident'>route</span>: <span class='ident'>u8</span>)
+                          <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>bool</span>, <span class='ident'>RoutingError</span><span class='op'>&gt;</span> {
         <span class='kw'>if</span> <span class='kw'>let</span> <span class='ident'>MessageContent</span>::<span class='ident'>UserMessagePart</span> { <span class='ident'>hash</span>,
                                                  <span class='ident'>part_count</span>,
                                                  <span class='ident'>part_index</span>,
                                                  <span class='ident'>cacheable</span>,
-                                                 <span class='kw-2'>ref</span> <span class='ident'>payload</span>, .. } <span class='op'>=</span> <span class='ident'>routing_msg</span>.<span class='ident'>content</span> {
-            <span class='kw'>if</span> <span class='op'>!</span><span class='ident'>cacheable</span> { <span class='kw'>return</span> <span class='prelude-val'>Ok</span>(<span class='boolval'>false</span>); }
+                                                 <span class='kw-2'>ref</span> <span class='ident'>payload</span>,
+                                                 .. } <span class='op'>=</span> <span class='ident'>routing_msg</span>.<span class='ident'>content</span> {
+            <span class='kw'>if</span> <span class='op'>!</span><span class='ident'>cacheable</span> {
+                <span class='kw'>return</span> <span class='prelude-val'>Ok</span>(<span class='boolval'>false</span>);
+            }
 
-            <span class='kw'>match</span> <span class='self'>self</span>.<span class='ident'>cacheable_user_msg_cache</span>.<span class='ident'>add</span>(<span class='ident'>hash</span>,
-                                                    <span class='ident'>part_count</span>,
-                                                    <span class='ident'>part_index</span>,
-                                                    <span class='ident'>payload</span>.<span class='ident'>clone</span>()) {
+            <span class='kw'>match</span> <span class='self'>self</span>.<span class='ident'>cacheable_user_msg_cache</span>.<span class='ident'>add</span>(<span class='ident'>hash</span>, <span class='ident'>part_count</span>, <span class='ident'>part_index</span>, <span class='ident'>payload</span>.<span class='ident'>clone</span>()) {
                 <span class='prelude-val'>Some</span>(<span class='ident'>UserMessage</span>::<span class='ident'>Request</span>(<span class='ident'>request</span>)) <span class='op'>=&gt;</span> {
                     <span class='kw'>if</span> <span class='kw'>let</span> <span class='prelude-val'>Some</span>(<span class='ident'>response</span>) <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>response_cache</span>.<span class='ident'>get</span>(<span class='kw-2'>&amp;</span><span class='ident'>request</span>) {
                         <span class='macro'>debug</span><span class='macro'>!</span>(<span class='string'>&quot;{:?} Found cached response to {:?}&quot;</span>, <span class='self'>self</span>, <span class='ident'>request</span>);
