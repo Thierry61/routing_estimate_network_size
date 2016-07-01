@@ -620,9 +620,9 @@
 <span class='comment'>// relating to use of the SAFE Network Software.</span>
 
 <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>not</span>(<span class='ident'>feature</span> <span class='op'>=</span> <span class='string'>&quot;use-mock-crust&quot;</span>))]</span>
-<span class='kw'>use</span> <span class='ident'>crust</span>::{<span class='ident'>PrivConnectionInfo</span>, <span class='ident'>PeerId</span>, <span class='ident'>PubConnectionInfo</span>};
+<span class='kw'>use</span> <span class='ident'>crust</span>::{<span class='ident'>PeerId</span>, <span class='ident'>PrivConnectionInfo</span>, <span class='ident'>PubConnectionInfo</span>};
 <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>feature</span> <span class='op'>=</span> <span class='string'>&quot;use-mock-crust&quot;</span>)]</span>
-<span class='kw'>use</span> <span class='ident'>mock_crust</span>::<span class='ident'>crust</span>::{<span class='ident'>PrivConnectionInfo</span>, <span class='ident'>PeerId</span>, <span class='ident'>PubConnectionInfo</span>};
+<span class='kw'>use</span> <span class='ident'>mock_crust</span>::<span class='ident'>crust</span>::{<span class='ident'>PeerId</span>, <span class='ident'>PrivConnectionInfo</span>, <span class='ident'>PubConnectionInfo</span>};
 <span class='kw'>use</span> <span class='ident'>authority</span>::<span class='ident'>Authority</span>;
 <span class='kw'>use</span> <span class='ident'>sodiumoxide</span>::<span class='ident'>crypto</span>::<span class='ident'>sign</span>;
 <span class='kw'>use</span> <span class='ident'>id</span>::<span class='ident'>PublicId</span>;
@@ -1083,9 +1083,9 @@
     <span class='kw'>use</span> <span class='ident'>super</span>::<span class='op'>*</span>;
     <span class='kw'>use</span> <span class='ident'>authority</span>::<span class='ident'>Authority</span>;
     <span class='kw'>use</span> <span class='ident'>id</span>::<span class='ident'>FullId</span>;
-    <span class='kw'>use</span> <span class='ident'>mock_crust</span>::<span class='ident'>crust</span>::{<span class='ident'>PrivConnectionInfo</span>, <span class='ident'>PeerId</span>, <span class='ident'>PubConnectionInfo</span>};
+    <span class='kw'>use</span> <span class='ident'>mock_crust</span>::<span class='ident'>crust</span>::{<span class='ident'>PeerId</span>, <span class='ident'>PrivConnectionInfo</span>, <span class='ident'>PubConnectionInfo</span>};
     <span class='kw'>use</span> <span class='ident'>mock_crust</span>::<span class='ident'>Endpoint</span>;
-    <span class='kw'>use</span> <span class='ident'>xor_name</span>::{<span class='ident'>XorName</span>, <span class='ident'>XOR_NAME_LEN</span>};
+    <span class='kw'>use</span> <span class='ident'>xor_name</span>::{<span class='ident'>XOR_NAME_LEN</span>, <span class='ident'>XorName</span>};
 
     <span class='kw'>fn</span> <span class='ident'>node_auth</span>(<span class='ident'>byte</span>: <span class='ident'>u8</span>) <span class='op'>-&gt;</span> <span class='ident'>Authority</span> {
         <span class='ident'>Authority</span>::<span class='ident'>ManagedNode</span>(<span class='ident'>XorName</span>([<span class='ident'>byte</span>; <span class='ident'>XOR_NAME_LEN</span>]))
