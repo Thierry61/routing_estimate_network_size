@@ -234,7 +234,6 @@
 <span id="190">190</span>
 <span id="191">191</span>
 <span id="192">192</span>
-<span id="193">193</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2015 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -316,8 +315,7 @@
 <span class='doccomment'>//! use routing::{Node, Event};</span>
 <span class='doccomment'>//!</span>
 <span class='doccomment'>//! let (sender, _receiver) = mpsc::channel::&lt;Event&gt;();</span>
-<span class='doccomment'>//! let first_node = false;</span>
-<span class='doccomment'>//! let _ = Node::new(sender, first_node).unwrap();</span>
+<span class='doccomment'>//! let _ = Node::builder().create(sender).unwrap();</span>
 <span class='doccomment'>//! ```</span>
 <span class='doccomment'>//!</span>
 <span class='doccomment'>//! Upon creation, the node will first connect to the network as a client. Once it has client</span>
@@ -424,7 +422,7 @@
 <span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>id</span>::{<span class='ident'>FullId</span>, <span class='ident'>PublicId</span>};
 <span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>immutable_data</span>::<span class='ident'>ImmutableData</span>;
 <span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>messages</span>::{<span class='ident'>Request</span>, <span class='ident'>Response</span>};
-<span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>node</span>::<span class='ident'>Node</span>;
+<span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>node</span>::{<span class='ident'>Node</span>, <span class='ident'>NodeBuilder</span>};
 <span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>plain_data</span>::<span class='ident'>PlainData</span>;
 <span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>structured_data</span>::{<span class='ident'>MAX_STRUCTURED_DATA_SIZE_IN_BYTES</span>, <span class='ident'>StructuredData</span>};
 <span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>types</span>::<span class='ident'>MessageId</span>;

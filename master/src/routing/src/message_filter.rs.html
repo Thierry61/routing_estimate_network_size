@@ -523,8 +523,8 @@
     <span class='attribute'>#[<span class='ident'>test</span>]</span>
     <span class='kw'>fn</span> <span class='ident'>insert_resets_timeout</span>() {
         <span class='comment'>// Check re-adding a message to a filter alters its expiry time.</span>
-        <span class='kw'>let</span> <span class='ident'>time_to_live</span> <span class='op'>=</span> <span class='ident'>Duration</span>::<span class='ident'>from_millis</span>(<span class='number'>200</span>);
-        <span class='kw'>let</span> <span class='ident'>sleep_duration</span> <span class='op'>=</span> <span class='ident'>Duration</span>::<span class='ident'>from_millis</span>(<span class='number'>150</span>); <span class='comment'>// more than half of `time_to_live`</span>
+        <span class='kw'>let</span> <span class='ident'>time_to_live</span> <span class='op'>=</span> <span class='ident'>Duration</span>::<span class='ident'>from_millis</span>(<span class='number'>300</span>);
+        <span class='kw'>let</span> <span class='ident'>sleep_duration</span> <span class='op'>=</span> <span class='ident'>Duration</span>::<span class='ident'>from_millis</span>(<span class='number'>180</span>); <span class='comment'>// more than half of `time_to_live`</span>
         <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>msg_filter</span> <span class='op'>=</span> <span class='ident'>MessageFilter</span>::<span class='op'>&lt;</span><span class='ident'>usize</span><span class='op'>&gt;</span>::<span class='ident'>with_expiry_duration</span>(<span class='ident'>time_to_live</span>);
 
         <span class='comment'>// Add &quot;0&quot;.</span>
