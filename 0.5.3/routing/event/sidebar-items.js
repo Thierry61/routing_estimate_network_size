@@ -1,1 +1,0 @@
-initSidebarItems({"enum":[["Event","An Event is received at the effective close group of B of a message flow < A | B >"]]});

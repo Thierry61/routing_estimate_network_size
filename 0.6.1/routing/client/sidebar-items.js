@@ -1,1 +1,0 @@
-initSidebarItems({"struct":[["Client","Client provides an actionable interface to Core.  On constructing a new Client object a Core will also be started."]]});

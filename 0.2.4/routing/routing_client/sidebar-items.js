@@ -1,1 +1,0 @@
-initSidebarItems({"enum":[["CryptoError",""],["Endpoint","Enum representing endpoint of supported protocols"]],"struct":[["RoutingClient",""]]});

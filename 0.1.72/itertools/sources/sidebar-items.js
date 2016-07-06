@@ -1,1 +1,0 @@
-initSidebarItems({"struct":[["RepeatCall","An iterator source that produces elements indefinitely by calling a given closure."]]});

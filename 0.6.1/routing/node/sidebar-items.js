@@ -1,1 +1,0 @@
-initSidebarItems({"struct":[["Node","Node provides an actionable interface to Core.  On constructing a new Node object a Core will also be started."]]});

@@ -1,1 +1,0 @@
-initSidebarItems({"struct":[["FullId","Network identity component containing name, and public and private keys."],["PublicId","PublicId."]]});

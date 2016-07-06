@@ -1,1 +1,0 @@
-initSidebarItems({"struct":[["MessageFilter","Allows message filter container which may be limited by size or time. Get(value) is not required as only value is stored"]]});

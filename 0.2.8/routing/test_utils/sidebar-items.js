@@ -1,1 +1,0 @@
-initSidebarItems({"fn":[["random_endpoint",""],["random_endpoints",""],["xor",""]],"trait":[["Random","Trait to self construct a type with random values"]]});

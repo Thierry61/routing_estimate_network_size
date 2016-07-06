@@ -1,1 +1,0 @@
-initSidebarItems({"fn":[["arbitrary_routing_message",""],["generate_random_u8",""]]});

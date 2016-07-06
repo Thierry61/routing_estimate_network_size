@@ -1,1 +1,0 @@
-initSidebarItems({"struct":[["RefreshAccumulator",""]],"type":[["Bytes",""],["Request",""]]});

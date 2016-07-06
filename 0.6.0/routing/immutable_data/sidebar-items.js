@@ -1,1 +1,0 @@
-initSidebarItems({"enum":[["ImmutableDataType","ImmutableDataType."]],"struct":[["ImmutableData","ImmutableData hash == SHA512"]]});

@@ -1,1 +1,0 @@
-initSidebarItems({"fn":[["main","Run a routing node."]]});
