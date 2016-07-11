@@ -604,7 +604,7 @@
 
     <span class='doccomment'>/// Causes node creation to fail if another node on the local network is detected.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>deny_other_local_nodes</span>(<span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>NodeBuilder</span> {
-        <span class='ident'>NodeBuilder</span> { <span class='ident'>deny_other_local_nodes</span>: <span class='boolval'>true</span>, ..<span class='self'>self</span> }
+        <span class='ident'>NodeBuilder</span> { <span class='ident'>deny_other_local_nodes</span>: <span class='boolvalue'>true</span>, ..<span class='self'>self</span> }
     }
 
     <span class='doccomment'>/// Creates new `Node`.</span>
@@ -683,7 +683,7 @@
         <span class='ident'>NodeBuilder</span> {
             <span class='ident'>cache</span>: <span class='ident'>Box</span>::<span class='ident'>new</span>(<span class='ident'>NullCache</span>),
             <span class='ident'>role</span>: <span class='ident'>Role</span>::<span class='ident'>Node</span>,
-            <span class='ident'>deny_other_local_nodes</span>: <span class='boolval'>false</span>,
+            <span class='ident'>deny_other_local_nodes</span>: <span class='boolvalue'>false</span>,
         }
     }
 
@@ -1059,6 +1059,8 @@
                     <dd>Move down in search results</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
+                    <dt>+</dt>
+                    <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>
 
