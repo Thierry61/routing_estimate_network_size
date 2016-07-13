@@ -974,10 +974,6 @@
 <span id="930">930</span>
 <span id="931">931</span>
 <span id="932">932</span>
-<span id="933">933</span>
-<span id="934">934</span>
-<span id="935">935</span>
-<span id="936">936</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2015 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -1089,9 +1085,6 @@
         <span class='doccomment'>/// Signature of the originator of this message.</span>
         <span class='ident'>signature</span>: <span class='ident'>sign</span>::<span class='ident'>Signature</span>,
     },
-    <span class='doccomment'>/// Sent from a client that became a full routing node. The recipient can remove it from its</span>
-    <span class='doccomment'>/// client map.</span>
-    <span class='ident'>ClientToNode</span>,
     <span class='doccomment'>/// Sent from a node that found a new node in the network to all its contacts who might need to</span>
     <span class='doccomment'>/// add the new node to their routing table.</span>
     <span class='ident'>NewNode</span>(<span class='ident'>PublicId</span>),
@@ -1371,7 +1364,6 @@
                        <span class='ident'>current_quorum_size</span>)
             }
             <span class='ident'>DirectMessage</span>::<span class='ident'>BootstrapDeny</span> <span class='op'>=&gt;</span> <span class='macro'>write</span><span class='macro'>!</span>(<span class='ident'>formatter</span>, <span class='string'>&quot;BootstrapDeny&quot;</span>),
-            <span class='ident'>DirectMessage</span>::<span class='ident'>ClientToNode</span> <span class='op'>=&gt;</span> <span class='macro'>write</span><span class='macro'>!</span>(<span class='ident'>formatter</span>, <span class='string'>&quot;ClientToNode&quot;</span>),
             <span class='ident'>DirectMessage</span>::<span class='ident'>ClientIdentify</span> { <span class='ident'>client_restriction</span>: <span class='boolvalue'>true</span>, .. } <span class='op'>=&gt;</span> {
                 <span class='macro'>write</span><span class='macro'>!</span>(<span class='ident'>formatter</span>, <span class='string'>&quot;ClientIdentify (client only)&quot;</span>)
             }

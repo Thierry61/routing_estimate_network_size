@@ -2418,14 +2418,6 @@
 <span id="2374">2374</span>
 <span id="2375">2375</span>
 <span id="2376">2376</span>
-<span id="2377">2377</span>
-<span id="2378">2378</span>
-<span id="2379">2379</span>
-<span id="2380">2380</span>
-<span id="2381">2381</span>
-<span id="2382">2382</span>
-<span id="2383">2383</span>
-<span id="2384">2384</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2015 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -3059,7 +3051,8 @@
         <span class='kw'>let</span> (<span class='ident'>pub_id</span>, <span class='ident'>src</span>, <span class='ident'>dst</span>) <span class='op'>=</span> <span class='kw'>match</span> <span class='self'>self</span>.<span class='ident'>peer_mgr</span>
             .<span class='ident'>connection_info_prepared</span>(<span class='ident'>result_token</span>, <span class='ident'>our_connection_info</span>) {
             <span class='prelude-val'>Err</span>(<span class='ident'>error</span>) <span class='op'>=&gt;</span> {
-                <span class='macro'>error</span><span class='macro'>!</span>(<span class='string'>&quot;{:?} Prepared connection info, but no entry found in token map: {:?}&quot;</span>,
+                <span class='comment'>// This usually means we have already connected.</span>
+                <span class='macro'>debug</span><span class='macro'>!</span>(<span class='string'>&quot;{:?} Prepared connection info, but no entry found in token map: {:?}&quot;</span>,
                        <span class='self'>self</span>,
                        <span class='ident'>error</span>);
                 <span class='kw'>return</span>;
@@ -3610,21 +3603,6 @@
                        clients.&quot;</span>,
                       <span class='self'>self</span>);
                 <span class='self'>self</span>.<span class='ident'>rebootstrap</span>();
-                <span class='prelude-val'>Ok</span>(())
-            }
-            <span class='ident'>DirectMessage</span>::<span class='ident'>ClientToNode</span> <span class='op'>=&gt;</span> {
-                <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>peer_mgr</span>.<span class='ident'>remove_client</span>(<span class='kw-2'>&amp;</span><span class='ident'>peer_id</span>).<span class='ident'>is_none</span>() {
-                    <span class='macro'>warn</span><span class='macro'>!</span>(<span class='string'>&quot;{:?} Client requested ClientToNode, but is not in client map: {:?}&quot;</span>,
-                          <span class='self'>self</span>,
-                          <span class='ident'>peer_id</span>);
-                }
-                <span class='comment'>// TODO(afck): Try adding them to the routing table?</span>
-                <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>peer_mgr</span>.<span class='ident'>get_routing_peer</span>(<span class='kw-2'>&amp;</span><span class='ident'>peer_id</span>).<span class='ident'>is_none</span>() {
-                    <span class='macro'>warn</span><span class='macro'>!</span>(<span class='string'>&quot;{:?} Client requested ClientToNode, but is not in routing table: {:?}&quot;</span>,
-                          <span class='self'>self</span>,
-                          <span class='ident'>peer_id</span>);
-                    <span class='self'>self</span>.<span class='ident'>disconnect_peer</span>(<span class='kw-2'>&amp;</span><span class='ident'>peer_id</span>);
-                }
                 <span class='prelude-val'>Ok</span>(())
             }
             <span class='ident'>DirectMessage</span>::<span class='ident'>ClientIdentify</span> { <span class='kw-2'>ref</span> <span class='ident'>serialised_public_id</span>,
@@ -4331,7 +4309,13 @@
             <span class='prelude-val'>Ok</span>(<span class='ident'>ConnectionInfoReceivedResult</span>::<span class='ident'>Prepare</span>(<span class='ident'>token</span>)) <span class='op'>=&gt;</span> {
                 <span class='self'>self</span>.<span class='ident'>crust_service</span>.<span class='ident'>prepare_connection_info</span>(<span class='ident'>token</span>);
             }
-            <span class='prelude-val'>Ok</span>(<span class='ident'>ConnectionInfoReceivedResult</span>::<span class='ident'>Waiting</span>) <span class='op'>=&gt;</span> (),
+            <span class='prelude-val'>Ok</span>(<span class='ident'>ConnectionInfoReceivedResult</span>::<span class='ident'>IsProxy</span>) <span class='op'>|</span>
+            <span class='prelude-val'>Ok</span>(<span class='ident'>ConnectionInfoReceivedResult</span>::<span class='ident'>IsClient</span>) <span class='op'>=&gt;</span> {
+                <span class='macro'>try</span><span class='macro'>!</span>(<span class='self'>self</span>.<span class='ident'>node_identify</span>(<span class='ident'>peer_id</span>));
+                <span class='self'>self</span>.<span class='ident'>handle_node_identify</span>(<span class='ident'>their_public_id</span>, <span class='ident'>peer_id</span>);
+            }
+            <span class='prelude-val'>Ok</span>(<span class='ident'>ConnectionInfoReceivedResult</span>::<span class='ident'>Waiting</span>) <span class='op'>|</span>
+            <span class='prelude-val'>Ok</span>(<span class='ident'>ConnectionInfoReceivedResult</span>::<span class='ident'>IsConnected</span>) <span class='op'>=&gt;</span> (),
             <span class='prelude-val'>Err</span>(<span class='ident'>error</span>) <span class='op'>=&gt;</span> {
                 <span class='macro'>warn</span><span class='macro'>!</span>(<span class='string'>&quot;{:?} Failed to insert connection info from {:?} ({:?}): {:?}&quot;</span>,
                       <span class='self'>self</span>,
