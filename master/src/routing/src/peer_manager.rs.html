@@ -678,6 +678,32 @@
 <span id="634">634</span>
 <span id="635">635</span>
 <span id="636">636</span>
+<span id="637">637</span>
+<span id="638">638</span>
+<span id="639">639</span>
+<span id="640">640</span>
+<span id="641">641</span>
+<span id="642">642</span>
+<span id="643">643</span>
+<span id="644">644</span>
+<span id="645">645</span>
+<span id="646">646</span>
+<span id="647">647</span>
+<span id="648">648</span>
+<span id="649">649</span>
+<span id="650">650</span>
+<span id="651">651</span>
+<span id="652">652</span>
+<span id="653">653</span>
+<span id="654">654</span>
+<span id="655">655</span>
+<span id="656">656</span>
+<span id="657">657</span>
+<span id="658">658</span>
+<span id="659">659</span>
+<span id="660">660</span>
+<span id="661">661</span>
+<span id="662">662</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2016 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -866,7 +892,8 @@
     <span class='comment'>// Any clients we have proxying through us, and whether they have `client_restriction`.</span>
     <span class='ident'>client_map</span>: <span class='ident'>HashMap</span><span class='op'>&lt;</span><span class='ident'>PeerId</span>, <span class='ident'>ClientInfo</span><span class='op'>&gt;</span>,
     <span class='ident'>connection_token_map</span>: <span class='ident'>HashMap</span><span class='op'>&lt;</span><span class='ident'>u32</span>, <span class='ident'>PublicId</span><span class='op'>&gt;</span>,
-    <span class='ident'>node_map</span>: <span class='ident'>HashMap</span><span class='op'>&lt;</span><span class='ident'>PublicId</span>, (<span class='ident'>Instant</span>, <span class='ident'>PeerState</span>)<span class='op'>&gt;</span>,
+    <span class='comment'>// node_map indexed by public_id.name()</span>
+    <span class='ident'>node_map</span>: <span class='ident'>HashMap</span><span class='op'>&lt;</span><span class='ident'>XorName</span>, (<span class='ident'>Instant</span>, <span class='ident'>PeerState</span>)<span class='op'>&gt;</span>,
     <span class='doccomment'>/// Our bootstrap connection.</span>
     <span class='ident'>proxy</span>: <span class='prelude-ty'>Option</span><span class='op'>&lt;</span>(<span class='ident'>PeerId</span>, <span class='ident'>PublicId</span>)<span class='op'>&gt;</span>,
     <span class='ident'>pub_id_map</span>: <span class='ident'>HashMap</span><span class='op'>&lt;</span><span class='ident'>PeerId</span>, <span class='ident'>PublicId</span><span class='op'>&gt;</span>,
@@ -901,15 +928,18 @@
     }
 
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>add_to_routing_table</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>info</span>: <span class='ident'>NodeInfo</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>AddedNodeDetails</span><span class='op'>&lt;</span><span class='ident'>NodeInfo</span><span class='op'>&gt;&gt;</span> {
+        <span class='kw'>let</span> _ <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>node_map</span>.<span class='ident'>insert</span>(<span class='op'>*</span><span class='ident'>info</span>.<span class='ident'>public_id</span>.<span class='ident'>name</span>(), (<span class='ident'>Instant</span>::<span class='ident'>now</span>(), <span class='ident'>PeerState</span>::<span class='ident'>Connected</span>));
+        <span class='kw'>let</span> _ <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>pub_id_map</span>.<span class='ident'>insert</span>(<span class='ident'>info</span>.<span class='ident'>peer_id</span>, <span class='ident'>info</span>.<span class='ident'>public_id</span>);
         <span class='self'>self</span>.<span class='ident'>routing_table</span>.<span class='ident'>add</span>(<span class='ident'>info</span>)
     }
 
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>remove_if_unneeded</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>name</span>: <span class='kw-2'>&amp;</span><span class='ident'>XorName</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> {
-        <span class='self'>self</span>.<span class='ident'>routing_table</span>.<span class='ident'>remove_if_unneeded</span>(<span class='ident'>name</span>)
-    }
-
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>remove_node</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>name</span>: <span class='kw-2'>&amp;</span><span class='ident'>XorName</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>DroppedNodeDetails</span><span class='op'>&gt;</span> {
-        <span class='self'>self</span>.<span class='ident'>routing_table</span>.<span class='ident'>remove</span>(<span class='ident'>name</span>)
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>remove_if_unneeded</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>name</span>: <span class='kw-2'>&amp;</span><span class='ident'>XorName</span>, <span class='ident'>target_id</span>: <span class='kw-2'>&amp;</span><span class='ident'>PeerId</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>bool</span><span class='op'>&gt;</span> {
+        <span class='kw'>if</span> <span class='kw'>let</span> <span class='prelude-val'>Some</span>(<span class='boolvalue'>true</span>) <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>pub_id_map</span>.<span class='ident'>iter</span>().<span class='ident'>find</span>(<span class='op'>|</span><span class='ident'>elt</span><span class='op'>|</span> <span class='ident'>elt</span>.<span class='number'>1</span>.<span class='ident'>name</span>() <span class='op'>==</span> <span class='ident'>name</span>)
+                                                  .<span class='ident'>map</span>(<span class='op'>|</span>(<span class='ident'>peer_id</span>, _)<span class='op'>|</span> <span class='ident'>target_id</span> <span class='op'>==</span> <span class='ident'>peer_id</span>) {
+            <span class='prelude-val'>Some</span>(<span class='self'>self</span>.<span class='ident'>routing_table</span>.<span class='ident'>remove_if_unneeded</span>(<span class='ident'>name</span>))
+        } <span class='kw'>else</span> {
+            <span class='prelude-val'>None</span>
+        }
     }
 
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>is_tunnel</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>peer_id</span>: <span class='kw-2'>&amp;</span><span class='ident'>PeerId</span>, <span class='ident'>dst_id</span>: <span class='kw-2'>&amp;</span><span class='ident'>PeerId</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> {
@@ -1024,29 +1054,42 @@
 
     <span class='doccomment'>/// Returns the public ID of the given peer, if it is in `CrustConnecting` state.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>get_connecting_peer</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>peer_id</span>: <span class='kw-2'>&amp;</span><span class='ident'>PeerId</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='kw-2'>&amp;</span><span class='ident'>PublicId</span><span class='op'>&gt;</span> {
+        <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>routing_table</span>.<span class='ident'>iter</span>().<span class='ident'>all</span>(<span class='op'>|</span><span class='ident'>node</span><span class='op'>|</span> <span class='ident'>node</span>.<span class='ident'>peer_id</span> <span class='op'>!=</span> <span class='op'>*</span><span class='ident'>peer_id</span>) {
+            <span class='self'>self</span>.<span class='ident'>pub_id_map</span>.<span class='ident'>get</span>(<span class='ident'>peer_id</span>).<span class='ident'>and_then</span>(<span class='op'>|</span><span class='ident'>pub_id</span><span class='op'>|</span> {
+                <span class='kw'>match</span> <span class='self'>self</span>.<span class='ident'>get_state</span>(<span class='ident'>pub_id</span>) {
+                    <span class='prelude-val'>Some</span>(<span class='kw-2'>&amp;</span><span class='ident'>PeerState</span>::<span class='ident'>CrustConnecting</span>) <span class='op'>=&gt;</span> <span class='prelude-val'>Some</span>(<span class='ident'>pub_id</span>),
+                    _ <span class='op'>=&gt;</span> <span class='prelude-val'>None</span>,
+                }
+            })
+        } <span class='kw'>else</span> {
+            <span class='prelude-val'>None</span>
+        }
+    }
+
+    <span class='doccomment'>/// Returns the public ID of the given peer, if it is in `Connected` or `Tunnel` state.</span>
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>get_routing_peer</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>peer_id</span>: <span class='kw-2'>&amp;</span><span class='ident'>PeerId</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='kw-2'>&amp;</span><span class='ident'>PublicId</span><span class='op'>&gt;</span> {
         <span class='self'>self</span>.<span class='ident'>pub_id_map</span>.<span class='ident'>get</span>(<span class='ident'>peer_id</span>).<span class='ident'>and_then</span>(<span class='op'>|</span><span class='ident'>pub_id</span><span class='op'>|</span> {
             <span class='kw'>match</span> <span class='self'>self</span>.<span class='ident'>get_state</span>(<span class='ident'>pub_id</span>) {
-                <span class='comment'>// Some(&amp;PeerState::ConnectionInfoPreparing(..)) |</span>
-                <span class='comment'>// Some(&amp;PeerState::ConnectionInfoReady(_)) |</span>
-                <span class='comment'>// Some(&amp;PeerState::SearchingForTunnel) |</span>
-                <span class='prelude-val'>Some</span>(<span class='kw-2'>&amp;</span><span class='ident'>PeerState</span>::<span class='ident'>CrustConnecting</span>) <span class='op'>=&gt;</span> <span class='prelude-val'>Some</span>(<span class='ident'>pub_id</span>),
+                <span class='prelude-val'>Some</span>(<span class='kw-2'>&amp;</span><span class='ident'>PeerState</span>::<span class='ident'>Connected</span>) <span class='op'>|</span>
+                <span class='prelude-val'>Some</span>(<span class='kw-2'>&amp;</span><span class='ident'>PeerState</span>::<span class='ident'>Tunnel</span>) <span class='op'>=&gt;</span> <span class='prelude-val'>Some</span>(<span class='ident'>pub_id</span>),
                 _ <span class='op'>=&gt;</span> <span class='prelude-val'>None</span>,
             }
         })
     }
 
-    <span class='doccomment'>/// Sets the given peer to state `SearchingForTunnel` or returns `false` if it doesn&#39;t exist.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>set_searching_for_tunnel</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>peer_id</span>: <span class='ident'>PeerId</span>, <span class='ident'>pub_id</span>: <span class='kw-2'>&amp;</span><span class='ident'>PublicId</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> {
+    <span class='doccomment'>/// Sets the given peer to state `SearchingForTunnel` and returns querying candidates</span>
+    <span class='doccomment'>/// returns empty vector of candidates if it is already in Connected or Tunnel state.</span>
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>set_searching_for_tunnel</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>peer_id</span>: <span class='ident'>PeerId</span>, <span class='ident'>pub_id</span>: <span class='kw-2'>&amp;</span><span class='ident'>PublicId</span>) <span class='op'>-&gt;</span> <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>NodeInfo</span><span class='op'>&gt;</span> {
         <span class='kw'>match</span> <span class='self'>self</span>.<span class='ident'>get_state</span>(<span class='ident'>pub_id</span>) {
             <span class='prelude-val'>Some</span>(<span class='kw-2'>&amp;</span><span class='ident'>PeerState</span>::<span class='ident'>Connected</span>) <span class='op'>|</span>
             <span class='prelude-val'>Some</span>(<span class='kw-2'>&amp;</span><span class='ident'>PeerState</span>::<span class='ident'>Tunnel</span>) <span class='op'>=&gt;</span> {
-                <span class='kw'>return</span> <span class='boolvalue'>false</span>;
+                <span class='kw'>return</span> <span class='macro'>vec</span><span class='macro'>!</span>[];
             }
             _ <span class='op'>=&gt;</span> (),
         }
         <span class='kw'>let</span> _ <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>pub_id_map</span>.<span class='ident'>insert</span>(<span class='ident'>peer_id</span>, <span class='op'>*</span><span class='ident'>pub_id</span>);
         <span class='self'>self</span>.<span class='ident'>insert_state</span>(<span class='op'>*</span><span class='ident'>pub_id</span>, <span class='ident'>PeerState</span>::<span class='ident'>SearchingForTunnel</span>);
-        <span class='boolvalue'>true</span>
+        <span class='self'>self</span>.<span class='ident'>routing_table</span>.<span class='ident'>closest_nodes_to</span>(<span class='ident'>pub_id</span>.<span class='ident'>name</span>(), <span class='ident'>GROUP_SIZE</span>, <span class='boolvalue'>false</span>)
     }
 
     <span class='doccomment'>/// Inserts the given connection info in the map to wait for the peer&#39;s info, or returns both</span>
@@ -1057,10 +1100,10 @@
                                     <span class='ident'>our_info</span>: <span class='ident'>PrivConnectionInfo</span>)
                                     <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>ConnectionInfoPreparedResult</span>, <span class='ident'>Error</span><span class='op'>&gt;</span> {
         <span class='kw'>let</span> <span class='ident'>pub_id</span> <span class='op'>=</span> <span class='macro'>try</span><span class='macro'>!</span>(<span class='self'>self</span>.<span class='ident'>connection_token_map</span>.<span class='ident'>remove</span>(<span class='kw-2'>&amp;</span><span class='ident'>token</span>).<span class='ident'>ok_or</span>(<span class='ident'>Error</span>::<span class='ident'>PeerNotFound</span>));
-        <span class='kw'>let</span> (<span class='ident'>src</span>, <span class='ident'>dst</span>, <span class='ident'>opt_their_info</span>) <span class='op'>=</span> <span class='kw'>match</span> <span class='self'>self</span>.<span class='ident'>node_map</span>.<span class='ident'>remove</span>(<span class='kw-2'>&amp;</span><span class='ident'>pub_id</span>) {
+        <span class='kw'>let</span> (<span class='ident'>src</span>, <span class='ident'>dst</span>, <span class='ident'>opt_their_info</span>) <span class='op'>=</span> <span class='kw'>match</span> <span class='self'>self</span>.<span class='ident'>node_map</span>.<span class='ident'>remove</span>(<span class='ident'>pub_id</span>.<span class='ident'>name</span>()) {
             <span class='prelude-val'>Some</span>((_, <span class='ident'>PeerState</span>::<span class='ident'>ConnectionInfoPreparing</span>(<span class='ident'>src</span>, <span class='ident'>dst</span>, <span class='ident'>info</span>))) <span class='op'>=&gt;</span> (<span class='ident'>src</span>, <span class='ident'>dst</span>, <span class='ident'>info</span>),
             <span class='prelude-val'>Some</span>((<span class='ident'>timestamp</span>, <span class='ident'>state</span>)) <span class='op'>=&gt;</span> {
-                <span class='kw'>let</span> _ <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>node_map</span>.<span class='ident'>insert</span>(<span class='ident'>pub_id</span>, (<span class='ident'>timestamp</span>, <span class='ident'>state</span>));
+                <span class='kw'>let</span> _ <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>node_map</span>.<span class='ident'>insert</span>(<span class='op'>*</span><span class='ident'>pub_id</span>.<span class='ident'>name</span>(), (<span class='ident'>timestamp</span>, <span class='ident'>state</span>));
                 <span class='kw'>return</span> <span class='prelude-val'>Err</span>(<span class='ident'>Error</span>::<span class='ident'>UnexpectedState</span>);
             }
             <span class='prelude-val'>None</span> <span class='op'>=&gt;</span> <span class='kw'>return</span> <span class='prelude-val'>Err</span>(<span class='ident'>Error</span>::<span class='ident'>PeerNotFound</span>),
@@ -1091,7 +1134,7 @@
                                     <span class='ident'>their_info</span>: <span class='ident'>PubConnectionInfo</span>)
                                     <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>ConnectionInfoReceivedResult</span>, <span class='ident'>Error</span><span class='op'>&gt;</span> {
         <span class='kw'>let</span> <span class='ident'>peer_id</span> <span class='op'>=</span> <span class='ident'>their_info</span>.<span class='ident'>id</span>();
-        <span class='kw'>match</span> <span class='self'>self</span>.<span class='ident'>node_map</span>.<span class='ident'>remove</span>(<span class='kw-2'>&amp;</span><span class='ident'>pub_id</span>) {
+        <span class='kw'>match</span> <span class='self'>self</span>.<span class='ident'>node_map</span>.<span class='ident'>remove</span>(<span class='ident'>pub_id</span>.<span class='ident'>name</span>()) {
             <span class='prelude-val'>Some</span>((_, <span class='ident'>PeerState</span>::<span class='ident'>ConnectionInfoReady</span>(<span class='ident'>our_info</span>))) <span class='op'>=&gt;</span> {
                 <span class='self'>self</span>.<span class='ident'>insert_state</span>(<span class='ident'>pub_id</span>, <span class='ident'>PeerState</span>::<span class='ident'>CrustConnecting</span>);
                 <span class='kw'>let</span> _ <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>pub_id_map</span>.<span class='ident'>insert</span>(<span class='ident'>peer_id</span>, <span class='ident'>pub_id</span>);
@@ -1103,7 +1146,7 @@
                 <span class='prelude-val'>Ok</span>(<span class='ident'>ConnectionInfoReceivedResult</span>::<span class='ident'>Waiting</span>)
             }
             <span class='prelude-val'>Some</span>((<span class='ident'>timestamp</span>, <span class='ident'>state</span>)) <span class='op'>=&gt;</span> {
-                <span class='kw'>let</span> _ <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>node_map</span>.<span class='ident'>insert</span>(<span class='ident'>pub_id</span>, (<span class='ident'>timestamp</span>, <span class='ident'>state</span>));
+                <span class='kw'>let</span> _ <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>node_map</span>.<span class='ident'>insert</span>(<span class='op'>*</span><span class='ident'>pub_id</span>.<span class='ident'>name</span>(), (<span class='ident'>timestamp</span>, <span class='ident'>state</span>));
                 <span class='prelude-val'>Err</span>(<span class='ident'>Error</span>::<span class='ident'>UnexpectedState</span>)
             }
             <span class='prelude-val'>None</span> <span class='op'>=&gt;</span> {
@@ -1119,15 +1162,18 @@
 
     <span class='doccomment'>/// Returns a new token for Crust&#39;s `prepare_connection_info` and puts the given peer into</span>
     <span class='doccomment'>/// `ConnectionInfoPreparing` status.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>get_connection_info_token</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>,
-                                     <span class='ident'>src</span>: <span class='ident'>Authority</span>,
-                                     <span class='ident'>dst</span>: <span class='ident'>Authority</span>,
-                                     <span class='ident'>pub_id</span>: <span class='ident'>PublicId</span>)
-                                     <span class='op'>-&gt;</span> <span class='ident'>u32</span> {
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>get_connection_token</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>,
+                                <span class='ident'>src</span>: <span class='ident'>Authority</span>,
+                                <span class='ident'>dst</span>: <span class='ident'>Authority</span>,
+                                <span class='ident'>pub_id</span>: <span class='ident'>PublicId</span>)
+                                <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>u32</span><span class='op'>&gt;</span> {
+        <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>is_connecting</span>(<span class='kw-2'>&amp;</span><span class='ident'>pub_id</span>) {
+            <span class='kw'>return</span> <span class='prelude-val'>None</span>;
+        }
         <span class='kw'>let</span> <span class='ident'>token</span> <span class='op'>=</span> <span class='ident'>rand</span>::<span class='ident'>random</span>();
         <span class='kw'>let</span> _ <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>connection_token_map</span>.<span class='ident'>insert</span>(<span class='ident'>token</span>, <span class='ident'>pub_id</span>);
         <span class='self'>self</span>.<span class='ident'>insert_state</span>(<span class='ident'>pub_id</span>, <span class='ident'>PeerState</span>::<span class='ident'>ConnectionInfoPreparing</span>(<span class='ident'>src</span>, <span class='ident'>dst</span>, <span class='prelude-val'>None</span>));
-        <span class='ident'>token</span>
+        <span class='prelude-val'>Some</span>(<span class='ident'>token</span>)
     }
 
     <span class='doccomment'>/// Returns all peers we are looking for a tunnel to.</span>
@@ -1154,11 +1200,17 @@
         }
     }
 
-    <span class='doccomment'>/// Removes the given entry.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>remove_peer</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>peer_id</span>: <span class='kw-2'>&amp;</span><span class='ident'>PeerId</span>) {
+    <span class='doccomment'>/// Removes the given entry, returns the pair of (peer&#39;s public name, the removal result)</span>
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>remove_peer</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>peer_id</span>: <span class='kw-2'>&amp;</span><span class='ident'>PeerId</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span>(<span class='ident'>XorName</span>, <span class='ident'>DroppedNodeDetails</span>)<span class='op'>&gt;</span> {
         <span class='kw'>if</span> <span class='kw'>let</span> <span class='prelude-val'>Some</span>(<span class='ident'>pub_id</span>) <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>pub_id_map</span>.<span class='ident'>remove</span>(<span class='ident'>peer_id</span>) {
-            <span class='kw'>let</span> _ <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>node_map</span>.<span class='ident'>remove</span>(<span class='kw-2'>&amp;</span><span class='ident'>pub_id</span>);
-        };
+            <span class='kw'>let</span> _ <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>node_map</span>.<span class='ident'>remove</span>(<span class='ident'>pub_id</span>.<span class='ident'>name</span>());
+            <span class='kw'>match</span> <span class='self'>self</span>.<span class='ident'>routing_table</span>.<span class='ident'>remove</span>(<span class='ident'>pub_id</span>.<span class='ident'>name</span>()) {
+                <span class='prelude-val'>Some</span>(<span class='ident'>removal_result</span>) <span class='op'>=&gt;</span> <span class='prelude-val'>Some</span>((<span class='op'>*</span><span class='ident'>pub_id</span>.<span class='ident'>name</span>(), <span class='ident'>removal_result</span>)),
+                <span class='prelude-val'>None</span> <span class='op'>=&gt;</span> <span class='prelude-val'>None</span>,
+            }
+        } <span class='kw'>else</span> {
+            <span class='prelude-val'>None</span>
+        }
     }
 
     <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>feature</span> <span class='op'>=</span> <span class='string'>&quot;use-mock-crust&quot;</span>)]</span>
@@ -1180,17 +1232,17 @@
     <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>feature</span> <span class='op'>=</span> <span class='string'>&quot;use-mock-crust&quot;</span>)]</span>
     <span class='kw'>fn</span> <span class='ident'>insert_state</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>pub_id</span>: <span class='ident'>PublicId</span>, <span class='ident'>state</span>: <span class='ident'>PeerState</span>) {
         <span class='comment'>// In mock Crust tests, &quot;expired&quot; entries are removed with `clear_caches`.</span>
-        <span class='kw'>let</span> _ <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>node_map</span>.<span class='ident'>insert</span>(<span class='ident'>pub_id</span>, (<span class='ident'>Instant</span>::<span class='ident'>now</span>(), <span class='ident'>state</span>));
+        <span class='kw'>let</span> _ <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>node_map</span>.<span class='ident'>insert</span>(<span class='op'>*</span><span class='ident'>pub_id</span>.<span class='ident'>name</span>(), (<span class='ident'>Instant</span>::<span class='ident'>now</span>(), <span class='ident'>state</span>));
     }
 
     <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>not</span>(<span class='ident'>feature</span> <span class='op'>=</span> <span class='string'>&quot;use-mock-crust&quot;</span>))]</span>
     <span class='kw'>fn</span> <span class='ident'>insert_state</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>pub_id</span>: <span class='ident'>PublicId</span>, <span class='ident'>state</span>: <span class='ident'>PeerState</span>) {
-        <span class='kw'>let</span> _ <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>node_map</span>.<span class='ident'>insert</span>(<span class='ident'>pub_id</span>, (<span class='ident'>Instant</span>::<span class='ident'>now</span>(), <span class='ident'>state</span>));
+        <span class='kw'>let</span> _ <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>node_map</span>.<span class='ident'>insert</span>(<span class='op'>*</span><span class='ident'>pub_id</span>.<span class='ident'>name</span>(), (<span class='ident'>Instant</span>::<span class='ident'>now</span>(), <span class='ident'>state</span>));
         <span class='self'>self</span>.<span class='ident'>remove_expired</span>();
     }
 
     <span class='kw'>fn</span> <span class='ident'>get_state</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>pub_id</span>: <span class='kw-2'>&amp;</span><span class='ident'>PublicId</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='kw-2'>&amp;</span><span class='ident'>PeerState</span><span class='op'>&gt;</span> {
-        <span class='self'>self</span>.<span class='ident'>node_map</span>.<span class='ident'>get</span>(<span class='ident'>pub_id</span>).<span class='ident'>map</span>(<span class='op'>|</span><span class='kw-2'>&amp;</span>(_, <span class='kw-2'>ref</span> <span class='ident'>state</span>)<span class='op'>|</span> <span class='ident'>state</span>)
+        <span class='self'>self</span>.<span class='ident'>node_map</span>.<span class='ident'>get</span>(<span class='ident'>pub_id</span>.<span class='ident'>name</span>()).<span class='ident'>map</span>(<span class='op'>|</span><span class='kw-2'>&amp;</span>(_, <span class='kw-2'>ref</span> <span class='ident'>state</span>)<span class='op'>|</span> <span class='ident'>state</span>)
     }
 
     <span class='comment'>// CONNECTION_TIMEOUT_SECS == 0 if use-mock-crust.</span>
@@ -1214,7 +1266,7 @@
         }
         <span class='kw'>let</span> <span class='ident'>remove_tokens</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>connection_token_map</span>
             .<span class='ident'>iter</span>()
-            .<span class='ident'>filter</span>(<span class='op'>|</span><span class='kw-2'>&amp;</span>(_, <span class='ident'>pub_id</span>)<span class='op'>|</span> <span class='op'>!</span><span class='self'>self</span>.<span class='ident'>node_map</span>.<span class='ident'>contains_key</span>(<span class='ident'>pub_id</span>))
+            .<span class='ident'>filter</span>(<span class='op'>|</span><span class='kw-2'>&amp;</span>(_, <span class='ident'>pub_id</span>)<span class='op'>|</span> <span class='op'>!</span><span class='self'>self</span>.<span class='ident'>node_map</span>.<span class='ident'>contains_key</span>(<span class='ident'>pub_id</span>.<span class='ident'>name</span>()))
             .<span class='ident'>map</span>(<span class='op'>|</span>(<span class='ident'>token</span>, _)<span class='op'>|</span> <span class='op'>*</span><span class='ident'>token</span>)
             .<span class='ident'>collect_vec</span>();
         <span class='kw'>for</span> <span class='ident'>token</span> <span class='kw'>in</span> <span class='ident'>remove_tokens</span> {
@@ -1222,7 +1274,7 @@
         }
         <span class='kw'>let</span> <span class='ident'>remove_peer_ids</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>pub_id_map</span>
             .<span class='ident'>iter</span>()
-            .<span class='ident'>filter</span>(<span class='op'>|</span><span class='kw-2'>&amp;</span>(_, <span class='ident'>pub_id</span>)<span class='op'>|</span> <span class='op'>!</span><span class='self'>self</span>.<span class='ident'>node_map</span>.<span class='ident'>contains_key</span>(<span class='ident'>pub_id</span>))
+            .<span class='ident'>filter</span>(<span class='op'>|</span><span class='kw-2'>&amp;</span>(_, <span class='ident'>pub_id</span>)<span class='op'>|</span> <span class='op'>!</span><span class='self'>self</span>.<span class='ident'>node_map</span>.<span class='ident'>contains_key</span>(<span class='ident'>pub_id</span>.<span class='ident'>name</span>()))
             .<span class='ident'>map</span>(<span class='op'>|</span>(<span class='ident'>peer_id</span>, _)<span class='op'>|</span> <span class='op'>*</span><span class='ident'>peer_id</span>)
             .<span class='ident'>collect_vec</span>();
         <span class='kw'>for</span> <span class='ident'>peer_id</span> <span class='kw'>in</span> <span class='ident'>remove_peer_ids</span> {
@@ -1252,7 +1304,7 @@
         <span class='kw'>let</span> <span class='ident'>our_connection_info</span> <span class='op'>=</span> <span class='ident'>PrivConnectionInfo</span>(<span class='ident'>PeerId</span>(<span class='number'>0</span>), <span class='ident'>Endpoint</span>(<span class='number'>0</span>));
         <span class='kw'>let</span> <span class='ident'>their_connection_info</span> <span class='op'>=</span> <span class='ident'>PubConnectionInfo</span>(<span class='ident'>PeerId</span>(<span class='number'>1</span>), <span class='ident'>Endpoint</span>(<span class='number'>1</span>));
         <span class='comment'>// We decide to connect to the peer with `pub_id`:</span>
-        <span class='kw'>let</span> <span class='ident'>token</span> <span class='op'>=</span> <span class='ident'>peer_mgr</span>.<span class='ident'>get_connection_info_token</span>(<span class='ident'>node_auth</span>(<span class='number'>0</span>), <span class='ident'>node_auth</span>(<span class='number'>1</span>), <span class='ident'>orig_pub_id</span>);
+        <span class='kw'>let</span> <span class='ident'>token</span> <span class='op'>=</span> <span class='macro'>unwrap</span><span class='macro'>!</span>(<span class='ident'>peer_mgr</span>.<span class='ident'>get_connection_token</span>(<span class='ident'>node_auth</span>(<span class='number'>0</span>), <span class='ident'>node_auth</span>(<span class='number'>1</span>), <span class='ident'>orig_pub_id</span>));
         <span class='comment'>// Crust has finished preparing the connection info.</span>
         <span class='kw'>match</span> <span class='ident'>peer_mgr</span>.<span class='ident'>connection_info_prepared</span>(<span class='ident'>token</span>, <span class='ident'>our_connection_info</span>.<span class='ident'>clone</span>()) {
             <span class='prelude-val'>Ok</span>(<span class='ident'>ConnectionInfoPreparedResult</span> { <span class='ident'>pub_id</span>, <span class='ident'>src</span>, <span class='ident'>dst</span>, <span class='ident'>infos</span>: <span class='prelude-val'>None</span> }) <span class='op'>=&gt;</span> {
