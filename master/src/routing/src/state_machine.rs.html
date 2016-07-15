@@ -445,6 +445,7 @@
     <span class='ident'>category_rx</span>: <span class='ident'>Receiver</span><span class='op'>&lt;</span><span class='ident'>MaidSafeEventCategory</span><span class='op'>&gt;</span>,
     <span class='ident'>crust_rx</span>: <span class='ident'>Receiver</span><span class='op'>&lt;</span><span class='ident'>CrustEvent</span><span class='op'>&gt;</span>,
     <span class='ident'>action_rx</span>: <span class='ident'>Receiver</span><span class='op'>&lt;</span><span class='ident'>Action</span><span class='op'>&gt;</span>,
+    <span class='ident'>is_running</span>: <span class='ident'>bool</span>,
 }
 
 <span class='kw'>pub</span> <span class='kw'>enum</span> <span class='ident'>State</span> {
@@ -503,6 +504,7 @@
 
         <span class='kw'>let</span> <span class='ident'>timer</span> <span class='op'>=</span> <span class='ident'>Timer</span>::<span class='ident'>new</span>(<span class='ident'>action_sender</span>.<span class='ident'>clone</span>());
         <span class='kw'>let</span> <span class='ident'>full_id</span> <span class='op'>=</span> <span class='ident'>keys</span>.<span class='ident'>unwrap_or_else</span>(<span class='ident'>FullId</span>::<span class='ident'>new</span>);
+        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>is_running</span> <span class='op'>=</span> <span class='boolvalue'>true</span>;
 
         <span class='kw'>let</span> <span class='ident'>state</span> <span class='op'>=</span> <span class='kw'>if</span> <span class='ident'>role</span> <span class='op'>==</span> <span class='ident'>Role</span>::<span class='ident'>FirstNode</span> {
             <span class='ident'>State</span>::<span class='ident'>Node</span>(<span class='ident'>Node</span>::<span class='ident'>first</span>(<span class='ident'>cache</span>, <span class='ident'>crust_service</span>, <span class='ident'>event_sender</span>, <span class='ident'>full_id</span>, <span class='ident'>timer</span>))
@@ -511,6 +513,7 @@
                     not supported&quot;</span>,
                    <span class='ident'>full_id</span>.<span class='ident'>public_id</span>().<span class='ident'>name</span>());
             <span class='kw'>let</span> _ <span class='op'>=</span> <span class='ident'>event_sender</span>.<span class='ident'>send</span>(<span class='ident'>Event</span>::<span class='ident'>Terminate</span>);
+            <span class='ident'>is_running</span> <span class='op'>=</span> <span class='boolvalue'>false</span>;
             <span class='ident'>State</span>::<span class='ident'>Terminated</span>
         } <span class='kw'>else</span> {
             <span class='ident'>State</span>::<span class='ident'>Client</span>(<span class='ident'>Client</span>::<span class='ident'>new</span>(<span class='ident'>HashSet</span>::<span class='ident'>new</span>(),
@@ -527,6 +530,7 @@
             <span class='ident'>crust_rx</span>: <span class='ident'>crust_rx</span>,
             <span class='ident'>action_rx</span>: <span class='ident'>action_rx</span>,
             <span class='ident'>state</span>: <span class='ident'>state</span>,
+            <span class='ident'>is_running</span>: <span class='ident'>is_running</span>,
         };
 
         (<span class='ident'>action_sender</span>, <span class='ident'>machine</span>)
@@ -536,7 +540,7 @@
     <span class='doccomment'>/// otherwise returns false. Never blocks.</span>
     <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>feature</span> <span class='op'>=</span> <span class='string'>&quot;use-mock-crust&quot;</span>)]</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>poll</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> {
-        <span class='kw'>if</span> <span class='kw'>let</span> <span class='ident'>State</span>::<span class='ident'>Terminated</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>state</span> {
+        <span class='kw'>if</span> <span class='op'>!</span><span class='self'>self</span>.<span class='ident'>is_running</span> {
             <span class='kw'>return</span> <span class='boolvalue'>false</span>;
         }
 
@@ -553,11 +557,7 @@
     <span class='doccomment'>/// the core is terminated, so it must be called in a separate thread.</span>
     <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>not</span>(<span class='ident'>feature</span> <span class='op'>=</span> <span class='string'>&quot;use-mock-crust&quot;</span>))]</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>run</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) {
-        <span class='kw'>loop</span> {
-            <span class='kw'>if</span> <span class='kw'>let</span> <span class='ident'>State</span>::<span class='ident'>Terminated</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>state</span> {
-                <span class='kw'>break</span>;
-            }
-
+        <span class='kw'>while</span> <span class='self'>self</span>.<span class='ident'>is_running</span> {
             <span class='kw'>if</span> <span class='kw'>let</span> <span class='prelude-val'>Ok</span>(<span class='ident'>category</span>) <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>category_rx</span>.<span class='ident'>recv</span>() {
                 <span class='self'>self</span>.<span class='ident'>handle_event</span>(<span class='ident'>category</span>);
             } <span class='kw'>else</span> {
@@ -639,7 +639,7 @@
     }
 
     <span class='kw'>fn</span> <span class='ident'>terminate</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) {
-        <span class='self'>self</span>.<span class='ident'>state</span> <span class='op'>=</span> <span class='ident'>State</span>::<span class='ident'>Terminated</span>;
+        <span class='self'>self</span>.<span class='ident'>is_running</span> <span class='op'>=</span> <span class='boolvalue'>false</span>;
     }
 }
 
