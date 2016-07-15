@@ -196,7 +196,6 @@
 <span id="152">152</span>
 <span id="153">153</span>
 <span id="154">154</span>
-<span id="155">155</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2015 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -216,10 +215,7 @@
 <span class='comment'>// relating to use of the SAFE Network Software.</span>
 
 <span class='kw'>use</span> <span class='ident'>action</span>::<span class='ident'>Action</span>;
-<span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>not</span>(<span class='ident'>feature</span> <span class='op'>=</span> <span class='string'>&quot;use-mock-crust&quot;</span>))]</span>
 <span class='kw'>use</span> <span class='ident'>crust</span>::{<span class='self'>self</span>, <span class='ident'>PeerId</span>};
-<span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>feature</span> <span class='op'>=</span> <span class='string'>&quot;use-mock-crust&quot;</span>)]</span>
-<span class='kw'>use</span> <span class='ident'>mock_crust</span>::<span class='ident'>crust</span>::{<span class='self'>self</span>, <span class='ident'>PeerId</span>};
 <span class='kw'>use</span> <span class='ident'>event</span>::<span class='ident'>Event</span>;
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>sync</span>::<span class='ident'>mpsc</span>::{<span class='ident'>RecvError</span>, <span class='ident'>SendError</span>};
 <span class='kw'>use</span> <span class='ident'>maidsafe_utilities</span>::<span class='ident'>event_sender</span>::{<span class='ident'>EventSenderError</span>, <span class='ident'>MaidSafeEventCategory</span>};
@@ -229,6 +225,8 @@
 <span class='kw'>pub</span> <span class='kw'>enum</span> <span class='ident'>InterfaceError</span> {
     <span class='doccomment'>/// We are not connected to the network.</span>
     <span class='ident'>NotConnected</span>,
+    <span class='doccomment'>/// We are not in a state to handle the action.</span>
+    <span class='ident'>InvalidState</span>,
     <span class='doccomment'>/// Error while trying to receive a message from a channel</span>
     <span class='ident'>ChannelRxError</span>(<span class='ident'>RecvError</span>),
     <span class='doccomment'>/// Error while trying to transmit an event via a channel</span>
