@@ -990,6 +990,18 @@
 <span id="946">946</span>
 <span id="947">947</span>
 <span id="948">948</span>
+<span id="949">949</span>
+<span id="950">950</span>
+<span id="951">951</span>
+<span id="952">952</span>
+<span id="953">953</span>
+<span id="954">954</span>
+<span id="955">955</span>
+<span id="956">956</span>
+<span id="957">957</span>
+<span id="958">958</span>
+<span id="959">959</span>
+<span id="960">960</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2015 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -1662,6 +1674,18 @@
             <span class='boolvalue'>true</span>
         } <span class='kw'>else</span> {
             <span class='boolvalue'>false</span>
+        }
+    }
+
+    <span class='doccomment'>/// Returns this request&#39;s message ID.</span>
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>message_id</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>MessageId</span> {
+        <span class='kw'>match</span> <span class='op'>*</span><span class='self'>self</span> {
+            <span class='ident'>Request</span>::<span class='ident'>Refresh</span>(_, <span class='ident'>msg_id</span>) <span class='op'>|</span>
+            <span class='ident'>Request</span>::<span class='ident'>Get</span>(_, <span class='ident'>msg_id</span>) <span class='op'>|</span>
+            <span class='ident'>Request</span>::<span class='ident'>GetAccountInfo</span>(<span class='ident'>msg_id</span>) <span class='op'>|</span>
+            <span class='ident'>Request</span>::<span class='ident'>Put</span>(_, <span class='ident'>msg_id</span>) <span class='op'>|</span>
+            <span class='ident'>Request</span>::<span class='ident'>Post</span>(_, <span class='ident'>msg_id</span>) <span class='op'>|</span>
+            <span class='ident'>Request</span>::<span class='ident'>Delete</span>(_, <span class='ident'>msg_id</span>) <span class='op'>=&gt;</span> <span class='ident'>msg_id</span>,
         }
     }
 }

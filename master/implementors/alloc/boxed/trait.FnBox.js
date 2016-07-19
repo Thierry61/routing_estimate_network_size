@@ -1,5 +1,5 @@
 (function() {var implementors = {};
-implementors["regex_syntax"] = [];implementors["sodiumoxide_extras"] = [];implementors["serde"] = [];implementors["mio"] = [];implementors["tmp_mio"] = [];implementors["igd"] = [];implementors["maidsafe_utilities"] = [];implementors["crust"] = [];
+implementors["regex_syntax"] = [];implementors["sodiumoxide_extras"] = [];implementors["serde"] = [];implementors["tmp_mio"] = [];implementors["mio"] = [];implementors["maidsafe_utilities"] = [];implementors["igd"] = [];implementors["crust"] = [];
 
             if (window.register_implementors) {
                 window.register_implementors(implementors);
