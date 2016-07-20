@@ -674,7 +674,7 @@
     <span class='ident'>machine</span>: <span class='ident'>RefCell</span><span class='op'>&lt;</span><span class='ident'>StateMachine</span><span class='op'>&gt;</span>,
 
     <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>not</span>(<span class='ident'>feature</span> <span class='op'>=</span> <span class='string'>&quot;use-mock-crust&quot;</span>))]</span>
-    <span class='ident'>_raii_joiner</span>: ::<span class='ident'>maidsafe_utilities</span>::<span class='ident'>thread</span>::<span class='ident'>RaiiThreadJoiner</span>,
+    <span class='ident'>_raii_joiner</span>: <span class='ident'>RaiiThreadJoiner</span>,
 }
 
 <span class='kw'>impl</span> <span class='ident'>Node</span> {

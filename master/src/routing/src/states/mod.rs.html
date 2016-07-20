@@ -65,6 +65,8 @@
 <span id="21">21</span>
 <span id="22">22</span>
 <span id="23">23</span>
+<span id="24">24</span>
+<span id="25">25</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2016 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -83,10 +85,12 @@
 <span class='comment'>// Please review the Licences for the specific language governing permissions and limitations</span>
 <span class='comment'>// relating to use of the SAFE Network Software.</span>
 
+<span class='kw'>mod</span> <span class='ident'>bootstrapping</span>;
 <span class='kw'>mod</span> <span class='ident'>client</span>;
 <span class='kw'>mod</span> <span class='ident'>common</span>;
 <span class='kw'>mod</span> <span class='ident'>node</span>;
 
+<span class='kw'>pub</span> <span class='kw'>use</span> <span class='self'>self</span>::<span class='ident'>bootstrapping</span>::<span class='ident'>Bootstrapping</span>;
 <span class='kw'>pub</span> <span class='kw'>use</span> <span class='self'>self</span>::<span class='ident'>client</span>::<span class='ident'>Client</span>;
 <span class='kw'>pub</span> <span class='kw'>use</span> <span class='self'>self</span>::<span class='ident'>node</span>::<span class='ident'>Node</span>;
 </pre>

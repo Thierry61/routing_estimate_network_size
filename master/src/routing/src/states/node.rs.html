@@ -1942,8 +1942,7 @@
 <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>feature</span> <span class='op'>=</span> <span class='string'>&quot;use-mock-crust&quot;</span>)]</span>
 <span class='kw'>use</span> <span class='ident'>kademlia_routing_table</span>::<span class='ident'>RoutingTable</span>;
 <span class='kw'>use</span> <span class='ident'>kademlia_routing_table</span>::{<span class='ident'>AddedNodeDetails</span>, <span class='ident'>ContactInfo</span>, <span class='ident'>DroppedNodeDetails</span>};
-<span class='kw'>use</span> <span class='ident'>lru_time_cache</span>::<span class='ident'>LruCache</span>;
-<span class='kw'>use</span> <span class='ident'>maidsafe_utilities</span>::{<span class='self'>self</span>, <span class='ident'>serialisation</span>};
+<span class='kw'>use</span> <span class='ident'>maidsafe_utilities</span>::<span class='ident'>serialisation</span>;
 <span class='kw'>use</span> <span class='ident'>sodiumoxide</span>::<span class='ident'>crypto</span>::{<span class='ident'>box_</span>, <span class='ident'>sign</span>};
 <span class='kw'>use</span> <span class='ident'>sodiumoxide</span>::<span class='ident'>crypto</span>::<span class='ident'>hash</span>::<span class='ident'>sha256</span>;
 <span class='kw'>use</span> <span class='ident'>std</span>::{<span class='ident'>cmp</span>, <span class='ident'>fmt</span>, <span class='ident'>iter</span>};
@@ -1964,6 +1963,7 @@
                <span class='ident'>RoutingMessage</span>, <span class='ident'>SignedMessage</span>, <span class='ident'>UserMessage</span>, <span class='ident'>UserMessageCache</span>};
 <span class='kw'>use</span> <span class='ident'>peer_manager</span>::{<span class='ident'>ConnectionInfoPreparedResult</span>, <span class='ident'>ConnectionInfoReceivedResult</span>, <span class='ident'>GROUP_SIZE</span>,
                    <span class='ident'>NodeInfo</span>, <span class='ident'>PeerManager</span>, <span class='ident'>QUORUM_SIZE</span>};
+<span class='kw'>use</span> <span class='ident'>signed_message_filter</span>::<span class='ident'>SignedMessageFilter</span>;
 <span class='kw'>use</span> <span class='ident'>state_machine</span>::<span class='ident'>Transition</span>;
 <span class='kw'>use</span> <span class='ident'>stats</span>::<span class='ident'>Stats</span>;
 <span class='kw'>use</span> <span class='kw'>super</span>::<span class='ident'>common</span>::{<span class='self'>self</span>, <span class='ident'>USER_MSG_CACHE_EXPIRY_DURATION_SECS</span>};
@@ -1991,13 +1991,12 @@
     <span class='ident'>full_id</span>: <span class='ident'>FullId</span>,
     <span class='ident'>is_first_node</span>: <span class='ident'>bool</span>,
     <span class='ident'>is_listening</span>: <span class='ident'>bool</span>,
-    <span class='ident'>message_accumulator</span>: <span class='ident'>MessageAccumulator</span>,
+    <span class='ident'>msg_accumulator</span>: <span class='ident'>MessageAccumulator</span>,
     <span class='ident'>peer_mgr</span>: <span class='ident'>PeerManager</span>,
     <span class='ident'>response_cache</span>: <span class='ident'>Box</span><span class='op'>&lt;</span><span class='ident'>Cache</span><span class='op'>&gt;</span>,
-    <span class='ident'>send_filter</span>: <span class='ident'>LruCache</span><span class='op'>&lt;</span>(<span class='ident'>u64</span>, <span class='ident'>PeerId</span>, <span class='ident'>u8</span>), ()<span class='op'>&gt;</span>,
     <span class='doccomment'>/// The last joining node we have sent a `GetNodeName` response to, and when.</span>
     <span class='ident'>sent_network_name_to</span>: <span class='prelude-ty'>Option</span><span class='op'>&lt;</span>(<span class='ident'>XorName</span>, <span class='ident'>Instant</span>)<span class='op'>&gt;</span>,
-    <span class='ident'>signed_message_filter</span>: <span class='ident'>MessageFilter</span><span class='op'>&lt;</span><span class='ident'>SignedMessage</span><span class='op'>&gt;</span>,
+    <span class='ident'>signed_msg_filter</span>: <span class='ident'>SignedMessageFilter</span>,
     <span class='ident'>stats</span>: <span class='ident'>Stats</span>,
     <span class='ident'>tick_timer_token</span>: <span class='ident'>u64</span>,
     <span class='ident'>timer</span>: <span class='ident'>Timer</span>,
@@ -2021,7 +2020,7 @@
                                  <span class='ident'>crust_service</span>,
                                  <span class='ident'>event_sender</span>,
                                  <span class='ident'>full_id</span>,
-                                 <span class='ident'>Default</span>::<span class='ident'>default</span>(),
+                                 <span class='ident'>MessageAccumulator</span>::<span class='ident'>new</span>(),
                                  <span class='ident'>PeerManager</span>::<span class='ident'>new</span>(<span class='ident'>our_info</span>),
                                  <span class='ident'>Default</span>::<span class='ident'>default</span>(),
                                  <span class='ident'>timer</span>,
@@ -2037,7 +2036,7 @@
                        <span class='ident'>crust_service</span>: <span class='ident'>Service</span>,
                        <span class='ident'>event_sender</span>: <span class='ident'>Sender</span><span class='op'>&lt;</span><span class='ident'>Event</span><span class='op'>&gt;</span>,
                        <span class='ident'>full_id</span>: <span class='ident'>FullId</span>,
-                       <span class='ident'>message_accumulator</span>: <span class='ident'>MessageAccumulator</span>,
+                       <span class='ident'>msg_accumulator</span>: <span class='ident'>MessageAccumulator</span>,
                        <span class='ident'>peer_mgr</span>: <span class='ident'>PeerManager</span>,
                        <span class='ident'>stats</span>: <span class='ident'>Stats</span>,
                        <span class='ident'>timer</span>: <span class='ident'>Timer</span>,
@@ -2049,7 +2048,7 @@
                                  <span class='ident'>crust_service</span>,
                                  <span class='ident'>event_sender</span>,
                                  <span class='ident'>full_id</span>,
-                                 <span class='ident'>message_accumulator</span>,
+                                 <span class='ident'>msg_accumulator</span>,
                                  <span class='ident'>peer_mgr</span>,
                                  <span class='ident'>stats</span>,
                                  <span class='ident'>timer</span>,
@@ -2063,7 +2062,7 @@
            <span class='ident'>crust_service</span>: <span class='ident'>Service</span>,
            <span class='ident'>event_sender</span>: <span class='ident'>Sender</span><span class='op'>&lt;</span><span class='ident'>Event</span><span class='op'>&gt;</span>,
            <span class='ident'>full_id</span>: <span class='ident'>FullId</span>,
-           <span class='ident'>message_accumulator</span>: <span class='ident'>MessageAccumulator</span>,
+           <span class='ident'>msg_accumulator</span>: <span class='ident'>MessageAccumulator</span>,
            <span class='ident'>peer_mgr</span>: <span class='ident'>PeerManager</span>,
            <span class='ident'>stats</span>: <span class='ident'>Stats</span>,
            <span class='kw-2'>mut</span> <span class='ident'>timer</span>: <span class='ident'>Timer</span>,
@@ -2085,12 +2084,10 @@
             <span class='ident'>full_id</span>: <span class='ident'>full_id</span>,
             <span class='ident'>is_first_node</span>: <span class='boolvalue'>false</span>,
             <span class='ident'>is_listening</span>: <span class='boolvalue'>false</span>,
-            <span class='ident'>message_accumulator</span>: <span class='ident'>message_accumulator</span>,
-            <span class='ident'>signed_message_filter</span>: <span class='ident'>MessageFilter</span>::<span class='ident'>with_expiry_duration</span>(<span class='ident'>Duration</span>::<span class='ident'>from_secs</span>(<span class='number'>60</span> <span class='op'>*</span>
-                                                                                           <span class='number'>20</span>)),
+            <span class='ident'>msg_accumulator</span>: <span class='ident'>msg_accumulator</span>,
             <span class='ident'>peer_mgr</span>: <span class='ident'>peer_mgr</span>,
             <span class='ident'>response_cache</span>: <span class='ident'>cache</span>,
-            <span class='ident'>send_filter</span>: <span class='ident'>LruCache</span>::<span class='ident'>with_expiry_duration</span>(<span class='ident'>Duration</span>::<span class='ident'>from_secs</span>(<span class='number'>60</span> <span class='op'>*</span> <span class='number'>10</span>)),
+            <span class='ident'>signed_msg_filter</span>: <span class='ident'>SignedMessageFilter</span>::<span class='ident'>new</span>(),
             <span class='ident'>sent_network_name_to</span>: <span class='prelude-val'>None</span>,
             <span class='ident'>stats</span>: <span class='ident'>stats</span>,
             <span class='ident'>tick_timer_token</span>: <span class='ident'>tick_timer_token</span>,
@@ -2132,12 +2129,11 @@
     <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>feature</span> <span class='op'>=</span> <span class='string'>&quot;use-mock-crust&quot;</span>)]</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>clear_state</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) {
         <span class='self'>self</span>.<span class='ident'>ack_mgr</span>.<span class='ident'>clear</span>();
-        <span class='self'>self</span>.<span class='ident'>send_filter</span>.<span class='ident'>clear</span>();
-        <span class='self'>self</span>.<span class='ident'>signed_message_filter</span>.<span class='ident'>clear</span>();
         <span class='self'>self</span>.<span class='ident'>bucket_filter</span>.<span class='ident'>clear</span>();
-        <span class='self'>self</span>.<span class='ident'>message_accumulator</span>.<span class='ident'>clear</span>();
-        <span class='self'>self</span>.<span class='ident'>sent_network_name_to</span> <span class='op'>=</span> <span class='prelude-val'>None</span>;
+        <span class='self'>self</span>.<span class='ident'>msg_accumulator</span>.<span class='ident'>clear</span>();
         <span class='self'>self</span>.<span class='ident'>peer_mgr</span>.<span class='ident'>clear_caches</span>();
+        <span class='self'>self</span>.<span class='ident'>signed_msg_filter</span>.<span class='ident'>clear</span>();
+        <span class='self'>self</span>.<span class='ident'>sent_network_name_to</span> <span class='op'>=</span> <span class='prelude-val'>None</span>;
     }
 
     <span class='kw'>fn</span> <span class='ident'>update_stats</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) {
@@ -2490,15 +2486,17 @@
 
         <span class='comment'>// FIXME: This is currently only in place so acks can get delivered if the</span>
         <span class='comment'>// original ack was lost in transit</span>
-        <span class='kw'>if</span> (<span class='self'>self</span>.<span class='ident'>message_accumulator</span>.<span class='ident'>contains</span>(<span class='ident'>routing_msg</span>) <span class='op'>||</span> <span class='op'>!</span><span class='ident'>routing_msg</span>.<span class='ident'>src</span>.<span class='ident'>is_group</span>()) <span class='op'>&amp;&amp;</span>
+        <span class='kw'>if</span> (<span class='self'>self</span>.<span class='ident'>msg_accumulator</span>.<span class='ident'>contains</span>(<span class='ident'>routing_msg</span>) <span class='op'>||</span> <span class='op'>!</span><span class='ident'>routing_msg</span>.<span class='ident'>src</span>.<span class='ident'>is_group</span>()) <span class='op'>&amp;&amp;</span>
            <span class='self'>self</span>.<span class='ident'>is_recipient</span>(<span class='kw-2'>&amp;</span><span class='ident'>routing_msg</span>.<span class='ident'>dst</span>) {
             <span class='self'>self</span>.<span class='ident'>send_ack</span>(<span class='ident'>routing_msg</span>, <span class='ident'>route</span>);
         }
 
+        <span class='kw'>let</span> <span class='ident'>count</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>signed_msg_filter</span>.<span class='ident'>filter_incoming</span>(<span class='ident'>signed_msg</span>);
+
         <span class='comment'>// Prevents</span>
         <span class='comment'>// 1) someone sending messages repeatedly to us</span>
         <span class='comment'>// 2) swarm messages generated by us reaching us again</span>
-        <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>signed_message_filter</span>.<span class='ident'>insert</span>(<span class='ident'>signed_msg</span>) <span class='op'>&gt;</span> <span class='ident'>GROUP_SIZE</span> {
+        <span class='kw'>if</span> <span class='ident'>count</span> <span class='op'>&gt;</span> <span class='ident'>GROUP_SIZE</span> {
             <span class='kw'>return</span> <span class='prelude-val'>Err</span>(<span class='ident'>RoutingError</span>::<span class='ident'>FilterCheckFailed</span>);
         }
 
@@ -2517,8 +2515,7 @@
             <span class='macro'>debug</span><span class='macro'>!</span>(<span class='string'>&quot;{:?} Failed to send {:?}: {:?}&quot;</span>, <span class='self'>self</span>, <span class='ident'>signed_msg</span>, <span class='ident'>error</span>);
         }
 
-        <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>signed_message_filter</span>.<span class='ident'>count</span>(<span class='ident'>signed_msg</span>) <span class='op'>==</span> <span class='number'>1</span> <span class='op'>&amp;&amp;</span>
-           <span class='self'>self</span>.<span class='ident'>is_recipient</span>(<span class='kw-2'>&amp;</span><span class='ident'>routing_msg</span>.<span class='ident'>dst</span>) {
+        <span class='kw'>if</span> <span class='ident'>count</span> <span class='op'>==</span> <span class='number'>1</span> <span class='op'>&amp;&amp;</span> <span class='self'>self</span>.<span class='ident'>is_recipient</span>(<span class='kw-2'>&amp;</span><span class='ident'>routing_msg</span>.<span class='ident'>dst</span>) {
             <span class='self'>self</span>.<span class='ident'>handle_routing_message</span>(<span class='ident'>routing_msg</span>, <span class='op'>*</span><span class='ident'>signed_msg</span>.<span class='ident'>public_id</span>())
         } <span class='kw'>else</span> {
             <span class='prelude-val'>Ok</span>(())
@@ -2577,10 +2574,10 @@
                               <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span>(), <span class='ident'>RoutingError</span><span class='op'>&gt;</span> {
         <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>is_bootstrapped</span>() {
             <span class='kw'>let</span> <span class='ident'>dynamic_quorum_size</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>dynamic_quorum_size</span>();
-            <span class='self'>self</span>.<span class='ident'>message_accumulator</span>.<span class='ident'>set_quorum_size</span>(<span class='ident'>dynamic_quorum_size</span>);
+            <span class='self'>self</span>.<span class='ident'>msg_accumulator</span>.<span class='ident'>set_quorum_size</span>(<span class='ident'>dynamic_quorum_size</span>);
         }
 
-        <span class='kw'>if</span> <span class='kw'>let</span> <span class='prelude-val'>Some</span>(<span class='ident'>msg</span>) <span class='op'>=</span> <span class='macro'>try</span><span class='macro'>!</span>(<span class='self'>self</span>.<span class='ident'>message_accumulator</span>.<span class='ident'>add</span>(<span class='ident'>routing_msg</span>, <span class='ident'>public_id</span>)) {
+        <span class='kw'>if</span> <span class='kw'>let</span> <span class='prelude-val'>Some</span>(<span class='ident'>msg</span>) <span class='op'>=</span> <span class='macro'>try</span><span class='macro'>!</span>(<span class='self'>self</span>.<span class='ident'>msg_accumulator</span>.<span class='ident'>add</span>(<span class='ident'>routing_msg</span>, <span class='ident'>public_id</span>)) {
             <span class='kw'>if</span> <span class='ident'>msg</span>.<span class='ident'>src</span>.<span class='ident'>is_group</span>() {
                 <span class='self'>self</span>.<span class='ident'>send_ack</span>(<span class='kw-2'>&amp;</span><span class='ident'>msg</span>, <span class='number'>0</span>);
             }
@@ -2798,11 +2795,14 @@
         <span class='prelude-val'>Ok</span>(())
     }
 
-    <span class='doccomment'>/// Adds the signed message to the statistics and returns `true` if it should be blocked due</span>
-    <span class='doccomment'>/// to deduplication.</span>
-    <span class='kw'>fn</span> <span class='ident'>filter_signed_msg</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>msg</span>: <span class='kw-2'>&amp;</span><span class='ident'>SignedMessage</span>, <span class='ident'>peer_id</span>: <span class='kw-2'>&amp;</span><span class='ident'>PeerId</span>, <span class='ident'>route</span>: <span class='ident'>u8</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> {
-        <span class='kw'>let</span> <span class='ident'>hash</span> <span class='op'>=</span> <span class='ident'>maidsafe_utilities</span>::<span class='ident'>big_endian_sip_hash</span>(<span class='ident'>msg</span>);
-        <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>send_filter</span>.<span class='ident'>insert</span>((<span class='ident'>hash</span>, <span class='op'>*</span><span class='ident'>peer_id</span>, <span class='ident'>route</span>), ()).<span class='ident'>is_some</span>() {
+    <span class='doccomment'>/// Adds the outgoing signed message to the statistics and returns `true`</span>
+    <span class='doccomment'>/// if it should be blocked due to deduplication.</span>
+    <span class='kw'>fn</span> <span class='ident'>filter_outgoing_signed_msg</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>,
+                                  <span class='ident'>msg</span>: <span class='kw-2'>&amp;</span><span class='ident'>SignedMessage</span>,
+                                  <span class='ident'>peer_id</span>: <span class='kw-2'>&amp;</span><span class='ident'>PeerId</span>,
+                                  <span class='ident'>route</span>: <span class='ident'>u8</span>)
+                                  <span class='op'>-&gt;</span> <span class='ident'>bool</span> {
+        <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>signed_msg_filter</span>.<span class='ident'>filter_outgoing</span>(<span class='ident'>msg</span>, <span class='ident'>peer_id</span>, <span class='ident'>route</span>) {
             <span class='kw'>return</span> <span class='boolvalue'>true</span>;
         }
         <span class='self'>self</span>.<span class='ident'>stats</span>.<span class='ident'>count_routing_message</span>(<span class='ident'>msg</span>.<span class='ident'>routing_message</span>());
@@ -3479,7 +3479,7 @@
         <span class='comment'>// If we need to handle this message, handle it.</span>
         <span class='kw'>let</span> <span class='ident'>sent_msg</span> <span class='op'>=</span> <span class='macro'>try</span><span class='macro'>!</span>(<span class='self'>self</span>.<span class='ident'>message_to_send</span>(<span class='kw-2'>&amp;</span><span class='ident'>signed_msg</span>, <span class='ident'>route</span>, <span class='kw-2'>&amp;</span><span class='ident'>hop</span>));
         <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>is_recipient</span>(<span class='kw-2'>&amp;</span><span class='ident'>sent_msg</span>.<span class='ident'>routing_message</span>().<span class='ident'>dst</span>) <span class='op'>&amp;&amp;</span>
-           <span class='self'>self</span>.<span class='ident'>signed_message_filter</span>.<span class='ident'>insert</span>(<span class='kw-2'>&amp;</span><span class='ident'>sent_msg</span>) <span class='op'>==</span> <span class='number'>1</span> {
+           <span class='self'>self</span>.<span class='ident'>signed_msg_filter</span>.<span class='ident'>filter_incoming</span>(<span class='kw-2'>&amp;</span><span class='ident'>sent_msg</span>) <span class='op'>==</span> <span class='number'>1</span> {
             <span class='self'>self</span>.<span class='ident'>handle_routing_message</span>(<span class='ident'>sent_msg</span>.<span class='ident'>routing_message</span>(), <span class='op'>*</span><span class='ident'>sent_msg</span>.<span class='ident'>public_id</span>())
         } <span class='kw'>else</span> {
             <span class='prelude-val'>Ok</span>(())
@@ -3492,7 +3492,7 @@
                        <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span>(), <span class='ident'>RoutingError</span><span class='op'>&gt;</span> {
         <span class='kw'>let</span> <span class='ident'>priority</span> <span class='op'>=</span> <span class='ident'>signed_msg</span>.<span class='ident'>priority</span>();
         <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>peer_mgr</span>.<span class='ident'>get_client</span>(<span class='ident'>peer_id</span>).<span class='ident'>is_some</span>() {
-            <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>filter_signed_msg</span>(<span class='kw-2'>&amp;</span><span class='ident'>signed_msg</span>, <span class='ident'>peer_id</span>, <span class='number'>0</span>) {
+            <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>filter_outgoing_signed_msg</span>(<span class='kw-2'>&amp;</span><span class='ident'>signed_msg</span>, <span class='ident'>peer_id</span>, <span class='number'>0</span>) {
                 <span class='kw'>return</span> <span class='prelude-val'>Ok</span>(());
             }
             <span class='kw'>let</span> <span class='ident'>hop_msg</span> <span class='op'>=</span>
@@ -3562,7 +3562,7 @@
                 <span class='self'>self</span>.<span class='ident'>disconnect_peer</span>(<span class='kw-2'>&amp;</span><span class='ident'>target_peer_id</span>);
                 <span class='kw'>continue</span>;
             };
-            <span class='kw'>if</span> <span class='op'>!</span><span class='self'>self</span>.<span class='ident'>filter_signed_msg</span>(<span class='ident'>signed_msg</span>, <span class='kw-2'>&amp;</span><span class='ident'>target_peer_id</span>, <span class='ident'>route</span>) {
+            <span class='kw'>if</span> <span class='op'>!</span><span class='self'>self</span>.<span class='ident'>filter_outgoing_signed_msg</span>(<span class='ident'>signed_msg</span>, <span class='kw-2'>&amp;</span><span class='ident'>target_peer_id</span>, <span class='ident'>route</span>) {
                 <span class='kw'>if</span> <span class='kw'>let</span> <span class='prelude-val'>Err</span>(<span class='ident'>err</span>) <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>send_or_drop</span>(<span class='kw-2'>&amp;</span><span class='ident'>peer_id</span>, <span class='ident'>bytes</span>, <span class='ident'>signed_msg</span>.<span class='ident'>priority</span>()) {
                     <span class='macro'>info</span><span class='macro'>!</span>(<span class='string'>&quot;{:?} Error sending message to {:?}: {:?}.&quot;</span>,
                           <span class='self'>self</span>,
