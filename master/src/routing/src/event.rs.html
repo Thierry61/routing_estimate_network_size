@@ -200,7 +200,7 @@
         <span class='ident'>dst</span>: <span class='ident'>Authority</span>,
     },
     <span class='doccomment'>/// Sending the request with the given message ID has failed.</span>
-    <span class='ident'>RequestFailure</span>(<span class='ident'>MessageId</span>),
+    <span class='ident'>RequestTimeout</span>(<span class='ident'>MessageId</span>),
     <span class='doccomment'>/// A new node joined the network and may be a member of group authorities we also belong to.</span>
     <span class='ident'>NodeAdded</span>(<span class='ident'>XorName</span>, <span class='ident'>RoutingTable</span><span class='op'>&lt;</span><span class='ident'>XorName</span><span class='op'>&gt;</span>),
     <span class='doccomment'>/// A node left the network and may have been a member of group authorities we also belong to.</span>
@@ -233,8 +233,8 @@
                        <span class='ident'>src</span>,
                        <span class='ident'>dst</span>)
             }
-            <span class='ident'>Event</span>::<span class='ident'>RequestFailure</span>(<span class='kw-2'>ref</span> <span class='ident'>msg_id</span>) <span class='op'>=&gt;</span> {
-                <span class='macro'>write</span><span class='macro'>!</span>(<span class='ident'>formatter</span>, <span class='string'>&quot;Event::RequestFailure ( {:?} )&quot;</span>, <span class='ident'>msg_id</span>)
+            <span class='ident'>Event</span>::<span class='ident'>RequestTimeout</span>(<span class='kw-2'>ref</span> <span class='ident'>msg_id</span>) <span class='op'>=&gt;</span> {
+                <span class='macro'>write</span><span class='macro'>!</span>(<span class='ident'>formatter</span>, <span class='string'>&quot;Event::RequestTimeout ( {:?} )&quot;</span>, <span class='ident'>msg_id</span>)
             }
             <span class='ident'>Event</span>::<span class='ident'>NodeAdded</span>(<span class='kw-2'>ref</span> <span class='ident'>node_name</span>, _) <span class='op'>=&gt;</span> {
                 <span class='macro'>write</span><span class='macro'>!</span>(<span class='ident'>formatter</span>,

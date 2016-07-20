@@ -59,7 +59,7 @@
         src: <a class='enum' href='../routing/enum.Authority.html' title='routing::Authority'>Authority</a>,
         dst: <a class='enum' href='../routing/enum.Authority.html' title='routing::Authority'>Authority</a>,
     },
-    RequestFailure(<a class='struct' href='../routing/struct.MessageId.html' title='routing::MessageId'>MessageId</a>),
+    RequestTimeout(<a class='struct' href='../routing/struct.MessageId.html' title='routing::MessageId'>MessageId</a>),
     NodeAdded(<a class='struct' href='../routing/struct.XorName.html' title='routing::XorName'>XorName</a>, <a class='struct' href='../kademlia_routing_table/struct.RoutingTable.html' title='kademlia_routing_table::RoutingTable'>RoutingTable</a>&lt;<a class='struct' href='../routing/struct.XorName.html' title='routing::XorName'>XorName</a>&gt;),
     NodeLost(<a class='struct' href='../routing/struct.XorName.html' title='routing::XorName'>XorName</a>, <a class='struct' href='../kademlia_routing_table/struct.RoutingTable.html' title='kademlia_routing_table::RoutingTable'>RoutingTable</a>&lt;<a class='struct' href='../routing/struct.XorName.html' title='routing::XorName'>XorName</a>&gt;),
     Connected,
@@ -86,7 +86,7 @@ reached, i. e. enough members of the group have sent the same message.</p>
                            <table><tr><td id='variant.Response.field.response'><code>response</code></td><td><div class='docblock'><p>The response message.</p>
 </div></td></tr><tr><td id='variant.Response.field.src'><code>src</code></td><td><div class='docblock'><p>The source authority that sent the response.</p>
 </div></td></tr><tr><td id='variant.Response.field.dst'><code>dst</code></td><td><div class='docblock'><p>The destination authority that receives the response.</p>
-</div></td></tr></table></td><td></td></tr><tr><td id='variant.RequestFailure'><code>RequestFailure</code></td><td><div class='docblock'><p>Sending the request with the given message ID has failed.</p>
+</div></td></tr></table></td><td></td></tr><tr><td id='variant.RequestTimeout'><code>RequestTimeout</code></td><td><div class='docblock'><p>Sending the request with the given message ID has failed.</p>
 </div></td><td></td></tr><tr><td id='variant.NodeAdded'><code>NodeAdded</code></td><td><div class='docblock'><p>A new node joined the network and may be a member of group authorities we also belong to.</p>
 </div></td><td></td></tr><tr><td id='variant.NodeLost'><code>NodeLost</code></td><td><div class='docblock'><p>A node left the network and may have been a member of group authorities we also belong to.</p>
 </div></td><td></td></tr><tr><td id='variant.Connected'><code>Connected</code></td><td><div class='docblock'><p>The client has successfully connected to a proxy node on the network.</p>
