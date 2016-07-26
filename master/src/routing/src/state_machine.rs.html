@@ -383,6 +383,11 @@
 <span id="339">339</span>
 <span id="340">340</span>
 <span id="341">341</span>
+<span id="342">342</span>
+<span id="343">343</span>
+<span id="344">344</span>
+<span id="345">345</span>
+<span id="346">346</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2016 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -401,21 +406,19 @@
 <span class='comment'>// Please review the Licences for the specific language governing permissions and limitations</span>
 <span class='comment'>// relating to use of the SAFE Network Software.</span>
 
-<span class='kw'>use</span> <span class='ident'>crust</span>::<span class='ident'>Event</span> <span class='kw'>as</span> <span class='ident'>CrustEvent</span>;
 <span class='kw'>use</span> <span class='ident'>crust</span>::{<span class='ident'>CrustEventSender</span>, <span class='ident'>PeerId</span>, <span class='ident'>Service</span>};
+<span class='kw'>use</span> <span class='ident'>crust</span>::<span class='ident'>Event</span> <span class='kw'>as</span> <span class='ident'>CrustEvent</span>;
 <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>feature</span> <span class='op'>=</span> <span class='string'>&quot;use-mock-crust&quot;</span>)]</span>
 <span class='kw'>use</span> <span class='ident'>kademlia_routing_table</span>::<span class='ident'>RoutingTable</span>;
 <span class='kw'>use</span> <span class='ident'>maidsafe_utilities</span>::<span class='ident'>event_sender</span>::<span class='ident'>MaidSafeEventCategory</span>;
-<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>collections</span>::<span class='ident'>HashSet</span>;
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>mem</span>;
-<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>sync</span>::<span class='ident'>mpsc</span>::{<span class='self'>self</span>, <span class='ident'>Receiver</span>, <span class='ident'>Sender</span>};
+<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>sync</span>::<span class='ident'>mpsc</span>::{<span class='self'>self</span>, <span class='ident'>Receiver</span>};
 
 <span class='kw'>use</span> <span class='ident'>action</span>::<span class='ident'>Action</span>;
-<span class='kw'>use</span> <span class='ident'>authority</span>::<span class='ident'>Authority</span>;
-<span class='kw'>use</span> <span class='ident'>cache</span>::<span class='ident'>Cache</span>;
-<span class='kw'>use</span> <span class='ident'>event</span>::<span class='ident'>Event</span>;
-<span class='kw'>use</span> <span class='ident'>id</span>::{<span class='ident'>FullId</span>, <span class='ident'>PublicId</span>};
-<span class='kw'>use</span> <span class='ident'>states</span>::{<span class='ident'>Bootstrapping</span>, <span class='ident'>Client</span>, <span class='ident'>Node</span>};
+<span class='kw'>use</span> <span class='ident'>id</span>::<span class='ident'>PublicId</span>;
+<span class='kw'>use</span> <span class='ident'>states</span>::{<span class='ident'>Bootstrapping</span>, <span class='ident'>Client</span>, <span class='ident'>JoiningNode</span>, <span class='ident'>Node</span>};
+<span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>feature</span> <span class='op'>=</span> <span class='string'>&quot;use-mock-crust&quot;</span>)]</span>
+<span class='kw'>use</span> <span class='ident'>states</span>::<span class='ident'>Testable</span>;
 <span class='kw'>use</span> <span class='ident'>timer</span>::<span class='ident'>Timer</span>;
 <span class='kw'>use</span> <span class='ident'>types</span>::<span class='ident'>RoutingActionSender</span>;
 <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>feature</span> <span class='op'>=</span> <span class='string'>&quot;use-mock-crust&quot;</span>)]</span>
@@ -480,47 +483,126 @@
 <span class='kw'>pub</span> <span class='kw'>enum</span> <span class='ident'>State</span> {
     <span class='ident'>Bootstrapping</span>(<span class='ident'>Bootstrapping</span>),
     <span class='ident'>Client</span>(<span class='ident'>Client</span>),
+    <span class='ident'>JoiningNode</span>(<span class='ident'>JoiningNode</span>),
     <span class='ident'>Node</span>(<span class='ident'>Node</span>),
-    <span class='ident'>Transitioning</span>,
     <span class='ident'>Terminated</span>,
 }
 
+<span class='kw'>impl</span> <span class='ident'>State</span> {
+    <span class='kw'>fn</span> <span class='ident'>handle_action</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>action</span>: <span class='ident'>Action</span>) <span class='op'>-&gt;</span> <span class='ident'>Transition</span> {
+        <span class='kw'>match</span> <span class='op'>*</span><span class='self'>self</span> {
+            <span class='ident'>State</span>::<span class='ident'>Bootstrapping</span>(<span class='kw-2'>ref</span> <span class='kw-2'>mut</span> <span class='ident'>state</span>) <span class='op'>=&gt;</span> <span class='ident'>state</span>.<span class='ident'>handle_action</span>(<span class='ident'>action</span>),
+            <span class='ident'>State</span>::<span class='ident'>Client</span>(<span class='kw-2'>ref</span> <span class='kw-2'>mut</span> <span class='ident'>state</span>) <span class='op'>=&gt;</span> <span class='ident'>state</span>.<span class='ident'>handle_action</span>(<span class='ident'>action</span>),
+            <span class='ident'>State</span>::<span class='ident'>JoiningNode</span>(<span class='kw-2'>ref</span> <span class='kw-2'>mut</span> <span class='ident'>state</span>) <span class='op'>=&gt;</span> <span class='ident'>state</span>.<span class='ident'>handle_action</span>(<span class='ident'>action</span>),
+            <span class='ident'>State</span>::<span class='ident'>Node</span>(<span class='kw-2'>ref</span> <span class='kw-2'>mut</span> <span class='ident'>state</span>) <span class='op'>=&gt;</span> <span class='ident'>state</span>.<span class='ident'>handle_action</span>(<span class='ident'>action</span>),
+            <span class='ident'>State</span>::<span class='ident'>Terminated</span> <span class='op'>=&gt;</span> <span class='ident'>Transition</span>::<span class='ident'>Terminate</span>,
+        }
+    }
+
+    <span class='kw'>fn</span> <span class='ident'>handle_crust_event</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>event</span>: <span class='ident'>CrustEvent</span>) <span class='op'>-&gt;</span> <span class='ident'>Transition</span> {
+        <span class='kw'>match</span> <span class='op'>*</span><span class='self'>self</span> {
+            <span class='ident'>State</span>::<span class='ident'>Bootstrapping</span>(<span class='kw-2'>ref</span> <span class='kw-2'>mut</span> <span class='ident'>state</span>) <span class='op'>=&gt;</span> <span class='ident'>state</span>.<span class='ident'>handle_crust_event</span>(<span class='ident'>event</span>),
+            <span class='ident'>State</span>::<span class='ident'>Client</span>(<span class='kw-2'>ref</span> <span class='kw-2'>mut</span> <span class='ident'>state</span>) <span class='op'>=&gt;</span> <span class='ident'>state</span>.<span class='ident'>handle_crust_event</span>(<span class='ident'>event</span>),
+            <span class='ident'>State</span>::<span class='ident'>JoiningNode</span>(<span class='kw-2'>ref</span> <span class='kw-2'>mut</span> <span class='ident'>state</span>) <span class='op'>=&gt;</span> <span class='ident'>state</span>.<span class='ident'>handle_crust_event</span>(<span class='ident'>event</span>),
+            <span class='ident'>State</span>::<span class='ident'>Node</span>(<span class='kw-2'>ref</span> <span class='kw-2'>mut</span> <span class='ident'>state</span>) <span class='op'>=&gt;</span> <span class='ident'>state</span>.<span class='ident'>handle_crust_event</span>(<span class='ident'>event</span>),
+            <span class='ident'>State</span>::<span class='ident'>Terminated</span> <span class='op'>=&gt;</span> <span class='ident'>Transition</span>::<span class='ident'>Terminate</span>,
+        }
+    }
+
+    <span class='kw'>fn</span> <span class='ident'>into_bootstrapped</span>(<span class='self'>self</span>,
+                         <span class='ident'>proxy_peer_id</span>: <span class='ident'>PeerId</span>,
+                         <span class='ident'>proxy_public_id</span>: <span class='ident'>PublicId</span>,
+                         <span class='ident'>quorum_size</span>: <span class='ident'>usize</span>)
+                         <span class='op'>-&gt;</span> <span class='self'>Self</span> {
+        <span class='kw'>match</span> <span class='self'>self</span> {
+            <span class='ident'>State</span>::<span class='ident'>Bootstrapping</span>(<span class='ident'>state</span>) <span class='op'>=&gt;</span> {
+                <span class='kw'>if</span> <span class='ident'>state</span>.<span class='ident'>client_restriction</span>() {
+                    <span class='ident'>State</span>::<span class='ident'>Client</span>(<span class='ident'>state</span>.<span class='ident'>into_client</span>(<span class='ident'>proxy_peer_id</span>, <span class='ident'>proxy_public_id</span>, <span class='ident'>quorum_size</span>))
+                } <span class='kw'>else</span> <span class='kw'>if</span> <span class='kw'>let</span> <span class='prelude-val'>Some</span>(<span class='ident'>state</span>) <span class='op'>=</span>
+                       <span class='ident'>state</span>.<span class='ident'>into_joining_node</span>(<span class='ident'>proxy_peer_id</span>, <span class='ident'>proxy_public_id</span>, <span class='ident'>quorum_size</span>) {
+                    <span class='ident'>State</span>::<span class='ident'>JoiningNode</span>(<span class='ident'>state</span>)
+                } <span class='kw'>else</span> {
+                    <span class='ident'>State</span>::<span class='ident'>Terminated</span>
+                }
+            }
+            _ <span class='op'>=&gt;</span> <span class='macro'>unreachable</span><span class='macro'>!</span>(),
+        }
+    }
+
+    <span class='kw'>fn</span> <span class='ident'>into_node</span>(<span class='self'>self</span>, <span class='ident'>peer_id</span>: <span class='ident'>PeerId</span>, <span class='ident'>public_id</span>: <span class='ident'>PublicId</span>) <span class='op'>-&gt;</span> <span class='self'>Self</span> {
+        <span class='kw'>match</span> <span class='self'>self</span> {
+            <span class='ident'>State</span>::<span class='ident'>JoiningNode</span>(<span class='ident'>state</span>) <span class='op'>=&gt;</span> <span class='ident'>State</span>::<span class='ident'>Node</span>(<span class='ident'>state</span>.<span class='ident'>into_node</span>(<span class='ident'>peer_id</span>, <span class='ident'>public_id</span>)),
+            _ <span class='op'>=&gt;</span> <span class='macro'>unreachable</span><span class='macro'>!</span>(),
+        }
+    }
+
+    <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>feature</span> <span class='op'>=</span> <span class='string'>&quot;use-mock-crust&quot;</span>)]</span>
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>resend_unacknowledged</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> {
+        <span class='kw'>match</span> <span class='op'>*</span><span class='self'>self</span> {
+            <span class='ident'>State</span>::<span class='ident'>Client</span>(<span class='kw-2'>ref</span> <span class='kw-2'>mut</span> <span class='ident'>state</span>) <span class='op'>=&gt;</span> <span class='ident'>state</span>.<span class='ident'>resend_unacknowledged</span>(),
+            <span class='ident'>State</span>::<span class='ident'>JoiningNode</span>(<span class='kw-2'>ref</span> <span class='kw-2'>mut</span> <span class='ident'>state</span>) <span class='op'>=&gt;</span> <span class='ident'>state</span>.<span class='ident'>resend_unacknowledged</span>(),
+            <span class='ident'>State</span>::<span class='ident'>Node</span>(<span class='kw-2'>ref</span> <span class='kw-2'>mut</span> <span class='ident'>state</span>) <span class='op'>=&gt;</span> <span class='ident'>state</span>.<span class='ident'>resend_unacknowledged</span>(),
+            <span class='ident'>State</span>::<span class='ident'>Bootstrapping</span>(_) <span class='op'>|</span>
+            <span class='ident'>State</span>::<span class='ident'>Terminated</span> <span class='op'>=&gt;</span> <span class='boolvalue'>false</span>,
+        }
+    }
+
+    <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>feature</span> <span class='op'>=</span> <span class='string'>&quot;use-mock-crust&quot;</span>)]</span>
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>has_unacknowledged</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> {
+        <span class='kw'>match</span> <span class='op'>*</span><span class='self'>self</span> {
+            <span class='ident'>State</span>::<span class='ident'>Client</span>(<span class='kw-2'>ref</span> <span class='ident'>state</span>) <span class='op'>=&gt;</span> <span class='ident'>state</span>.<span class='ident'>has_unacknowledged</span>(),
+            <span class='ident'>State</span>::<span class='ident'>JoiningNode</span>(<span class='kw-2'>ref</span> <span class='ident'>state</span>) <span class='op'>=&gt;</span> <span class='ident'>state</span>.<span class='ident'>has_unacknowledged</span>(),
+            <span class='ident'>State</span>::<span class='ident'>Node</span>(<span class='kw-2'>ref</span> <span class='ident'>state</span>) <span class='op'>=&gt;</span> <span class='ident'>state</span>.<span class='ident'>has_unacknowledged</span>(),
+            <span class='ident'>State</span>::<span class='ident'>Bootstrapping</span>(_) <span class='op'>|</span>
+            <span class='ident'>State</span>::<span class='ident'>Terminated</span> <span class='op'>=&gt;</span> <span class='boolvalue'>false</span>,
+        }
+    }
+
+    <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>feature</span> <span class='op'>=</span> <span class='string'>&quot;use-mock-crust&quot;</span>)]</span>
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>routing_table</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='kw-2'>&amp;</span><span class='ident'>RoutingTable</span><span class='op'>&lt;</span><span class='ident'>XorName</span><span class='op'>&gt;</span> {
+        <span class='kw'>match</span> <span class='op'>*</span><span class='self'>self</span> {
+            <span class='ident'>State</span>::<span class='ident'>JoiningNode</span>(<span class='kw-2'>ref</span> <span class='ident'>state</span>) <span class='op'>=&gt;</span> <span class='ident'>state</span>.<span class='ident'>routing_table</span>(),
+            <span class='ident'>State</span>::<span class='ident'>Node</span>(<span class='kw-2'>ref</span> <span class='ident'>state</span>) <span class='op'>=&gt;</span> <span class='ident'>state</span>.<span class='ident'>routing_table</span>(),
+            _ <span class='op'>=&gt;</span> <span class='macro'>unreachable</span><span class='macro'>!</span>(),
+        }
+    }
+
+    <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>feature</span> <span class='op'>=</span> <span class='string'>&quot;use-mock-crust&quot;</span>)]</span>
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>clear_state</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) {
+        <span class='kw'>match</span> <span class='op'>*</span><span class='self'>self</span> {
+            <span class='ident'>State</span>::<span class='ident'>JoiningNode</span>(<span class='kw-2'>ref</span> <span class='kw-2'>mut</span> <span class='ident'>state</span>) <span class='op'>=&gt;</span> <span class='ident'>state</span>.<span class='ident'>clear_state</span>(),
+            <span class='ident'>State</span>::<span class='ident'>Node</span>(<span class='kw-2'>ref</span> <span class='kw-2'>mut</span> <span class='ident'>state</span>) <span class='op'>=&gt;</span> <span class='ident'>state</span>.<span class='ident'>clear_state</span>(),
+            <span class='ident'>State</span>::<span class='ident'>Bootstrapping</span>(_) <span class='op'>|</span>
+            <span class='ident'>State</span>::<span class='ident'>Client</span>(_) <span class='op'>|</span>
+            <span class='ident'>State</span>::<span class='ident'>Terminated</span> <span class='op'>=&gt;</span> (),
+        }
+    }
+}
+
 <span class='kw'>pub</span> <span class='kw'>enum</span> <span class='ident'>Transition</span> {
-    <span class='comment'>// Stay in the current state</span>
+    <span class='comment'>// Stay in the current state.</span>
     <span class='ident'>Stay</span>,
-    <span class='comment'>// Transition to Client</span>
-    <span class='ident'>IntoClient</span> {
-        <span class='ident'>proxy_public_id</span>: <span class='ident'>PublicId</span>,
+    <span class='comment'>// Transition into a bootstrapped state (JoiningNode or Client).</span>
+    <span class='ident'>IntoBootstrapped</span> {
         <span class='ident'>proxy_peer_id</span>: <span class='ident'>PeerId</span>,
+        <span class='ident'>proxy_public_id</span>: <span class='ident'>PublicId</span>,
         <span class='ident'>quorum_size</span>: <span class='ident'>usize</span>,
     },
-    <span class='comment'>// Transition to Node</span>
+    <span class='comment'>// Transition into Node.</span>
     <span class='ident'>IntoNode</span> {
-        <span class='ident'>close_group_ids</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>PublicId</span><span class='op'>&gt;</span>,
-        <span class='ident'>dst</span>: <span class='ident'>Authority</span>,
+        <span class='ident'>peer_id</span>: <span class='ident'>PeerId</span>,
+        <span class='ident'>public_id</span>: <span class='ident'>PublicId</span>,
     },
     <span class='comment'>// Terminate</span>
     <span class='ident'>Terminate</span>,
 }
 
-<span class='doccomment'>/// The role this `StateMachine` instance intends to act as once it joined the network.</span>
-<span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>PartialEq</span>, <span class='ident'>Eq</span>, <span class='ident'>PartialOrd</span>, <span class='ident'>Ord</span>, <span class='ident'>Debug</span>, <span class='ident'>Clone</span>, <span class='ident'>Copy</span>)]</span>
-<span class='kw'>pub</span> <span class='kw'>enum</span> <span class='ident'>Role</span> {
-    <span class='doccomment'>/// Remain a client and not become a full routing node.</span>
-    <span class='ident'>Client</span>,
-    <span class='doccomment'>/// Join an existing network as a routing node.</span>
-    <span class='ident'>Node</span>,
-    <span class='doccomment'>/// Start a new network as its first node.</span>
-    <span class='ident'>FirstNode</span>,
-}
-
 <span class='kw'>impl</span> <span class='ident'>StateMachine</span> {
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>(<span class='ident'>event_sender</span>: <span class='ident'>Sender</span><span class='op'>&lt;</span><span class='ident'>Event</span><span class='op'>&gt;</span>,
-               <span class='ident'>role</span>: <span class='ident'>Role</span>,
-               <span class='ident'>keys</span>: <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>FullId</span><span class='op'>&gt;</span>,
-               <span class='ident'>cache</span>: <span class='ident'>Box</span><span class='op'>&lt;</span><span class='ident'>Cache</span><span class='op'>&gt;</span>,
-               <span class='ident'>deny_other_local_nodes</span>: <span class='ident'>bool</span>)
-               <span class='op'>-&gt;</span> (<span class='ident'>RoutingActionSender</span>, <span class='self'>Self</span>) {
+    <span class='comment'>// Construct a new StateMachine by passing a function returning the initial</span>
+    <span class='comment'>// state.</span>
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span><span class='op'>&lt;</span><span class='ident'>F</span><span class='op'>&gt;</span>(<span class='ident'>init_state</span>: <span class='ident'>F</span>) <span class='op'>-&gt;</span> (<span class='ident'>RoutingActionSender</span>, <span class='self'>Self</span>)
+        <span class='kw'>where</span> <span class='ident'>F</span>: <span class='ident'>FnOnce</span>(<span class='ident'>Service</span>, <span class='ident'>Timer</span>) <span class='op'>-&gt;</span> <span class='ident'>State</span>
+    {
         <span class='kw'>let</span> (<span class='ident'>category_tx</span>, <span class='ident'>category_rx</span>) <span class='op'>=</span> <span class='ident'>mpsc</span>::<span class='ident'>channel</span>();
         <span class='kw'>let</span> (<span class='ident'>crust_tx</span>, <span class='ident'>crust_rx</span>) <span class='op'>=</span> <span class='ident'>mpsc</span>::<span class='ident'>channel</span>();
         <span class='kw'>let</span> (<span class='ident'>action_tx</span>, <span class='ident'>action_rx</span>) <span class='op'>=</span> <span class='ident'>mpsc</span>::<span class='ident'>channel</span>();
@@ -539,26 +621,11 @@
         <span class='ident'>crust_service</span>.<span class='ident'>start_service_discovery</span>();
 
         <span class='kw'>let</span> <span class='ident'>timer</span> <span class='op'>=</span> <span class='ident'>Timer</span>::<span class='ident'>new</span>(<span class='ident'>action_sender</span>.<span class='ident'>clone</span>());
-        <span class='kw'>let</span> <span class='ident'>full_id</span> <span class='op'>=</span> <span class='ident'>keys</span>.<span class='ident'>unwrap_or_else</span>(<span class='ident'>FullId</span>::<span class='ident'>new</span>);
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>is_running</span> <span class='op'>=</span> <span class='boolvalue'>true</span>;
 
-        <span class='kw'>let</span> <span class='ident'>state</span> <span class='op'>=</span> <span class='kw'>if</span> <span class='ident'>role</span> <span class='op'>==</span> <span class='ident'>Role</span>::<span class='ident'>FirstNode</span> {
-            <span class='ident'>State</span>::<span class='ident'>Node</span>(<span class='ident'>Node</span>::<span class='ident'>first</span>(<span class='ident'>cache</span>, <span class='ident'>crust_service</span>, <span class='ident'>event_sender</span>, <span class='ident'>full_id</span>, <span class='ident'>timer</span>))
-        } <span class='kw'>else</span> <span class='kw'>if</span> <span class='ident'>deny_other_local_nodes</span> <span class='op'>&amp;&amp;</span> <span class='ident'>crust_service</span>.<span class='ident'>has_peers_on_lan</span>() {
-            <span class='macro'>error</span><span class='macro'>!</span>(<span class='string'>&quot;Disconnected({:?}) More than 1 routing node found on LAN. Currently this is \
-                    not supported&quot;</span>,
-                   <span class='ident'>full_id</span>.<span class='ident'>public_id</span>().<span class='ident'>name</span>());
-            <span class='kw'>let</span> _ <span class='op'>=</span> <span class='ident'>event_sender</span>.<span class='ident'>send</span>(<span class='ident'>Event</span>::<span class='ident'>Terminate</span>);
-            <span class='ident'>is_running</span> <span class='op'>=</span> <span class='boolvalue'>false</span>;
-            <span class='ident'>State</span>::<span class='ident'>Terminated</span>
-        } <span class='kw'>else</span> {
-            <span class='ident'>State</span>::<span class='ident'>Bootstrapping</span>(<span class='ident'>Bootstrapping</span>::<span class='ident'>new</span>(<span class='ident'>HashSet</span>::<span class='ident'>new</span>(),
-                                                    <span class='ident'>cache</span>,
-                                                    <span class='ident'>role</span> <span class='op'>==</span> <span class='ident'>Role</span>::<span class='ident'>Client</span>,
-                                                    <span class='ident'>crust_service</span>,
-                                                    <span class='ident'>event_sender</span>,
-                                                    <span class='ident'>full_id</span>,
-                                                    <span class='ident'>timer</span>))
+        <span class='kw'>let</span> <span class='ident'>state</span> <span class='op'>=</span> <span class='ident'>init_state</span>(<span class='ident'>crust_service</span>, <span class='ident'>timer</span>);
+        <span class='kw'>let</span> <span class='ident'>is_running</span> <span class='op'>=</span> <span class='kw'>match</span> <span class='ident'>state</span> {
+            <span class='ident'>State</span>::<span class='ident'>Terminated</span> <span class='op'>=&gt;</span> <span class='boolvalue'>false</span>,
+            _ <span class='op'>=&gt;</span> <span class='boolvalue'>true</span>,
         };
 
         <span class='kw'>let</span> <span class='ident'>machine</span> <span class='op'>=</span> <span class='ident'>StateMachine</span> {
@@ -602,44 +669,16 @@
         }
     }
 
-    <span class='doccomment'>/// Routing table of this node.</span>
+    <span class='doccomment'>/// Get reference to the current state.</span>
     <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>feature</span> <span class='op'>=</span> <span class='string'>&quot;use-mock-crust&quot;</span>)]</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>routing_table</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='kw-2'>&amp;</span><span class='ident'>RoutingTable</span><span class='op'>&lt;</span><span class='ident'>XorName</span><span class='op'>&gt;</span> {
-        <span class='kw'>match</span> <span class='self'>self</span>.<span class='ident'>state</span> {
-            <span class='ident'>State</span>::<span class='ident'>Client</span>(<span class='kw-2'>ref</span> <span class='ident'>state</span>) <span class='op'>=&gt;</span> <span class='ident'>state</span>.<span class='ident'>routing_table</span>(),
-            <span class='ident'>State</span>::<span class='ident'>Node</span>(<span class='kw-2'>ref</span> <span class='ident'>state</span>) <span class='op'>=&gt;</span> <span class='ident'>state</span>.<span class='ident'>routing_table</span>(),
-            _ <span class='op'>=&gt;</span> <span class='macro'>unreachable</span><span class='macro'>!</span>(),
-        }
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>current</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='kw-2'>&amp;</span><span class='ident'>State</span> {
+        <span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='ident'>state</span>
     }
 
-    <span class='doccomment'>/// resends all unacknowledged messages.</span>
+    <span class='doccomment'>/// Get mutable reference to the current state.</span>
     <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>feature</span> <span class='op'>=</span> <span class='string'>&quot;use-mock-crust&quot;</span>)]</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>resend_unacknowledged</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> {
-        <span class='kw'>match</span> <span class='self'>self</span>.<span class='ident'>state</span> {
-            <span class='ident'>State</span>::<span class='ident'>Client</span>(<span class='kw-2'>ref</span> <span class='kw-2'>mut</span> <span class='ident'>state</span>) <span class='op'>=&gt;</span> <span class='ident'>state</span>.<span class='ident'>resend_unacknowledged</span>(),
-            <span class='ident'>State</span>::<span class='ident'>Node</span>(<span class='kw-2'>ref</span> <span class='kw-2'>mut</span> <span class='ident'>state</span>) <span class='op'>=&gt;</span> <span class='ident'>state</span>.<span class='ident'>resend_unacknowledged</span>(),
-            _ <span class='op'>=&gt;</span> <span class='macro'>unreachable</span><span class='macro'>!</span>(),
-        }
-    }
-
-    <span class='doccomment'>/// Are there any unacknowledged messages?</span>
-    <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>feature</span> <span class='op'>=</span> <span class='string'>&quot;use-mock-crust&quot;</span>)]</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>has_unacknowledged</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> {
-        <span class='kw'>match</span> <span class='self'>self</span>.<span class='ident'>state</span> {
-            <span class='ident'>State</span>::<span class='ident'>Client</span>(<span class='kw-2'>ref</span> <span class='ident'>state</span>) <span class='op'>=&gt;</span> <span class='ident'>state</span>.<span class='ident'>has_unacknowledged</span>(),
-            <span class='ident'>State</span>::<span class='ident'>Node</span>(<span class='kw-2'>ref</span> <span class='ident'>state</span>) <span class='op'>=&gt;</span> <span class='ident'>state</span>.<span class='ident'>has_unacknowledged</span>(),
-            _ <span class='op'>=&gt;</span> <span class='macro'>unreachable</span><span class='macro'>!</span>(),
-        }
-    }
-
-    <span class='doccomment'>/// Clears all state containers except `bootstrap_blacklist`.</span>
-    <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>feature</span> <span class='op'>=</span> <span class='string'>&quot;use-mock-crust&quot;</span>)]</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>clear_state</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) {
-        <span class='kw'>match</span> <span class='self'>self</span>.<span class='ident'>state</span> {
-            <span class='ident'>State</span>::<span class='ident'>Client</span>(<span class='kw-2'>ref</span> <span class='kw-2'>mut</span> <span class='ident'>state</span>) <span class='op'>=&gt;</span> <span class='ident'>state</span>.<span class='ident'>clear_state</span>(),
-            <span class='ident'>State</span>::<span class='ident'>Node</span>(<span class='kw-2'>ref</span> <span class='kw-2'>mut</span> <span class='ident'>state</span>) <span class='op'>=&gt;</span> <span class='ident'>state</span>.<span class='ident'>clear_state</span>(),
-            _ <span class='op'>=&gt;</span> <span class='macro'>unreachable</span><span class='macro'>!</span>(),
-        }
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>current_mut</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>State</span> {
+        <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>.<span class='ident'>state</span>
     }
 
     <span class='kw'>fn</span> <span class='ident'>handle_event</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>category</span>: <span class='ident'>MaidSafeEventCategory</span>) {
@@ -662,67 +701,38 @@
 
         <span class='kw'>match</span> <span class='ident'>transition</span> {
             <span class='ident'>Transition</span>::<span class='ident'>Stay</span> <span class='op'>=&gt;</span> (),
+            <span class='ident'>Transition</span>::<span class='ident'>IntoBootstrapped</span> { <span class='ident'>proxy_peer_id</span>, <span class='ident'>proxy_public_id</span>, <span class='ident'>quorum_size</span> } <span class='op'>=&gt;</span> {
+                <span class='self'>self</span>.<span class='ident'>transition_to_bootstrapped</span>(<span class='ident'>proxy_peer_id</span>, <span class='ident'>proxy_public_id</span>, <span class='ident'>quorum_size</span>)
+            }
+            <span class='ident'>Transition</span>::<span class='ident'>IntoNode</span> { <span class='ident'>peer_id</span>, <span class='ident'>public_id</span> } <span class='op'>=&gt;</span> <span class='self'>self</span>.<span class='ident'>transition_to_node</span>(<span class='ident'>peer_id</span>, <span class='ident'>public_id</span>),
             <span class='ident'>Transition</span>::<span class='ident'>Terminate</span> <span class='op'>=&gt;</span> <span class='self'>self</span>.<span class='ident'>terminate</span>(),
-            <span class='ident'>Transition</span>::<span class='ident'>IntoClient</span> { <span class='ident'>proxy_public_id</span>, <span class='ident'>proxy_peer_id</span>, <span class='ident'>quorum_size</span> } <span class='op'>=&gt;</span> {
-                <span class='self'>self</span>.<span class='ident'>transition</span>(<span class='kw'>move</span> <span class='op'>|</span><span class='ident'>state</span><span class='op'>|</span> {
-                    <span class='ident'>state</span>.<span class='ident'>into_client</span>(<span class='ident'>proxy_public_id</span>, <span class='ident'>proxy_peer_id</span>, <span class='ident'>quorum_size</span>)
-                })
-            }
-            <span class='ident'>Transition</span>::<span class='ident'>IntoNode</span> { <span class='ident'>close_group_ids</span>, <span class='ident'>dst</span> } <span class='op'>=&gt;</span> {
-                <span class='self'>self</span>.<span class='ident'>transition</span>(<span class='kw'>move</span> <span class='op'>|</span><span class='ident'>state</span><span class='op'>|</span> <span class='ident'>state</span>.<span class='ident'>into_node</span>(<span class='ident'>close_group_ids</span>, <span class='ident'>dst</span>))
-            }
         }
     }
 
-    <span class='kw'>fn</span> <span class='ident'>transition</span><span class='op'>&lt;</span><span class='ident'>F</span><span class='op'>&gt;</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>f</span>: <span class='ident'>F</span>)
-        <span class='kw'>where</span> <span class='ident'>F</span>: <span class='ident'>FnOnce</span>(<span class='ident'>State</span>) <span class='op'>-&gt;</span> <span class='ident'>State</span>
-    {
-        <span class='kw'>let</span> <span class='ident'>prev_state</span> <span class='op'>=</span> <span class='ident'>mem</span>::<span class='ident'>replace</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>.<span class='ident'>state</span>, <span class='ident'>State</span>::<span class='ident'>Transitioning</span>);
-        <span class='self'>self</span>.<span class='ident'>state</span> <span class='op'>=</span> <span class='ident'>f</span>(<span class='ident'>prev_state</span>)
+    <span class='kw'>fn</span> <span class='ident'>transition_to_bootstrapped</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>,
+                                  <span class='ident'>proxy_peer_id</span>: <span class='ident'>PeerId</span>,
+                                  <span class='ident'>proxy_public_id</span>: <span class='ident'>PublicId</span>,
+                                  <span class='ident'>quorum_size</span>: <span class='ident'>usize</span>) {
+        <span class='self'>self</span>.<span class='ident'>transition</span>(<span class='op'>|</span><span class='ident'>state</span><span class='op'>|</span> {
+            <span class='ident'>state</span>.<span class='ident'>into_bootstrapped</span>(<span class='ident'>proxy_peer_id</span>, <span class='ident'>proxy_public_id</span>, <span class='ident'>quorum_size</span>)
+        })
+    }
+
+    <span class='kw'>fn</span> <span class='ident'>transition_to_node</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>peer_id</span>: <span class='ident'>PeerId</span>, <span class='ident'>public_id</span>: <span class='ident'>PublicId</span>) {
+        <span class='self'>self</span>.<span class='ident'>transition</span>(<span class='op'>|</span><span class='ident'>state</span><span class='op'>|</span> <span class='ident'>state</span>.<span class='ident'>into_node</span>(<span class='ident'>peer_id</span>, <span class='ident'>public_id</span>))
     }
 
     <span class='kw'>fn</span> <span class='ident'>terminate</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) {
         <span class='self'>self</span>.<span class='ident'>is_running</span> <span class='op'>=</span> <span class='boolvalue'>false</span>;
     }
-}
 
-<span class='kw'>impl</span> <span class='ident'>State</span> {
-    <span class='kw'>fn</span> <span class='ident'>handle_action</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>action</span>: <span class='ident'>Action</span>) <span class='op'>-&gt;</span> <span class='ident'>Transition</span> {
-        <span class='kw'>match</span> <span class='op'>*</span><span class='self'>self</span> {
-            <span class='ident'>State</span>::<span class='ident'>Bootstrapping</span>(<span class='kw-2'>ref</span> <span class='kw-2'>mut</span> <span class='ident'>state</span>) <span class='op'>=&gt;</span> <span class='ident'>state</span>.<span class='ident'>handle_action</span>(<span class='ident'>action</span>),
-            <span class='ident'>State</span>::<span class='ident'>Client</span>(<span class='kw-2'>ref</span> <span class='kw-2'>mut</span> <span class='ident'>state</span>) <span class='op'>=&gt;</span> <span class='ident'>state</span>.<span class='ident'>handle_action</span>(<span class='ident'>action</span>),
-            <span class='ident'>State</span>::<span class='ident'>Node</span>(<span class='kw-2'>ref</span> <span class='kw-2'>mut</span> <span class='ident'>state</span>) <span class='op'>=&gt;</span> <span class='ident'>state</span>.<span class='ident'>handle_action</span>(<span class='ident'>action</span>),
-            <span class='ident'>State</span>::<span class='ident'>Terminated</span> <span class='op'>|</span> <span class='ident'>State</span>::<span class='ident'>Transitioning</span> <span class='op'>=&gt;</span> <span class='macro'>unreachable</span><span class='macro'>!</span>(),
-        }
-    }
-
-    <span class='kw'>fn</span> <span class='ident'>handle_crust_event</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>event</span>: <span class='ident'>CrustEvent</span>) <span class='op'>-&gt;</span> <span class='ident'>Transition</span> {
-        <span class='kw'>match</span> <span class='op'>*</span><span class='self'>self</span> {
-            <span class='ident'>State</span>::<span class='ident'>Bootstrapping</span>(<span class='kw-2'>ref</span> <span class='kw-2'>mut</span> <span class='ident'>state</span>) <span class='op'>=&gt;</span> <span class='ident'>state</span>.<span class='ident'>handle_crust_event</span>(<span class='ident'>event</span>),
-            <span class='ident'>State</span>::<span class='ident'>Client</span>(<span class='kw-2'>ref</span> <span class='kw-2'>mut</span> <span class='ident'>state</span>) <span class='op'>=&gt;</span> <span class='ident'>state</span>.<span class='ident'>handle_crust_event</span>(<span class='ident'>event</span>),
-            <span class='ident'>State</span>::<span class='ident'>Node</span>(<span class='kw-2'>ref</span> <span class='kw-2'>mut</span> <span class='ident'>state</span>) <span class='op'>=&gt;</span> <span class='ident'>state</span>.<span class='ident'>handle_crust_event</span>(<span class='ident'>event</span>),
-            <span class='ident'>State</span>::<span class='ident'>Terminated</span> <span class='op'>|</span> <span class='ident'>State</span>::<span class='ident'>Transitioning</span> <span class='op'>=&gt;</span> <span class='macro'>unreachable</span><span class='macro'>!</span>(),
-        }
-    }
-
-    <span class='kw'>fn</span> <span class='ident'>into_client</span>(<span class='self'>self</span>,
-                   <span class='ident'>proxy_public_id</span>: <span class='ident'>PublicId</span>,
-                   <span class='ident'>proxy_peer_id</span>: <span class='ident'>PeerId</span>,
-                   <span class='ident'>quorum_size</span>: <span class='ident'>usize</span>)
-                   <span class='op'>-&gt;</span> <span class='ident'>State</span> {
-        <span class='kw'>match</span> <span class='self'>self</span> {
-            <span class='ident'>State</span>::<span class='ident'>Bootstrapping</span>(<span class='ident'>state</span>) <span class='op'>=&gt;</span> {
-                <span class='ident'>State</span>::<span class='ident'>Client</span>(<span class='ident'>state</span>.<span class='ident'>into_client</span>(<span class='ident'>proxy_public_id</span>, <span class='ident'>proxy_peer_id</span>, <span class='ident'>quorum_size</span>))
-            }
-            _ <span class='op'>=&gt;</span> <span class='macro'>unreachable</span><span class='macro'>!</span>(),
-        }
-    }
-
-    <span class='kw'>fn</span> <span class='ident'>into_node</span>(<span class='self'>self</span>, <span class='ident'>close_group_ids</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>PublicId</span><span class='op'>&gt;</span>, <span class='ident'>dst</span>: <span class='ident'>Authority</span>) <span class='op'>-&gt;</span> <span class='ident'>State</span> {
-        <span class='kw'>match</span> <span class='self'>self</span> {
-            <span class='ident'>State</span>::<span class='ident'>Client</span>(<span class='ident'>state</span>) <span class='op'>=&gt;</span> <span class='ident'>State</span>::<span class='ident'>Node</span>(<span class='ident'>state</span>.<span class='ident'>into_node</span>(<span class='ident'>close_group_ids</span>, <span class='ident'>dst</span>)),
-            _ <span class='op'>=&gt;</span> <span class='macro'>unreachable</span><span class='macro'>!</span>(),
-        }
+    <span class='kw'>fn</span> <span class='ident'>transition</span><span class='op'>&lt;</span><span class='ident'>F</span><span class='op'>&gt;</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>f</span>: <span class='ident'>F</span>)
+        <span class='kw'>where</span> <span class='ident'>F</span>: <span class='ident'>FnOnce</span>(<span class='ident'>State</span>) <span class='op'>-&gt;</span> <span class='ident'>State</span>
+    {
+        <span class='comment'>// Temporarily switch to `Terminated` to allow moving out of the current</span>
+        <span class='comment'>// state without moving `self`.</span>
+        <span class='kw'>let</span> <span class='ident'>prev_state</span> <span class='op'>=</span> <span class='ident'>mem</span>::<span class='ident'>replace</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>.<span class='ident'>state</span>, <span class='ident'>State</span>::<span class='ident'>Terminated</span>);
+        <span class='self'>self</span>.<span class='ident'>state</span> <span class='op'>=</span> <span class='ident'>f</span>(<span class='ident'>prev_state</span>);
     }
 }
 </pre>
