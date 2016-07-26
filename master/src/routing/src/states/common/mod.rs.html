@@ -507,7 +507,7 @@
         };
 
         <span class='kw'>if</span> <span class='kw'>let</span> <span class='prelude-val'>Err</span>(<span class='ident'>error</span>) <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>send_routing_message_via_route</span>(<span class='ident'>response</span>, <span class='ident'>route</span>) {
-            <span class='macro'>error</span><span class='macro'>!</span>(<span class='string'>&quot;{:?} - Failed to send ack: {:?}&quot;</span>, <span class='self'>self</span>, <span class='ident'>error</span>);
+            <span class='macro'>debug</span><span class='macro'>!</span>(<span class='string'>&quot;{:?} - Failed to send ack: {:?}&quot;</span>, <span class='self'>self</span>, <span class='ident'>error</span>);
         }
     }
 }

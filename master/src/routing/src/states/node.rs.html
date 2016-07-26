@@ -1613,12 +1613,6 @@
 <span id="1569">1569</span>
 <span id="1570">1570</span>
 <span id="1571">1571</span>
-<span id="1572">1572</span>
-<span id="1573">1573</span>
-<span id="1574">1574</span>
-<span id="1575">1575</span>
-<span id="1576">1576</span>
-<span id="1577">1577</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2015 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -1836,7 +1830,7 @@
             <span class='kw'>let</span> <span class='ident'>status_str</span> <span class='op'>=</span> <span class='macro'>format</span><span class='macro'>!</span>(<span class='string'>&quot;{:?} {:?} - Routing Table size: {:3}&quot;</span>,
                                      <span class='self'>self</span>,
                                      <span class='self'>self</span>.<span class='ident'>crust_service</span>.<span class='ident'>id</span>(),
-                                     <span class='self'>self</span>.<span class='ident'>peer_mgr</span>.<span class='ident'>routing_table</span>().<span class='ident'>len</span>());
+                                     <span class='self'>self</span>.<span class='ident'>stats</span>.<span class='ident'>cur_routing_table_size</span>);
             <span class='macro'>info</span><span class='macro'>!</span>(<span class='string'>&quot; -{}- &quot;</span>,
                   <span class='ident'>iter</span>::<span class='ident'>repeat</span>(<span class='string'>&#39;-&#39;</span>).<span class='ident'>take</span>(<span class='ident'>status_str</span>.<span class='ident'>len</span>()).<span class='ident'>collect</span>::<span class='op'>&lt;</span><span class='ident'>String</span><span class='op'>&gt;</span>());
             <span class='macro'>info</span><span class='macro'>!</span>(<span class='string'>&quot;| {} |&quot;</span>, <span class='ident'>status_str</span>); <span class='comment'>// Temporarily error for ci_test.</span>
@@ -1858,7 +1852,7 @@
                     .<span class='ident'>is_ok</span>()
             }
             <span class='ident'>Action</span>::<span class='ident'>CloseGroup</span> { <span class='ident'>name</span>, <span class='ident'>result_tx</span> } <span class='op'>=&gt;</span> {
-                <span class='ident'>result_tx</span>.<span class='ident'>send</span>(<span class='self'>self</span>.<span class='ident'>peer_mgr</span>.<span class='ident'>close_group</span>(<span class='kw-2'>&amp;</span><span class='ident'>name</span>)).<span class='ident'>is_ok</span>()
+                <span class='ident'>result_tx</span>.<span class='ident'>send</span>(<span class='self'>self</span>.<span class='ident'>peer_mgr</span>.<span class='ident'>routing_table</span>().<span class='ident'>close_nodes</span>(<span class='kw-2'>&amp;</span><span class='ident'>name</span>, <span class='ident'>GROUP_SIZE</span>)).<span class='ident'>is_ok</span>()
             }
             <span class='ident'>Action</span>::<span class='ident'>Name</span> { <span class='ident'>result_tx</span> } <span class='op'>=&gt;</span> <span class='ident'>result_tx</span>.<span class='ident'>send</span>(<span class='op'>*</span><span class='self'>self</span>.<span class='ident'>name</span>()).<span class='ident'>is_ok</span>(),
             <span class='ident'>Action</span>::<span class='ident'>QuorumSize</span> { <span class='ident'>result_tx</span> } <span class='op'>=&gt;</span> <span class='ident'>result_tx</span>.<span class='ident'>send</span>(<span class='self'>self</span>.<span class='ident'>dynamic_quorum_size</span>()).<span class='ident'>is_ok</span>(),
@@ -1958,11 +1952,18 @@
                   <span class='ident'>pub_id</span>.<span class='ident'>name</span>());
             <span class='kw'>return</span>;
         }
+        <span class='comment'>// TODO: Keep track of this peer, even if this returns false.</span>
         <span class='self'>self</span>.<span class='ident'>peer_mgr</span>.<span class='ident'>connected_to</span>(<span class='ident'>peer_id</span>);
         <span class='macro'>debug</span><span class='macro'>!</span>(<span class='string'>&quot;{:?} Received ConnectSuccess from {:?}. Sending NodeIdentify.&quot;</span>,
                <span class='self'>self</span>,
                <span class='ident'>peer_id</span>);
-        <span class='kw'>let</span> _ <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>send_node_identify</span>(<span class='ident'>peer_id</span>);
+        <span class='kw'>if</span> <span class='kw'>let</span> <span class='prelude-val'>Err</span>(<span class='ident'>error</span>) <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>send_node_identify</span>(<span class='ident'>peer_id</span>) {
+            <span class='macro'>warn</span><span class='macro'>!</span>(<span class='string'>&quot;{:?} Failed to send NodeIdentify to {:?}: {:?}&quot;</span>,
+                  <span class='self'>self</span>,
+                  <span class='ident'>peer_id</span>,
+                  <span class='ident'>error</span>);
+            <span class='self'>self</span>.<span class='ident'>disconnect_peer</span>(<span class='kw-2'>&amp;</span><span class='ident'>peer_id</span>);
+        }
     }
 
     <span class='kw'>fn</span> <span class='ident'>handle_connect_failure</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>peer_id</span>: <span class='ident'>PeerId</span>) {
@@ -2255,24 +2256,10 @@
                 <span class='prelude-val'>Ok</span>(())
             }
             <span class='ident'>DirectMessage</span>::<span class='ident'>ConnectionUnneeded</span>(<span class='kw-2'>ref</span> <span class='ident'>name</span>) <span class='op'>=&gt;</span> {
-                <span class='kw'>if</span> <span class='op'>!</span><span class='self'>self</span>.<span class='ident'>peer_mgr</span>.<span class='ident'>get_proxy_public_id</span>(<span class='kw-2'>&amp;</span><span class='ident'>peer_id</span>).<span class='ident'>is_some</span>() <span class='op'>&amp;&amp;</span>
-                   <span class='op'>!</span><span class='self'>self</span>.<span class='ident'>peer_mgr</span>.<span class='ident'>get_client</span>(<span class='kw-2'>&amp;</span><span class='ident'>peer_id</span>).<span class='ident'>is_some</span>() {
-                    <span class='kw'>match</span> <span class='self'>self</span>.<span class='ident'>peer_mgr</span>.<span class='ident'>remove_if_unneeded</span>(<span class='ident'>name</span>, <span class='kw-2'>&amp;</span><span class='ident'>peer_id</span>) {
-                        <span class='prelude-val'>None</span> <span class='op'>=&gt;</span> {
-                            <span class='macro'>debug</span><span class='macro'>!</span>(<span class='string'>&quot;{:?} Received ConnectionUnneeded from {:?} with name {:?}, \
-                                    but that name actually belongs to someone else.&quot;</span>,
-                                   <span class='self'>self</span>,
-                                   <span class='ident'>peer_id</span>,
-                                   <span class='ident'>name</span>);
-                            <span class='kw'>return</span> <span class='prelude-val'>Err</span>(<span class='ident'>RoutingError</span>::<span class='ident'>InvalidSource</span>);
-                        }
-                        <span class='prelude-val'>Some</span>(<span class='boolvalue'>true</span>) <span class='op'>=&gt;</span> {
-                            <span class='macro'>info</span><span class='macro'>!</span>(<span class='string'>&quot;{:?} Dropped {:?} from the routing table.&quot;</span>, <span class='self'>self</span>, <span class='ident'>name</span>);
-                            <span class='self'>self</span>.<span class='ident'>crust_service</span>.<span class='ident'>disconnect</span>(<span class='ident'>peer_id</span>);
-                            <span class='kw'>let</span> _ <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>handle_lost_peer</span>(<span class='ident'>peer_id</span>);
-                        }
-                        <span class='prelude-val'>Some</span>(<span class='boolvalue'>false</span>) <span class='op'>=&gt;</span> {}
-                    }
+                <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>peer_mgr</span>.<span class='ident'>remove_if_unneeded</span>(<span class='ident'>name</span>, <span class='kw-2'>&amp;</span><span class='ident'>peer_id</span>) {
+                    <span class='macro'>info</span><span class='macro'>!</span>(<span class='string'>&quot;{:?} Dropped {:?} from the routing table.&quot;</span>, <span class='self'>self</span>, <span class='ident'>name</span>);
+                    <span class='self'>self</span>.<span class='ident'>crust_service</span>.<span class='ident'>disconnect</span>(<span class='ident'>peer_id</span>);
+                    <span class='kw'>let</span> _ <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>handle_lost_peer</span>(<span class='ident'>peer_id</span>);
                 }
                 <span class='prelude-val'>Ok</span>(())
             }
@@ -2506,6 +2493,7 @@
                    <span class='self'>self</span>,
                    <span class='ident'>peer_id</span>);
             <span class='kw'>let</span> _ <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>crust_service</span>.<span class='ident'>disconnect</span>(<span class='op'>*</span><span class='ident'>peer_id</span>);
+            <span class='kw'>let</span> _ <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>peer_mgr</span>.<span class='ident'>remove_peer</span>(<span class='ident'>peer_id</span>);
         }
     }
 
