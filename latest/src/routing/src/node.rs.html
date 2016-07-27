@@ -1029,7 +1029,7 @@
 <span class='kw'>impl</span> <span class='ident'>Drop</span> <span class='kw'>for</span> <span class='ident'>Node</span> {
     <span class='kw'>fn</span> <span class='ident'>drop</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) {
         <span class='kw'>if</span> <span class='kw'>let</span> <span class='prelude-val'>Err</span>(<span class='ident'>err</span>) <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>action_sender</span>.<span class='ident'>send</span>(<span class='ident'>Action</span>::<span class='ident'>Terminate</span>) {
-            <span class='macro'>error</span><span class='macro'>!</span>(<span class='string'>&quot;Error {:?} sending event Core&quot;</span>, <span class='ident'>err</span>);
+            <span class='macro'>debug</span><span class='macro'>!</span>(<span class='string'>&quot;Error {:?} sending event Core&quot;</span>, <span class='ident'>err</span>);
         }
     }
 }
