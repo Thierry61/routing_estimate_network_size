@@ -571,6 +571,11 @@
 <span id="527">527</span>
 <span id="528">528</span>
 <span id="529">529</span>
+<span id="530">530</span>
+<span id="531">531</span>
+<span id="532">532</span>
+<span id="533">533</span>
+<span id="534">534</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2015 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -691,34 +696,39 @@
     }
 
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>handle_action</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>action</span>: <span class='ident'>Action</span>) <span class='op'>-&gt;</span> <span class='ident'>Transition</span> {
-        <span class='kw'>let</span> <span class='ident'>result</span> <span class='op'>=</span> <span class='kw'>match</span> <span class='ident'>action</span> {
-            <span class='ident'>Action</span>::<span class='ident'>Name</span> { <span class='ident'>result_tx</span> } <span class='op'>=&gt;</span> <span class='ident'>result_tx</span>.<span class='ident'>send</span>(<span class='op'>*</span><span class='self'>self</span>.<span class='ident'>name</span>()).<span class='ident'>is_ok</span>(),
+        <span class='kw'>match</span> <span class='ident'>action</span> {
+            <span class='ident'>Action</span>::<span class='ident'>Name</span> { <span class='ident'>result_tx</span> } <span class='op'>=&gt;</span> {
+                <span class='kw'>let</span> _ <span class='op'>=</span> <span class='ident'>result_tx</span>.<span class='ident'>send</span>(<span class='op'>*</span><span class='self'>self</span>.<span class='ident'>name</span>());
+            }
             <span class='ident'>Action</span>::<span class='ident'>ClientSendRequest</span> { <span class='kw-2'>ref</span> <span class='ident'>result_tx</span>, .. } <span class='op'>=&gt;</span> {
-                <span class='ident'>result_tx</span>.<span class='ident'>send</span>(<span class='prelude-val'>Err</span>(<span class='ident'>InterfaceError</span>::<span class='ident'>InvalidState</span>)).<span class='ident'>is_ok</span>()
+                <span class='kw'>let</span> _ <span class='op'>=</span> <span class='ident'>result_tx</span>.<span class='ident'>send</span>(<span class='prelude-val'>Err</span>(<span class='ident'>InterfaceError</span>::<span class='ident'>InvalidState</span>));
             }
             <span class='ident'>Action</span>::<span class='ident'>NodeSendMessage</span> { <span class='kw-2'>ref</span> <span class='ident'>result_tx</span>, .. } <span class='op'>=&gt;</span> {
                 <span class='macro'>warn</span><span class='macro'>!</span>(<span class='string'>&quot;{:?} - Cannot handle {:?} - not bootstrapped&quot;</span>, <span class='self'>self</span>, <span class='ident'>action</span>);
                 <span class='comment'>// TODO: return Err here eventually. Returning Ok for now to</span>
                 <span class='comment'>// preserve the pre-refactor behaviour.</span>
-                <span class='ident'>result_tx</span>.<span class='ident'>send</span>(<span class='prelude-val'>Ok</span>(())).<span class='ident'>is_ok</span>()
+                <span class='kw'>let</span> _ <span class='op'>=</span> <span class='ident'>result_tx</span>.<span class='ident'>send</span>(<span class='prelude-val'>Ok</span>(()));
             }
             <span class='ident'>Action</span>::<span class='ident'>Timeout</span>(<span class='ident'>token</span>) <span class='op'>=&gt;</span> {
-                <span class='self'>self</span>.<span class='ident'>handle_timeout</span>(<span class='ident'>token</span>);
-                <span class='boolvalue'>true</span>
+                <span class='kw'>if</span> <span class='op'>!</span><span class='self'>self</span>.<span class='ident'>handle_timeout</span>(<span class='ident'>token</span>) {
+                    <span class='kw'>return</span> <span class='ident'>Transition</span>::<span class='ident'>Terminate</span>;
+                }
             }
-            <span class='ident'>Action</span>::<span class='ident'>Terminate</span> <span class='op'>=&gt;</span> <span class='boolvalue'>false</span>,
+            <span class='ident'>Action</span>::<span class='ident'>Terminate</span> <span class='op'>=&gt;</span> {
+                <span class='kw'>return</span> <span class='ident'>Transition</span>::<span class='ident'>Terminate</span>;
+            }
 
             <span class='comment'>// TODO: these actions make no sense in this state, but we handle</span>
             <span class='comment'>// them for now, to preserve the pre-refactor behaviour.</span>
-            <span class='ident'>Action</span>::<span class='ident'>CloseGroup</span> { <span class='ident'>result_tx</span>, .. } <span class='op'>=&gt;</span> <span class='ident'>result_tx</span>.<span class='ident'>send</span>(<span class='prelude-val'>None</span>).<span class='ident'>is_ok</span>(),
-            <span class='ident'>Action</span>::<span class='ident'>QuorumSize</span> { <span class='ident'>result_tx</span> } <span class='op'>=&gt;</span> <span class='ident'>result_tx</span>.<span class='ident'>send</span>(<span class='number'>0</span>).<span class='ident'>is_ok</span>(),
-        };
-
-        <span class='kw'>if</span> <span class='ident'>result</span> {
-            <span class='ident'>Transition</span>::<span class='ident'>Stay</span>
-        } <span class='kw'>else</span> {
-            <span class='ident'>Transition</span>::<span class='ident'>Terminate</span>
+            <span class='ident'>Action</span>::<span class='ident'>CloseGroup</span> { <span class='ident'>result_tx</span>, .. } <span class='op'>=&gt;</span> {
+                <span class='kw'>let</span> _ <span class='op'>=</span> <span class='ident'>result_tx</span>.<span class='ident'>send</span>(<span class='prelude-val'>None</span>);
+            }
+            <span class='ident'>Action</span>::<span class='ident'>QuorumSize</span> { <span class='ident'>result_tx</span> } <span class='op'>=&gt;</span> {
+                <span class='kw'>let</span> _ <span class='op'>=</span> <span class='ident'>result_tx</span>.<span class='ident'>send</span>(<span class='number'>0</span>);
+            }
         }
+
+        <span class='ident'>Transition</span>::<span class='ident'>Stay</span>
     }
 
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>handle_crust_event</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>crust_event</span>: <span class='ident'>CrustEvent</span>) <span class='op'>-&gt;</span> <span class='ident'>Transition</span> {
