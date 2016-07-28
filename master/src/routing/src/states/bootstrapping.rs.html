@@ -404,8 +404,8 @@
 <span class='kw'>use</span> <span class='ident'>messages</span>::{<span class='ident'>DirectMessage</span>, <span class='ident'>Message</span>};
 <span class='kw'>use</span> <span class='ident'>state_machine</span>::<span class='ident'>Transition</span>;
 <span class='kw'>use</span> <span class='ident'>stats</span>::<span class='ident'>Stats</span>;
-<span class='kw'>use</span> <span class='kw'>super</span>::{<span class='ident'>Client</span>, <span class='ident'>JoiningNode</span>};
-<span class='kw'>use</span> <span class='kw'>super</span>::<span class='ident'>common</span>::<span class='ident'>AnyState</span>;
+<span class='kw'>use</span> <span class='kw'>super</span>::{<span class='ident'>Client</span>, <span class='ident'>Node</span>};
+<span class='kw'>use</span> <span class='kw'>super</span>::<span class='ident'>common</span>::<span class='ident'>Base</span>;
 <span class='kw'>use</span> <span class='ident'>timer</span>::<span class='ident'>Timer</span>;
 <span class='kw'>use</span> <span class='ident'>xor_name</span>::<span class='ident'>XorName</span>;
 
@@ -515,20 +515,20 @@
                                    <span class='self'>self</span>.<span class='ident'>timer</span>)
     }
 
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>into_joining_node</span>(<span class='self'>self</span>,
-                             <span class='ident'>proxy_peer_id</span>: <span class='ident'>PeerId</span>,
-                             <span class='ident'>proxy_public_id</span>: <span class='ident'>PublicId</span>,
-                             <span class='ident'>quorum_size</span>: <span class='ident'>usize</span>)
-                             <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>JoiningNode</span><span class='op'>&gt;</span> {
-        <span class='ident'>JoiningNode</span>::<span class='ident'>from_bootstrapping</span>(<span class='self'>self</span>.<span class='ident'>cache</span>,
-                                        <span class='self'>self</span>.<span class='ident'>crust_service</span>,
-                                        <span class='self'>self</span>.<span class='ident'>event_sender</span>,
-                                        <span class='self'>self</span>.<span class='ident'>full_id</span>,
-                                        <span class='ident'>proxy_peer_id</span>,
-                                        <span class='ident'>proxy_public_id</span>,
-                                        <span class='ident'>quorum_size</span>,
-                                        <span class='self'>self</span>.<span class='ident'>stats</span>,
-                                        <span class='self'>self</span>.<span class='ident'>timer</span>)
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>into_node</span>(<span class='self'>self</span>,
+                     <span class='ident'>proxy_peer_id</span>: <span class='ident'>PeerId</span>,
+                     <span class='ident'>proxy_public_id</span>: <span class='ident'>PublicId</span>,
+                     <span class='ident'>quorum_size</span>: <span class='ident'>usize</span>)
+                     <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>Node</span><span class='op'>&gt;</span> {
+        <span class='ident'>Node</span>::<span class='ident'>from_bootstrapping</span>(<span class='self'>self</span>.<span class='ident'>cache</span>,
+                                 <span class='self'>self</span>.<span class='ident'>crust_service</span>,
+                                 <span class='self'>self</span>.<span class='ident'>event_sender</span>,
+                                 <span class='self'>self</span>.<span class='ident'>full_id</span>,
+                                 <span class='ident'>proxy_peer_id</span>,
+                                 <span class='ident'>proxy_public_id</span>,
+                                 <span class='ident'>quorum_size</span>,
+                                 <span class='self'>self</span>.<span class='ident'>stats</span>,
+                                 <span class='self'>self</span>.<span class='ident'>timer</span>)
     }
 
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>client_restriction</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> {
@@ -670,7 +670,7 @@
     }
 }
 
-<span class='kw'>impl</span> <span class='ident'>AnyState</span> <span class='kw'>for</span> <span class='ident'>Bootstrapping</span> {
+<span class='kw'>impl</span> <span class='ident'>Base</span> <span class='kw'>for</span> <span class='ident'>Bootstrapping</span> {
     <span class='kw'>fn</span> <span class='ident'>crust_service</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='kw-2'>&amp;</span><span class='ident'>Service</span> {
         <span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='ident'>crust_service</span>
     }

@@ -562,7 +562,6 @@
 <span id="518">518</span>
 <span id="519">519</span>
 <span id="520">520</span>
-<span id="521">521</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2015 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -985,7 +984,6 @@
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>name</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>XorName</span>, <span class='ident'>InterfaceError</span><span class='op'>&gt;</span> {
         <span class='kw'>let</span> (<span class='ident'>result_tx</span>, <span class='ident'>result_rx</span>) <span class='op'>=</span> <span class='ident'>channel</span>();
         <span class='macro'>try</span><span class='macro'>!</span>(<span class='self'>self</span>.<span class='ident'>action_sender</span>.<span class='ident'>send</span>(<span class='ident'>Action</span>::<span class='ident'>Name</span> { <span class='ident'>result_tx</span>: <span class='ident'>result_tx</span> }));
-
         <span class='self'>self</span>.<span class='ident'>receive_action_result</span>(<span class='kw-2'>&amp;</span><span class='ident'>result_rx</span>)
     }
 
