@@ -367,6 +367,7 @@
 <span id="323">323</span>
 <span id="324">324</span>
 <span id="325">325</span>
+<span id="326">326</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2016 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -649,7 +650,8 @@
             <span class='ident'>client_restriction</span>: <span class='self'>self</span>.<span class='ident'>client_restriction</span>,
         };
 
-        <span class='self'>self</span>.<span class='ident'>send_direct_message</span>(<span class='kw-2'>&amp;</span><span class='ident'>peer_id</span>, <span class='ident'>direct_message</span>)
+        <span class='self'>self</span>.<span class='ident'>stats</span>().<span class='ident'>count_direct_message</span>(<span class='kw-2'>&amp;</span><span class='ident'>direct_message</span>);
+        <span class='self'>self</span>.<span class='ident'>send_message</span>(<span class='kw-2'>&amp;</span><span class='ident'>peer_id</span>, <span class='ident'>Message</span>::<span class='ident'>Direct</span>(<span class='ident'>direct_message</span>))
     }
 
     <span class='kw'>fn</span> <span class='ident'>disconnect_peer</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>peer_id</span>: <span class='kw-2'>&amp;</span><span class='ident'>PeerId</span>) {
