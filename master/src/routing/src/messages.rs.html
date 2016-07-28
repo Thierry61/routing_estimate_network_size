@@ -993,6 +993,28 @@
 <span id="949">949</span>
 <span id="950">950</span>
 <span id="951">951</span>
+<span id="952">952</span>
+<span id="953">953</span>
+<span id="954">954</span>
+<span id="955">955</span>
+<span id="956">956</span>
+<span id="957">957</span>
+<span id="958">958</span>
+<span id="959">959</span>
+<span id="960">960</span>
+<span id="961">961</span>
+<span id="962">962</span>
+<span id="963">963</span>
+<span id="964">964</span>
+<span id="965">965</span>
+<span id="966">966</span>
+<span id="967">967</span>
+<span id="968">968</span>
+<span id="969">969</span>
+<span id="970">970</span>
+<span id="971">971</span>
+<span id="972">972</span>
+<span id="973">973</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2015 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -1028,6 +1050,7 @@
 <span class='kw'>use</span> <span class='ident'>authority</span>::<span class='ident'>Authority</span>;
 <span class='kw'>use</span> <span class='ident'>data</span>::{<span class='ident'>Data</span>, <span class='ident'>DataIdentifier</span>};
 <span class='kw'>use</span> <span class='ident'>error</span>::<span class='ident'>RoutingError</span>;
+<span class='kw'>use</span> <span class='ident'>event</span>::<span class='ident'>Event</span>;
 <span class='kw'>use</span> <span class='ident'>id</span>::{<span class='ident'>FullId</span>, <span class='ident'>PublicId</span>};
 <span class='kw'>use</span> <span class='ident'>types</span>::<span class='ident'>MessageId</span>;
 <span class='kw'>use</span> <span class='ident'>utils</span>;
@@ -1548,6 +1571,27 @@
             <span class='prelude-val'>Err</span>(<span class='ident'>RoutingError</span>::<span class='ident'>HashMismatch</span>)
         } <span class='kw'>else</span> {
             <span class='prelude-val'>Ok</span>(<span class='ident'>user_msg</span>)
+        }
+    }
+
+    <span class='doccomment'>/// Returns an event indicating that this message was received with the given source and</span>
+    <span class='doccomment'>/// destination authorities.</span>
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>into_event</span>(<span class='self'>self</span>, <span class='ident'>src</span>: <span class='ident'>Authority</span>, <span class='ident'>dst</span>: <span class='ident'>Authority</span>) <span class='op'>-&gt;</span> <span class='ident'>Event</span> {
+        <span class='kw'>match</span> <span class='self'>self</span> {
+            <span class='ident'>UserMessage</span>::<span class='ident'>Request</span>(<span class='ident'>request</span>) <span class='op'>=&gt;</span> {
+                <span class='ident'>Event</span>::<span class='ident'>Request</span> {
+                    <span class='ident'>request</span>: <span class='ident'>request</span>,
+                    <span class='ident'>src</span>: <span class='ident'>src</span>,
+                    <span class='ident'>dst</span>: <span class='ident'>dst</span>,
+                }
+            }
+            <span class='ident'>UserMessage</span>::<span class='ident'>Response</span>(<span class='ident'>response</span>) <span class='op'>=&gt;</span> {
+                <span class='ident'>Event</span>::<span class='ident'>Response</span> {
+                    <span class='ident'>response</span>: <span class='ident'>response</span>,
+                    <span class='ident'>src</span>: <span class='ident'>src</span>,
+                    <span class='ident'>dst</span>: <span class='ident'>dst</span>,
+                }
+            }
         }
     }
 
