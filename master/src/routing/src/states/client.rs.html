@@ -475,7 +475,6 @@
 <span id="431">431</span>
 <span id="432">432</span>
 <span id="433">433</span>
-<span id="434">434</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2016 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -892,7 +891,6 @@
 <span class='kw'>impl</span> <span class='ident'>Client</span> {
     <span class='doccomment'>/// Resends all unacknowledged messages.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>resend_unacknowledged</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> {
-        <span class='self'>self</span>.<span class='ident'>timer</span>.<span class='ident'>stop</span>();
         <span class='kw'>let</span> <span class='ident'>timer_tokens</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>ack_mgr</span>.<span class='ident'>timer_tokens</span>();
         <span class='kw'>for</span> <span class='ident'>timer_token</span> <span class='kw'>in</span> <span class='kw-2'>&amp;</span><span class='ident'>timer_tokens</span> {
             <span class='self'>self</span>.<span class='ident'>resend_unacknowledged_timed_out_msgs</span>(<span class='op'>*</span><span class='ident'>timer_token</span>);
