@@ -1,5 +1,5 @@
 (function() {var implementors = {};
-implementors["lazy_static"] = [];implementors["regex_syntax"] = [];implementors["libc"] = [];implementors["sodiumoxide_extras"] = [];implementors["openssl"] = [];implementors["tmp_mio"] = [];implementors["mio"] = [];implementors["serde"] = [];implementors["maidsafe_utilities"] = [];implementors["igd"] = [];implementors["crust"] = [];
+implementors["lazy_static"] = [];implementors["libc"] = [];implementors["regex_syntax"] = [];implementors["openssl"] = [];implementors["sodiumoxide_extras"] = [];implementors["tmp_mio"] = [];implementors["mio"] = [];implementors["serde"] = [];implementors["maidsafe_utilities"] = [];implementors["igd"] = [];implementors["crust"] = [];
 
             if (window.register_implementors) {
                 window.register_implementors(implementors);

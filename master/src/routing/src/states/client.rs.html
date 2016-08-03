@@ -473,8 +473,6 @@
 <span id="429">429</span>
 <span id="430">430</span>
 <span id="431">431</span>
-<span id="432">432</span>
-<span id="433">433</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2016 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -595,9 +593,7 @@
                 <span class='kw'>let</span> _ <span class='op'>=</span> <span class='ident'>result_tx</span>.<span class='ident'>send</span>(<span class='op'>*</span><span class='self'>self</span>.<span class='ident'>name</span>());
             }
             <span class='ident'>Action</span>::<span class='ident'>QuorumSize</span> { <span class='ident'>result_tx</span> } <span class='op'>=&gt;</span> {
-                <span class='comment'>// TODO: return the actual quorum size. To do that, we need to</span>
-                <span class='comment'>// extend the MessageAccumulator&#39;s API with a method to retrieve it.</span>
-                <span class='kw'>let</span> _ <span class='op'>=</span> <span class='ident'>result_tx</span>.<span class='ident'>send</span>(<span class='number'>0</span>);
+                <span class='kw'>let</span> _ <span class='op'>=</span> <span class='ident'>result_tx</span>.<span class='ident'>send</span>(<span class='self'>self</span>.<span class='ident'>msg_accumulator</span>.<span class='ident'>quorum_size</span>());
             }
             <span class='ident'>Action</span>::<span class='ident'>Timeout</span>(<span class='ident'>token</span>) <span class='op'>=&gt;</span> <span class='self'>self</span>.<span class='ident'>handle_timeout</span>(<span class='ident'>token</span>),
             <span class='ident'>Action</span>::<span class='ident'>Terminate</span> <span class='op'>=&gt;</span> {
