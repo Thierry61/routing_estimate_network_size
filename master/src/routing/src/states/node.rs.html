@@ -1943,6 +1943,8 @@
 <span id="1899">1899</span>
 <span id="1900">1900</span>
 <span id="1901">1901</span>
+<span id="1902">1902</span>
+<span id="1903">1903</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2015 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -3129,6 +3131,8 @@
                                      <span class='ident'>relocated_id</span>: <span class='ident'>PublicId</span>,
                                      <span class='kw-2'>mut</span> <span class='ident'>close_group_ids</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>PublicId</span><span class='op'>&gt;</span>,
                                      <span class='ident'>dst</span>: <span class='ident'>Authority</span>) {
+        <span class='self'>self</span>.<span class='ident'>get_node_name_timer_token</span> <span class='op'>=</span> <span class='prelude-val'>None</span>;
+
         <span class='self'>self</span>.<span class='ident'>full_id</span>.<span class='ident'>public_id_mut</span>().<span class='ident'>set_name</span>(<span class='op'>*</span><span class='ident'>relocated_id</span>.<span class='ident'>name</span>());
         <span class='self'>self</span>.<span class='ident'>peer_mgr</span>.<span class='ident'>reset_routing_table</span>(<span class='op'>*</span><span class='self'>self</span>.<span class='ident'>full_id</span>.<span class='ident'>public_id</span>());
 
@@ -3778,7 +3782,7 @@
         <span class='self'>self</span>.<span class='ident'>ack_mgr</span>.<span class='ident'>clear</span>();
         <span class='self'>self</span>.<span class='ident'>bucket_filter</span>.<span class='ident'>clear</span>();
         <span class='self'>self</span>.<span class='ident'>msg_accumulator</span>.<span class='ident'>clear</span>();
-        <span class='self'>self</span>.<span class='ident'>peer_mgr</span>.<span class='ident'>clear_caches</span>();
+        <span class='self'>self</span>.<span class='ident'>peer_mgr</span>.<span class='ident'>remove_connecting_peers</span>();
         <span class='self'>self</span>.<span class='ident'>signed_msg_filter</span>.<span class='ident'>clear</span>();
         <span class='self'>self</span>.<span class='ident'>sent_network_name_to</span> <span class='op'>=</span> <span class='prelude-val'>None</span>;
     }
