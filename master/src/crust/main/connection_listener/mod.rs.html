@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="rustdoc">
-    <meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/crust-0.16.2/src/main/connection_listener/mod.rs`.">
+    <meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/crust-0.17.0/src/main/connection_listener/mod.rs`.">
     <meta name="keywords" content="rust, rustlang, rust-lang">
 
     <title>mod.rs.html -- source</title>
@@ -521,7 +521,7 @@
 <span class='kw'>use</span> <span class='ident'>nat</span>::{<span class='ident'>MappedTcpSocket</span>, <span class='ident'>MappingContext</span>};
 <span class='kw'>use</span> <span class='ident'>net2</span>::<span class='ident'>TcpBuilder</span>;
 <span class='kw'>use</span> <span class='self'>self</span>::<span class='ident'>exchange_msg</span>::<span class='ident'>ExchangeMsg</span>;
-<span class='kw'>use</span> <span class='ident'>sodiumoxide</span>::<span class='ident'>crypto</span>::<span class='ident'>box_</span>::<span class='ident'>PublicKey</span>;
+<span class='kw'>use</span> <span class='ident'>rust_sodium</span>::<span class='ident'>crypto</span>::<span class='ident'>box_</span>::<span class='ident'>PublicKey</span>;
 
 <span class='kw'>const</span> <span class='ident'>LISTENER_BACKLOG</span>: <span class='ident'>i32</span> <span class='op'>=</span> <span class='number'>100</span>;
 
@@ -678,7 +678,7 @@
     <span class='kw'>use</span> <span class='ident'>maidsafe_utilities</span>::<span class='ident'>serialisation</span>::{<span class='ident'>deserialise</span>, <span class='ident'>serialise</span>};
     <span class='kw'>use</span> <span class='ident'>maidsafe_utilities</span>::<span class='ident'>thread</span>::<span class='ident'>RaiiThreadJoiner</span>;
     <span class='kw'>use</span> <span class='ident'>nat</span>::<span class='ident'>MappingContext</span>;
-    <span class='kw'>use</span> <span class='ident'>sodiumoxide</span>::<span class='ident'>crypto</span>::<span class='ident'>box_</span>::{<span class='self'>self</span>, <span class='ident'>PublicKey</span>};
+    <span class='kw'>use</span> <span class='ident'>rust_sodium</span>::<span class='ident'>crypto</span>::<span class='ident'>box_</span>::{<span class='self'>self</span>, <span class='ident'>PublicKey</span>};
     <span class='kw'>use</span> <span class='ident'>rustc_serialize</span>::<span class='ident'>Decodable</span>;
 
     <span class='kw'>const</span> <span class='ident'>NAME_HASH</span>: <span class='ident'>NameHash</span> <span class='op'>=</span> <span class='number'>9876543210</span>;

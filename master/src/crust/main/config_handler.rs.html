@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="rustdoc">
-    <meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/crust-0.16.2/src/main/config_handler.rs`.">
+    <meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/crust-0.17.0/src/main/config_handler.rs`.">
     <meta name="keywords" content="rust, rustlang, rust-lang">
 
     <title>config_handler.rs.html -- source</title>
@@ -202,7 +202,7 @@
 
 <span class='doccomment'>/// Reads the default crust config file.</span>
 <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>read_config_file</span>() <span class='op'>-&gt;</span> ::<span class='ident'>Res</span><span class='op'>&lt;</span><span class='ident'>Config</span><span class='op'>&gt;</span> {
-    <span class='kw'>let</span> <span class='ident'>file_handler</span> <span class='op'>=</span> <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>FileHandler</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>get_file_name</span>())));
+    <span class='kw'>let</span> <span class='ident'>file_handler</span> <span class='op'>=</span> <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>FileHandler</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>get_file_name</span>()), <span class='boolvalue'>false</span>));
     <span class='kw'>let</span> <span class='ident'>cfg</span> <span class='op'>=</span> <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>file_handler</span>.<span class='ident'>read_file</span>());
     <span class='prelude-val'>Ok</span>(<span class='ident'>cfg</span>)
 }
