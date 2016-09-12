@@ -571,7 +571,7 @@
 
     <span class='doccomment'>/// Causes node creation to fail if another node on the local network is detected.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>deny_other_local_nodes</span>(<span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>NodeBuilder</span> {
-        <span class='ident'>NodeBuilder</span> { <span class='ident'>deny_other_local_nodes</span>: <span class='boolvalue'>true</span>, ..<span class='self'>self</span> }
+        <span class='ident'>NodeBuilder</span> { <span class='ident'>deny_other_local_nodes</span>: <span class='bool-val'>true</span>, ..<span class='self'>self</span> }
     }
 
     <span class='doccomment'>/// Creates new `Node`.</span>
@@ -641,7 +641,7 @@
                 <span class='ident'>State</span>::<span class='ident'>Terminated</span>
             } <span class='kw'>else</span> {
                 <span class='ident'>State</span>::<span class='ident'>Bootstrapping</span>(<span class='ident'>states</span>::<span class='ident'>Bootstrapping</span>::<span class='ident'>new</span>(<span class='self'>self</span>.<span class='ident'>cache</span>,
-                                                                <span class='boolvalue'>false</span>,
+                                                                <span class='bool-val'>false</span>,
                                                                 <span class='ident'>crust_service</span>,
                                                                 <span class='ident'>event_sender</span>,
                                                                 <span class='ident'>full_id</span>,
@@ -676,8 +676,8 @@
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>builder</span>() <span class='op'>-&gt;</span> <span class='ident'>NodeBuilder</span> {
         <span class='ident'>NodeBuilder</span> {
             <span class='ident'>cache</span>: <span class='ident'>Box</span>::<span class='ident'>new</span>(<span class='ident'>NullCache</span>),
-            <span class='ident'>first</span>: <span class='boolvalue'>false</span>,
-            <span class='ident'>deny_other_local_nodes</span>: <span class='boolvalue'>false</span>,
+            <span class='ident'>first</span>: <span class='bool-val'>false</span>,
+            <span class='ident'>deny_other_local_nodes</span>: <span class='bool-val'>false</span>,
         }
     }
 

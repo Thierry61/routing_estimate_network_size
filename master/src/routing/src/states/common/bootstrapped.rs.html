@@ -265,23 +265,23 @@
     <span class='kw'>fn</span> <span class='ident'>add_to_pending_acks</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>signed_msg</span>: <span class='kw-2'>&amp;</span><span class='ident'>SignedMessage</span>, <span class='ident'>route</span>: <span class='ident'>u8</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> {
         <span class='comment'>// If this is not an ack and we&#39;re the source, expect to receive an ack for this.</span>
         <span class='kw'>if</span> <span class='kw'>let</span> <span class='ident'>MessageContent</span>::<span class='ident'>Ack</span>(..) <span class='op'>=</span> <span class='ident'>signed_msg</span>.<span class='ident'>routing_message</span>().<span class='ident'>content</span> {
-            <span class='kw'>return</span> <span class='boolvalue'>true</span>;
+            <span class='kw'>return</span> <span class='bool-val'>true</span>;
         }
 
         <span class='kw'>if</span> <span class='op'>*</span><span class='ident'>signed_msg</span>.<span class='ident'>public_id</span>() <span class='op'>!=</span> <span class='op'>*</span><span class='self'>self</span>.<span class='ident'>full_id</span>().<span class='ident'>public_id</span>() {
-            <span class='kw'>return</span> <span class='boolvalue'>true</span>;
+            <span class='kw'>return</span> <span class='bool-val'>true</span>;
         }
 
         <span class='kw'>let</span> <span class='ident'>ack</span> <span class='op'>=</span> <span class='kw'>match</span> <span class='ident'>Ack</span>::<span class='ident'>compute</span>(<span class='ident'>signed_msg</span>.<span class='ident'>routing_message</span>()) {
             <span class='prelude-val'>Ok</span>(<span class='ident'>ack</span>) <span class='op'>=&gt;</span> <span class='ident'>ack</span>,
             <span class='prelude-val'>Err</span>(<span class='ident'>error</span>) <span class='op'>=&gt;</span> {
                 <span class='macro'>error</span><span class='macro'>!</span>(<span class='string'>&quot;Failed to create ack: {:?}&quot;</span>, <span class='ident'>error</span>);
-                <span class='kw'>return</span> <span class='boolvalue'>true</span>;
+                <span class='kw'>return</span> <span class='bool-val'>true</span>;
             }
         };
 
         <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>ack_mgr_mut</span>().<span class='ident'>did_receive</span>(<span class='ident'>ack</span>) {
-            <span class='kw'>return</span> <span class='boolvalue'>false</span>;
+            <span class='kw'>return</span> <span class='bool-val'>false</span>;
         }
 
         <span class='kw'>let</span> <span class='ident'>token</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>timer</span>().<span class='ident'>schedule</span>(<span class='ident'>Duration</span>::<span class='ident'>from_secs</span>(<span class='ident'>ACK_TIMEOUT_SECS</span>));
@@ -302,7 +302,7 @@
                    <span class='ident'>ejected</span>);
         }
 
-        <span class='boolvalue'>true</span>
+        <span class='bool-val'>true</span>
     }
 
     <span class='doccomment'>/// Adds the outgoing signed message to the statistics and returns `true`</span>
@@ -313,11 +313,11 @@
                                   <span class='ident'>route</span>: <span class='ident'>u8</span>)
                                   <span class='op'>-&gt;</span> <span class='ident'>bool</span> {
         <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>signed_msg_filter</span>().<span class='ident'>filter_outgoing</span>(<span class='ident'>msg</span>, <span class='ident'>peer_id</span>, <span class='ident'>route</span>) {
-            <span class='kw'>return</span> <span class='boolvalue'>true</span>;
+            <span class='kw'>return</span> <span class='bool-val'>true</span>;
         }
 
         <span class='self'>self</span>.<span class='ident'>stats</span>().<span class='ident'>count_routing_message</span>(<span class='ident'>msg</span>.<span class='ident'>routing_message</span>());
-        <span class='boolvalue'>false</span>
+        <span class='bool-val'>false</span>
     }
 
     <span class='kw'>fn</span> <span class='ident'>resend_unacknowledged_timed_out_msgs</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>token</span>: <span class='ident'>u64</span>) {

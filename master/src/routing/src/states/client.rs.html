@@ -748,7 +748,7 @@
         <span class='kw'>if</span> <span class='kw'>let</span> <span class='ident'>Authority</span>::<span class='ident'>Client</span> { <span class='kw-2'>ref</span> <span class='ident'>client_key</span>, .. } <span class='op'>=</span> <span class='op'>*</span><span class='ident'>dst</span> {
             <span class='ident'>client_key</span> <span class='op'>==</span> <span class='self'>self</span>.<span class='ident'>full_id</span>.<span class='ident'>public_id</span>().<span class='ident'>signing_public_key</span>()
         } <span class='kw'>else</span> {
-            <span class='boolvalue'>false</span>
+            <span class='bool-val'>false</span>
         }
     }
 }

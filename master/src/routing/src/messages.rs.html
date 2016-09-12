@@ -1427,10 +1427,10 @@
                        <span class='ident'>current_quorum_size</span>)
             }
             <span class='ident'>DirectMessage</span>::<span class='ident'>BootstrapDeny</span> <span class='op'>=&gt;</span> <span class='macro'>write</span><span class='macro'>!</span>(<span class='ident'>formatter</span>, <span class='string'>&quot;BootstrapDeny&quot;</span>),
-            <span class='ident'>DirectMessage</span>::<span class='ident'>ClientIdentify</span> { <span class='ident'>client_restriction</span>: <span class='boolvalue'>true</span>, .. } <span class='op'>=&gt;</span> {
+            <span class='ident'>DirectMessage</span>::<span class='ident'>ClientIdentify</span> { <span class='ident'>client_restriction</span>: <span class='bool-val'>true</span>, .. } <span class='op'>=&gt;</span> {
                 <span class='macro'>write</span><span class='macro'>!</span>(<span class='ident'>formatter</span>, <span class='string'>&quot;ClientIdentify (client only)&quot;</span>)
             }
-            <span class='ident'>DirectMessage</span>::<span class='ident'>ClientIdentify</span> { <span class='ident'>client_restriction</span>: <span class='boolvalue'>false</span>, .. } <span class='op'>=&gt;</span> {
+            <span class='ident'>DirectMessage</span>::<span class='ident'>ClientIdentify</span> { <span class='ident'>client_restriction</span>: <span class='bool-val'>false</span>, .. } <span class='op'>=&gt;</span> {
                 <span class='macro'>write</span><span class='macro'>!</span>(<span class='ident'>formatter</span>, <span class='string'>&quot;ClientIdentify (joining node)&quot;</span>)
             }
             <span class='ident'>DirectMessage</span>::<span class='ident'>NodeIdentify</span> { .. } <span class='op'>=&gt;</span> <span class='macro'>write</span><span class='macro'>!</span>(<span class='ident'>formatter</span>, <span class='string'>&quot;NodeIdentify {{ .. }}&quot;</span>),
@@ -1709,9 +1709,9 @@
     <span class='doccomment'>/// Is the response corresponding to this request cacheable?</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>is_cacheable</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> {
         <span class='kw'>if</span> <span class='kw'>let</span> <span class='ident'>Request</span>::<span class='ident'>Get</span>(<span class='ident'>DataIdentifier</span>::<span class='ident'>Immutable</span>(..), _) <span class='op'>=</span> <span class='op'>*</span><span class='self'>self</span> {
-            <span class='boolvalue'>true</span>
+            <span class='bool-val'>true</span>
         } <span class='kw'>else</span> {
-            <span class='boolvalue'>false</span>
+            <span class='bool-val'>false</span>
         }
     }
 }
@@ -1741,9 +1741,9 @@
     <span class='doccomment'>/// Is this response cacheable?</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>is_cacheable</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> {
         <span class='kw'>if</span> <span class='kw'>let</span> <span class='ident'>Response</span>::<span class='ident'>GetSuccess</span>(<span class='ident'>Data</span>::<span class='ident'>Immutable</span>(..), _) <span class='op'>=</span> <span class='op'>*</span><span class='self'>self</span> {
-            <span class='boolvalue'>true</span>
+            <span class='bool-val'>true</span>
         } <span class='kw'>else</span> {
-            <span class='boolvalue'>false</span>
+            <span class='bool-val'>false</span>
         }
     }
 }

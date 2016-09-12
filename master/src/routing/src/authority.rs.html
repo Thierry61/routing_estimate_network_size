@@ -207,9 +207,9 @@
         <span class='kw'>match</span> <span class='op'>*</span><span class='self'>self</span> {
             <span class='ident'>Authority</span>::<span class='ident'>ClientManager</span>(_) <span class='op'>|</span>
             <span class='ident'>Authority</span>::<span class='ident'>NaeManager</span>(_) <span class='op'>|</span>
-            <span class='ident'>Authority</span>::<span class='ident'>NodeManager</span>(_) <span class='op'>=&gt;</span> <span class='boolvalue'>true</span>,
+            <span class='ident'>Authority</span>::<span class='ident'>NodeManager</span>(_) <span class='op'>=&gt;</span> <span class='bool-val'>true</span>,
             <span class='ident'>Authority</span>::<span class='ident'>ManagedNode</span>(_) <span class='op'>|</span>
-            <span class='ident'>Authority</span>::<span class='ident'>Client</span> { .. } <span class='op'>=&gt;</span> <span class='boolvalue'>false</span>,
+            <span class='ident'>Authority</span>::<span class='ident'>Client</span> { .. } <span class='op'>=&gt;</span> <span class='bool-val'>false</span>,
         }
     }
 
