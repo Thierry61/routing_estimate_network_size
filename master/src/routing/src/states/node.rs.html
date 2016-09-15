@@ -1948,6 +1948,18 @@
 <span id="1904">1904</span>
 <span id="1905">1905</span>
 <span id="1906">1906</span>
+<span id="1907">1907</span>
+<span id="1908">1908</span>
+<span id="1909">1909</span>
+<span id="1910">1910</span>
+<span id="1911">1911</span>
+<span id="1912">1912</span>
+<span id="1913">1913</span>
+<span id="1914">1914</span>
+<span id="1915">1915</span>
+<span id="1916">1916</span>
+<span id="1917">1917</span>
+<span id="1918">1918</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2015 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -1966,37 +1978,37 @@
 <span class='comment'>// Please review the Licences for the specific language governing permissions and limitations</span>
 <span class='comment'>// relating to use of the SAFE Network Software.</span>
 
-<span class='kw'>use</span> <span class='ident'>crust</span>::{<span class='ident'>ConnectionInfoResult</span>, <span class='ident'>CrustError</span>, <span class='ident'>PeerId</span>, <span class='ident'>PrivConnectionInfo</span>, <span class='ident'>PubConnectionInfo</span>,
-            <span class='ident'>Service</span>};
-<span class='kw'>use</span> <span class='ident'>crust</span>::<span class='ident'>Event</span> <span class='kw'>as</span> <span class='ident'>CrustEvent</span>;
-<span class='kw'>use</span> <span class='ident'>itertools</span>::<span class='ident'>Itertools</span>;
-<span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>feature</span> <span class='op'>=</span> <span class='string'>&quot;use-mock-crust&quot;</span>)]</span>
-<span class='kw'>use</span> <span class='ident'>kademlia_routing_table</span>::<span class='ident'>RoutingTable</span>;
-<span class='kw'>use</span> <span class='ident'>kademlia_routing_table</span>::{<span class='ident'>AddedNodeDetails</span>, <span class='ident'>ContactInfo</span>, <span class='ident'>DroppedNodeDetails</span>};
-<span class='kw'>use</span> <span class='ident'>maidsafe_utilities</span>::<span class='ident'>serialisation</span>;
-<span class='kw'>use</span> <span class='ident'>rust_sodium</span>::<span class='ident'>crypto</span>::{<span class='ident'>box_</span>, <span class='ident'>sign</span>};
-<span class='kw'>use</span> <span class='ident'>rust_sodium</span>::<span class='ident'>crypto</span>::<span class='ident'>hash</span>::<span class='ident'>sha256</span>;
-<span class='kw'>use</span> <span class='ident'>std</span>::{<span class='ident'>cmp</span>, <span class='ident'>fmt</span>, <span class='ident'>iter</span>};
-<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>fmt</span>::{<span class='ident'>Debug</span>, <span class='ident'>Formatter</span>};
-<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>sync</span>::<span class='ident'>mpsc</span>::<span class='ident'>Sender</span>;
-<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>time</span>::{<span class='ident'>Duration</span>, <span class='ident'>Instant</span>};
 
 <span class='kw'>use</span> <span class='ident'>ack_manager</span>::{<span class='ident'>Ack</span>, <span class='ident'>AckManager</span>};
 <span class='kw'>use</span> <span class='ident'>action</span>::<span class='ident'>Action</span>;
 <span class='kw'>use</span> <span class='ident'>authority</span>::<span class='ident'>Authority</span>;
 <span class='kw'>use</span> <span class='ident'>cache</span>::<span class='ident'>Cache</span>;
+<span class='kw'>use</span> <span class='ident'>crust</span>::{<span class='ident'>ConnectionInfoResult</span>, <span class='ident'>CrustError</span>, <span class='ident'>PeerId</span>, <span class='ident'>PrivConnectionInfo</span>, <span class='ident'>PubConnectionInfo</span>,
+            <span class='ident'>Service</span>};
+<span class='kw'>use</span> <span class='ident'>crust</span>::<span class='ident'>Event</span> <span class='kw'>as</span> <span class='ident'>CrustEvent</span>;
 <span class='kw'>use</span> <span class='ident'>error</span>::{<span class='ident'>InterfaceError</span>, <span class='ident'>RoutingError</span>};
 <span class='kw'>use</span> <span class='ident'>event</span>::<span class='ident'>Event</span>;
 <span class='kw'>use</span> <span class='ident'>id</span>::{<span class='ident'>FullId</span>, <span class='ident'>PublicId</span>};
+<span class='kw'>use</span> <span class='ident'>itertools</span>::<span class='ident'>Itertools</span>;
+<span class='kw'>use</span> <span class='ident'>kademlia_routing_table</span>::{<span class='ident'>AddedNodeDetails</span>, <span class='ident'>ContactInfo</span>, <span class='ident'>DroppedNodeDetails</span>};
+<span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>feature</span> <span class='op'>=</span> <span class='string'>&quot;use-mock-crust&quot;</span>)]</span>
+<span class='kw'>use</span> <span class='ident'>kademlia_routing_table</span>::<span class='ident'>RoutingTable</span>;
+<span class='kw'>use</span> <span class='ident'>maidsafe_utilities</span>::<span class='ident'>serialisation</span>;
 <span class='kw'>use</span> <span class='ident'>message_accumulator</span>::<span class='ident'>MessageAccumulator</span>;
 <span class='kw'>use</span> <span class='ident'>message_filter</span>::<span class='ident'>MessageFilter</span>;
 <span class='kw'>use</span> <span class='ident'>messages</span>::{<span class='ident'>DEFAULT_PRIORITY</span>, <span class='ident'>DirectMessage</span>, <span class='ident'>HopMessage</span>, <span class='ident'>Message</span>, <span class='ident'>MessageContent</span>,
                <span class='ident'>RoutingMessage</span>, <span class='ident'>SignedMessage</span>, <span class='ident'>UserMessage</span>, <span class='ident'>UserMessageCache</span>};
 <span class='kw'>use</span> <span class='ident'>peer_manager</span>::{<span class='ident'>ConnectionInfoPreparedResult</span>, <span class='ident'>ConnectionInfoReceivedResult</span>, <span class='ident'>GROUP_SIZE</span>,
                    <span class='ident'>PeerManager</span>, <span class='ident'>PeerState</span>, <span class='ident'>QUORUM_SIZE</span>};
+<span class='kw'>use</span> <span class='ident'>rust_sodium</span>::<span class='ident'>crypto</span>::{<span class='ident'>box_</span>, <span class='ident'>sign</span>};
+<span class='kw'>use</span> <span class='ident'>rust_sodium</span>::<span class='ident'>crypto</span>::<span class='ident'>hash</span>::<span class='ident'>sha256</span>;
 <span class='kw'>use</span> <span class='ident'>signed_message_filter</span>::<span class='ident'>SignedMessageFilter</span>;
 <span class='kw'>use</span> <span class='ident'>state_machine</span>::<span class='ident'>Transition</span>;
 <span class='kw'>use</span> <span class='ident'>stats</span>::<span class='ident'>Stats</span>;
+<span class='kw'>use</span> <span class='ident'>std</span>::{<span class='ident'>cmp</span>, <span class='ident'>fmt</span>, <span class='ident'>iter</span>};
+<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>fmt</span>::{<span class='ident'>Debug</span>, <span class='ident'>Formatter</span>};
+<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>sync</span>::<span class='ident'>mpsc</span>::<span class='ident'>Sender</span>;
+<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>time</span>::{<span class='ident'>Duration</span>, <span class='ident'>Instant</span>};
 <span class='kw'>use</span> <span class='kw'>super</span>::<span class='ident'>common</span>::{<span class='ident'>Base</span>, <span class='ident'>Bootstrapped</span>, <span class='ident'>USER_MSG_CACHE_EXPIRY_DURATION_SECS</span>};
 <span class='kw'>use</span> <span class='ident'>timer</span>::<span class='ident'>Timer</span>;
 <span class='kw'>use</span> <span class='ident'>tunnels</span>::<span class='ident'>Tunnels</span>;
@@ -2278,6 +2290,13 @@
         <span class='kw'>if</span> <span class='ident'>peer_id</span> <span class='op'>==</span> <span class='self'>self</span>.<span class='ident'>crust_service</span>.<span class='ident'>id</span>() {
             <span class='macro'>debug</span><span class='macro'>!</span>(<span class='string'>&quot;{:?} Received ConnectSuccess event with our Crust peer ID.&quot;</span>,
                    <span class='self'>self</span>);
+            <span class='kw'>return</span>;
+        }
+        <span class='kw'>if</span> <span class='op'>!</span><span class='self'>self</span>.<span class='ident'>crust_service</span>.<span class='ident'>is_peer_whitelisted</span>(<span class='kw-2'>&amp;</span><span class='ident'>peer_id</span>) {
+            <span class='macro'>debug</span><span class='macro'>!</span>(<span class='string'>&quot;{:?} Received ConnectSuccess, but {:?} is not whitelisted.&quot;</span>,
+                   <span class='self'>self</span>,
+                   <span class='ident'>peer_id</span>);
+            <span class='self'>self</span>.<span class='ident'>disconnect_peer</span>(<span class='kw-2'>&amp;</span><span class='ident'>peer_id</span>);
             <span class='kw'>return</span>;
         }
 
@@ -2733,6 +2752,11 @@
                               <span class='ident'>peer_id</span>: <span class='ident'>PeerId</span>,
                               <span class='ident'>client_restriction</span>: <span class='ident'>bool</span>)
                               <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span>(), <span class='ident'>RoutingError</span><span class='op'>&gt;</span> {
+        <span class='kw'>if</span> <span class='op'>!</span><span class='ident'>client_restriction</span> <span class='op'>&amp;&amp;</span> <span class='op'>!</span><span class='self'>self</span>.<span class='ident'>crust_service</span>.<span class='ident'>is_peer_whitelisted</span>(<span class='kw-2'>&amp;</span><span class='ident'>peer_id</span>) {
+            <span class='macro'>warn</span><span class='macro'>!</span>(<span class='string'>&quot;{:?} Client is not whitelisted - dropping&quot;</span>, <span class='self'>self</span>);
+            <span class='self'>self</span>.<span class='ident'>disconnect_peer</span>(<span class='kw-2'>&amp;</span><span class='ident'>peer_id</span>);
+            <span class='kw'>return</span> <span class='prelude-val'>Ok</span>(());
+        }
         <span class='kw'>if</span> <span class='op'>*</span><span class='ident'>public_id</span>.<span class='ident'>name</span>() <span class='op'>!=</span> <span class='ident'>XorName</span>(<span class='ident'>sha256</span>::<span class='ident'>hash</span>(<span class='kw-2'>&amp;</span><span class='ident'>public_id</span>.<span class='ident'>signing_public_key</span>().<span class='number'>0</span>).<span class='number'>0</span>) {
             <span class='macro'>warn</span><span class='macro'>!</span>(<span class='string'>&quot;{:?} Incoming Connection not validated as a proper client - dropping&quot;</span>,
                   <span class='self'>self</span>);
