@@ -47,7 +47,7 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a id='src-4235' class='srclink' href='../../../src/nix/sys/socket/mod.rs.html#1-669' title='goto source code'>[src]</a></span></h1>
+               </span><a id='src-2516' class='srclink' href='../../../src/nix/sys/socket/mod.rs.html#1-669' title='goto source code'>[src]</a></span></h1>
 <div class='docblock'><p>Socket interface functions</p>
 
 <p><a href="http://man7.org/linux/man-pages/man7/socket.7.html">Further reading</a></p>
@@ -95,13 +95,6 @@ to recvmsg.</p>
                        <tr class=' module-item'>
                            <td><a class='struct' href='struct.MsgFlags.html'
                                   title='nix::sys::socket::MsgFlags'>MsgFlags</a></td>
-                           <td class='docblock short'>
-                                
-                           </td>
-                       </tr>
-                       <tr class=' module-item'>
-                           <td><a class='struct' href='struct.NetlinkAddr.html'
-                                  title='nix::sys::socket::NetlinkAddr'>NetlinkAddr</a></td>
                            <td class='docblock short'>
                                 
                            </td>
@@ -290,20 +283,6 @@ argument to <code>getsockopt</code> and <code>setsockopt</code>.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
-                           <td><a class='constant' href='constant.AF_NETLINK.html'
-                                  title='nix::sys::socket::AF_NETLINK'>AF_NETLINK</a></td>
-                           <td class='docblock short'>
-                                
-                           </td>
-                       </tr>
-                       <tr class=' module-item'>
-                           <td><a class='constant' href='constant.AF_PACKET.html'
-                                  title='nix::sys::socket::AF_PACKET'>AF_PACKET</a></td>
-                           <td class='docblock short'>
-                                
-                           </td>
-                       </tr>
-                       <tr class=' module-item'>
                            <td><a class='constant' href='constant.AF_UNIX.html'
                                   title='nix::sys::socket::AF_UNIX'>AF_UNIX</a></td>
                            <td class='docblock short'>
@@ -360,15 +339,15 @@ argument to <code>getsockopt</code> and <code>setsockopt</code>.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
-                           <td><a class='constant' href='constant.IPV6_ADD_MEMBERSHIP.html'
-                                  title='nix::sys::socket::IPV6_ADD_MEMBERSHIP'>IPV6_ADD_MEMBERSHIP</a></td>
+                           <td><a class='constant' href='constant.IPV6_JOIN_GROUP.html'
+                                  title='nix::sys::socket::IPV6_JOIN_GROUP'>IPV6_JOIN_GROUP</a></td>
                            <td class='docblock short'>
                                 
                            </td>
                        </tr>
                        <tr class=' module-item'>
-                           <td><a class='constant' href='constant.IPV6_DROP_MEMBERSHIP.html'
-                                  title='nix::sys::socket::IPV6_DROP_MEMBERSHIP'>IPV6_DROP_MEMBERSHIP</a></td>
+                           <td><a class='constant' href='constant.IPV6_LEAVE_GROUP.html'
+                                  title='nix::sys::socket::IPV6_LEAVE_GROUP'>IPV6_LEAVE_GROUP</a></td>
                            <td class='docblock short'>
                                 
                            </td>
@@ -425,13 +404,6 @@ argument to <code>getsockopt</code> and <code>setsockopt</code>.</p>
                        <tr class=' module-item'>
                            <td><a class='constant' href='constant.MSG_EOR.html'
                                   title='nix::sys::socket::MSG_EOR'>MSG_EOR</a></td>
-                           <td class='docblock short'>
-                                
-                           </td>
-                       </tr>
-                       <tr class=' module-item'>
-                           <td><a class='constant' href='constant.MSG_ERRQUEUE.html'
-                                  title='nix::sys::socket::MSG_ERRQUEUE'>MSG_ERRQUEUE</a></td>
                            <td class='docblock short'>
                                 
                            </td>
@@ -535,43 +507,8 @@ argument to <code>getsockopt</code> and <code>setsockopt</code>.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
-                           <td><a class='constant' href='constant.SOL_IP.html'
-                                  title='nix::sys::socket::SOL_IP'>SOL_IP</a></td>
-                           <td class='docblock short'>
-                                
-                           </td>
-                       </tr>
-                       <tr class=' module-item'>
-                           <td><a class='constant' href='constant.SOL_IPV6.html'
-                                  title='nix::sys::socket::SOL_IPV6'>SOL_IPV6</a></td>
-                           <td class='docblock short'>
-                                
-                           </td>
-                       </tr>
-                       <tr class=' module-item'>
-                           <td><a class='constant' href='constant.SOL_NETLINK.html'
-                                  title='nix::sys::socket::SOL_NETLINK'>SOL_NETLINK</a></td>
-                           <td class='docblock short'>
-                                
-                           </td>
-                       </tr>
-                       <tr class=' module-item'>
                            <td><a class='constant' href='constant.SOL_SOCKET.html'
                                   title='nix::sys::socket::SOL_SOCKET'>SOL_SOCKET</a></td>
-                           <td class='docblock short'>
-                                
-                           </td>
-                       </tr>
-                       <tr class=' module-item'>
-                           <td><a class='constant' href='constant.SOL_TCP.html'
-                                  title='nix::sys::socket::SOL_TCP'>SOL_TCP</a></td>
-                           <td class='docblock short'>
-                                
-                           </td>
-                       </tr>
-                       <tr class=' module-item'>
-                           <td><a class='constant' href='constant.SOL_UDP.html'
-                                  title='nix::sys::socket::SOL_UDP'>SOL_UDP</a></td>
                            <td class='docblock short'>
                                 
                            </td>
@@ -584,29 +521,8 @@ argument to <code>getsockopt</code> and <code>setsockopt</code>.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
-                           <td><a class='constant' href='constant.SO_BINDTODEVICE.html'
-                                  title='nix::sys::socket::SO_BINDTODEVICE'>SO_BINDTODEVICE</a></td>
-                           <td class='docblock short'>
-                                
-                           </td>
-                       </tr>
-                       <tr class=' module-item'>
                            <td><a class='constant' href='constant.SO_BROADCAST.html'
                                   title='nix::sys::socket::SO_BROADCAST'>SO_BROADCAST</a></td>
-                           <td class='docblock short'>
-                                
-                           </td>
-                       </tr>
-                       <tr class=' module-item'>
-                           <td><a class='constant' href='constant.SO_BSDCOMPAT.html'
-                                  title='nix::sys::socket::SO_BSDCOMPAT'>SO_BSDCOMPAT</a></td>
-                           <td class='docblock short'>
-                                
-                           </td>
-                       </tr>
-                       <tr class=' module-item'>
-                           <td><a class='constant' href='constant.SO_BUSY_POLL.html'
-                                  title='nix::sys::socket::SO_BUSY_POLL'>SO_BUSY_POLL</a></td>
                            <td class='docblock short'>
                                 
                            </td>
@@ -619,15 +535,15 @@ argument to <code>getsockopt</code> and <code>setsockopt</code>.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
-                           <td><a class='constant' href='constant.SO_DOMAIN.html'
-                                  title='nix::sys::socket::SO_DOMAIN'>SO_DOMAIN</a></td>
+                           <td><a class='constant' href='constant.SO_DONTROUTE.html'
+                                  title='nix::sys::socket::SO_DONTROUTE'>SO_DONTROUTE</a></td>
                            <td class='docblock short'>
                                 
                            </td>
                        </tr>
                        <tr class=' module-item'>
-                           <td><a class='constant' href='constant.SO_DONTROUTE.html'
-                                  title='nix::sys::socket::SO_DONTROUTE'>SO_DONTROUTE</a></td>
+                           <td><a class='constant' href='constant.SO_DONTTRUNC.html'
+                                  title='nix::sys::socket::SO_DONTTRUNC'>SO_DONTTRUNC</a></td>
                            <td class='docblock short'>
                                 
                            </td>
@@ -647,6 +563,13 @@ argument to <code>getsockopt</code> and <code>setsockopt</code>.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
+                           <td><a class='constant' href='constant.SO_LABEL.html'
+                                  title='nix::sys::socket::SO_LABEL'>SO_LABEL</a></td>
+                           <td class='docblock short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
                            <td><a class='constant' href='constant.SO_LINGER.html'
                                   title='nix::sys::socket::SO_LINGER'>SO_LINGER</a></td>
                            <td class='docblock short'>
@@ -654,8 +577,50 @@ argument to <code>getsockopt</code> and <code>setsockopt</code>.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
-                           <td><a class='constant' href='constant.SO_MARK.html'
-                                  title='nix::sys::socket::SO_MARK'>SO_MARK</a></td>
+                           <td><a class='constant' href='constant.SO_NKE.html'
+                                  title='nix::sys::socket::SO_NKE'>SO_NKE</a></td>
+                           <td class='docblock short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.SO_NOADDRERR.html'
+                                  title='nix::sys::socket::SO_NOADDRERR'>SO_NOADDRERR</a></td>
+                           <td class='docblock short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.SO_NOSIGPIPE.html'
+                                  title='nix::sys::socket::SO_NOSIGPIPE'>SO_NOSIGPIPE</a></td>
+                           <td class='docblock short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.SO_NOTIFYCONFLICT.html'
+                                  title='nix::sys::socket::SO_NOTIFYCONFLICT'>SO_NOTIFYCONFLICT</a></td>
+                           <td class='docblock short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.SO_NP_EXTENSIONS.html'
+                                  title='nix::sys::socket::SO_NP_EXTENSIONS'>SO_NP_EXTENSIONS</a></td>
+                           <td class='docblock short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.SO_NREAD.html'
+                                  title='nix::sys::socket::SO_NREAD'>SO_NREAD</a></td>
+                           <td class='docblock short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.SO_NWRITE.html'
+                                  title='nix::sys::socket::SO_NWRITE'>SO_NWRITE</a></td>
                            <td class='docblock short'>
                                 
                            </td>
@@ -668,36 +633,15 @@ argument to <code>getsockopt</code> and <code>setsockopt</code>.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
-                           <td><a class='constant' href='constant.SO_PASSCRED.html'
-                                  title='nix::sys::socket::SO_PASSCRED'>SO_PASSCRED</a></td>
+                           <td><a class='constant' href='constant.SO_PEERLABEL.html'
+                                  title='nix::sys::socket::SO_PEERLABEL'>SO_PEERLABEL</a></td>
                            <td class='docblock short'>
                                 
                            </td>
                        </tr>
                        <tr class=' module-item'>
-                           <td><a class='constant' href='constant.SO_PEEK_OFF.html'
-                                  title='nix::sys::socket::SO_PEEK_OFF'>SO_PEEK_OFF</a></td>
-                           <td class='docblock short'>
-                                
-                           </td>
-                       </tr>
-                       <tr class=' module-item'>
-                           <td><a class='constant' href='constant.SO_PEERCRED.html'
-                                  title='nix::sys::socket::SO_PEERCRED'>SO_PEERCRED</a></td>
-                           <td class='docblock short'>
-                                
-                           </td>
-                       </tr>
-                       <tr class=' module-item'>
-                           <td><a class='constant' href='constant.SO_PRIORITY.html'
-                                  title='nix::sys::socket::SO_PRIORITY'>SO_PRIORITY</a></td>
-                           <td class='docblock short'>
-                                
-                           </td>
-                       </tr>
-                       <tr class=' module-item'>
-                           <td><a class='constant' href='constant.SO_PROTOCOL.html'
-                                  title='nix::sys::socket::SO_PROTOCOL'>SO_PROTOCOL</a></td>
+                           <td><a class='constant' href='constant.SO_RANDOMPORT.html'
+                                  title='nix::sys::socket::SO_RANDOMPORT'>SO_RANDOMPORT</a></td>
                            <td class='docblock short'>
                                 
                            </td>
@@ -705,13 +649,6 @@ argument to <code>getsockopt</code> and <code>setsockopt</code>.</p>
                        <tr class=' module-item'>
                            <td><a class='constant' href='constant.SO_RCVBUF.html'
                                   title='nix::sys::socket::SO_RCVBUF'>SO_RCVBUF</a></td>
-                           <td class='docblock short'>
-                                
-                           </td>
-                       </tr>
-                       <tr class=' module-item'>
-                           <td><a class='constant' href='constant.SO_RCVBUFFORCE.html'
-                                  title='nix::sys::socket::SO_RCVBUFFORCE'>SO_RCVBUFFORCE</a></td>
                            <td class='docblock short'>
                                 
                            </td>
@@ -731,6 +668,34 @@ argument to <code>getsockopt</code> and <code>setsockopt</code>.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
+                           <td><a class='constant' href='constant.SO_RESTRICTIONS.html'
+                                  title='nix::sys::socket::SO_RESTRICTIONS'>SO_RESTRICTIONS</a></td>
+                           <td class='docblock short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.SO_RESTRICT_DENYIN.html'
+                                  title='nix::sys::socket::SO_RESTRICT_DENYIN'>SO_RESTRICT_DENYIN</a></td>
+                           <td class='docblock short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.SO_RESTRICT_DENYOUT.html'
+                                  title='nix::sys::socket::SO_RESTRICT_DENYOUT'>SO_RESTRICT_DENYOUT</a></td>
+                           <td class='docblock short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.SO_RESTRICT_DENYSET.html'
+                                  title='nix::sys::socket::SO_RESTRICT_DENYSET'>SO_RESTRICT_DENYSET</a></td>
+                           <td class='docblock short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
                            <td><a class='constant' href='constant.SO_REUSEADDR.html'
                                   title='nix::sys::socket::SO_REUSEADDR'>SO_REUSEADDR</a></td>
                            <td class='docblock short'>
@@ -745,8 +710,8 @@ argument to <code>getsockopt</code> and <code>setsockopt</code>.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
-                           <td><a class='constant' href='constant.SO_RXQ_OVFL.html'
-                                  title='nix::sys::socket::SO_RXQ_OVFL'>SO_RXQ_OVFL</a></td>
+                           <td><a class='constant' href='constant.SO_REUSESHAREUID.html'
+                                  title='nix::sys::socket::SO_REUSESHAREUID'>SO_REUSESHAREUID</a></td>
                            <td class='docblock short'>
                                 
                            </td>
@@ -754,13 +719,6 @@ argument to <code>getsockopt</code> and <code>setsockopt</code>.</p>
                        <tr class=' module-item'>
                            <td><a class='constant' href='constant.SO_SNDBUF.html'
                                   title='nix::sys::socket::SO_SNDBUF'>SO_SNDBUF</a></td>
-                           <td class='docblock short'>
-                                
-                           </td>
-                       </tr>
-                       <tr class=' module-item'>
-                           <td><a class='constant' href='constant.SO_SNDBUFFORCE.html'
-                                  title='nix::sys::socket::SO_SNDBUFFORCE'>SO_SNDBUFFORCE</a></td>
                            <td class='docblock short'>
                                 
                            </td>
@@ -787,6 +745,13 @@ argument to <code>getsockopt</code> and <code>setsockopt</code>.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
+                           <td><a class='constant' href='constant.SO_TIMESTAMP_MONOTONIC.html'
+                                  title='nix::sys::socket::SO_TIMESTAMP_MONOTONIC'>SO_TIMESTAMP_MONOTONIC</a></td>
+                           <td class='docblock short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
                            <td><a class='constant' href='constant.SO_TYPE.html'
                                   title='nix::sys::socket::SO_TYPE'>SO_TYPE</a></td>
                            <td class='docblock short'>
@@ -794,15 +759,22 @@ argument to <code>getsockopt</code> and <code>setsockopt</code>.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
-                           <td><a class='constant' href='constant.TCP_CORK.html'
-                                  title='nix::sys::socket::TCP_CORK'>TCP_CORK</a></td>
+                           <td><a class='constant' href='constant.SO_WANTMORE.html'
+                                  title='nix::sys::socket::SO_WANTMORE'>SO_WANTMORE</a></td>
                            <td class='docblock short'>
                                 
                            </td>
                        </tr>
                        <tr class=' module-item'>
-                           <td><a class='constant' href='constant.TCP_KEEPIDLE.html'
-                                  title='nix::sys::socket::TCP_KEEPIDLE'>TCP_KEEPIDLE</a></td>
+                           <td><a class='constant' href='constant.SO_WANTOOBFLAG.html'
+                                  title='nix::sys::socket::SO_WANTOOBFLAG'>SO_WANTOOBFLAG</a></td>
+                           <td class='docblock short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.TCP_KEEPALIVE.html'
+                                  title='nix::sys::socket::TCP_KEEPALIVE'>TCP_KEEPALIVE</a></td>
                            <td class='docblock short'>
                                 
                            </td>

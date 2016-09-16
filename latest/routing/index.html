@@ -47,7 +47,7 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a id='src-0' class='srclink' href='../src/routing/src/lib.rs.html#18-198' title='goto source code'>[src]</a></span></h1>
+               </span><a id='src-0' class='srclink' href='../src/routing/src/lib.rs.html#18-210' title='goto source code'>[src]</a></span></h1>
 <div class='docblock'><p>Client and node implementations for a resilient decentralised network.</p>
 
 <p>The network is based on the <a href="../kademlia_routing_table/index.html"><code>kademlia_routing_table</code></a> and uses the XOR metric to define the
@@ -119,8 +119,30 @@ same message.</p>
 <li><a href="new-node.png">Churn (<code>NewNode</code>)</a></li>
 <li><a href="tunnel.png">Tunnel</a></li>
 </ul>
-</div><h2 id='structs' class='section-header'><a href="#structs">Structs</a></h2>
+</div><h2 id='modules' class='section-header'><a href="#modules">Modules</a></h2>
 <table>
+                       <tr class=' module-item'>
+                           <td><a class='mod' href='client_errors/index.html'
+                                  title='routing::client_errors'>client_errors</a></td>
+                           <td class='docblock short'>
+                                <p>Error communication between vaults and core</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='mod' href='messaging/index.html'
+                                  title='routing::messaging'>messaging</a></td>
+                           <td class='docblock short'>
+                                <p>Messaging infrastructure</p>
+                           </td>
+                       </tr></table><h2 id='structs' class='section-header'><a href="#structs">Structs</a></h2>
+<table>
+                       <tr class=' module-item'>
+                           <td><a class='struct' href='struct.AppendedData.html'
+                                  title='routing::AppendedData'>AppendedData</a></td>
+                           <td class='docblock short'>
+                                <p>An appended data item, pointing to another data chunk in the network.</p>
+                           </td>
+                       </tr>
                        <tr class=' module-item'>
                            <td><a class='struct' href='struct.Client.html'
                                   title='routing::Client'>Client</a></td>
@@ -173,6 +195,27 @@ routing node.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
+                           <td><a class='struct' href='struct.PrivAppendableData.html'
+                                  title='routing::PrivAppendableData'>PrivAppendableData</a></td>
+                           <td class='docblock short'>
+                                <p>Private appendable data.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='struct' href='struct.PrivAppendedData.html'
+                                  title='routing::PrivAppendedData'>PrivAppendedData</a></td>
+                           <td class='docblock short'>
+                                <p>A private appended data item: an encrypted <code>AppendedData</code>.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='struct' href='struct.PubAppendableData.html'
+                                  title='routing::PubAppendableData'>PubAppendableData</a></td>
+                           <td class='docblock short'>
+                                <p>Public appendable data.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
                            <td><a class='struct' href='struct.PublicId.html'
                                   title='routing::PublicId'>PublicId</a></td>
                            <td class='docblock short'>
@@ -194,6 +237,13 @@ routing node.</p>
                            </td>
                        </tr></table><h2 id='enums' class='section-header'><a href="#enums">Enums</a></h2>
 <table>
+                       <tr class=' module-item'>
+                           <td><a class='enum' href='enum.AppendWrapper.html'
+                                  title='routing::AppendWrapper'>AppendWrapper</a></td>
+                           <td class='docblock short'>
+                                <p>An <code>AppendedData</code> item, together with the identifier of the data to append it to.</p>
+                           </td>
+                       </tr>
                        <tr class=' module-item'>
                            <td><a class='enum' href='enum.Authority.html'
                                   title='routing::Authority'>Authority</a></td>
@@ -220,6 +270,13 @@ routing node.</p>
                                   title='routing::Event'>Event</a></td>
                            <td class='docblock short'>
                                 <p>An Event raised by a <code>Node</code> or <code>Client</code> via its event sender.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='enum' href='enum.Filter.html'
+                                  title='routing::Filter'>Filter</a></td>
+                           <td class='docblock short'>
+                                <p>The type of access filter for appendable data.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
@@ -266,6 +323,20 @@ routing node.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
+                           <td><a class='constant' href='constant.MAX_PRIV_APPENDABLE_DATA_SIZE_IN_BYTES.html'
+                                  title='routing::MAX_PRIV_APPENDABLE_DATA_SIZE_IN_BYTES'>MAX_PRIV_APPENDABLE_DATA_SIZE_IN_BYTES</a></td>
+                           <td class='docblock short'>
+                                <p>Maximum allowed size for a private appendable data to grow to</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.MAX_PUB_APPENDABLE_DATA_SIZE_IN_BYTES.html'
+                                  title='routing::MAX_PUB_APPENDABLE_DATA_SIZE_IN_BYTES'>MAX_PUB_APPENDABLE_DATA_SIZE_IN_BYTES</a></td>
+                           <td class='docblock short'>
+                                <p>Maximum allowed size for a public appendable data to grow to</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
                            <td><a class='constant' href='constant.MAX_STRUCTURED_DATA_SIZE_IN_BYTES.html'
                                   title='routing::MAX_STRUCTURED_DATA_SIZE_IN_BYTES'>MAX_STRUCTURED_DATA_SIZE_IN_BYTES</a></td>
                            <td class='docblock short'>
@@ -277,6 +348,20 @@ routing node.</p>
                                   title='routing::QUORUM_SIZE'>QUORUM_SIZE</a></td>
                            <td class='docblock short'>
                                 <p>The quorum for group consensus.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.TYPE_TAG_DNS_PACKET.html'
+                                  title='routing::TYPE_TAG_DNS_PACKET'>TYPE_TAG_DNS_PACKET</a></td>
+                           <td class='docblock short'>
+                                <p>Structured Data Tag for DNS Packet Type</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.TYPE_TAG_SESSION_PACKET.html'
+                                  title='routing::TYPE_TAG_SESSION_PACKET'>TYPE_TAG_SESSION_PACKET</a></td>
+                           <td class='docblock short'>
+                                <p>Structured Data Tag for Session Packet Type</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>

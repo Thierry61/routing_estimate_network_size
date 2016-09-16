@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="rustdoc">
-    <meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/xml-rs-0.3.4/src/reader/parser/inside_opening_tag.rs`.">
+    <meta name="description" content="Source to the Rust file `/Users/viv/.cargo/registry/src/github.com-1ecc6299db9ec823/xml-rs-0.3.4/src/reader/parser/inside_opening_tag.rs`.">
     <meta name="keywords" content="rust, rustlang, rust-lang">
 
     <title>inside_opening_tag.rs.html -- source</title>
@@ -171,8 +171,8 @@
                     _ <span class='op'>=&gt;</span> {
                         <span class='ident'>this</span>.<span class='ident'>data</span>.<span class='ident'>element_name</span> <span class='op'>=</span> <span class='prelude-val'>Some</span>(<span class='ident'>name</span>.<span class='ident'>clone</span>());
                         <span class='kw'>match</span> <span class='ident'>token</span> {
-                            <span class='ident'>Token</span>::<span class='ident'>TagEnd</span> <span class='op'>=&gt;</span> <span class='ident'>this</span>.<span class='ident'>emit_start_element</span>(<span class='boolvalue'>false</span>),
-                            <span class='ident'>Token</span>::<span class='ident'>EmptyTagEnd</span> <span class='op'>=&gt;</span> <span class='ident'>this</span>.<span class='ident'>emit_start_element</span>(<span class='boolvalue'>true</span>),
+                            <span class='ident'>Token</span>::<span class='ident'>TagEnd</span> <span class='op'>=&gt;</span> <span class='ident'>this</span>.<span class='ident'>emit_start_element</span>(<span class='bool-val'>false</span>),
+                            <span class='ident'>Token</span>::<span class='ident'>EmptyTagEnd</span> <span class='op'>=&gt;</span> <span class='ident'>this</span>.<span class='ident'>emit_start_element</span>(<span class='bool-val'>true</span>),
                             <span class='ident'>Token</span>::<span class='ident'>Whitespace</span>(_) <span class='op'>=&gt;</span> <span class='ident'>this</span>.<span class='ident'>into_state_continue</span>(<span class='ident'>State</span>::<span class='ident'>InsideOpeningTag</span>(<span class='ident'>OpeningTagSubstate</span>::<span class='ident'>InsideTag</span>)),
                             _ <span class='op'>=&gt;</span> <span class='macro'>unreachable</span><span class='macro'>!</span>()
                         }
@@ -186,8 +186,8 @@
                     <span class='self'>self</span>.<span class='ident'>buf</span>.<span class='ident'>push</span>(<span class='ident'>c</span>);
                     <span class='self'>self</span>.<span class='ident'>into_state_continue</span>(<span class='ident'>State</span>::<span class='ident'>InsideOpeningTag</span>(<span class='ident'>OpeningTagSubstate</span>::<span class='ident'>InsideAttributeName</span>))
                 }
-                <span class='ident'>Token</span>::<span class='ident'>TagEnd</span> <span class='op'>=&gt;</span> <span class='self'>self</span>.<span class='ident'>emit_start_element</span>(<span class='boolvalue'>false</span>),
-                <span class='ident'>Token</span>::<span class='ident'>EmptyTagEnd</span> <span class='op'>=&gt;</span> <span class='self'>self</span>.<span class='ident'>emit_start_element</span>(<span class='boolvalue'>true</span>),
+                <span class='ident'>Token</span>::<span class='ident'>TagEnd</span> <span class='op'>=&gt;</span> <span class='self'>self</span>.<span class='ident'>emit_start_element</span>(<span class='bool-val'>false</span>),
+                <span class='ident'>Token</span>::<span class='ident'>EmptyTagEnd</span> <span class='op'>=&gt;</span> <span class='self'>self</span>.<span class='ident'>emit_start_element</span>(<span class='bool-val'>true</span>),
                 _ <span class='op'>=&gt;</span> <span class='macro'>unexpected_token</span><span class='macro'>!</span>(<span class='ident'>t</span>)
             },
 

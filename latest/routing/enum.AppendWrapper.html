@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `AppendWrapper` enum in crate `routing`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, AppendWrapper">
+
+    <title>routing::AppendWrapper - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../rustdoc.css">
+    <link rel="stylesheet" type="text/css" href="../main.css">
+    
+
+    <link rel="shortcut icon" href="http://maidsafe.net/img/favicon.ico">
+    
+</head>
+<body class="rustdoc">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <nav class="sidebar">
+        <a href='../routing/index.html'><img src='https://raw.githubusercontent.com/maidsafe/QA/master/Images/maidsafe_logo.png' alt='logo' width='100'></a>
+        <p class='location'><a href='index.html'>routing</a></p><script>window.sidebarCurrent = {name: 'AppendWrapper', ty: 'enum', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+    </nav>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content enum">
+<h1 class='fqn'><span class='in-band'>Enum <a href='index.html'>routing</a>::<wbr><a class='enum' href=''>AppendWrapper</a></span><span class='out-of-band'><span id='render-detail'>
+                   <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                       [<span class='inner'>&#x2212;</span>]
+                   </a>
+               </span><a id='src-7804' class='srclink' href='../src/routing/src/append_types.rs.html#85-108' title='goto source code'>[src]</a></span></h1>
+<pre class='rust enum'>pub enum AppendWrapper {
+    Pub {
+        append_to: <a class='struct' href='../routing/struct.XorName.html' title='routing::XorName'>XorName</a>,
+        data: <a class='struct' href='../routing/struct.AppendedData.html' title='routing::AppendedData'>AppendedData</a>,
+        version: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u64.html'>u64</a>,
+    },
+    Priv {
+        append_to: <a class='struct' href='../routing/struct.XorName.html' title='routing::XorName'>XorName</a>,
+        data: <a class='struct' href='../routing/struct.PrivAppendedData.html' title='routing::PrivAppendedData'>PrivAppendedData</a>,
+        sign_key: <a class='struct' href='../rust_sodium/crypto/sign/ed25519/struct.PublicKey.html' title='rust_sodium::crypto::sign::ed25519::PublicKey'>PublicKey</a>,
+        version: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u64.html'>u64</a>,
+        signature: <a class='struct' href='../rust_sodium/crypto/sign/ed25519/struct.Signature.html' title='rust_sodium::crypto::sign::ed25519::Signature'>Signature</a>,
+    },
+}</pre><div class='docblock'><p>An <code>AppendedData</code> item, together with the identifier of the data to append it to.</p>
+</div><h2 class='variants'>Variants</h2>
+<span id='variant.Pub' class='variant'><code>Pub</code></span><div class='docblock'><p>A wrapper for public appendable data.</p>
+</div><h3 class='fields'>Fields</h3>
+
+                           <table><tr><td id='variant.Pub.field.append_to'><code>append_to:&nbsp;<a class='struct' href='../routing/struct.XorName.html' title='routing::XorName'>XorName</a></code></td><td><div class='docblock'><p>The name of the data chunk to add to.</p>
+</div></td></tr><tr><td id='variant.Pub.field.data'><code>data:&nbsp;<a class='struct' href='../routing/struct.AppendedData.html' title='routing::AppendedData'>AppendedData</a></code></td><td><div class='docblock'><p>The item to add to the chunk.</p>
+</div></td></tr><tr><td id='variant.Pub.field.version'><code>version:&nbsp;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u64.html'>u64</a></code></td><td><div class='docblock'><p>The current version of the chunk.</p>
+</div></td></tr></table><span id='variant.Priv' class='variant'><code>Priv</code></span><div class='docblock'><p>A wrapper for private appendable data.</p>
+</div><h3 class='fields'>Fields</h3>
+
+                           <table><tr><td id='variant.Priv.field.append_to'><code>append_to:&nbsp;<a class='struct' href='../routing/struct.XorName.html' title='routing::XorName'>XorName</a></code></td><td><div class='docblock'><p>The name of the data chunk to add to.</p>
+</div></td></tr><tr><td id='variant.Priv.field.data'><code>data:&nbsp;<a class='struct' href='../routing/struct.PrivAppendedData.html' title='routing::PrivAppendedData'>PrivAppendedData</a></code></td><td><div class='docblock'><p>The item to add to the chunk.</p>
+</div></td></tr><tr><td id='variant.Priv.field.sign_key'><code>sign_key:&nbsp;<a class='struct' href='../rust_sodium/crypto/sign/ed25519/struct.PublicKey.html' title='rust_sodium::crypto::sign::ed25519::PublicKey'>PublicKey</a></code></td><td><div class='docblock'><p>The signer&#39;s public_key.</p>
+</div></td></tr><tr><td id='variant.Priv.field.version'><code>version:&nbsp;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u64.html'>u64</a></code></td><td><div class='docblock'><p>The current version of the chunk.</p>
+</div></td></tr><tr><td id='variant.Priv.field.signature'><code>signature:&nbsp;<a class='struct' href='../rust_sodium/crypto/sign/ed25519/struct.Signature.html' title='rust_sodium::crypto::sign::ed25519::Signature'>Signature</a></code></td><td><div class='docblock'><p>All the above fields</p>
+</div></td></tr></table><h2 id='methods'>Methods</h2><h3 class='impl'><span class='in-band'><code>impl <a class='enum' href='../routing/enum.AppendWrapper.html' title='routing::AppendWrapper'>AppendWrapper</a></code></span><span class='out-of-band'><div class='ghost'></div><a id='src-7815' class='srclink' href='../src/routing/src/append_types.rs.html#110-194' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.new_pub' class='method'><code>fn <a href='#method.new_pub' class='fnname'>new_pub</a>(append_to: <a class='struct' href='../routing/struct.XorName.html' title='routing::XorName'>XorName</a>, data: <a class='struct' href='../routing/struct.AppendedData.html' title='routing::AppendedData'>AppendedData</a>, version: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u64.html'>u64</a>) -&gt; Self</code></h4>
+<div class='docblock'><p>Returns a new append wrapper for public data.</p>
+</div><h4 id='method.new_priv' class='method'><code>fn <a href='#method.new_priv' class='fnname'>new_priv</a>(append_to: <a class='struct' href='../routing/struct.XorName.html' title='routing::XorName'>XorName</a>, data: <a class='struct' href='../routing/struct.PrivAppendedData.html' title='routing::PrivAppendedData'>PrivAppendedData</a>, sign_pair: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.tuple.html'>(</a>&amp;<a class='struct' href='../rust_sodium/crypto/sign/ed25519/struct.PublicKey.html' title='rust_sodium::crypto::sign::ed25519::PublicKey'>PublicKey</a>, &amp;<a class='struct' href='../rust_sodium/crypto/sign/ed25519/struct.SecretKey.html' title='rust_sodium::crypto::sign::ed25519::SecretKey'>SecretKey</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.tuple.html'>)</a>, version: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u64.html'>u64</a>) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/result/enum.Result.html' title='core::result::Result'>Result</a>&lt;<a class='enum' href='../routing/enum.AppendWrapper.html' title='routing::AppendWrapper'>AppendWrapper</a>,&nbsp;<a class='enum' href='../routing/enum.RoutingError.html' title='routing::RoutingError'>RoutingError</a>&gt;</code></h4>
+<div class='docblock'><p>Returns a new, signed append wrapper for private data.</p>
+</div><h4 id='method.identifier' class='method'><code>fn <a href='#method.identifier' class='fnname'>identifier</a>(&amp;self) -&gt; <a class='enum' href='../routing/enum.DataIdentifier.html' title='routing::DataIdentifier'>DataIdentifier</a></code></h4>
+<div class='docblock'><p>Returns the identifier of the data to append to.</p>
+</div><h4 id='method.verify_signature' class='method'><code>fn <a href='#method.verify_signature' class='fnname'>verify_signature</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<div class='docblock'><p>Returns <code>true</code> if the signature matches the data.</p>
+</div><h4 id='method.sign_key' class='method'><code>fn <a href='#method.sign_key' class='fnname'>sign_key</a>(&amp;self) -&gt; &amp;<a class='struct' href='../rust_sodium/crypto/sign/ed25519/struct.PublicKey.html' title='rust_sodium::crypto::sign::ed25519::PublicKey'>PublicKey</a></code></h4>
+<div class='docblock'><p>Returns <code>sign_key</code> of the signer.</p>
+</div><h4 id='method.version' class='method'><code>fn <a href='#method.version' class='fnname'>version</a>(&amp;self) -&gt; &amp;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u64.html'>u64</a></code></h4>
+<div class='docblock'><p>Returns <code>version</code> of the wrapper item.</p>
+</div><h4 id='method.priv_appended_data' class='method'><code>fn <a href='#method.priv_appended_data' class='fnname'>priv_appended_data</a>(&amp;self) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;&amp;<a class='struct' href='../routing/struct.PrivAppendedData.html' title='routing::PrivAppendedData'>PrivAppendedData</a>&gt;</code></h4>
+<div class='docblock'><p>Returns <code>priv_appended_data</code> if AppendWrapper::Priv.</p>
+</div><h4 id='method.pub_appended_data' class='method'><code>fn <a href='#method.pub_appended_data' class='fnname'>pub_appended_data</a>(&amp;self) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;&amp;<a class='struct' href='../routing/struct.AppendedData.html' title='routing::AppendedData'>AppendedData</a>&gt;</code></h4>
+<div class='docblock'><p>Returns <code>pub_appended_data</code> if AppendWrapper::Pub.</p>
+</div></div><h2 id='implementations'>Trait Implementations</h2><h3 class='impl'><span class='in-band'><code>impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html' title='core::fmt::Debug'>Debug</a> for <a class='enum' href='../routing/enum.AppendWrapper.html' title='routing::AppendWrapper'>AppendWrapper</a></code></span><span class='out-of-band'><div class='ghost'></div><a id='src-7492' class='srclink' href='../src/routing/src/append_types.rs.html#84' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.fmt' class='method'><code>fn <a href='https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html#tymethod.fmt' class='fnname'>fmt</a>(&amp;self, __arg_0: &amp;mut <a class='struct' href='https://doc.rust-lang.org/nightly/core/fmt/struct.Formatter.html' title='core::fmt::Formatter'>Formatter</a>) -&gt; <a class='type' href='https://doc.rust-lang.org/nightly/core/fmt/type.Result.html' title='core::fmt::Result'>Result</a></code></h4>
+<div class='docblock'><p>Formats the value using the given formatter.</p>
+</div></div><h3 class='impl'><span class='in-band'><code>impl <a class='trait' href='../rustc_serialize/serialize/trait.Encodable.html' title='rustc_serialize::serialize::Encodable'>Encodable</a> for <a class='enum' href='../routing/enum.AppendWrapper.html' title='routing::AppendWrapper'>AppendWrapper</a></code></span><span class='out-of-band'><div class='ghost'></div><a id='src-7506' class='srclink' href='../src/routing/src/append_types.rs.html#84' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.encode' class='method'><code>fn <a href='../rustc_serialize/serialize/trait.Encodable.html#tymethod.encode' class='fnname'>encode</a>&lt;__S:&nbsp;<a class='trait' href='../rustc_serialize/serialize/trait.Encoder.html' title='rustc_serialize::serialize::Encoder'>Encoder</a>&gt;(&amp;self, __arg_0: &amp;mut __S) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/result/enum.Result.html' title='core::result::Result'>Result</a>&lt;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.tuple.html'>()</a>,&nbsp;__S::Error&gt;</code></h4>
+</div><h3 class='impl'><span class='in-band'><code>impl <a class='trait' href='../rustc_serialize/serialize/trait.Decodable.html' title='rustc_serialize::serialize::Decodable'>Decodable</a> for <a class='enum' href='../routing/enum.AppendWrapper.html' title='routing::AppendWrapper'>AppendWrapper</a></code></span><span class='out-of-band'><div class='ghost'></div><a id='src-7557' class='srclink' href='../src/routing/src/append_types.rs.html#84' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.decode' class='method'><code>fn <a href='../rustc_serialize/serialize/trait.Decodable.html#tymethod.decode' class='fnname'>decode</a>&lt;__D:&nbsp;<a class='trait' href='../rustc_serialize/serialize/trait.Decoder.html' title='rustc_serialize::serialize::Decoder'>Decoder</a>&gt;(__arg_0: &amp;mut __D) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/result/enum.Result.html' title='core::result::Result'>Result</a>&lt;<a class='enum' href='../routing/enum.AppendWrapper.html' title='routing::AppendWrapper'>AppendWrapper</a>,&nbsp;__D::Error&gt;</code></h4>
+</div><h3 class='impl'><span class='in-band'><code>impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html' title='core::clone::Clone'>Clone</a> for <a class='enum' href='../routing/enum.AppendWrapper.html' title='routing::AppendWrapper'>AppendWrapper</a></code></span><span class='out-of-band'><div class='ghost'></div><a id='src-7582' class='srclink' href='../src/routing/src/append_types.rs.html#84' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.clone' class='method'><code>fn <a href='https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#tymethod.clone' class='fnname'>clone</a>(&amp;self) -&gt; <a class='enum' href='../routing/enum.AppendWrapper.html' title='routing::AppendWrapper'>AppendWrapper</a></code></h4>
+<div class='docblock'><p>Returns a copy of the value. <a href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#tymethod.clone">Read more</a></p>
+</div><h4 id='method.clone_from' class='method'><code>fn <a href='https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#method.clone_from' class='fnname'>clone_from</a>(&amp;mut self, source: &amp;Self)</code><div class='since' title='Stable since Rust version 1.0.0'>1.0.0</div></h4>
+<div class='docblock'><p>Performs copy-assignment from <code>source</code>. <a href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#method.clone_from">Read more</a></p>
+</div></div><h3 class='impl'><span class='in-band'><code>impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/cmp/trait.Ord.html' title='core::cmp::Ord'>Ord</a> for <a class='enum' href='../routing/enum.AppendWrapper.html' title='routing::AppendWrapper'>AppendWrapper</a></code></span><span class='out-of-band'><div class='ghost'></div><a id='src-7593' class='srclink' href='../src/routing/src/append_types.rs.html#84' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.cmp' class='method'><code>fn <a href='https://doc.rust-lang.org/nightly/core/cmp/trait.Ord.html#tymethod.cmp' class='fnname'>cmp</a>(&amp;self, __arg_0: &amp;<a class='enum' href='../routing/enum.AppendWrapper.html' title='routing::AppendWrapper'>AppendWrapper</a>) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/cmp/enum.Ordering.html' title='core::cmp::Ordering'>Ordering</a></code></h4>
+<div class='docblock'><p>This method returns an <code>Ordering</code> between <code>self</code> and <code>other</code>. <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.Ord.html#tymethod.cmp">Read more</a></p>
+</div></div><h3 class='impl'><span class='in-band'><code>impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/cmp/trait.PartialOrd.html' title='core::cmp::PartialOrd'>PartialOrd</a> for <a class='enum' href='../routing/enum.AppendWrapper.html' title='routing::AppendWrapper'>AppendWrapper</a></code></span><span class='out-of-band'><div class='ghost'></div><a id='src-7623' class='srclink' href='../src/routing/src/append_types.rs.html#84' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.partial_cmp' class='method'><code>fn <a href='https://doc.rust-lang.org/nightly/core/cmp/trait.PartialOrd.html#tymethod.partial_cmp' class='fnname'>partial_cmp</a>(&amp;self, __arg_0: &amp;<a class='enum' href='../routing/enum.AppendWrapper.html' title='routing::AppendWrapper'>AppendWrapper</a>) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;<a class='enum' href='https://doc.rust-lang.org/nightly/core/cmp/enum.Ordering.html' title='core::cmp::Ordering'>Ordering</a>&gt;</code></h4>
+<div class='docblock'><p>This method returns an ordering between <code>self</code> and <code>other</code> values if one exists. <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.PartialOrd.html#tymethod.partial_cmp">Read more</a></p>
+</div><h4 id='method.lt' class='method'><code>fn <a href='https://doc.rust-lang.org/nightly/core/cmp/trait.PartialOrd.html#method.lt' class='fnname'>lt</a>(&amp;self, __arg_0: &amp;<a class='enum' href='../routing/enum.AppendWrapper.html' title='routing::AppendWrapper'>AppendWrapper</a>) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<div class='docblock'><p>This method tests less than (for <code>self</code> and <code>other</code>) and is used by the <code>&lt;</code> operator. <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.PartialOrd.html#method.lt">Read more</a></p>
+</div><h4 id='method.le' class='method'><code>fn <a href='https://doc.rust-lang.org/nightly/core/cmp/trait.PartialOrd.html#method.le' class='fnname'>le</a>(&amp;self, __arg_0: &amp;<a class='enum' href='../routing/enum.AppendWrapper.html' title='routing::AppendWrapper'>AppendWrapper</a>) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<div class='docblock'><p>This method tests less than or equal to (for <code>self</code> and <code>other</code>) and is used by the <code>&lt;=</code> operator. <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.PartialOrd.html#method.le">Read more</a></p>
+</div><h4 id='method.gt' class='method'><code>fn <a href='https://doc.rust-lang.org/nightly/core/cmp/trait.PartialOrd.html#method.gt' class='fnname'>gt</a>(&amp;self, __arg_0: &amp;<a class='enum' href='../routing/enum.AppendWrapper.html' title='routing::AppendWrapper'>AppendWrapper</a>) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<div class='docblock'><p>This method tests greater than (for <code>self</code> and <code>other</code>) and is used by the <code>&gt;</code> operator. <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.PartialOrd.html#method.gt">Read more</a></p>
+</div><h4 id='method.ge' class='method'><code>fn <a href='https://doc.rust-lang.org/nightly/core/cmp/trait.PartialOrd.html#method.ge' class='fnname'>ge</a>(&amp;self, __arg_0: &amp;<a class='enum' href='../routing/enum.AppendWrapper.html' title='routing::AppendWrapper'>AppendWrapper</a>) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<div class='docblock'><p>This method tests greater than or equal to (for <code>self</code> and <code>other</code>) and is used by the <code>&gt;=</code> operator. <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.PartialOrd.html#method.ge">Read more</a></p>
+</div></div><h3 class='impl'><span class='in-band'><code>impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html' title='core::cmp::PartialEq'>PartialEq</a> for <a class='enum' href='../routing/enum.AppendWrapper.html' title='routing::AppendWrapper'>AppendWrapper</a></code></span><span class='out-of-band'><div class='ghost'></div><a id='src-7737' class='srclink' href='../src/routing/src/append_types.rs.html#84' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.eq' class='method'><code>fn <a href='https://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html#tymethod.eq' class='fnname'>eq</a>(&amp;self, __arg_0: &amp;<a class='enum' href='../routing/enum.AppendWrapper.html' title='routing::AppendWrapper'>AppendWrapper</a>) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<div class='docblock'><p>This method tests for <code>self</code> and <code>other</code> values to be equal, and is used by <code>==</code>. <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html#tymethod.eq">Read more</a></p>
+</div><h4 id='method.ne' class='method'><code>fn <a href='https://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html#method.ne' class='fnname'>ne</a>(&amp;self, __arg_0: &amp;<a class='enum' href='../routing/enum.AppendWrapper.html' title='routing::AppendWrapper'>AppendWrapper</a>) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<div class='docblock'><p>This method tests for <code>!=</code>.</p>
+</div></div><h3 class='impl'><span class='in-band'><code>impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/cmp/trait.Eq.html' title='core::cmp::Eq'>Eq</a> for <a class='enum' href='../routing/enum.AppendWrapper.html' title='routing::AppendWrapper'>AppendWrapper</a></code></span><span class='out-of-band'><div class='ghost'></div><a id='src-7780' class='srclink' href='../src/routing/src/append_types.rs.html#84' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'></div><h3 class='impl'><span class='in-band'><code>impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/hash/trait.Hash.html' title='core::hash::Hash'>Hash</a> for <a class='enum' href='../routing/enum.AppendWrapper.html' title='routing::AppendWrapper'>AppendWrapper</a></code></span><span class='out-of-band'><div class='ghost'></div><a id='src-7791' class='srclink' href='../src/routing/src/append_types.rs.html#84' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.hash' class='method'><code>fn <a href='https://doc.rust-lang.org/nightly/core/hash/trait.Hash.html#tymethod.hash' class='fnname'>hash</a>&lt;__H:&nbsp;<a class='trait' href='https://doc.rust-lang.org/nightly/core/hash/trait.Hasher.html' title='core::hash::Hasher'>Hasher</a>&gt;(&amp;self, __arg_0: &amp;mut __H)</code></h4>
+<div class='docblock'><p>Feeds this value into the state given, updating the hasher as necessary.</p>
+</div><h4 id='method.hash_slice' class='method'><code>fn <a href='https://doc.rust-lang.org/nightly/core/hash/trait.Hash.html#method.hash_slice' class='fnname'>hash_slice</a>&lt;H&gt;(data: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>&amp;[Self]</a>, state: &amp;mut H) <span class='where'>where H: <a class='trait' href='https://doc.rust-lang.org/nightly/core/hash/trait.Hasher.html' title='core::hash::Hasher'>Hasher</a></span></code><div class='since' title='Stable since Rust version 1.3.0'>1.3.0</div></h4>
+<div class='docblock'><p>Feeds a slice of this type into the state provided.</p>
+</div></div></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <aside id="help" class="hidden">
+        <div>
+            <h1 class="hidden">Help</h1>
+
+            <div class="shortcuts">
+                <h2>Keyboard Shortcuts</h2>
+
+                <dl>
+                    <dt>?</dt>
+                    <dd>Show this help dialog</dd>
+                    <dt>S</dt>
+                    <dd>Focus the search field</dd>
+                    <dt>&larrb;</dt>
+                    <dd>Move up in search results</dd>
+                    <dt>&rarrb;</dt>
+                    <dd>Move down in search results</dd>
+                    <dt>&#9166;</dt>
+                    <dd>Go to active search result</dd>
+                    <dt>+</dt>
+                    <dd>Collapse/expand all sections</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h2>Search Tricks</h2>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>type</code>, <code>macro</code>,
+                    and <code>const</code>.
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code> or <code>* -> vec</code>)
+                </p>
+            </div>
+        </div>
+    </aside>
+
+    
+
+    <script>
+        window.rootPath = "../";
+        window.currentCrate = "routing";
+        window.playgroundUrl = "";
+    </script>
+    <script src="../jquery.js"></script>
+    <script src="../main.js"></script>
+    
+    <script defer src="../search-index.js"></script>
+</body>
+</html>

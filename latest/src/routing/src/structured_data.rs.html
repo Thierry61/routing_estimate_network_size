@@ -516,13 +516,6 @@
 <span id="472">472</span>
 <span id="473">473</span>
 <span id="474">474</span>
-<span id="475">475</span>
-<span id="476">476</span>
-<span id="477">477</span>
-<span id="478">478</span>
-<span id="479">479</span>
-<span id="480">480</span>
-<span id="481">481</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2015 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -542,7 +535,7 @@
 <span class='comment'>// relating to use of the SAFE Network Software.</span>
 
 <span class='kw'>use</span> <span class='ident'>maidsafe_utilities</span>::<span class='ident'>serialisation</span>::<span class='ident'>serialise</span>;
-<span class='kw'>use</span> <span class='ident'>sodiumoxide</span>::<span class='ident'>crypto</span>::<span class='ident'>sign</span>::{<span class='self'>self</span>, <span class='ident'>PublicKey</span>, <span class='ident'>SecretKey</span>, <span class='ident'>Signature</span>};
+<span class='kw'>use</span> <span class='ident'>rust_sodium</span>::<span class='ident'>crypto</span>::<span class='ident'>sign</span>::{<span class='self'>self</span>, <span class='ident'>PublicKey</span>, <span class='ident'>SecretKey</span>, <span class='ident'>Signature</span>};
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>fmt</span>::{<span class='self'>self</span>, <span class='ident'>Debug</span>, <span class='ident'>Formatter</span>};
 <span class='kw'>use</span> <span class='ident'>xor_name</span>::<span class='ident'>XorName</span>;
 <span class='kw'>use</span> <span class='ident'>data</span>::<span class='ident'>DataIdentifier</span>;
@@ -552,8 +545,6 @@
 <span class='kw'>pub</span> <span class='kw'>const</span> <span class='ident'>MAX_STRUCTURED_DATA_SIZE_IN_BYTES</span>: <span class='ident'>usize</span> <span class='op'>=</span> <span class='number'>102400</span>;
 
 <span class='doccomment'>/// Mutable structured data.</span>
-<span class='doccomment'>///</span>
-<span class='doccomment'>/// The name is computed from the type tag and identifier, so these two fields are immutable.</span>
 <span class='doccomment'>///</span>
 <span class='doccomment'>/// These types may be stored unsigned with previous and current owner keys</span>
 <span class='doccomment'>/// set to the same keys. Updates require a signature to validate.</span>
@@ -673,7 +664,7 @@
 
         <span class='kw'>let</span> <span class='ident'>check_all_keys</span> <span class='op'>=</span> <span class='op'>|</span><span class='kw-2'>&amp;</span><span class='ident'>sig</span><span class='op'>|</span> {
             <span class='ident'>owner_keys</span>.<span class='ident'>iter</span>()
-                .<span class='ident'>any</span>(<span class='op'>|</span><span class='kw-2'>ref</span> <span class='ident'>pub_key</span><span class='op'>|</span> <span class='ident'>sign</span>::<span class='ident'>verify_detached</span>(<span class='kw-2'>&amp;</span><span class='ident'>sig</span>, <span class='kw-2'>&amp;</span><span class='ident'>data</span>, <span class='ident'>pub_key</span>))
+                .<span class='ident'>any</span>(<span class='op'>|</span><span class='ident'>pub_key</span><span class='op'>|</span> <span class='ident'>sign</span>::<span class='ident'>verify_detached</span>(<span class='kw-2'>&amp;</span><span class='ident'>sig</span>, <span class='kw-2'>&amp;</span><span class='ident'>data</span>, <span class='ident'>pub_key</span>))
         };
 
         <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>previous_owner_signatures</span>
@@ -749,11 +740,6 @@
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>get_previous_owner_signatures</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='kw-2'>&amp;</span><span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>Signature</span><span class='op'>&gt;</span> {
         <span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='ident'>previous_owner_signatures</span>
     }
-
-    <span class='doccomment'>/// Return data size.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>payload_size</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>usize</span> {
-        <span class='self'>self</span>.<span class='ident'>data</span>.<span class='ident'>len</span>()
-    }
 }
 
 <span class='kw'>impl</span> <span class='ident'>Debug</span> <span class='kw'>for</span> <span class='ident'>StructuredData</span> {
@@ -797,7 +783,7 @@
 <span class='kw'>mod</span> <span class='ident'>test</span> {
     <span class='kw'>extern</span> <span class='kw'>crate</span> <span class='ident'>rand</span>;
 
-    <span class='kw'>use</span> <span class='ident'>sodiumoxide</span>::<span class='ident'>crypto</span>::<span class='ident'>sign</span>;
+    <span class='kw'>use</span> <span class='ident'>rust_sodium</span>::<span class='ident'>crypto</span>::<span class='ident'>sign</span>;
     <span class='kw'>use</span> <span class='ident'>xor_name</span>::<span class='ident'>XorName</span>;
 
     <span class='attribute'>#[<span class='ident'>test</span>]</span>

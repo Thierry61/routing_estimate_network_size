@@ -234,6 +234,12 @@
 <span id="190">190</span>
 <span id="191">191</span>
 <span id="192">192</span>
+<span id="193">193</span>
+<span id="194">194</span>
+<span id="195">195</span>
+<span id="196">196</span>
+<span id="197">197</span>
+<span id="198">198</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2016 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -252,8 +258,8 @@
 <span class='comment'>// Please review the Licences for the specific language governing permissions and limitations</span>
 <span class='comment'>// relating to use of the SAFE Network Software.</span>
 
-<span class='kw'>use</span> <span class='ident'>messages</span>::{<span class='ident'>DirectMessage</span>, <span class='ident'>MessageContent</span>, <span class='ident'>Request</span>, <span class='ident'>Response</span>, <span class='ident'>RoutingMessage</span>};
-<span class='kw'>use</span> <span class='ident'>peer_manager</span>::<span class='ident'>GROUP_SIZE</span>;
+<span class='kw'>use</span> <span class='ident'>core</span>::<span class='ident'>GROUP_SIZE</span>;
+<span class='kw'>use</span> <span class='ident'>messages</span>::{<span class='ident'>DirectMessage</span>, <span class='ident'>MessageContent</span>, <span class='ident'>RoutingMessage</span>, <span class='ident'>Request</span>, <span class='ident'>Response</span>};
 
 <span class='doccomment'>/// The number of messages after which the message statistics should be printed.</span>
 <span class='kw'>const</span> <span class='ident'>MSG_LOG_COUNT</span>: <span class='ident'>usize</span> <span class='op'>=</span> <span class='number'>1000</span>;
@@ -281,6 +287,7 @@
     <span class='ident'>msg_put</span>: <span class='ident'>usize</span>,
     <span class='ident'>msg_post</span>: <span class='ident'>usize</span>,
     <span class='ident'>msg_delete</span>: <span class='ident'>usize</span>,
+    <span class='ident'>msg_append</span>: <span class='ident'>usize</span>,
     <span class='ident'>msg_get_account_info</span>: <span class='ident'>usize</span>,
     <span class='ident'>msg_get_close_group</span>: <span class='ident'>usize</span>,
     <span class='ident'>msg_get_node_name</span>: <span class='ident'>usize</span>,
@@ -295,6 +302,8 @@
     <span class='ident'>msg_post_failure</span>: <span class='ident'>usize</span>,
     <span class='ident'>msg_delete_success</span>: <span class='ident'>usize</span>,
     <span class='ident'>msg_delete_failure</span>: <span class='ident'>usize</span>,
+    <span class='ident'>msg_append_success</span>: <span class='ident'>usize</span>,
+    <span class='ident'>msg_append_failure</span>: <span class='ident'>usize</span>,
     <span class='ident'>msg_get_account_info_success</span>: <span class='ident'>usize</span>,
     <span class='ident'>msg_get_account_info_failure</span>: <span class='ident'>usize</span>,
     <span class='ident'>msg_get_close_group_rsp</span>: <span class='ident'>usize</span>,
@@ -328,6 +337,7 @@
             <span class='ident'>Request</span>::<span class='ident'>Put</span>(..) <span class='op'>=&gt;</span> <span class='self'>self</span>.<span class='ident'>msg_put</span> <span class='op'>+=</span> <span class='number'>1</span>,
             <span class='ident'>Request</span>::<span class='ident'>Post</span>(..) <span class='op'>=&gt;</span> <span class='self'>self</span>.<span class='ident'>msg_post</span> <span class='op'>+=</span> <span class='number'>1</span>,
             <span class='ident'>Request</span>::<span class='ident'>Delete</span>(..) <span class='op'>=&gt;</span> <span class='self'>self</span>.<span class='ident'>msg_delete</span> <span class='op'>+=</span> <span class='number'>1</span>,
+            <span class='ident'>Request</span>::<span class='ident'>Append</span>(..) <span class='op'>=&gt;</span> <span class='self'>self</span>.<span class='ident'>msg_append</span> <span class='op'>+=</span> <span class='number'>1</span>,
             <span class='ident'>Request</span>::<span class='ident'>GetAccountInfo</span>(..) <span class='op'>=&gt;</span> <span class='self'>self</span>.<span class='ident'>msg_get_account_info</span> <span class='op'>+=</span> <span class='number'>1</span>,
         }
         <span class='self'>self</span>.<span class='ident'>increment_msg_total</span>();
@@ -344,6 +354,8 @@
             <span class='ident'>Response</span>::<span class='ident'>PostFailure</span> { .. } <span class='op'>=&gt;</span> <span class='self'>self</span>.<span class='ident'>msg_post_failure</span> <span class='op'>+=</span> <span class='number'>1</span>,
             <span class='ident'>Response</span>::<span class='ident'>DeleteSuccess</span>(..) <span class='op'>=&gt;</span> <span class='self'>self</span>.<span class='ident'>msg_delete_success</span> <span class='op'>+=</span> <span class='number'>1</span>,
             <span class='ident'>Response</span>::<span class='ident'>DeleteFailure</span> { .. } <span class='op'>=&gt;</span> <span class='self'>self</span>.<span class='ident'>msg_delete_failure</span> <span class='op'>+=</span> <span class='number'>1</span>,
+            <span class='ident'>Response</span>::<span class='ident'>AppendSuccess</span>(..) <span class='op'>=&gt;</span> <span class='self'>self</span>.<span class='ident'>msg_append_success</span> <span class='op'>+=</span> <span class='number'>1</span>,
+            <span class='ident'>Response</span>::<span class='ident'>AppendFailure</span> { .. } <span class='op'>=&gt;</span> <span class='self'>self</span>.<span class='ident'>msg_append_failure</span> <span class='op'>+=</span> <span class='number'>1</span>,
             <span class='ident'>Response</span>::<span class='ident'>GetAccountInfoSuccess</span> { .. } <span class='op'>=&gt;</span> <span class='self'>self</span>.<span class='ident'>msg_get_account_info_success</span> <span class='op'>+=</span> <span class='number'>1</span>,
             <span class='ident'>Response</span>::<span class='ident'>GetAccountInfoFailure</span> { .. } <span class='op'>=&gt;</span> <span class='self'>self</span>.<span class='ident'>msg_get_account_info_failure</span> <span class='op'>+=</span> <span class='number'>1</span>,
         }

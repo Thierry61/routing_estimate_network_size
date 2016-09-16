@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="rustdoc">
-    <meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/bincode-0.5.9/src/serde/reader.rs`.">
+    <meta name="description" content="Source to the Rust file `/Users/viv/.cargo/registry/src/github.com-1ecc6299db9ec823/bincode-0.5.9/src/serde/reader.rs`.">
     <meta name="keywords" content="rust, rustlang, rust-lang">
 
     <title>reader.rs.html -- source</title>
@@ -757,8 +757,8 @@
     {
         <span class='kw'>let</span> <span class='ident'>value</span>: <span class='ident'>u8</span> <span class='op'>=</span> <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>serde</span>::<span class='ident'>Deserialize</span>::<span class='ident'>deserialize</span>(<span class='self'>self</span>));
         <span class='kw'>match</span> <span class='ident'>value</span> {
-            <span class='number'>1</span> <span class='op'>=&gt;</span> <span class='ident'>visitor</span>.<span class='ident'>visit_bool</span>(<span class='boolvalue'>true</span>),
-            <span class='number'>0</span> <span class='op'>=&gt;</span> <span class='ident'>visitor</span>.<span class='ident'>visit_bool</span>(<span class='boolvalue'>false</span>),
+            <span class='number'>1</span> <span class='op'>=&gt;</span> <span class='ident'>visitor</span>.<span class='ident'>visit_bool</span>(<span class='bool-val'>true</span>),
+            <span class='number'>0</span> <span class='op'>=&gt;</span> <span class='ident'>visitor</span>.<span class='ident'>visit_bool</span>(<span class='bool-val'>false</span>),
             <span class='ident'>value</span> <span class='op'>=&gt;</span> {
                 <span class='prelude-val'>Err</span>(<span class='ident'>DeserializeError</span>::<span class='ident'>InvalidEncoding</span>(<span class='ident'>InvalidEncoding</span> {
                     <span class='ident'>desc</span>: <span class='string'>&quot;invalid u8 when decoding bool&quot;</span>,
