@@ -205,7 +205,7 @@
 <span class='comment'>// licence you accepted on initial access to the Software (the &quot;Licences&quot;).</span>
 <span class='comment'>//</span>
 <span class='comment'>// By contributing code to the SAFE Network Software, or to this project generally, you agree to be</span>
-<span class='comment'>// bound by the terms of the MaidSafe Contributor Agreement, version 1.0.  This, along with the</span>
+<span class='comment'>// bound by the terms of the MaidSafe Contributor Agreement, version 1.1.  This, along with the</span>
 <span class='comment'>// Licenses can be found in the root directory of this project at LICENSE, COPYING and CONTRIBUTOR.</span>
 <span class='comment'>//</span>
 <span class='comment'>// Unless required by applicable law or agreed to in writing, the SAFE Network Software distributed</span>
@@ -218,9 +218,9 @@
 <span class='kw'>use</span> <span class='ident'>action</span>::<span class='ident'>Action</span>;
 <span class='kw'>use</span> <span class='ident'>crust</span>::{<span class='self'>self</span>, <span class='ident'>PeerId</span>};
 <span class='kw'>use</span> <span class='ident'>event</span>::<span class='ident'>Event</span>;
-<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>sync</span>::<span class='ident'>mpsc</span>::{<span class='ident'>RecvError</span>, <span class='ident'>SendError</span>};
 <span class='kw'>use</span> <span class='ident'>maidsafe_utilities</span>::<span class='ident'>event_sender</span>::{<span class='ident'>EventSenderError</span>, <span class='ident'>MaidSafeEventCategory</span>};
 <span class='kw'>use</span> <span class='ident'>maidsafe_utilities</span>::<span class='ident'>serialisation</span>;
+<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>sync</span>::<span class='ident'>mpsc</span>::{<span class='ident'>RecvError</span>, <span class='ident'>SendError</span>};
 
 <span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Debug</span>)]</span>
 <span class='doccomment'>/// The type of errors that can occur if routing is unable to handle a send request.</span>

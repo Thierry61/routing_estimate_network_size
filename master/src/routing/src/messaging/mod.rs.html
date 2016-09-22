@@ -90,7 +90,7 @@
 <span class='comment'>// licence you accepted on initial access to the Software (the &quot;Licences&quot;).</span>
 <span class='comment'>//</span>
 <span class='comment'>// By contributing code to the SAFE Network Software, or to this project generally, you agree to be</span>
-<span class='comment'>// bound by the terms of the MaidSafe Contributor Agreement, version 1.0.  This, along with the</span>
+<span class='comment'>// bound by the terms of the MaidSafe Contributor Agreement, version 1.1.  This, along with the</span>
 <span class='comment'>// Licenses can be found in the root directory of this project at LICENSE, COPYING and CONTRIBUTOR.</span>
 <span class='comment'>//</span>
 <span class='comment'>// Unless required by applicable law or agreed to in writing, the SAFE Network Software distributed</span>
@@ -113,9 +113,9 @@
 <span class='kw'>mod</span> <span class='ident'>mpid_message_wrapper</span>;
 
 <span class='kw'>pub</span> <span class='kw'>use</span> <span class='self'>self</span>::<span class='ident'>error</span>::<span class='ident'>Error</span>;
-<span class='kw'>pub</span> <span class='kw'>use</span> <span class='self'>self</span>::<span class='ident'>mpid_message_wrapper</span>::<span class='ident'>MpidMessageWrapper</span>;
-<span class='kw'>pub</span> <span class='kw'>use</span> <span class='self'>self</span>::<span class='ident'>mpid_message</span>::{<span class='ident'>MAX_BODY_SIZE</span>, <span class='ident'>MpidMessage</span>};
 <span class='kw'>pub</span> <span class='kw'>use</span> <span class='self'>self</span>::<span class='ident'>mpid_header</span>::{<span class='ident'>MAX_HEADER_METADATA_SIZE</span>, <span class='ident'>MpidHeader</span>};
+<span class='kw'>pub</span> <span class='kw'>use</span> <span class='self'>self</span>::<span class='ident'>mpid_message</span>::{<span class='ident'>MAX_BODY_SIZE</span>, <span class='ident'>MpidMessage</span>};
+<span class='kw'>pub</span> <span class='kw'>use</span> <span class='self'>self</span>::<span class='ident'>mpid_message_wrapper</span>::<span class='ident'>MpidMessageWrapper</span>;
 
 <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>test</span>)]</span>
 <span class='kw'>fn</span> <span class='ident'>generate_random_bytes</span>(<span class='ident'>size</span>: <span class='ident'>usize</span>) <span class='op'>-&gt;</span> <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>u8</span><span class='op'>&gt;</span> {

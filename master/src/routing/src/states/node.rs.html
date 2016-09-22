@@ -1960,6 +1960,12 @@
 <span id="1916">1916</span>
 <span id="1917">1917</span>
 <span id="1918">1918</span>
+<span id="1919">1919</span>
+<span id="1920">1920</span>
+<span id="1921">1921</span>
+<span id="1922">1922</span>
+<span id="1923">1923</span>
+<span id="1924">1924</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2015 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -1968,7 +1974,7 @@
 <span class='comment'>// licence you accepted on initial access to the Software (the &quot;Licences&quot;).</span>
 <span class='comment'>//</span>
 <span class='comment'>// By contributing code to the SAFE Network Software, or to this project generally, you agree to be</span>
-<span class='comment'>// bound by the terms of the MaidSafe Contributor Agreement, version 1.0.  This, along with the</span>
+<span class='comment'>// bound by the terms of the MaidSafe Contributor Agreement, version 1.1.  This, along with the</span>
 <span class='comment'>// Licenses can be found in the root directory of this project at LICENSE, COPYING and CONTRIBUTOR.</span>
 <span class='comment'>//</span>
 <span class='comment'>// Unless required by applicable law or agreed to in writing, the SAFE Network Software distributed</span>
@@ -2581,7 +2587,9 @@
             (<span class='ident'>MessageContent</span>::<span class='ident'>GetCloseGroup</span>(<span class='ident'>message_id</span>), <span class='ident'>src</span>, <span class='ident'>Authority</span>::<span class='ident'>NaeManager</span>(<span class='ident'>dst_name</span>)) <span class='op'>=&gt;</span> {
                 <span class='self'>self</span>.<span class='ident'>handle_get_close_group_request</span>(<span class='ident'>src</span>, <span class='ident'>dst_name</span>, <span class='ident'>message_id</span>)
             }
-            (<span class='ident'>MessageContent</span>::<span class='ident'>ConnectionInfo</span> { <span class='ident'>encrypted_connection_info</span>, <span class='ident'>nonce_bytes</span>, <span class='ident'>public_id</span> },
+            (<span class='ident'>MessageContent</span>::<span class='ident'>ConnectionInfo</span> { <span class='ident'>encrypted_connection_info</span>,
+                                              <span class='ident'>nonce_bytes</span>,
+                                              <span class='ident'>public_id</span> },
              <span class='ident'>src</span> @ <span class='ident'>Authority</span>::<span class='ident'>Client</span> { .. },
              <span class='ident'>Authority</span>::<span class='ident'>ManagedNode</span>(<span class='ident'>dst_name</span>)) <span class='op'>=&gt;</span> {
                 <span class='self'>self</span>.<span class='ident'>handle_connection_info_from_client</span>(<span class='ident'>encrypted_connection_info</span>,
@@ -2590,10 +2598,14 @@
                                                         <span class='ident'>dst_name</span>,
                                                         <span class='ident'>public_id</span>)
             }
-            (<span class='ident'>MessageContent</span>::<span class='ident'>ConnectionInfo</span> { <span class='ident'>encrypted_connection_info</span>, <span class='ident'>nonce_bytes</span>, <span class='ident'>public_id</span> },
+            (<span class='ident'>MessageContent</span>::<span class='ident'>ConnectionInfo</span> { <span class='ident'>encrypted_connection_info</span>,
+                                              <span class='ident'>nonce_bytes</span>,
+                                              <span class='ident'>public_id</span> },
              <span class='ident'>Authority</span>::<span class='ident'>ManagedNode</span>(<span class='ident'>src_name</span>),
              <span class='ident'>Authority</span>::<span class='ident'>Client</span> { .. }) <span class='op'>|</span>
-            (<span class='ident'>MessageContent</span>::<span class='ident'>ConnectionInfo</span> { <span class='ident'>encrypted_connection_info</span>, <span class='ident'>nonce_bytes</span>, <span class='ident'>public_id</span> },
+            (<span class='ident'>MessageContent</span>::<span class='ident'>ConnectionInfo</span> { <span class='ident'>encrypted_connection_info</span>,
+                                              <span class='ident'>nonce_bytes</span>,
+                                              <span class='ident'>public_id</span> },
              <span class='ident'>Authority</span>::<span class='ident'>ManagedNode</span>(<span class='ident'>src_name</span>),
              <span class='ident'>Authority</span>::<span class='ident'>ManagedNode</span>(_)) <span class='op'>=&gt;</span> {
                 <span class='self'>self</span>.<span class='ident'>handle_connection_info_from_node</span>(<span class='ident'>encrypted_connection_info</span>,

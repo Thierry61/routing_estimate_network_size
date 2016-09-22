@@ -248,6 +248,11 @@
 <span id="204">204</span>
 <span id="205">205</span>
 <span id="206">206</span>
+<span id="207">207</span>
+<span id="208">208</span>
+<span id="209">209</span>
+<span id="210">210</span>
+<span id="211">211</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2015 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -256,7 +261,7 @@
 <span class='comment'>// licence you accepted on initial access to the Software (the &quot;Licences&quot;).</span>
 <span class='comment'>//</span>
 <span class='comment'>// By contributing code to the SAFE Network Software, or to this project generally, you agree to be</span>
-<span class='comment'>// bound by the terms of the MaidSafe Contributor Agreement, version 1.0.  This, along with the</span>
+<span class='comment'>// bound by the terms of the MaidSafe Contributor Agreement, version 1.1.  This, along with the</span>
 <span class='comment'>// Licenses can be found in the root directory of this project at LICENSE, COPYING and CONTRIBUTOR.</span>
 <span class='comment'>//</span>
 <span class='comment'>// Unless required by applicable law or agreed to in writing, the SAFE Network Software distributed</span>
@@ -378,6 +383,10 @@
 <span class='kw'>extern</span> <span class='kw'>crate</span> <span class='ident'>log</span>;
 <span class='attribute'>#[<span class='ident'>macro_use</span>]</span>
 <span class='kw'>extern</span> <span class='kw'>crate</span> <span class='ident'>maidsafe_utilities</span>;
+<span class='attribute'>#[<span class='ident'>cfg_attr</span>(<span class='ident'>feature</span><span class='op'>=</span><span class='string'>&quot;clippy&quot;</span>, <span class='ident'>allow</span>(<span class='ident'>useless_attribute</span>))]</span>
+<span class='attribute'>#[<span class='ident'>allow</span>(<span class='ident'>unused_extern_crates</span>)]</span>
+<span class='attribute'>#[<span class='ident'>macro_use</span>]</span>
+<span class='kw'>extern</span> <span class='kw'>crate</span> <span class='ident'>quick_error</span>;
 <span class='attribute'>#[<span class='ident'>macro_use</span>]</span>
 <span class='kw'>extern</span> <span class='kw'>crate</span> <span class='ident'>unwrap</span>;
 <span class='kw'>extern</span> <span class='kw'>crate</span> <span class='ident'>accumulator</span>;
@@ -406,6 +415,7 @@
 <span class='kw'>mod</span> <span class='ident'>node</span>;
 <span class='kw'>mod</span> <span class='ident'>peer_manager</span>;
 <span class='kw'>mod</span> <span class='ident'>plain_data</span>;
+<span class='kw'>mod</span> <span class='ident'>routing_table</span>;
 <span class='kw'>mod</span> <span class='ident'>signed_message_filter</span>;
 <span class='kw'>mod</span> <span class='ident'>state_machine</span>;
 <span class='kw'>mod</span> <span class='ident'>states</span>;

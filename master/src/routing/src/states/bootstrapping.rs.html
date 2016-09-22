@@ -376,7 +376,7 @@
 <span class='comment'>// licence you accepted on initial access to the Software (the &quot;Licences&quot;).</span>
 <span class='comment'>//</span>
 <span class='comment'>// By contributing code to the SAFE Network Software, or to this project generally, you agree to be</span>
-<span class='comment'>// bound by the terms of the MaidSafe Contributor Agreement, version 1.0.  This, along with the</span>
+<span class='comment'>// bound by the terms of the MaidSafe Contributor Agreement, version 1.1.  This, along with the</span>
 <span class='comment'>// Licenses can be found in the root directory of this project at LICENSE, COPYING and CONTRIBUTOR.</span>
 <span class='comment'>//</span>
 <span class='comment'>// Unless required by applicable law or agreed to in writing, the SAFE Network Software distributed</span>
@@ -386,25 +386,25 @@
 <span class='comment'>// Please review the Licences for the specific language governing permissions and limitations</span>
 <span class='comment'>// relating to use of the SAFE Network Software.</span>
 
+
+<span class='kw'>use</span> <span class='ident'>action</span>::<span class='ident'>Action</span>;
+<span class='kw'>use</span> <span class='ident'>cache</span>::<span class='ident'>Cache</span>;
 <span class='kw'>use</span> <span class='ident'>crust</span>::{<span class='ident'>PeerId</span>, <span class='ident'>Service</span>};
 <span class='kw'>use</span> <span class='ident'>crust</span>::<span class='ident'>Event</span> <span class='kw'>as</span> <span class='ident'>CrustEvent</span>;
+<span class='kw'>use</span> <span class='ident'>error</span>::<span class='ident'>RoutingError</span>;
+<span class='kw'>use</span> <span class='ident'>event</span>::<span class='ident'>Event</span>;
+<span class='kw'>use</span> <span class='ident'>id</span>::{<span class='ident'>FullId</span>, <span class='ident'>PublicId</span>};
 <span class='kw'>use</span> <span class='ident'>maidsafe_utilities</span>::<span class='ident'>serialisation</span>;
+<span class='kw'>use</span> <span class='ident'>messages</span>::{<span class='ident'>DirectMessage</span>, <span class='ident'>Message</span>};
 <span class='kw'>use</span> <span class='ident'>rust_sodium</span>::<span class='ident'>crypto</span>::<span class='ident'>hash</span>::<span class='ident'>sha256</span>;
 <span class='kw'>use</span> <span class='ident'>rust_sodium</span>::<span class='ident'>crypto</span>::<span class='ident'>sign</span>;
+<span class='kw'>use</span> <span class='ident'>state_machine</span>::<span class='ident'>Transition</span>;
+<span class='kw'>use</span> <span class='ident'>stats</span>::<span class='ident'>Stats</span>;
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>collections</span>::<span class='ident'>HashSet</span>;
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>fmt</span>::{<span class='self'>self</span>, <span class='ident'>Debug</span>, <span class='ident'>Formatter</span>};
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>net</span>::<span class='ident'>SocketAddr</span>;
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>sync</span>::<span class='ident'>mpsc</span>::<span class='ident'>Sender</span>;
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>time</span>::<span class='ident'>Duration</span>;
-
-<span class='kw'>use</span> <span class='ident'>action</span>::<span class='ident'>Action</span>;
-<span class='kw'>use</span> <span class='ident'>cache</span>::<span class='ident'>Cache</span>;
-<span class='kw'>use</span> <span class='ident'>error</span>::<span class='ident'>RoutingError</span>;
-<span class='kw'>use</span> <span class='ident'>event</span>::<span class='ident'>Event</span>;
-<span class='kw'>use</span> <span class='ident'>id</span>::{<span class='ident'>FullId</span>, <span class='ident'>PublicId</span>};
-<span class='kw'>use</span> <span class='ident'>messages</span>::{<span class='ident'>DirectMessage</span>, <span class='ident'>Message</span>};
-<span class='kw'>use</span> <span class='ident'>state_machine</span>::<span class='ident'>Transition</span>;
-<span class='kw'>use</span> <span class='ident'>stats</span>::<span class='ident'>Stats</span>;
 <span class='kw'>use</span> <span class='kw'>super</span>::{<span class='ident'>Client</span>, <span class='ident'>Node</span>};
 <span class='kw'>use</span> <span class='kw'>super</span>::<span class='ident'>common</span>::<span class='ident'>Base</span>;
 <span class='kw'>use</span> <span class='ident'>timer</span>::<span class='ident'>Timer</span>;

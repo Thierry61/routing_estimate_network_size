@@ -161,7 +161,7 @@
 <span class='comment'>// licence you accepted on initial access to the Software (the &quot;Licences&quot;).</span>
 <span class='comment'>//</span>
 <span class='comment'>// By contributing code to the SAFE Network Software, or to this project generally, you agree to be</span>
-<span class='comment'>// bound by the terms of the MaidSafe Contributor Agreement, version 1.0.  This, along with the</span>
+<span class='comment'>// bound by the terms of the MaidSafe Contributor Agreement, version 1.1.  This, along with the</span>
 <span class='comment'>// Licenses can be found in the root directory of this project at LICENSE, COPYING and CONTRIBUTOR.</span>
 <span class='comment'>//</span>
 <span class='comment'>// Unless required by applicable law or agreed to in writing, the SAFE Network Software distributed</span>
@@ -171,16 +171,16 @@
 <span class='comment'>// Please review the Licences for the specific language governing permissions and limitations</span>
 <span class='comment'>// relating to use of the SAFE Network Software.</span>
 
-<span class='kw'>use</span> <span class='ident'>lru_time_cache</span>::<span class='ident'>LruCache</span>;
-<span class='kw'>use</span> <span class='ident'>rust_sodium</span>::<span class='ident'>crypto</span>::<span class='ident'>sign</span>;
-<span class='kw'>use</span> <span class='ident'>rust_sodium</span>::<span class='ident'>crypto</span>::<span class='ident'>hash</span>::<span class='ident'>sha256</span>;
-<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>time</span>::<span class='ident'>Duration</span>;
 
 <span class='kw'>use</span> <span class='ident'>accumulator</span>::<span class='ident'>Accumulator</span>;
 <span class='kw'>use</span> <span class='ident'>error</span>::<span class='ident'>RoutingError</span>;
 <span class='kw'>use</span> <span class='ident'>id</span>::<span class='ident'>PublicId</span>;
+<span class='kw'>use</span> <span class='ident'>lru_time_cache</span>::<span class='ident'>LruCache</span>;
 <span class='kw'>use</span> <span class='ident'>message_filter</span>::<span class='ident'>MessageFilter</span>;
 <span class='kw'>use</span> <span class='ident'>messages</span>::{<span class='ident'>MessageContent</span>, <span class='ident'>RoutingMessage</span>};
+<span class='kw'>use</span> <span class='ident'>rust_sodium</span>::<span class='ident'>crypto</span>::<span class='ident'>hash</span>::<span class='ident'>sha256</span>;
+<span class='kw'>use</span> <span class='ident'>rust_sodium</span>::<span class='ident'>crypto</span>::<span class='ident'>sign</span>;
+<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>time</span>::<span class='ident'>Duration</span>;
 
 <span class='kw'>const</span> <span class='ident'>EXPIRY_DURATION_SECS</span>: <span class='ident'>u64</span> <span class='op'>=</span> <span class='number'>60</span> <span class='op'>*</span> <span class='number'>20</span>;
 

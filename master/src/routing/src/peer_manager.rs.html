@@ -984,12 +984,6 @@
 <span id="940">940</span>
 <span id="941">941</span>
 <span id="942">942</span>
-<span id="943">943</span>
-<span id="944">944</span>
-<span id="945">945</span>
-<span id="946">946</span>
-<span id="947">947</span>
-<span id="948">948</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2016 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -998,7 +992,7 @@
 <span class='comment'>// licence you accepted on initial access to the Software (the &quot;Licences&quot;).</span>
 <span class='comment'>//</span>
 <span class='comment'>// By contributing code to the SAFE Network Software, or to this project generally, you agree to be</span>
-<span class='comment'>// bound by the terms of the MaidSafe Contributor Agreement, version 1.0.  This, along with the</span>
+<span class='comment'>// bound by the terms of the MaidSafe Contributor Agreement, version 1.1.  This, along with the</span>
 <span class='comment'>// Licenses can be found in the root directory of this project at LICENSE, COPYING and CONTRIBUTOR.</span>
 <span class='comment'>//</span>
 <span class='comment'>// Unless required by applicable law or agreed to in writing, the SAFE Network Software distributed</span>
@@ -1008,18 +1002,18 @@
 <span class='comment'>// Please review the Licences for the specific language governing permissions and limitations</span>
 <span class='comment'>// relating to use of the SAFE Network Software.</span>
 
-<span class='kw'>use</span> <span class='ident'>crust</span>::{<span class='ident'>PeerId</span>, <span class='ident'>PrivConnectionInfo</span>, <span class='ident'>PubConnectionInfo</span>};
 <span class='kw'>use</span> <span class='ident'>authority</span>::<span class='ident'>Authority</span>;
-<span class='kw'>use</span> <span class='ident'>rust_sodium</span>::<span class='ident'>crypto</span>::<span class='ident'>sign</span>;
+<span class='kw'>use</span> <span class='ident'>crust</span>::{<span class='ident'>PeerId</span>, <span class='ident'>PrivConnectionInfo</span>, <span class='ident'>PubConnectionInfo</span>};
 <span class='kw'>use</span> <span class='ident'>id</span>::<span class='ident'>PublicId</span>;
 <span class='kw'>use</span> <span class='ident'>itertools</span>::<span class='ident'>Itertools</span>;
+<span class='kw'>use</span> <span class='ident'>kademlia_routing_table</span>::{<span class='ident'>AddedNodeDetails</span>, <span class='ident'>DroppedNodeDetails</span>, <span class='ident'>RoutingTable</span>};
 <span class='kw'>use</span> <span class='ident'>rand</span>;
+<span class='kw'>use</span> <span class='ident'>rust_sodium</span>::<span class='ident'>crypto</span>::<span class='ident'>sign</span>;
+<span class='kw'>use</span> <span class='ident'>std</span>::{<span class='ident'>error</span>, <span class='ident'>fmt</span>, <span class='ident'>mem</span>};
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>collections</span>::<span class='ident'>HashMap</span>;
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>collections</span>::<span class='ident'>hash_map</span>::<span class='ident'>Values</span>;
-<span class='kw'>use</span> <span class='ident'>std</span>::{<span class='ident'>error</span>, <span class='ident'>fmt</span>, <span class='ident'>mem</span>};
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>time</span>::{<span class='ident'>Duration</span>, <span class='ident'>Instant</span>};
 <span class='kw'>use</span> <span class='ident'>xor_name</span>::<span class='ident'>XorName</span>;
-<span class='kw'>use</span> <span class='ident'>kademlia_routing_table</span>::{<span class='ident'>AddedNodeDetails</span>, <span class='ident'>DroppedNodeDetails</span>, <span class='ident'>RoutingTable</span>};
 
 <span class='doccomment'>/// The group size for the routing table. This is the maximum that can be used for consensus.</span>
 <span class='kw'>pub</span> <span class='kw'>const</span> <span class='ident'>GROUP_SIZE</span>: <span class='ident'>usize</span> <span class='op'>=</span> <span class='number'>8</span>;
@@ -1167,8 +1161,7 @@
             <span class='ident'>PeerState</span>::<span class='ident'>SearchingForTunnel</span> <span class='op'>=&gt;</span> {
                 <span class='self'>self</span>.<span class='ident'>timestamp</span>.<span class='ident'>elapsed</span>() <span class='op'>&gt;=</span> <span class='ident'>Duration</span>::<span class='ident'>from_secs</span>(<span class='ident'>CONNECTION_TIMEOUT_SECS</span>)
             }
-            <span class='ident'>PeerState</span>::<span class='ident'>JoiningNode</span> <span class='op'>|</span>
-            <span class='ident'>PeerState</span>::<span class='ident'>Proxy</span> <span class='op'>=&gt;</span> {
+            <span class='ident'>PeerState</span>::<span class='ident'>JoiningNode</span> <span class='op'>|</span> <span class='ident'>PeerState</span>::<span class='ident'>Proxy</span> <span class='op'>=&gt;</span> {
                 <span class='self'>self</span>.<span class='ident'>timestamp</span>.<span class='ident'>elapsed</span>() <span class='op'>&gt;=</span> <span class='ident'>Duration</span>::<span class='ident'>from_secs</span>(<span class='ident'>JOINING_NODE_TIMEOUT_SECS</span>)
             }
             <span class='ident'>PeerState</span>::<span class='ident'>Client</span> <span class='op'>|</span>
@@ -1430,8 +1423,7 @@
         <span class='kw'>let</span> <span class='ident'>expired_ids</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>peer_map</span>
             .<span class='ident'>peers</span>()
             .<span class='ident'>filter</span>(<span class='op'>|</span><span class='ident'>peer</span><span class='op'>|</span> <span class='kw'>match</span> <span class='ident'>peer</span>.<span class='ident'>state</span> {
-                <span class='ident'>PeerState</span>::<span class='ident'>JoiningNode</span> <span class='op'>|</span>
-                <span class='ident'>PeerState</span>::<span class='ident'>Proxy</span> <span class='op'>=&gt;</span> <span class='ident'>peer</span>.<span class='ident'>is_expired</span>(),
+                <span class='ident'>PeerState</span>::<span class='ident'>JoiningNode</span> <span class='op'>|</span> <span class='ident'>PeerState</span>::<span class='ident'>Proxy</span> <span class='op'>=&gt;</span> <span class='ident'>peer</span>.<span class='ident'>is_expired</span>(),
                 _ <span class='op'>=&gt;</span> <span class='bool-val'>false</span>,
             })
             .<span class='ident'>filter_map</span>(<span class='op'>|</span><span class='ident'>peer</span><span class='op'>|</span> <span class='ident'>peer</span>.<span class='ident'>peer_id</span>)
@@ -1486,9 +1478,7 @@
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>get_proxy_or_client_or_joining_node_peer_id</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>pub_id</span>: <span class='kw-2'>&amp;</span><span class='ident'>PublicId</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>PeerId</span><span class='op'>&gt;</span> {
         <span class='kw'>if</span> <span class='kw'>let</span> <span class='prelude-val'>Some</span>(<span class='ident'>peer</span>) <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>peer_map</span>.<span class='ident'>get_by_name</span>(<span class='ident'>pub_id</span>.<span class='ident'>name</span>()) {
             <span class='kw'>match</span> <span class='ident'>peer</span>.<span class='ident'>state</span> {
-                <span class='ident'>PeerState</span>::<span class='ident'>Client</span> <span class='op'>|</span>
-                <span class='ident'>PeerState</span>::<span class='ident'>JoiningNode</span> <span class='op'>|</span>
-                <span class='ident'>PeerState</span>::<span class='ident'>Proxy</span> <span class='op'>=&gt;</span> <span class='ident'>peer</span>.<span class='ident'>peer_id</span>,
+                <span class='ident'>PeerState</span>::<span class='ident'>Client</span> <span class='op'>|</span> <span class='ident'>PeerState</span>::<span class='ident'>JoiningNode</span> <span class='op'>|</span> <span class='ident'>PeerState</span>::<span class='ident'>Proxy</span> <span class='op'>=&gt;</span> <span class='ident'>peer</span>.<span class='ident'>peer_id</span>,
                 _ <span class='op'>=&gt;</span> <span class='prelude-val'>None</span>,
             }
         } <span class='kw'>else</span> {
@@ -1522,8 +1512,7 @@
 
     <span class='doccomment'>/// Marks the given peer as &quot;connected and waiting for `NodeIdentify`&quot;.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>connected_to</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>peer_id</span>: <span class='kw-2'>&amp;</span><span class='ident'>PeerId</span>) {
-        <span class='kw'>if</span> <span class='op'>!</span><span class='self'>self</span>.<span class='ident'>set_state</span>(<span class='ident'>peer_id</span>,
-                           <span class='ident'>PeerState</span>::<span class='ident'>AwaitingNodeIdentify</span>(<span class='bool-val'>false</span>)) {
+        <span class='kw'>if</span> <span class='op'>!</span><span class='self'>self</span>.<span class='ident'>set_state</span>(<span class='ident'>peer_id</span>, <span class='ident'>PeerState</span>::<span class='ident'>AwaitingNodeIdentify</span>(<span class='bool-val'>false</span>)) {
             <span class='kw'>let</span> _ <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>unknown_peers</span>.<span class='ident'>insert</span>(<span class='op'>*</span><span class='ident'>peer_id</span>, <span class='ident'>Instant</span>::<span class='ident'>now</span>());
         }
     }
@@ -1531,8 +1520,7 @@
     <span class='doccomment'>/// Marks the given peer as &quot;connected via tunnel and waiting for `NodeIdentify`&quot;.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>tunnelling_to</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>peer_id</span>: <span class='kw-2'>&amp;</span><span class='ident'>PeerId</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> {
         <span class='comment'>// TODO: handle unknown peer (similar to what is done in connected_to)</span>
-        <span class='self'>self</span>.<span class='ident'>set_state</span>(<span class='ident'>peer_id</span>,
-                       <span class='ident'>PeerState</span>::<span class='ident'>AwaitingNodeIdentify</span>(<span class='bool-val'>true</span>))
+        <span class='self'>self</span>.<span class='ident'>set_state</span>(<span class='ident'>peer_id</span>, <span class='ident'>PeerState</span>::<span class='ident'>AwaitingNodeIdentify</span>(<span class='bool-val'>true</span>))
     }
 
     <span class='doccomment'>/// Returns the public ID of the given peer, if it is in `CrustConnecting` state.</span>
@@ -1857,11 +1845,11 @@
 
 <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>all</span>(<span class='ident'>test</span>, <span class='ident'>feature</span> <span class='op'>=</span> <span class='string'>&quot;use-mock-crust&quot;</span>))]</span>
 <span class='kw'>mod</span> <span class='ident'>tests</span> {
-    <span class='kw'>use</span> <span class='kw'>super</span>::<span class='op'>*</span>;
     <span class='kw'>use</span> <span class='ident'>authority</span>::<span class='ident'>Authority</span>;
     <span class='kw'>use</span> <span class='ident'>id</span>::<span class='ident'>FullId</span>;
-    <span class='kw'>use</span> <span class='ident'>mock_crust</span>::<span class='ident'>crust</span>::{<span class='ident'>PeerId</span>, <span class='ident'>PrivConnectionInfo</span>, <span class='ident'>PubConnectionInfo</span>};
     <span class='kw'>use</span> <span class='ident'>mock_crust</span>::<span class='ident'>Endpoint</span>;
+    <span class='kw'>use</span> <span class='ident'>mock_crust</span>::<span class='ident'>crust</span>::{<span class='ident'>PeerId</span>, <span class='ident'>PrivConnectionInfo</span>, <span class='ident'>PubConnectionInfo</span>};
+    <span class='kw'>use</span> <span class='kw'>super</span>::<span class='op'>*</span>;
     <span class='kw'>use</span> <span class='ident'>xor_name</span>::{<span class='ident'>XOR_NAME_LEN</span>, <span class='ident'>XorName</span>};
 
     <span class='kw'>fn</span> <span class='ident'>node_auth</span>(<span class='ident'>byte</span>: <span class='ident'>u8</span>) <span class='op'>-&gt;</span> <span class='ident'>Authority</span> {
