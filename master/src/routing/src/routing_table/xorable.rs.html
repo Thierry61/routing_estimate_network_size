@@ -261,6 +261,48 @@
 <span id="217">217</span>
 <span id="218">218</span>
 <span id="219">219</span>
+<span id="220">220</span>
+<span id="221">221</span>
+<span id="222">222</span>
+<span id="223">223</span>
+<span id="224">224</span>
+<span id="225">225</span>
+<span id="226">226</span>
+<span id="227">227</span>
+<span id="228">228</span>
+<span id="229">229</span>
+<span id="230">230</span>
+<span id="231">231</span>
+<span id="232">232</span>
+<span id="233">233</span>
+<span id="234">234</span>
+<span id="235">235</span>
+<span id="236">236</span>
+<span id="237">237</span>
+<span id="238">238</span>
+<span id="239">239</span>
+<span id="240">240</span>
+<span id="241">241</span>
+<span id="242">242</span>
+<span id="243">243</span>
+<span id="244">244</span>
+<span id="245">245</span>
+<span id="246">246</span>
+<span id="247">247</span>
+<span id="248">248</span>
+<span id="249">249</span>
+<span id="250">250</span>
+<span id="251">251</span>
+<span id="252">252</span>
+<span id="253">253</span>
+<span id="254">254</span>
+<span id="255">255</span>
+<span id="256">256</span>
+<span id="257">257</span>
+<span id="258">258</span>
+<span id="259">259</span>
+<span id="260">260</span>
+<span id="261">261</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2016 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -281,6 +323,8 @@
 
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>cmp</span>::<span class='ident'>Ordering</span>;
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>mem</span>;
+<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>ops</span>::<span class='ident'>Index</span>;
+<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>ops</span>::<span class='ident'>Range</span>;
 
 <span class='doccomment'>/// A sequence of bits, as a point in XOR space.</span>
 <span class='doccomment'>///</span>
@@ -308,6 +352,25 @@
     <span class='doccomment'>///</span>
     <span class='doccomment'>/// If `index` exceeds the number of bits in `self`, an unmodified copy of `self` is returned.</span>
     <span class='kw'>fn</span> <span class='ident'>with_flipped_bit</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>i</span>: <span class='ident'>usize</span>) <span class='op'>-&gt;</span> <span class='self'>Self</span>;
+
+    <span class='doccomment'>/// Returns a binary format string, with leading zero bits included.</span>
+    <span class='kw'>fn</span> <span class='ident'>binary</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>String</span>;
+
+    <span class='doccomment'>/// Returns a binary debug format string of `????????...????????`</span>
+    <span class='kw'>fn</span> <span class='ident'>debug_binary</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>String</span>;
+}
+
+<span class='doccomment'>/// Converts a tring into debug format of `????????...????????` when the string is longer than 20</span>
+<span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>debug_format</span>(<span class='ident'>input</span>: <span class='ident'>String</span>) <span class='op'>-&gt;</span> <span class='ident'>String</span> {
+    <span class='kw'>if</span> <span class='ident'>input</span>.<span class='ident'>len</span>() <span class='op'>&gt;</span> <span class='number'>20</span> {
+        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>s</span> <span class='op'>=</span> <span class='ident'>String</span>::<span class='ident'>with_capacity</span>(<span class='number'>20</span>);
+        <span class='ident'>s</span>.<span class='ident'>push_str</span>(<span class='ident'>input</span>.<span class='ident'>index</span>(<span class='ident'>Range</span>{ <span class='ident'>start</span>: <span class='number'>0</span>, <span class='ident'>end</span>: <span class='number'>8</span> }));
+        <span class='ident'>s</span>.<span class='ident'>push_str</span>(<span class='string'>&quot;...&quot;</span>);
+        <span class='ident'>s</span>.<span class='ident'>push_str</span>(<span class='ident'>input</span>.<span class='ident'>index</span>(<span class='ident'>Range</span>{ <span class='ident'>start</span>: <span class='ident'>input</span>.<span class='ident'>len</span>() <span class='op'>-</span> <span class='number'>8</span>, <span class='ident'>end</span>: <span class='ident'>input</span>.<span class='ident'>len</span>() }));
+        <span class='ident'>s</span>
+    } <span class='kw'>else</span> {
+        <span class='ident'>input</span>
+    }
 }
 
 <span class='macro'>macro_rules</span><span class='macro'>!</span> <span class='ident'>impl_xorable_for_array</span> {
@@ -355,6 +418,19 @@
                 <span class='ident'>copy</span>[<span class='ident'>i</span> <span class='op'>/</span> <span class='ident'>bits</span>] <span class='op'>^=</span> <span class='number'>1</span> <span class='op'>&lt;&lt;</span> (<span class='ident'>bits</span> <span class='op'>-</span> <span class='number'>1</span> <span class='op'>-</span> <span class='ident'>i</span> <span class='op'>%</span> <span class='ident'>bits</span>);
                 <span class='ident'>copy</span>
             }
+
+            <span class='kw'>fn</span> <span class='ident'>binary</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>String</span> {
+                <span class='kw'>let</span> <span class='ident'>bits</span> <span class='op'>=</span> <span class='ident'>mem</span>::<span class='ident'>size_of</span>::<span class='op'>&lt;</span><span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>t</span><span class='op'>&gt;</span>() <span class='op'>*</span> <span class='number'>8</span> <span class='op'>*</span> <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>l</span>;
+                <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>s</span> <span class='op'>=</span> <span class='ident'>String</span>::<span class='ident'>with_capacity</span>(<span class='ident'>bits</span>);
+                <span class='kw'>for</span> <span class='ident'>value</span> <span class='kw'>in</span> <span class='self'>self</span>.<span class='ident'>iter</span>() {
+                    <span class='ident'>s</span>.<span class='ident'>push_str</span>(<span class='kw-2'>&amp;</span><span class='ident'>value</span>.<span class='ident'>binary</span>());
+                }
+                <span class='ident'>s</span>
+            }
+
+            <span class='kw'>fn</span> <span class='ident'>debug_binary</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>String</span> {
+                <span class='ident'>debug_format</span>(<span class='self'>self</span>.<span class='ident'>binary</span>())
+            }
         }
     }
 }
@@ -391,6 +467,14 @@
                 }
                 <span class='kw'>let</span> <span class='ident'>pow_i</span> <span class='op'>=</span> <span class='number'>1</span> <span class='op'>&lt;&lt;</span> (<span class='ident'>mem</span>::<span class='ident'>size_of</span>::<span class='op'>&lt;</span><span class='self'>Self</span><span class='op'>&gt;</span>() <span class='op'>*</span> <span class='number'>8</span> <span class='op'>-</span> <span class='number'>1</span> <span class='op'>-</span> <span class='ident'>i</span>); <span class='comment'>// 1 on bit i.</span>
                 <span class='self'>self</span> <span class='op'>^</span> <span class='ident'>pow_i</span>
+            }
+
+            <span class='kw'>fn</span> <span class='ident'>binary</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>String</span> {
+                <span class='macro'>format</span><span class='macro'>!</span>(<span class='string'>&quot;{1:00$b}&quot;</span>, <span class='ident'>mem</span>::<span class='ident'>size_of</span>::<span class='op'>&lt;</span><span class='self'>Self</span><span class='op'>&gt;</span>() <span class='op'>*</span> <span class='number'>8</span>, <span class='self'>self</span>)
+            }
+
+            <span class='kw'>fn</span> <span class='ident'>debug_binary</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>String</span> {
+                <span class='ident'>debug_format</span>(<span class='self'>self</span>.<span class='ident'>binary</span>())
             }
         }
     }

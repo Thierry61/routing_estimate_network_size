@@ -50,7 +50,7 @@
                </span><a id='src-7' class='srclink' href='../src/kademlia_routing_table/contact_info.rs.html#21-27' title='goto source code'>[src]</a></span></h1>
 <pre class='rust trait'>pub trait ContactInfo: <a class='trait' href='https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html' title='core::clone::Clone'>Clone</a> + <a class='trait' href='https://doc.rust-lang.org/nightly/core/cmp/trait.Eq.html' title='core::cmp::Eq'>Eq</a> {
     type <a href='#associatedtype.Name' class='type'>Name</a>;
-    fn <a href='#tymethod.name' class='fnname'>name</a>(&amp;self) -&gt; &amp;Self::<a class='trait' href='../kademlia_routing_table/trait.ContactInfo.html' title='kademlia_routing_table::ContactInfo'>Name</a>;
+    fn <a href='#tymethod.name' class='fnname'>name</a>(&amp;self) -&gt; &amp;Self::Name;
 }</pre><div class='docblock'><p>Contact info about a node in the network.</p>
 </div>
             <h2 id='associated-types'>Associated Types</h2>
@@ -59,7 +59,7 @@
 </div></div>
             <h2 id='required-methods'>Required Methods</h2>
             <div class='methods'>
-        <h3 id='tymethod.name' class='method stab '><code>fn <a href='#tymethod.name' class='fnname'>name</a>(&amp;self) -&gt; &amp;Self::<a class='trait' href='../kademlia_routing_table/trait.ContactInfo.html' title='kademlia_routing_table::ContactInfo'>Name</a></code></h3><div class='docblock'><p>Returns the name of this contact.</p>
+        <h3 id='tymethod.name' class='method stab '><code>fn <a href='#tymethod.name' class='fnname'>name</a>(&amp;self) -&gt; &amp;Self::Name</code></h3><div class='docblock'><p>Returns the name of this contact.</p>
 </div></div>
         <h2 id='implementors'>Implementors</h2>
         <ul class='item-list' id='implementors-list'>
