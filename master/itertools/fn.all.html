@@ -4,16 +4,16 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="rustdoc">
-    <meta name="description" content="API documentation for the Rust `RaiiThreadJoiner` type in crate `maidsafe_utilities`.">
-    <meta name="keywords" content="rust, rustlang, rust-lang, RaiiThreadJoiner">
+    <meta name="description" content="API documentation for the Rust `all` fn in crate `itertools`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, all">
 
-    <title>maidsafe_utilities::thread::RaiiThreadJoiner - Rust</title>
+    <title>itertools::all - Rust</title>
 
-    <link rel="stylesheet" type="text/css" href="../../rustdoc.css">
-    <link rel="stylesheet" type="text/css" href="../../main.css">
+    <link rel="stylesheet" type="text/css" href="../rustdoc.css">
+    <link rel="stylesheet" type="text/css" href="../main.css">
     
 
-    <link rel="shortcut icon" href="http://maidsafe.net/img/favicon.ico">
+    
     
 </head>
 <body class="rustdoc">
@@ -27,8 +27,8 @@
     
 
     <nav class="sidebar">
-        <a href='../../maidsafe_utilities/index.html'><img src='https://raw.githubusercontent.com/maidsafe/QA/master/Images/maidsafe_logo.png' alt='logo' width='100'></a>
-        <p class='location'><a href='../index.html'>maidsafe_utilities</a>::<wbr><a href='index.html'>thread</a></p><script>window.sidebarCurrent = {name: 'RaiiThreadJoiner', ty: 'type', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+        
+        <p class='location'><a href='index.html'>itertools</a></p><script>window.sidebarCurrent = {name: 'all', ty: 'fn', relpath: ''};</script><script defer src="sidebar-items.js"></script>
     </nav>
 
     <nav class="sub">
@@ -42,13 +42,20 @@
         </form>
     </nav>
 
-    <section id='main' class="content type">
-<h1 class='fqn'><span class='in-band'><a href='../index.html'>maidsafe_utilities</a>::<wbr><a href='index.html'>thread</a>::<wbr><a class='type' href=''>RaiiThreadJoiner</a></span><span class='out-of-band'><span id='render-detail'>
+    <section id='main' class="content fn">
+<h1 class='fqn'><span class='in-band'>Function <a href='index.html'>itertools</a>::<wbr><a class='fn' href=''>all</a></span><span class='out-of-band'><span id='render-detail'>
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a id='src-29' class='srclink' href='../../src/maidsafe_utilities/thread.rs.html#39' title='goto source code'>[src]</a></span></h1>
-<pre class='rust typedef'>type RaiiThreadJoiner = <a class='struct' href='../../maidsafe_utilities/thread/struct.Joiner.html' title='maidsafe_utilities::thread::Joiner'>Joiner</a>;</pre><div class='docblock'><p>Deprecated name for <code>Joiner</code></p>
+               </span><a id='src-832' class='srclink' href='../src/itertools/free.rs.html#134-139' title='goto source code'>[src]</a></span></h1>
+<pre class='rust fn'>pub fn all&lt;I,&nbsp;F&gt;(iterable: I, f: F) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a> <span class='where'>where I: <a class='trait' href='https://doc.rust-lang.org/nightly/core/iter/traits/trait.IntoIterator.html' title='core::iter::traits::IntoIterator'>IntoIterator</a>, F: <a class='trait' href='https://doc.rust-lang.org/nightly/core/ops/trait.FnMut.html' title='core::ops::FnMut'>FnMut</a>(I::Item) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></span></pre><div class='docblock'><p>Test whether the predicate holds for all elements in the iterable.</p>
+
+<p><code>IntoIterator</code> enabled version of <code>i.all(f)</code></p>
+
+<pre class='rust rust-example-rendered'>
+<span class='kw'>use</span> <span class='ident'>itertools</span>::<span class='ident'>all</span>;
+
+<span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>all</span>(<span class='kw-2'>&amp;</span>[<span class='number'>1</span>, <span class='number'>2</span>, <span class='number'>3</span>], <span class='op'>|</span><span class='ident'>elt</span><span class='op'>|</span> <span class='op'>*</span><span class='ident'>elt</span> <span class='op'>&gt;</span> <span class='number'>0</span>));</pre>
 </div></section>
     <section id='search' class="content hidden"></section>
 
@@ -103,13 +110,13 @@
     
 
     <script>
-        window.rootPath = "../../";
-        window.currentCrate = "maidsafe_utilities";
+        window.rootPath = "../";
+        window.currentCrate = "itertools";
         window.playgroundUrl = "";
     </script>
-    <script src="../../jquery.js"></script>
-    <script src="../../main.js"></script>
+    <script src="../jquery.js"></script>
+    <script src="../main.js"></script>
     
-    <script defer src="../../search-index.js"></script>
+    <script defer src="../search-index.js"></script>
 </body>
 </html>
