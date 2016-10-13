@@ -194,9 +194,6 @@
 <span id="150">150</span>
 <span id="151">151</span>
 <span id="152">152</span>
-<span id="153">153</span>
-<span id="154">154</span>
-<span id="155">155</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2015 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -221,6 +218,7 @@
 <span class='kw'>use</span> <span class='ident'>maidsafe_utilities</span>::<span class='ident'>event_sender</span>::{<span class='ident'>EventSenderError</span>, <span class='ident'>MaidSafeEventCategory</span>};
 <span class='kw'>use</span> <span class='ident'>maidsafe_utilities</span>::<span class='ident'>serialisation</span>;
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>sync</span>::<span class='ident'>mpsc</span>::{<span class='ident'>RecvError</span>, <span class='ident'>SendError</span>};
+<span class='kw'>use</span> <span class='kw'>super</span>::<span class='ident'>routing_table</span>::<span class='ident'>Error</span> <span class='kw'>as</span> <span class='ident'>RoutingTableError</span>;
 
 <span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Debug</span>)]</span>
 <span class='doccomment'>/// The type of errors that can occur if routing is unable to handle a send request.</span>
@@ -270,18 +268,12 @@
     <span class='ident'>FilterCheckFailed</span>,
     <span class='doccomment'>/// Failure to bootstrap off the provided endpoints</span>
     <span class='ident'>FailedToBootstrap</span>,
-    <span class='doccomment'>/// Unexpected empty routing table</span>
-    <span class='ident'>RoutingTableEmpty</span>,
     <span class='doccomment'>/// Public id rejected because of disallowed relocated status</span>
     <span class='ident'>RejectedPublicId</span>,
-    <span class='doccomment'>/// Routing table did not add the node information, either because it was already added, or</span>
-    <span class='doccomment'>/// because it did not improve the routing table</span>
-    <span class='ident'>RefusedFromRoutingTable</span>,
-    <span class='doccomment'>/// Rejected providing the close group, because the destination address does not match any of</span>
-    <span class='doccomment'>/// the sender&#39;s buckets</span>
-    <span class='ident'>RejectedGetCloseGroup</span>,
     <span class='doccomment'>/// A client with `client_restriction == true` tried to send a message restricted to nodes.</span>
     <span class='ident'>RejectedClientMessage</span>,
+    <span class='doccomment'>/// Routing Table error</span>
+    <span class='ident'>RoutingTable</span>(<span class='ident'>RoutingTableError</span>),
     <span class='doccomment'>/// String errors</span>
     <span class='ident'>Utf8</span>(::<span class='ident'>std</span>::<span class='ident'>str</span>::<span class='ident'>Utf8Error</span>),
     <span class='doccomment'>/// Interface error</span>
@@ -300,10 +292,6 @@
     <span class='ident'>AsymmetricDecryptionFailure</span>,
     <span class='doccomment'>/// Unknown Connection</span>
     <span class='ident'>UnknownConnection</span>(<span class='ident'>PeerId</span>),
-    <span class='doccomment'>/// The message is not getting closer to the target</span>
-    <span class='ident'>DirectionCheckFailed</span>,
-    <span class='doccomment'>/// Density mismatch</span>
-    <span class='ident'>RoutingTableBucketIndexFailed</span>,
     <span class='doccomment'>/// Invalid Destination</span>
     <span class='ident'>InvalidDestination</span>,
     <span class='doccomment'>/// Connection to proxy node does not exist in proxy map</span>
@@ -316,6 +304,12 @@
     <span class='ident'>CannotTunnelThroughTunnel</span>,
     <span class='doccomment'>/// Decoded a user message with an unexpected hash.</span>
     <span class='ident'>HashMismatch</span>,
+}
+
+<span class='kw'>impl</span> <span class='ident'>From</span><span class='op'>&lt;</span><span class='ident'>RoutingTableError</span><span class='op'>&gt;</span> <span class='kw'>for</span> <span class='ident'>RoutingError</span> {
+    <span class='kw'>fn</span> <span class='ident'>from</span>(<span class='ident'>error</span>: <span class='ident'>RoutingTableError</span>) <span class='op'>-&gt;</span> <span class='ident'>RoutingError</span> {
+        <span class='ident'>RoutingError</span>::<span class='ident'>RoutingTable</span>(<span class='ident'>error</span>)
+    }
 }
 
 <span class='kw'>impl</span> <span class='ident'>From</span><span class='op'>&lt;</span>::<span class='ident'>std</span>::<span class='ident'>str</span>::<span class='ident'>Utf8Error</span><span class='op'>&gt;</span> <span class='kw'>for</span> <span class='ident'>RoutingError</span> {

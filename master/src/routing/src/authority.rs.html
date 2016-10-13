@@ -145,8 +145,6 @@
 <span id="101">101</span>
 <span id="102">102</span>
 <span id="103">103</span>
-<span id="104">104</span>
-<span id="105">105</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2015 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -166,9 +164,7 @@
 <span class='comment'>// relating to use of the SAFE Network Software.</span>
 
 <span class='kw'>use</span> <span class='ident'>crust</span>::<span class='ident'>PeerId</span>;
-
-<span class='kw'>use</span> <span class='ident'>kademlia_routing_table</span>::<span class='ident'>Destination</span>;
-<span class='kw'>use</span> <span class='ident'>peer_manager</span>::<span class='ident'>GROUP_SIZE</span>;
+<span class='kw'>use</span> <span class='ident'>routing_table</span>::<span class='ident'>Destination</span>;
 <span class='kw'>use</span> <span class='ident'>rust_sodium</span>::<span class='ident'>crypto</span>::{<span class='ident'>hash</span>, <span class='ident'>sign</span>};
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>fmt</span>::{<span class='self'>self</span>, <span class='ident'>Debug</span>, <span class='ident'>Formatter</span>};
 <span class='kw'>use</span> <span class='ident'>xor_name</span>::<span class='ident'>XorName</span>;
@@ -227,7 +223,7 @@
     <span class='doccomment'>/// Returns the `Destination` for the `RoutingTable`.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>to_destination</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>Destination</span><span class='op'>&lt;</span><span class='ident'>XorName</span><span class='op'>&gt;</span> {
         <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>is_group</span>() {
-            <span class='ident'>Destination</span>::<span class='ident'>Group</span>(<span class='op'>*</span><span class='self'>self</span>.<span class='ident'>name</span>(), <span class='ident'>GROUP_SIZE</span>)
+            <span class='ident'>Destination</span>::<span class='ident'>Group</span>(<span class='op'>*</span><span class='self'>self</span>.<span class='ident'>name</span>())
         } <span class='kw'>else</span> {
             <span class='ident'>Destination</span>::<span class='ident'>Node</span>(<span class='op'>*</span><span class='self'>self</span>.<span class='ident'>name</span>())
         }

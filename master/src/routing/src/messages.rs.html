@@ -1012,8 +1012,6 @@
 <span id="968">968</span>
 <span id="969">969</span>
 <span id="970">970</span>
-<span id="971">971</span>
-<span id="972">972</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2015 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -1032,25 +1030,24 @@
 <span class='comment'>// Please review the Licences for the specific language governing permissions and limitations</span>
 <span class='comment'>// relating to use of the SAFE Network Software.</span>
 
-<span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>not</span>(<span class='ident'>feature</span> <span class='op'>=</span> <span class='string'>&quot;use-mock-crust&quot;</span>))]</span>
-<span class='kw'>use</span> <span class='ident'>crust</span>::<span class='ident'>PeerId</span>;
-<span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>feature</span> <span class='op'>=</span> <span class='string'>&quot;use-mock-crust&quot;</span>)]</span>
-<span class='kw'>use</span> <span class='ident'>mock_crust</span>::<span class='ident'>crust</span>::<span class='ident'>PeerId</span>;
-<span class='kw'>use</span> <span class='ident'>lru_time_cache</span>::<span class='ident'>LruCache</span>;
-<span class='kw'>use</span> <span class='ident'>maidsafe_utilities</span>;
-<span class='kw'>use</span> <span class='ident'>maidsafe_utilities</span>::<span class='ident'>serialisation</span>::{<span class='ident'>deserialise</span>, <span class='ident'>serialise</span>};
-<span class='kw'>use</span> <span class='ident'>rust_sodium</span>::<span class='ident'>crypto</span>::{<span class='ident'>box_</span>, <span class='ident'>sign</span>};
-<span class='kw'>use</span> <span class='ident'>rust_sodium</span>::<span class='ident'>crypto</span>::<span class='ident'>hash</span>::<span class='ident'>sha256</span>;
-<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>collections</span>::<span class='ident'>BTreeMap</span>;
-<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>fmt</span>::{<span class='self'>self</span>, <span class='ident'>Debug</span>, <span class='ident'>Formatter</span>};
-<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>time</span>::<span class='ident'>Duration</span>;
-
 <span class='kw'>use</span> <span class='ident'>ack_manager</span>::<span class='ident'>Ack</span>;
 <span class='kw'>use</span> <span class='ident'>authority</span>::<span class='ident'>Authority</span>;
+<span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>not</span>(<span class='ident'>feature</span> <span class='op'>=</span> <span class='string'>&quot;use-mock-crust&quot;</span>))]</span>
+<span class='kw'>use</span> <span class='ident'>crust</span>::<span class='ident'>PeerId</span>;
 <span class='kw'>use</span> <span class='ident'>data</span>::{<span class='ident'>Data</span>, <span class='ident'>DataIdentifier</span>};
 <span class='kw'>use</span> <span class='ident'>error</span>::<span class='ident'>RoutingError</span>;
 <span class='kw'>use</span> <span class='ident'>event</span>::<span class='ident'>Event</span>;
 <span class='kw'>use</span> <span class='ident'>id</span>::{<span class='ident'>FullId</span>, <span class='ident'>PublicId</span>};
+<span class='kw'>use</span> <span class='ident'>lru_time_cache</span>::<span class='ident'>LruCache</span>;
+<span class='kw'>use</span> <span class='ident'>maidsafe_utilities</span>;
+<span class='kw'>use</span> <span class='ident'>maidsafe_utilities</span>::<span class='ident'>serialisation</span>::{<span class='ident'>deserialise</span>, <span class='ident'>serialise</span>};
+<span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>feature</span> <span class='op'>=</span> <span class='string'>&quot;use-mock-crust&quot;</span>)]</span>
+<span class='kw'>use</span> <span class='ident'>mock_crust</span>::<span class='ident'>crust</span>::<span class='ident'>PeerId</span>;
+<span class='kw'>use</span> <span class='ident'>rust_sodium</span>::<span class='ident'>crypto</span>::{<span class='ident'>box_</span>, <span class='ident'>sign</span>};
+<span class='kw'>use</span> <span class='ident'>rust_sodium</span>::<span class='ident'>crypto</span>::<span class='ident'>hash</span>::<span class='ident'>sha256</span>;
+<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>collections</span>::{<span class='ident'>BTreeMap</span>, <span class='ident'>HashSet</span>};
+<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>fmt</span>::{<span class='self'>self</span>, <span class='ident'>Debug</span>, <span class='ident'>Formatter</span>};
+<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>time</span>::<span class='ident'>Duration</span>;
 <span class='kw'>use</span> <span class='ident'>types</span>::<span class='ident'>MessageId</span>;
 <span class='kw'>use</span> <span class='ident'>utils</span>;
 <span class='kw'>use</span> <span class='ident'>xor_name</span>::<span class='ident'>XorName</span>;
@@ -1141,9 +1138,8 @@
     <span class='doccomment'>/// Sent from a node that found a new node in the network to all its contacts who might need to</span>
     <span class='doccomment'>/// add the new node to their routing table.</span>
     <span class='ident'>NewNode</span>(<span class='ident'>PublicId</span>),
-    <span class='doccomment'>/// Sent to a node that, on the addition of a node at a given bucket index, we no longer need to</span>
-    <span class='doccomment'>/// be connected to.</span>
-    <span class='ident'>ConnectionUnneeded</span>(<span class='ident'>XorName</span>),
+    <span class='doccomment'>/// Sent to a joining node to allow it to establish connections to the included contacts.</span>
+    <span class='ident'>RoutingTable</span>(<span class='ident'>HashSet</span><span class='op'>&lt;</span><span class='ident'>PublicId</span><span class='op'>&gt;</span>),
     <span class='doccomment'>/// Sent from a node that needs a tunnel to be able to connect to the given peer.</span>
     <span class='ident'>TunnelRequest</span>(<span class='ident'>PeerId</span>),
     <span class='doccomment'>/// Sent as a response to `TunnelRequest` if the node can act as a tunnel.</span>
@@ -1434,8 +1430,8 @@
             }
             <span class='ident'>DirectMessage</span>::<span class='ident'>NodeIdentify</span> { .. } <span class='op'>=&gt;</span> <span class='macro'>write</span><span class='macro'>!</span>(<span class='ident'>formatter</span>, <span class='string'>&quot;NodeIdentify {{ .. }}&quot;</span>),
             <span class='ident'>DirectMessage</span>::<span class='ident'>NewNode</span>(<span class='kw-2'>ref</span> <span class='ident'>public_id</span>) <span class='op'>=&gt;</span> <span class='macro'>write</span><span class='macro'>!</span>(<span class='ident'>formatter</span>, <span class='string'>&quot;NewNode({:?})&quot;</span>, <span class='ident'>public_id</span>),
-            <span class='ident'>DirectMessage</span>::<span class='ident'>ConnectionUnneeded</span>(<span class='kw-2'>ref</span> <span class='ident'>name</span>) <span class='op'>=&gt;</span> {
-                <span class='macro'>write</span><span class='macro'>!</span>(<span class='ident'>formatter</span>, <span class='string'>&quot;ConnectionUnneeded({:?})&quot;</span>, <span class='ident'>name</span>)
+            <span class='ident'>DirectMessage</span>::<span class='ident'>RoutingTable</span>(<span class='kw-2'>ref</span> <span class='ident'>routing_table</span>) <span class='op'>=&gt;</span> {
+                <span class='macro'>write</span><span class='macro'>!</span>(<span class='ident'>formatter</span>, <span class='string'>&quot;{:?}&quot;</span>, <span class='ident'>routing_table</span>)
             }
             <span class='ident'>DirectMessage</span>::<span class='ident'>TunnelRequest</span>(<span class='ident'>peer_id</span>) <span class='op'>=&gt;</span> {
                 <span class='macro'>write</span><span class='macro'>!</span>(<span class='ident'>formatter</span>, <span class='string'>&quot;TunnelRequest({:?})&quot;</span>, <span class='ident'>peer_id</span>)
@@ -1845,10 +1841,9 @@
 }
 
 <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>test</span>)]</span>
-<span class='kw'>mod</span> <span class='ident'>tests</span>{
+<span class='kw'>mod</span> <span class='ident'>tests</span> {
     <span class='kw'>extern</span> <span class='kw'>crate</span> <span class='ident'>rand</span>;
 
-    <span class='kw'>use</span> <span class='kw'>super</span>::<span class='op'>*</span>;
     <span class='kw'>use</span> <span class='ident'>authority</span>::<span class='ident'>Authority</span>;
     <span class='kw'>use</span> <span class='ident'>data</span>::<span class='ident'>Data</span>;
     <span class='kw'>use</span> <span class='ident'>id</span>::<span class='ident'>FullId</span>;
@@ -1856,6 +1851,7 @@
     <span class='kw'>use</span> <span class='ident'>maidsafe_utilities</span>;
     <span class='kw'>use</span> <span class='ident'>maidsafe_utilities</span>::<span class='ident'>serialisation</span>::<span class='ident'>serialise</span>;
     <span class='kw'>use</span> <span class='ident'>rust_sodium</span>::<span class='ident'>crypto</span>::<span class='ident'>sign</span>;
+    <span class='kw'>use</span> <span class='kw'>super</span>::<span class='op'>*</span>;
     <span class='kw'>use</span> <span class='ident'>types</span>::<span class='ident'>MessageId</span>;
     <span class='kw'>use</span> <span class='ident'>xor_name</span>::<span class='ident'>XorName</span>;
 

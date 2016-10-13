@@ -266,6 +266,13 @@ routing node.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
+                           <td><a class='enum' href='enum.RoutingTableError.html'
+                                  title='routing::RoutingTableError'>RoutingTableError</a></td>
+                           <td class='docblock short'>
+                                <p>Routing table error variants.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
                            <td><a class='enum' href='enum.XorNameFromHexError.html'
                                   title='routing::XorNameFromHexError'>XorNameFromHexError</a></td>
                            <td class='docblock short'>
@@ -274,17 +281,17 @@ routing node.</p>
                        </tr></table><h2 id='constants' class='section-header'><a href="#constants">Constants</a></h2>
 <table>
                        <tr class=' module-item'>
-                           <td><a class='constant' href='constant.GROUP_SIZE.html'
-                                  title='routing::GROUP_SIZE'>GROUP_SIZE</a></td>
-                           <td class='docblock short'>
-                                <p>The group size for the routing table. This is the maximum that can be used for consensus.</p>
-                           </td>
-                       </tr>
-                       <tr class=' module-item'>
                            <td><a class='constant' href='constant.MAX_STRUCTURED_DATA_SIZE_IN_BYTES.html'
                                   title='routing::MAX_STRUCTURED_DATA_SIZE_IN_BYTES'>MAX_STRUCTURED_DATA_SIZE_IN_BYTES</a></td>
                            <td class='docblock short'>
                                 <p>Maximum allowed size for a Structured Data to grow to</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='constant' href='constant.MIN_GROUP_SIZE.html'
+                                  title='routing::MIN_GROUP_SIZE'>MIN_GROUP_SIZE</a></td>
+                           <td class='docblock short'>
+                                <p>The minimum group size for the routing table.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
@@ -329,6 +336,13 @@ routing node.</p>
                            <td class='docblock short'>
                                 <p>A cache that stores <code>Response</code>s keyed by <code>Requests</code>. Should be implemented
 by layers above routing.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='trait' href='trait.Xorable.html'
+                                  title='routing::Xorable'>Xorable</a></td>
+                           <td class='docblock short'>
+                                <p>A sequence of bits, as a point in XOR space.</p>
                            </td>
                        </tr></table></section>
     <section id='search' class="content hidden"></section>

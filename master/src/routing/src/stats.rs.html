@@ -236,9 +236,6 @@
 <span id="192">192</span>
 <span id="193">193</span>
 <span id="194">194</span>
-<span id="195">195</span>
-<span id="196">196</span>
-<span id="197">197</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2016 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -258,7 +255,7 @@
 <span class='comment'>// relating to use of the SAFE Network Software.</span>
 
 <span class='kw'>use</span> <span class='ident'>messages</span>::{<span class='ident'>DirectMessage</span>, <span class='ident'>MessageContent</span>, <span class='ident'>Request</span>, <span class='ident'>Response</span>, <span class='ident'>RoutingMessage</span>, <span class='ident'>UserMessage</span>};
-<span class='kw'>use</span> <span class='ident'>peer_manager</span>::<span class='ident'>GROUP_SIZE</span>;
+<span class='kw'>use</span> <span class='ident'>peer_manager</span>::<span class='ident'>MIN_GROUP_SIZE</span>;
 
 <span class='doccomment'>/// The number of messages after which the message statistics should be printed.</span>
 <span class='kw'>const</span> <span class='ident'>MSG_LOG_COUNT</span>: <span class='ident'>usize</span> <span class='op'>=</span> <span class='number'>1000</span>;
@@ -274,13 +271,12 @@
     <span class='kw'>pub</span> <span class='ident'>tunnel_connections</span>: <span class='ident'>usize</span>,
 
     <span class='doccomment'>/// Messages sent by us on different routes.</span>
-    <span class='ident'>routes</span>: [<span class='ident'>usize</span>; <span class='ident'>GROUP_SIZE</span>],
+    <span class='ident'>routes</span>: [<span class='ident'>usize</span>; <span class='ident'>MIN_GROUP_SIZE</span>],
     <span class='doccomment'>/// Messages we sent unsuccessfully: unacknowledged on all routes.</span>
     <span class='ident'>unacked_msgs</span>: <span class='ident'>usize</span>,
 
     <span class='ident'>msg_direct_node_identify</span>: <span class='ident'>usize</span>,
     <span class='ident'>msg_direct_new_node</span>: <span class='ident'>usize</span>,
-    <span class='ident'>msg_direct_connection_unneeded</span>: <span class='ident'>usize</span>,
 
     <span class='ident'>msg_get</span>: <span class='ident'>usize</span>,
     <span class='ident'>msg_put</span>: <span class='ident'>usize</span>,
@@ -381,7 +377,6 @@
         <span class='kw'>match</span> <span class='op'>*</span><span class='ident'>msg</span> {
             <span class='ident'>DirectMessage</span>::<span class='ident'>NodeIdentify</span> { .. } <span class='op'>=&gt;</span> <span class='self'>self</span>.<span class='ident'>msg_direct_node_identify</span> <span class='op'>+=</span> <span class='number'>1</span>,
             <span class='ident'>DirectMessage</span>::<span class='ident'>NewNode</span>(_) <span class='op'>=&gt;</span> <span class='self'>self</span>.<span class='ident'>msg_direct_new_node</span> <span class='op'>+=</span> <span class='number'>1</span>,
-            <span class='ident'>DirectMessage</span>::<span class='ident'>ConnectionUnneeded</span>(..) <span class='op'>=&gt;</span> <span class='self'>self</span>.<span class='ident'>msg_direct_connection_unneeded</span> <span class='op'>+=</span> <span class='number'>1</span>,
             _ <span class='op'>=&gt;</span> <span class='self'>self</span>.<span class='ident'>msg_other</span> <span class='op'>+=</span> <span class='number'>1</span>,
         }
         <span class='self'>self</span>.<span class='ident'>increment_msg_total</span>();
@@ -402,10 +397,9 @@
                   <span class='self'>self</span>.<span class='ident'>msg_other</span>,
                   <span class='self'>self</span>.<span class='ident'>routes</span>,
                   <span class='self'>self</span>.<span class='ident'>unacked_msgs</span>);
-            <span class='macro'>info</span><span class='macro'>!</span>(<span class='string'>&quot;Stats - Direct - NodeIdentify: {}, NewNode: {}, ConnectionUnneeded: {}&quot;</span>,
+            <span class='macro'>info</span><span class='macro'>!</span>(<span class='string'>&quot;Stats - Direct - NodeIdentify: {}, NewNode: {}&quot;</span>,
                   <span class='self'>self</span>.<span class='ident'>msg_direct_node_identify</span>,
-                  <span class='self'>self</span>.<span class='ident'>msg_direct_new_node</span>,
-                  <span class='self'>self</span>.<span class='ident'>msg_direct_connection_unneeded</span>);
+                  <span class='self'>self</span>.<span class='ident'>msg_direct_new_node</span>);
             <span class='macro'>info</span><span class='macro'>!</span>(<span class='string'>&quot;Stats - Hops (Request/Response) - GetNodeName: {}/{}, ExpectCloseNode: {}, \
                    GetCloseGroup: {}/{}, ConnectionInfo: {}, Ack: {}, GroupMessageHash: {}&quot;</span>,
                   <span class='self'>self</span>.<span class='ident'>msg_get_node_name</span>,

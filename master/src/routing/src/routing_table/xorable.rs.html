@@ -297,12 +297,6 @@
 <span id="253">253</span>
 <span id="254">254</span>
 <span id="255">255</span>
-<span id="256">256</span>
-<span id="257">257</span>
-<span id="258">258</span>
-<span id="259">259</span>
-<span id="260">260</span>
-<span id="261">261</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2016 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -323,8 +317,7 @@
 
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>cmp</span>::<span class='ident'>Ordering</span>;
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>mem</span>;
-<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>ops</span>::<span class='ident'>Index</span>;
-<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>ops</span>::<span class='ident'>Range</span>;
+<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>ops</span>::{<span class='ident'>Index</span>, <span class='ident'>Range</span>};
 
 <span class='doccomment'>/// A sequence of bits, as a point in XOR space.</span>
 <span class='doccomment'>///</span>
@@ -360,17 +353,12 @@
     <span class='kw'>fn</span> <span class='ident'>debug_binary</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>String</span>;
 }
 
-<span class='doccomment'>/// Converts a tring into debug format of `????????...????????` when the string is longer than 20</span>
+<span class='doccomment'>/// Converts a string into debug format of `????????...????????` when the string is longer than 20.</span>
 <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>debug_format</span>(<span class='ident'>input</span>: <span class='ident'>String</span>) <span class='op'>-&gt;</span> <span class='ident'>String</span> {
-    <span class='kw'>if</span> <span class='ident'>input</span>.<span class='ident'>len</span>() <span class='op'>&gt;</span> <span class='number'>20</span> {
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>s</span> <span class='op'>=</span> <span class='ident'>String</span>::<span class='ident'>with_capacity</span>(<span class='number'>20</span>);
-        <span class='ident'>s</span>.<span class='ident'>push_str</span>(<span class='ident'>input</span>.<span class='ident'>index</span>(<span class='ident'>Range</span>{ <span class='ident'>start</span>: <span class='number'>0</span>, <span class='ident'>end</span>: <span class='number'>8</span> }));
-        <span class='ident'>s</span>.<span class='ident'>push_str</span>(<span class='string'>&quot;...&quot;</span>);
-        <span class='ident'>s</span>.<span class='ident'>push_str</span>(<span class='ident'>input</span>.<span class='ident'>index</span>(<span class='ident'>Range</span>{ <span class='ident'>start</span>: <span class='ident'>input</span>.<span class='ident'>len</span>() <span class='op'>-</span> <span class='number'>8</span>, <span class='ident'>end</span>: <span class='ident'>input</span>.<span class='ident'>len</span>() }));
-        <span class='ident'>s</span>
-    } <span class='kw'>else</span> {
-        <span class='ident'>input</span>
+    <span class='kw'>if</span> <span class='ident'>input</span>.<span class='ident'>len</span>() <span class='op'>&lt;</span> <span class='number'>21</span> {
+        <span class='kw'>return</span> <span class='ident'>input</span>;
     }
+    <span class='ident'>input</span>.<span class='ident'>chars</span>().<span class='ident'>take</span>(<span class='number'>8</span>).<span class='ident'>chain</span>(<span class='string'>&quot;...&quot;</span>.<span class='ident'>chars</span>()).<span class='ident'>chain</span>(<span class='ident'>input</span>.<span class='ident'>chars</span>().<span class='ident'>skip</span>(<span class='ident'>input</span>.<span class='ident'>len</span>() <span class='op'>-</span> <span class='number'>8</span>)).<span class='ident'>collect</span>()
 }
 
 <span class='macro'>macro_rules</span><span class='macro'>!</span> <span class='ident'>impl_xorable_for_array</span> {

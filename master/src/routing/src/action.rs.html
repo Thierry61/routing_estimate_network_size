@@ -119,6 +119,7 @@
 <span id="75">75</span>
 <span id="76">76</span>
 <span id="77">77</span>
+<span id="78">78</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2015 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -140,6 +141,7 @@
 <span class='kw'>use</span> <span class='ident'>authority</span>::<span class='ident'>Authority</span>;
 <span class='kw'>use</span> <span class='ident'>error</span>::<span class='ident'>InterfaceError</span>;
 <span class='kw'>use</span> <span class='ident'>messages</span>::{<span class='ident'>Request</span>, <span class='ident'>UserMessage</span>};
+<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>collections</span>::<span class='ident'>HashSet</span>;
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>fmt</span>::{<span class='self'>self</span>, <span class='ident'>Debug</span>, <span class='ident'>Formatter</span>};
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>sync</span>::<span class='ident'>mpsc</span>::<span class='ident'>Sender</span>;
 <span class='kw'>use</span> <span class='ident'>xor_name</span>::<span class='ident'>XorName</span>;
@@ -167,7 +169,7 @@
     },
     <span class='ident'>CloseGroup</span> {
         <span class='ident'>name</span>: <span class='ident'>XorName</span>,
-        <span class='ident'>result_tx</span>: <span class='ident'>Sender</span><span class='op'>&lt;</span><span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>XorName</span><span class='op'>&gt;&gt;</span><span class='op'>&gt;</span>,
+        <span class='ident'>result_tx</span>: <span class='ident'>Sender</span><span class='op'>&lt;</span><span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>HashSet</span><span class='op'>&lt;</span><span class='ident'>XorName</span><span class='op'>&gt;&gt;</span><span class='op'>&gt;</span>,
     },
     <span class='ident'>Name</span> { <span class='ident'>result_tx</span>: <span class='ident'>Sender</span><span class='op'>&lt;</span><span class='ident'>XorName</span><span class='op'>&gt;</span> },
     <span class='ident'>QuorumSize</span> { <span class='ident'>result_tx</span>: <span class='ident'>Sender</span><span class='op'>&lt;</span><span class='ident'>usize</span><span class='op'>&gt;</span> },

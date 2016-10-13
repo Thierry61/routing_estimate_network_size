@@ -472,7 +472,6 @@
 <span id="428">428</span>
 <span id="429">429</span>
 <span id="430">430</span>
-<span id="431">431</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2016 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -491,7 +490,6 @@
 <span class='comment'>// Please review the Licences for the specific language governing permissions and limitations</span>
 <span class='comment'>// relating to use of the SAFE Network Software.</span>
 
-
 <span class='kw'>use</span> <span class='ident'>ack_manager</span>::{<span class='ident'>Ack</span>, <span class='ident'>AckManager</span>};
 <span class='kw'>use</span> <span class='ident'>action</span>::<span class='ident'>Action</span>;
 <span class='kw'>use</span> <span class='ident'>authority</span>::<span class='ident'>Authority</span>;
@@ -504,7 +502,7 @@
 <span class='kw'>use</span> <span class='ident'>message_accumulator</span>::<span class='ident'>MessageAccumulator</span>;
 <span class='kw'>use</span> <span class='ident'>messages</span>::{<span class='ident'>HopMessage</span>, <span class='ident'>Message</span>, <span class='ident'>MessageContent</span>, <span class='ident'>RoutingMessage</span>, <span class='ident'>SignedMessage</span>, <span class='ident'>UserMessage</span>,
                <span class='ident'>UserMessageCache</span>};
-<span class='kw'>use</span> <span class='ident'>peer_manager</span>::<span class='ident'>GROUP_SIZE</span>;
+<span class='kw'>use</span> <span class='ident'>peer_manager</span>::<span class='ident'>MIN_GROUP_SIZE</span>;
 <span class='kw'>use</span> <span class='ident'>signed_message_filter</span>::<span class='ident'>SignedMessageFilter</span>;
 <span class='kw'>use</span> <span class='ident'>state_machine</span>::<span class='ident'>Transition</span>;
 <span class='kw'>use</span> <span class='ident'>stats</span>::<span class='ident'>Stats</span>;
@@ -659,7 +657,7 @@
         <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>signed_msg</span>.<span class='ident'>check_integrity</span>());
 
         <span class='comment'>// Prevents someone sending messages repeatedly to us</span>
-        <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>signed_msg_filter</span>.<span class='ident'>filter_incoming</span>(<span class='ident'>signed_msg</span>) <span class='op'>&gt;</span> <span class='ident'>GROUP_SIZE</span> {
+        <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>signed_msg_filter</span>.<span class='ident'>filter_incoming</span>(<span class='ident'>signed_msg</span>) <span class='op'>&gt;</span> <span class='ident'>MIN_GROUP_SIZE</span> {
             <span class='kw'>return</span> <span class='prelude-val'>Err</span>(<span class='ident'>RoutingError</span>::<span class='ident'>FilterCheckFailed</span>);
         }
 
@@ -814,7 +812,7 @@
                    <span class='ident'>ack</span>,
                    <span class='ident'>unacked_msg</span>);
 
-            <span class='kw'>if</span> <span class='ident'>unacked_msg</span>.<span class='ident'>route</span> <span class='kw'>as</span> <span class='ident'>usize</span> <span class='op'>==</span> <span class='ident'>GROUP_SIZE</span> {
+            <span class='kw'>if</span> <span class='ident'>unacked_msg</span>.<span class='ident'>route</span> <span class='kw'>as</span> <span class='ident'>usize</span> <span class='op'>==</span> <span class='ident'>MIN_GROUP_SIZE</span> {
                 <span class='macro'>debug</span><span class='macro'>!</span>(<span class='string'>&quot;{:?} - Message unable to be acknowledged - giving up. {:?}&quot;</span>,
                        <span class='self'>self</span>,
                        <span class='ident'>unacked_msg</span>);

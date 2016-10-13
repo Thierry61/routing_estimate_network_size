@@ -671,6 +671,76 @@
 <span id="627">627</span>
 <span id="628">628</span>
 <span id="629">629</span>
+<span id="630">630</span>
+<span id="631">631</span>
+<span id="632">632</span>
+<span id="633">633</span>
+<span id="634">634</span>
+<span id="635">635</span>
+<span id="636">636</span>
+<span id="637">637</span>
+<span id="638">638</span>
+<span id="639">639</span>
+<span id="640">640</span>
+<span id="641">641</span>
+<span id="642">642</span>
+<span id="643">643</span>
+<span id="644">644</span>
+<span id="645">645</span>
+<span id="646">646</span>
+<span id="647">647</span>
+<span id="648">648</span>
+<span id="649">649</span>
+<span id="650">650</span>
+<span id="651">651</span>
+<span id="652">652</span>
+<span id="653">653</span>
+<span id="654">654</span>
+<span id="655">655</span>
+<span id="656">656</span>
+<span id="657">657</span>
+<span id="658">658</span>
+<span id="659">659</span>
+<span id="660">660</span>
+<span id="661">661</span>
+<span id="662">662</span>
+<span id="663">663</span>
+<span id="664">664</span>
+<span id="665">665</span>
+<span id="666">666</span>
+<span id="667">667</span>
+<span id="668">668</span>
+<span id="669">669</span>
+<span id="670">670</span>
+<span id="671">671</span>
+<span id="672">672</span>
+<span id="673">673</span>
+<span id="674">674</span>
+<span id="675">675</span>
+<span id="676">676</span>
+<span id="677">677</span>
+<span id="678">678</span>
+<span id="679">679</span>
+<span id="680">680</span>
+<span id="681">681</span>
+<span id="682">682</span>
+<span id="683">683</span>
+<span id="684">684</span>
+<span id="685">685</span>
+<span id="686">686</span>
+<span id="687">687</span>
+<span id="688">688</span>
+<span id="689">689</span>
+<span id="690">690</span>
+<span id="691">691</span>
+<span id="692">692</span>
+<span id="693">693</span>
+<span id="694">694</span>
+<span id="695">695</span>
+<span id="696">696</span>
+<span id="697">697</span>
+<span id="698">698</span>
+<span id="699">699</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2016 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -792,7 +862,6 @@
 <span class='kw'>mod</span> <span class='ident'>prefix</span>;
 <span class='kw'>mod</span> <span class='ident'>xorable</span>;
 
-
 <span class='kw'>use</span> <span class='ident'>itertools</span>::<span class='ident'>Itertools</span>;
 <span class='kw'>pub</span> <span class='kw'>use</span> <span class='self'>self</span>::<span class='ident'>error</span>::<span class='ident'>Error</span>;
 <span class='kw'>pub</span> <span class='kw'>use</span> <span class='self'>self</span>::<span class='ident'>prefix</span>::<span class='ident'>Prefix</span>;
@@ -802,8 +871,6 @@
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>fmt</span>::{<span class='ident'>Binary</span>, <span class='ident'>Debug</span>, <span class='ident'>Formatter</span>};
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>fmt</span>::<span class='prelude-ty'>Result</span> <span class='kw'>as</span> <span class='ident'>FmtResult</span>;
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>hash</span>::<span class='ident'>Hash</span>;
-
-
 
 <span class='kw'>pub</span> <span class='kw'>type</span> <span class='ident'>Groups</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> <span class='op'>=</span> <span class='ident'>HashMap</span><span class='op'>&lt;</span><span class='ident'>Prefix</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>, <span class='ident'>HashSet</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;&gt;</span>;
 
@@ -875,6 +942,7 @@
 
 
 <span class='comment'>// Used when removal of a contact triggers the need to merge two or more groups</span>
+<span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Debug</span>)]</span>
 <span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>OwnMergeDetails</span><span class='op'>&lt;</span><span class='ident'>T</span>: <span class='ident'>Binary</span> <span class='op'>+</span> <span class='ident'>Clone</span> <span class='op'>+</span> <span class='ident'>Copy</span> <span class='op'>+</span> <span class='ident'>Default</span> <span class='op'>+</span> <span class='ident'>Hash</span> <span class='op'>+</span> <span class='ident'>Xorable</span><span class='op'>&gt;</span> {
     <span class='ident'>prefix</span>: <span class='ident'>Prefix</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>,
     <span class='ident'>groups</span>: <span class='ident'>Groups</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>,
@@ -891,6 +959,21 @@
 
 
 
+<span class='comment'>// Details returned by a successful `RoutingTable::remove()`.</span>
+<span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Debug</span>)]</span>
+<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>RemovalDetails</span><span class='op'>&lt;</span><span class='ident'>T</span>: <span class='ident'>Binary</span> <span class='op'>+</span> <span class='ident'>Clone</span> <span class='op'>+</span> <span class='ident'>Copy</span> <span class='op'>+</span> <span class='ident'>Default</span> <span class='op'>+</span> <span class='ident'>Hash</span> <span class='op'>+</span> <span class='ident'>Xorable</span><span class='op'>&gt;</span> {
+    <span class='comment'>// Peer name</span>
+    <span class='kw'>pub</span> <span class='ident'>name</span>: <span class='ident'>T</span>,
+    <span class='comment'>// True if the removed peer was in our group.</span>
+    <span class='kw'>pub</span> <span class='ident'>was_in_our_group</span>: <span class='ident'>bool</span>,
+    <span class='comment'>// If, after removal, our group needs to merge, this is set to `Some`. It contains the</span>
+    <span class='comment'>// appropriate targets (all members of the merging groups) and the merge details they each need</span>
+    <span class='comment'>// to receive (the new prefix and all groups in the table).</span>
+    <span class='kw'>pub</span> <span class='ident'>targets_and_merge_details</span>: <span class='prelude-ty'>Option</span><span class='op'>&lt;</span>(<span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>, <span class='ident'>OwnMergeDetails</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>)<span class='op'>&gt;</span>,
+}
+
+
+
 <span class='comment'>// A routing table to manage contacts for a node.</span>
 <span class='comment'>//</span>
 <span class='comment'>// It maintains a list of `T`s representing connected peer nodes, and provides algorithms for</span>
@@ -898,7 +981,7 @@
 <span class='comment'>//</span>
 <span class='comment'>// See the [crate documentation](index.html) for details.</span>
 <span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Clone</span>, <span class='ident'>Eq</span>, <span class='ident'>PartialEq</span>)]</span>
-<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>RoutingTable</span><span class='op'>&lt;</span><span class='ident'>T</span>: <span class='ident'>Binary</span> <span class='op'>+</span> <span class='ident'>Clone</span> <span class='op'>+</span> <span class='ident'>Copy</span> <span class='op'>+</span> <span class='ident'>Default</span> <span class='op'>+</span> <span class='ident'>Hash</span> <span class='op'>+</span> <span class='ident'>Xorable</span> <span class='op'>+</span> <span class='ident'>Debug</span><span class='op'>&gt;</span> {
+<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>RoutingTable</span><span class='op'>&lt;</span><span class='ident'>T</span>: <span class='ident'>Binary</span> <span class='op'>+</span> <span class='ident'>Clone</span> <span class='op'>+</span> <span class='ident'>Copy</span> <span class='op'>+</span> <span class='ident'>Debug</span> <span class='op'>+</span> <span class='ident'>Default</span> <span class='op'>+</span> <span class='ident'>Hash</span> <span class='op'>+</span> <span class='ident'>Xorable</span><span class='op'>&gt;</span> {
     <span class='ident'>our_name</span>: <span class='ident'>T</span>,
     <span class='ident'>min_group_size</span>: <span class='ident'>usize</span>,
     <span class='ident'>our_group_prefix</span>: <span class='ident'>Prefix</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>,
@@ -906,7 +989,8 @@
     <span class='ident'>needed</span>: <span class='ident'>HashSet</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>,
 }
 
-<span class='kw'>impl</span><span class='op'>&lt;</span><span class='ident'>T</span>: <span class='ident'>Binary</span> <span class='op'>+</span> <span class='ident'>Clone</span> <span class='op'>+</span> <span class='ident'>Copy</span> <span class='op'>+</span> <span class='ident'>Default</span> <span class='op'>+</span> <span class='ident'>Hash</span> <span class='op'>+</span> <span class='ident'>Xorable</span> <span class='op'>+</span> <span class='ident'>Debug</span><span class='op'>&gt;</span> <span class='ident'>RoutingTable</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
+<span class='kw'>impl</span><span class='op'>&lt;</span><span class='ident'>T</span>: <span class='ident'>Binary</span> <span class='op'>+</span> <span class='ident'>Clone</span> <span class='op'>+</span> <span class='ident'>Copy</span> <span class='op'>+</span> <span class='ident'>Debug</span> <span class='op'>+</span> <span class='ident'>Default</span> <span class='op'>+</span> <span class='ident'>Hash</span> <span class='op'>+</span> <span class='ident'>Xorable</span><span class='op'>&gt;</span> <span class='ident'>RoutingTable</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
+    <span class='doccomment'>/// Create a new RoutingTable.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>(<span class='ident'>our_name</span>: <span class='ident'>T</span>, <span class='ident'>min_group_size</span>: <span class='ident'>usize</span>) <span class='op'>-&gt;</span> <span class='self'>Self</span> {
         <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>groups</span> <span class='op'>=</span> <span class='ident'>HashMap</span>::<span class='ident'>new</span>();
         <span class='kw'>let</span> <span class='ident'>our_group_prefix</span> <span class='op'>=</span> <span class='ident'>Prefix</span>::<span class='ident'>new</span>(<span class='number'>0</span>, <span class='ident'>our_name</span>);
@@ -959,24 +1043,36 @@
         }
     }
 
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>is_in_our_group</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>name</span>: <span class='kw-2'>&amp;</span><span class='ident'>T</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> {
+        <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>our_group_prefix</span>.<span class='ident'>matches</span>(<span class='ident'>name</span>) {
+            <span class='macro'>unwrap</span><span class='macro'>!</span>(<span class='self'>self</span>.<span class='ident'>groups</span>.<span class='ident'>get</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='ident'>our_group_prefix</span>)).<span class='ident'>contains</span>(<span class='ident'>name</span>)
+        } <span class='kw'>else</span> {
+            <span class='bool-val'>false</span>
+        }
+    }
+
     <span class='comment'>// Returns the list of contacts as a result of a merge to which we aren&#39;t currently connected,</span>
     <span class='comment'>// but should be.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>needed</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='kw-2'>&amp;</span><span class='ident'>HashSet</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
         <span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='ident'>needed</span>
     }
 
-    <span class='comment'>// Returns whether the given contact should be added to the routing table.</span>
+    <span class='comment'>// Returns `Ok(())` if the given contact should be added to the routing table.</span>
     <span class='comment'>//</span>
-    <span class='comment'>// Returns `false` if `name` already exists in the routing table, or it doesn&#39;t fall within any</span>
+    <span class='comment'>// Returns `Err` if `name` already exists in the routing table, or it doesn&#39;t fall within any</span>
     <span class='comment'>// of our groups, or it&#39;s our own name.  Otherwise it returns `true`.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>need_to_add</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>name</span>: <span class='kw-2'>&amp;</span><span class='ident'>T</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> {
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>need_to_add</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>name</span>: <span class='kw-2'>&amp;</span><span class='ident'>T</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span>(), <span class='ident'>Error</span><span class='op'>&gt;</span> {
         <span class='kw'>if</span> <span class='op'>*</span><span class='ident'>name</span> <span class='op'>==</span> <span class='self'>self</span>.<span class='ident'>our_name</span> {
-            <span class='kw'>return</span> <span class='bool-val'>false</span>;
+            <span class='kw'>return</span> <span class='prelude-val'>Err</span>(<span class='ident'>Error</span>::<span class='ident'>OwnNameDisallowed</span>);
         }
         <span class='kw'>if</span> <span class='kw'>let</span> <span class='prelude-val'>Some</span>(<span class='ident'>group</span>) <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>get_group</span>(<span class='ident'>name</span>) {
-            <span class='op'>!</span><span class='ident'>group</span>.<span class='ident'>contains</span>(<span class='ident'>name</span>)
+            <span class='kw'>if</span> <span class='ident'>group</span>.<span class='ident'>contains</span>(<span class='ident'>name</span>) {
+                <span class='prelude-val'>Err</span>(<span class='ident'>Error</span>::<span class='ident'>AlreadyExists</span>)
+            } <span class='kw'>else</span> {
+                <span class='prelude-val'>Ok</span>(())
+            }
         } <span class='kw'>else</span> {
-            <span class='bool-val'>false</span>
+            <span class='prelude-val'>Err</span>(<span class='ident'>Error</span>::<span class='ident'>PeerNameUnsuitable</span>)
         }
     }
 
@@ -991,24 +1087,23 @@
             <span class='kw'>return</span> <span class='prelude-val'>Err</span>(<span class='ident'>Error</span>::<span class='ident'>OwnNameDisallowed</span>);
         }
 
-        {
-            <span class='kw'>if</span> <span class='kw'>let</span> <span class='prelude-val'>Some</span>(<span class='ident'>group</span>) <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>get_mut_group</span>(<span class='kw-2'>&amp;</span><span class='ident'>name</span>) {
-                <span class='kw'>if</span> <span class='op'>!</span><span class='ident'>group</span>.<span class='ident'>insert</span>(<span class='ident'>name</span>) {
-                    <span class='kw'>return</span> <span class='prelude-val'>Err</span>(<span class='ident'>Error</span>::<span class='ident'>AlreadyExists</span>);
-                }
-            } <span class='kw'>else</span> {
-                <span class='kw'>return</span> <span class='prelude-val'>Err</span>(<span class='ident'>Error</span>::<span class='ident'>PeerNameUnsuitable</span>);
+        <span class='kw'>if</span> <span class='kw'>let</span> <span class='prelude-val'>Some</span>(<span class='ident'>group</span>) <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>get_mut_group</span>(<span class='kw-2'>&amp;</span><span class='ident'>name</span>) {
+            <span class='kw'>if</span> <span class='op'>!</span><span class='ident'>group</span>.<span class='ident'>insert</span>(<span class='ident'>name</span>) {
+                <span class='kw'>return</span> <span class='prelude-val'>Err</span>(<span class='ident'>Error</span>::<span class='ident'>AlreadyExists</span>);
             }
+        } <span class='kw'>else</span> {
+            <span class='kw'>return</span> <span class='prelude-val'>Err</span>(<span class='ident'>Error</span>::<span class='ident'>PeerNameUnsuitable</span>);
         }
 
         <span class='kw'>let</span> _ <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>needed</span>.<span class='ident'>remove</span>(<span class='kw-2'>&amp;</span><span class='ident'>name</span>);
 
         <span class='kw'>let</span> <span class='ident'>our_group</span> <span class='op'>=</span> <span class='macro'>unwrap</span><span class='macro'>!</span>(<span class='self'>self</span>.<span class='ident'>groups</span>.<span class='ident'>get</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='ident'>our_group_prefix</span>));
-        <span class='comment'>// Count the number of names which will end up in our group if it is split</span>
+        <span class='comment'>// Count the number of names which will end up in our group if it is split.</span>
         <span class='kw'>let</span> <span class='ident'>new_group_size</span> <span class='op'>=</span> <span class='ident'>our_group</span>.<span class='ident'>iter</span>()
             .<span class='ident'>filter</span>(<span class='op'>|</span><span class='ident'>name</span><span class='op'>|</span> <span class='self'>self</span>.<span class='ident'>our_name</span>.<span class='ident'>common_prefix</span>(<span class='ident'>name</span>) <span class='op'>&gt;</span> <span class='self'>self</span>.<span class='ident'>our_group_prefix</span>.<span class='ident'>bit_count</span>())
             .<span class='ident'>count</span>();
-        <span class='comment'>// If either of the two new groups will not contain enough entries, return `None`.</span>
+        <span class='comment'>// If either of the two new groups will not contain enough entries, return `None` (add 1</span>
+        <span class='comment'>// when considering our own group to also count ourself as a member of this group).</span>
         <span class='kw'>let</span> <span class='ident'>min_size</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>min_group_size</span> <span class='op'>+</span> <span class='ident'>SPLIT_BUFFER</span>;
         <span class='prelude-val'>Ok</span>(<span class='kw'>if</span> <span class='ident'>our_group</span>.<span class='ident'>len</span>() <span class='op'>-</span> <span class='ident'>new_group_size</span> <span class='op'>&lt;</span> <span class='ident'>min_size</span> <span class='op'>||</span> <span class='ident'>new_group_size</span> <span class='op'>+</span> <span class='number'>1</span> <span class='op'>&lt;</span> <span class='ident'>min_size</span> {
             <span class='prelude-val'>None</span>
@@ -1051,17 +1146,28 @@
 
     <span class='comment'>// Removes a contact from the routing table.</span>
     <span class='comment'>//</span>
-    <span class='comment'>// If no entry with that name is found, `None` is returned.  Otherwise, the entry is removed</span>
-    <span class='comment'>// from the routing table.  If, after removal, our group needs to merge, the appropriate targets</span>
-    <span class='comment'>// (all members of the merging groups) and the merge details they each need to receive (the new</span>
-    <span class='comment'>// prefix and all groups in the table) is returned, else `None` is returned.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>remove</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>name</span>: <span class='kw-2'>&amp;</span><span class='ident'>T</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span>(<span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>, <span class='ident'>OwnMergeDetails</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>)<span class='op'>&gt;</span> {
+    <span class='comment'>// If no entry with that name is found, `Err(Error::NoSuchPeer)` is returned.  Otherwise, the</span>
+    <span class='comment'>// entry is removed from the routing table and `RemovalDetails` is returned.  See that struct&#39;s</span>
+    <span class='comment'>// docs for further info.</span>
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>remove</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>name</span>: <span class='kw-2'>&amp;</span><span class='ident'>T</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>RemovalDetails</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>, <span class='ident'>Error</span><span class='op'>&gt;</span> {
         <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>should_merge</span> <span class='op'>=</span> <span class='bool-val'>false</span>;
+        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>removal_details</span> <span class='op'>=</span> <span class='ident'>RemovalDetails</span> {
+            <span class='ident'>name</span>: <span class='op'>*</span><span class='ident'>name</span>,
+            <span class='ident'>was_in_our_group</span>: <span class='bool-val'>false</span>,
+            <span class='ident'>targets_and_merge_details</span>: <span class='prelude-val'>None</span>,
+        };
         <span class='kw'>if</span> <span class='kw'>let</span> <span class='prelude-val'>Some</span>(<span class='ident'>prefix</span>) <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>find_group_prefix</span>(<span class='ident'>name</span>) {
+            <span class='ident'>removal_details</span>.<span class='ident'>was_in_our_group</span> <span class='op'>=</span> <span class='ident'>prefix</span> <span class='op'>==</span> <span class='self'>self</span>.<span class='ident'>our_group_prefix</span>;
             <span class='kw'>if</span> <span class='kw'>let</span> <span class='prelude-val'>Some</span>(<span class='ident'>group</span>) <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>groups</span>.<span class='ident'>get_mut</span>(<span class='kw-2'>&amp;</span><span class='ident'>prefix</span>) {
-                <span class='ident'>should_merge</span> <span class='op'>=</span> <span class='ident'>group</span>.<span class='ident'>remove</span>(<span class='ident'>name</span>) <span class='op'>&amp;&amp;</span> <span class='ident'>prefix</span> <span class='op'>==</span> <span class='self'>self</span>.<span class='ident'>our_group_prefix</span> <span class='op'>&amp;&amp;</span>
-                               <span class='ident'>group</span>.<span class='ident'>len</span>() <span class='op'>&lt;</span> <span class='self'>self</span>.<span class='ident'>min_group_size</span> <span class='op'>&amp;&amp;</span> <span class='ident'>prefix</span>.<span class='ident'>bit_count</span>() <span class='op'>!=</span> <span class='number'>0</span>;
+                <span class='kw'>if</span> <span class='op'>!</span><span class='ident'>group</span>.<span class='ident'>remove</span>(<span class='ident'>name</span>) {
+                    <span class='kw'>return</span> <span class='prelude-val'>Err</span>(<span class='ident'>Error</span>::<span class='ident'>NoSuchPeer</span>);
+                }
+                <span class='ident'>should_merge</span> <span class='op'>=</span> <span class='ident'>removal_details</span>.<span class='ident'>was_in_our_group</span> <span class='op'>&amp;&amp;</span>
+                               <span class='ident'>group</span>.<span class='ident'>len</span>() <span class='op'>&lt;</span> <span class='self'>self</span>.<span class='ident'>min_group_size</span> <span class='op'>&amp;&amp;</span>
+                               <span class='ident'>prefix</span>.<span class='ident'>bit_count</span>() <span class='op'>!=</span> <span class='number'>0</span>;
             }
+        } <span class='kw'>else</span> {
+            <span class='kw'>return</span> <span class='prelude-val'>Err</span>(<span class='ident'>Error</span>::<span class='ident'>NoSuchPeer</span>);
         }
         <span class='kw'>if</span> <span class='ident'>should_merge</span> {
             <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>merged_prefix</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>our_group_prefix</span>;
@@ -1072,14 +1178,13 @@
                 .<span class='ident'>flat_map</span>(<span class='op'>|</span>(_, <span class='ident'>names</span>)<span class='op'>|</span> <span class='ident'>names</span>.<span class='ident'>iter</span>())
                 .<span class='ident'>cloned</span>()
                 .<span class='ident'>collect_vec</span>();
-            <span class='prelude-val'>Some</span>((<span class='ident'>targets</span>,
-                  <span class='ident'>OwnMergeDetails</span> {
+            <span class='ident'>removal_details</span>.<span class='ident'>targets_and_merge_details</span> <span class='op'>=</span> <span class='prelude-val'>Some</span>((<span class='ident'>targets</span>,
+                                                              <span class='ident'>OwnMergeDetails</span> {
                 <span class='ident'>prefix</span>: <span class='ident'>merged_prefix</span>,
                 <span class='ident'>groups</span>: <span class='self'>self</span>.<span class='ident'>groups</span>.<span class='ident'>clone</span>(),
-            }))
-        } <span class='kw'>else</span> {
-            <span class='prelude-val'>None</span>
+            }));
         }
+        <span class='prelude-val'>Ok</span>(<span class='ident'>removal_details</span>)
     }
 
     <span class='comment'>// Merges our own group and all existing compatible groups into the new one defined by</span>
@@ -1118,6 +1223,7 @@
             <span class='ident'>group</span>: <span class='macro'>unwrap</span><span class='macro'>!</span>(<span class='self'>self</span>.<span class='ident'>groups</span>.<span class='ident'>get</span>(<span class='kw-2'>&amp;</span><span class='ident'>merge_details</span>.<span class='ident'>prefix</span>)).<span class='ident'>clone</span>(),
         };
         <span class='ident'>other_details</span>.<span class='ident'>group</span>.<span class='ident'>extend</span>(<span class='ident'>needed</span>.<span class='ident'>into_iter</span>());
+        <span class='ident'>other_details</span>.<span class='ident'>group</span>.<span class='ident'>insert</span>(<span class='self'>self</span>.<span class='ident'>our_name</span>);
         (<span class='ident'>targets</span>, <span class='ident'>other_details</span>)
     }
 
@@ -1138,12 +1244,13 @@
     }
 
     <span class='comment'>// Returns a collection of nodes to which a message with the given `Destination` should be sent</span>
-    <span class='comment'>// onwards.</span>
+    <span class='comment'>// onwards.  In all non-error cases below, the returned collection will have the members of</span>
+    <span class='comment'>// `exclude` removed, possibly resulting in an empty set being returned.</span>
     <span class='comment'>//</span>
     <span class='comment'>// * If the destination is a group:</span>
     <span class='comment'>//     - if our group is the closest on the network (i.e. our group&#39;s prefix is a prefix of the</span>
     <span class='comment'>//       destination), returns all other members of our group; otherwise</span>
-    <span class='comment'>//     - if the closest group has fewer than `route` members, returns the `route`-th member of</span>
+    <span class='comment'>//     - if the closest group has more than `route` members, returns the `route`-th member of</span>
     <span class='comment'>//       this group; otherwise</span>
     <span class='comment'>//     - returns `Err(Error::CannotRoute)`</span>
     <span class='comment'>//</span>
@@ -1152,10 +1259,15 @@
     <span class='comment'>//     - if the destination name is an entry in the routing table, returns it; otherwise</span>
     <span class='comment'>//     - if our group is the closest on the network (i.e. our group&#39;s prefix is a prefix of the</span>
     <span class='comment'>//       destination), this returns `Err(Error::NoSuchPeer)`; otherwise</span>
-    <span class='comment'>//     - if the closest group has fewer than `route` members, returns the `route`-th member of</span>
+    <span class='comment'>//     - if the closest group has more than `route` members, returns the `route`-th member of</span>
     <span class='comment'>//       this group; otherwise</span>
     <span class='comment'>//     - returns `Err(Error::CannotRoute)`</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>targets</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>dst</span>: <span class='kw-2'>&amp;</span><span class='ident'>Destination</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>, <span class='ident'>route</span>: <span class='ident'>usize</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>HashSet</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>, <span class='ident'>Error</span><span class='op'>&gt;</span> {
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>targets</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>,
+                   <span class='ident'>dst</span>: <span class='kw-2'>&amp;</span><span class='ident'>Destination</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>,
+                   <span class='ident'>route</span>: <span class='ident'>usize</span>,
+                   <span class='ident'>exclude</span>: <span class='kw-2'>&amp;</span>[<span class='ident'>T</span>])
+                   <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>HashSet</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>, <span class='ident'>Error</span><span class='op'>&gt;</span> {
+        <span class='kw'>let</span> <span class='ident'>excluded_set</span> <span class='op'>=</span> <span class='ident'>exclude</span>.<span class='ident'>iter</span>().<span class='ident'>collect</span>::<span class='op'>&lt;</span><span class='ident'>HashSet</span><span class='op'>&lt;</span><span class='kw-2'>&amp;</span><span class='ident'>T</span><span class='op'>&gt;&gt;</span>();
         <span class='kw'>let</span> (<span class='ident'>closest_group</span>, <span class='ident'>target_name</span>) <span class='op'>=</span> <span class='kw'>match</span> <span class='op'>*</span><span class='ident'>dst</span> {
             <span class='ident'>Destination</span>::<span class='ident'>Group</span>(<span class='kw-2'>ref</span> <span class='ident'>target_name</span>) <span class='op'>=&gt;</span> {
                 <span class='kw'>let</span> <span class='ident'>closest_group_prefix</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>closest_group_prefix</span>(<span class='ident'>target_name</span>);
@@ -1196,6 +1308,20 @@
         <span class='kw'>match</span> <span class='op'>*</span><span class='ident'>dst</span> {
             <span class='ident'>Destination</span>::<span class='ident'>Node</span>(<span class='kw-2'>ref</span> <span class='ident'>target_name</span>) <span class='op'>=&gt;</span> <span class='op'>*</span><span class='ident'>target_name</span> <span class='op'>==</span> <span class='self'>self</span>.<span class='ident'>our_name</span>,
             <span class='ident'>Destination</span>::<span class='ident'>Group</span>(<span class='kw-2'>ref</span> <span class='ident'>target_name</span>) <span class='op'>=&gt;</span> <span class='self'>self</span>.<span class='ident'>our_group_prefix</span>.<span class='ident'>matches</span>(<span class='ident'>target_name</span>),
+        }
+    }
+
+    <span class='comment'>// Returns true if our name is the `route`-th closest to `src_name` in our group.</span>
+    <span class='comment'>//</span>
+    <span class='comment'>// Used when sending a message from a group to decide which one of the group should send the</span>
+    <span class='comment'>// full message (the remainder sending just a hash of the message).</span>
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>should_route_full_message</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>src_name</span>: <span class='kw-2'>&amp;</span><span class='ident'>T</span>, <span class='ident'>route</span>: <span class='ident'>usize</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> {
+        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>our_group</span> <span class='op'>=</span> <span class='macro'>unwrap</span><span class='macro'>!</span>(<span class='self'>self</span>.<span class='ident'>groups</span>.<span class='ident'>get</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='ident'>our_group_prefix</span>)).<span class='ident'>iter</span>().<span class='ident'>collect_vec</span>();
+        <span class='ident'>our_group</span>.<span class='ident'>push</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='ident'>our_name</span>);
+        <span class='ident'>our_group</span>.<span class='ident'>sort_by</span>(<span class='op'>|</span><span class='kw-2'>&amp;</span><span class='ident'>lhs</span>, <span class='kw-2'>&amp;</span><span class='ident'>rhs</span><span class='op'>|</span> <span class='ident'>src_name</span>.<span class='ident'>cmp_distance</span>(<span class='ident'>lhs</span>, <span class='ident'>rhs</span>));
+        <span class='kw'>match</span> <span class='ident'>our_group</span>.<span class='ident'>get</span>(<span class='ident'>route</span>) {
+            <span class='prelude-val'>Some</span>(<span class='kw-2'>&amp;</span><span class='ident'>name</span>) <span class='op'>=&gt;</span> <span class='op'>*</span><span class='ident'>name</span> <span class='op'>==</span> <span class='self'>self</span>.<span class='ident'>our_name</span>,
+            <span class='prelude-val'>None</span> <span class='op'>=&gt;</span> <span class='bool-val'>false</span>,
         }
     }
 
@@ -1262,7 +1388,7 @@
     }
 }
 
-<span class='kw'>impl</span><span class='op'>&lt;</span><span class='ident'>T</span>: <span class='ident'>Binary</span> <span class='op'>+</span> <span class='ident'>Clone</span> <span class='op'>+</span> <span class='ident'>Copy</span> <span class='op'>+</span> <span class='ident'>Default</span> <span class='op'>+</span> <span class='ident'>Hash</span> <span class='op'>+</span> <span class='ident'>Xorable</span> <span class='op'>+</span> <span class='ident'>Debug</span><span class='op'>&gt;</span> <span class='ident'>Binary</span> <span class='kw'>for</span> <span class='ident'>RoutingTable</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
+<span class='kw'>impl</span><span class='op'>&lt;</span><span class='ident'>T</span>: <span class='ident'>Binary</span> <span class='op'>+</span> <span class='ident'>Clone</span> <span class='op'>+</span> <span class='ident'>Copy</span> <span class='op'>+</span> <span class='ident'>Debug</span> <span class='op'>+</span> <span class='ident'>Default</span> <span class='op'>+</span> <span class='ident'>Hash</span> <span class='op'>+</span> <span class='ident'>Xorable</span><span class='op'>&gt;</span> <span class='ident'>Binary</span> <span class='kw'>for</span> <span class='ident'>RoutingTable</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
     <span class='kw'>fn</span> <span class='ident'>fmt</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>formatter</span>: <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>Formatter</span>) <span class='op'>-&gt;</span> <span class='ident'>FmtResult</span> {
         <span class='macro'>try</span><span class='macro'>!</span>(<span class='macro'>writeln</span><span class='macro'>!</span>(<span class='ident'>formatter</span>,
                       <span class='string'>&quot;RoutingTable {{\n\tour_name: {},\n\tmin_group_size: \
@@ -1296,9 +1422,23 @@
     }
 }
 
-<span class='kw'>impl</span><span class='op'>&lt;</span><span class='ident'>T</span>: <span class='ident'>Binary</span> <span class='op'>+</span> <span class='ident'>Clone</span> <span class='op'>+</span> <span class='ident'>Copy</span> <span class='op'>+</span> <span class='ident'>Default</span> <span class='op'>+</span> <span class='ident'>Hash</span> <span class='op'>+</span> <span class='ident'>Xorable</span> <span class='op'>+</span> <span class='ident'>Debug</span><span class='op'>&gt;</span> <span class='ident'>Debug</span> <span class='kw'>for</span> <span class='ident'>RoutingTable</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
+<span class='kw'>impl</span><span class='op'>&lt;</span><span class='ident'>T</span>: <span class='ident'>Binary</span> <span class='op'>+</span> <span class='ident'>Clone</span> <span class='op'>+</span> <span class='ident'>Copy</span> <span class='op'>+</span> <span class='ident'>Debug</span> <span class='op'>+</span> <span class='ident'>Default</span> <span class='op'>+</span> <span class='ident'>Hash</span> <span class='op'>+</span> <span class='ident'>Xorable</span><span class='op'>&gt;</span> <span class='ident'>Debug</span> <span class='kw'>for</span> <span class='ident'>RoutingTable</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
     <span class='kw'>fn</span> <span class='ident'>fmt</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>formatter</span>: <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>Formatter</span>) <span class='op'>-&gt;</span> <span class='ident'>FmtResult</span> {
         <span class='ident'>Binary</span>::<span class='ident'>fmt</span>(<span class='self'>self</span>, <span class='ident'>formatter</span>)
+    }
+}
+
+<span class='kw'>mod</span> <span class='ident'>tests</span> {
+    <span class='kw'>use</span> <span class='kw'>super</span>::<span class='op'>*</span>;
+
+    <span class='attribute'>#[<span class='ident'>test</span>]</span>
+    <span class='kw'>fn</span> <span class='ident'>test_routing_table_small</span>() {
+        <span class='kw'>let</span> <span class='ident'>name</span> <span class='op'>=</span> <span class='number'>123u32</span>;
+        <span class='kw'>let</span> <span class='ident'>table</span> <span class='op'>=</span> <span class='ident'>RoutingTable</span>::<span class='ident'>new</span>(<span class='ident'>name</span>, <span class='number'>6</span>);
+        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='op'>*</span><span class='ident'>table</span>.<span class='ident'>our_name</span>(), <span class='ident'>name</span>);
+        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>table</span>.<span class='ident'>len</span>(), <span class='number'>0</span>);
+        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>table</span>.<span class='ident'>is_empty</span>());
+        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>table</span>.<span class='ident'>iter</span>().<span class='ident'>count</span>(), <span class='number'>0</span>);
     }
 }
 </pre>

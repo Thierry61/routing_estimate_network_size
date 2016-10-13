@@ -370,37 +370,6 @@
 <span id="326">326</span>
 <span id="327">327</span>
 <span id="328">328</span>
-<span id="329">329</span>
-<span id="330">330</span>
-<span id="331">331</span>
-<span id="332">332</span>
-<span id="333">333</span>
-<span id="334">334</span>
-<span id="335">335</span>
-<span id="336">336</span>
-<span id="337">337</span>
-<span id="338">338</span>
-<span id="339">339</span>
-<span id="340">340</span>
-<span id="341">341</span>
-<span id="342">342</span>
-<span id="343">343</span>
-<span id="344">344</span>
-<span id="345">345</span>
-<span id="346">346</span>
-<span id="347">347</span>
-<span id="348">348</span>
-<span id="349">349</span>
-<span id="350">350</span>
-<span id="351">351</span>
-<span id="352">352</span>
-<span id="353">353</span>
-<span id="354">354</span>
-<span id="355">355</span>
-<span id="356">356</span>
-<span id="357">357</span>
-<span id="358">358</span>
-<span id="359">359</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2015 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -419,13 +388,12 @@
 <span class='comment'>// Please review the Licences for the specific language governing permissions and limitations</span>
 <span class='comment'>// relating to use of the SAFE Network Software.</span>
 
-<span class='kw'>use</span> <span class='ident'>kademlia_routing_table</span>::<span class='ident'>Xorable</span>;
 <span class='kw'>use</span> <span class='ident'>rand</span>;
+<span class='kw'>use</span> <span class='ident'>routing_table</span>::<span class='ident'>Xorable</span>;
 <span class='kw'>use</span> <span class='ident'>rustc_serialize</span>::{<span class='ident'>Decodable</span>, <span class='ident'>Decoder</span>, <span class='ident'>Encodable</span>, <span class='ident'>Encoder</span>};
 <span class='kw'>use</span> <span class='ident'>rustc_serialize</span>::<span class='ident'>hex</span>::{<span class='ident'>FromHex</span>, <span class='ident'>FromHexError</span>, <span class='ident'>ToHex</span>};
 <span class='kw'>use</span> <span class='ident'>std</span>::{<span class='ident'>fmt</span>, <span class='ident'>ops</span>};
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>cmp</span>::<span class='ident'>Ordering</span>;
-
 
 <span class='doccomment'>/// Create a 32-byte array of `u8` from a 32-byte reference to a `u8` slice.</span>
 <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>slice_as_u8_32_array</span>(<span class='ident'>slice</span>: <span class='kw-2'>&amp;</span>[<span class='ident'>u8</span>]) <span class='op'>-&gt;</span> [<span class='ident'>u8</span>; <span class='number'>32</span>] {
@@ -459,26 +427,13 @@
 <span class='doccomment'>/// i. e. the points with IDs `x` and `y` are considered to have distance `x xor y`.</span>
 <span class='doccomment'>///</span>
 <span class='doccomment'>/// [1]: https://en.wikipedia.org/wiki/Kademlia#System_details</span>
-<span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Eq</span>, <span class='ident'>Copy</span>, <span class='ident'>Clone</span>, <span class='ident'>Hash</span>, <span class='ident'>Ord</span>, <span class='ident'>PartialEq</span>, <span class='ident'>PartialOrd</span>)]</span>
+<span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Eq</span>, <span class='ident'>Copy</span>, <span class='ident'>Clone</span>, <span class='ident'>Default</span>, <span class='ident'>Hash</span>, <span class='ident'>Ord</span>, <span class='ident'>PartialEq</span>, <span class='ident'>PartialOrd</span>)]</span>
 <span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>XorName</span>(<span class='kw'>pub</span> [<span class='ident'>u8</span>; <span class='ident'>XOR_NAME_LEN</span>]);
 
 <span class='kw'>impl</span> <span class='ident'>XorName</span> {
     <span class='doccomment'>/// Hex-encode the `XorName` as a `String`.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>to_hex</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>String</span> {
         <span class='self'>self</span>.<span class='number'>0</span>.<span class='ident'>to_hex</span>()
-    }
-
-    <span class='doccomment'>/// Returns a copy of `self`, with the `index`-th bit flipped.</span>
-    <span class='doccomment'>///</span>
-    <span class='doccomment'>/// If the parameter does not address one of the name&#39;s bits, i. e. if it does not satisfy</span>
-    <span class='doccomment'>/// `index &lt; XOR_NAME_BITS`, the result will be equal to the argument.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>with_flipped_bit</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>index</span>: <span class='ident'>usize</span>) <span class='op'>-&gt;</span> <span class='ident'>XorName</span> {
-        <span class='kw'>if</span> <span class='ident'>index</span> <span class='op'>&gt;=</span> <span class='ident'>XOR_NAME_BITS</span> {
-            <span class='kw'>return</span> <span class='op'>*</span><span class='self'>self</span>;
-        }
-        <span class='kw'>let</span> <span class='kw-2'>&amp;</span><span class='ident'>XorName</span>(<span class='kw-2'>mut</span> <span class='ident'>bytes</span>) <span class='op'>=</span> <span class='self'>self</span>;
-        <span class='ident'>bytes</span>[<span class='ident'>index</span> <span class='op'>/</span> <span class='number'>8</span>] <span class='op'>^=</span> <span class='number'>1</span> <span class='op'>&lt;&lt;</span> (<span class='number'>7</span> <span class='op'>-</span> <span class='ident'>index</span> <span class='op'>%</span> <span class='number'>8</span>);
-        <span class='ident'>XorName</span>(<span class='ident'>bytes</span>)
     }
 
     <span class='doccomment'>/// Returns the number of bits in which `self` differs from `other`.</span>
@@ -501,33 +456,6 @@
         <span class='prelude-val'>Ok</span>(<span class='ident'>XorName</span>(<span class='ident'>slice_as_u8_32_array</span>(<span class='kw-2'>&amp;</span><span class='ident'>data</span>[..])))
     }
 
-    <span class='doccomment'>/// Returns the number of leading bits in which `self` and `name` agree.</span>
-    <span class='doccomment'>///</span>
-    <span class='doccomment'>/// Here, &quot;leading bits&quot; means the most significant bits. E. g. for `10101...` and `10011...`,</span>
-    <span class='doccomment'>/// that value will be 2, as their common prefix `10` has length 2 and the third bit is the</span>
-    <span class='doccomment'>/// first one in which they disagree.</span>
-    <span class='doccomment'>///</span>
-    <span class='doccomment'>/// Equivalently, this is `XOR_NAME_BITS - bucket_distance`, where `bucket_distance` is the</span>
-    <span class='doccomment'>/// length of the remainders after the common prefix is removed from the IDs of `self` and</span>
-    <span class='doccomment'>/// `name`.</span>
-    <span class='doccomment'>///</span>
-    <span class='doccomment'>/// The bucket distance is the magnitude of the XOR distance. More precisely, if `d &gt; 0` is the</span>
-    <span class='doccomment'>/// XOR distance between `self` and `name`, the bucket distance equals `floor(log2(d))`, i. e.</span>
-    <span class='doccomment'>/// a bucket distance of `n` means that 2&lt;sup&gt;`n - 1`&lt;/sup&gt; `&lt;= d &lt;` 2&lt;sup&gt;`n`&lt;/sup&gt;.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>bucket_index</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>other</span>: <span class='kw-2'>&amp;</span><span class='ident'>XorName</span>) <span class='op'>-&gt;</span> <span class='ident'>usize</span> {
-        <span class='self'>self</span>.<span class='number'>0</span>.<span class='ident'>bucket_index</span>(<span class='kw-2'>&amp;</span><span class='ident'>other</span>.<span class='number'>0</span>)
-    }
-
-    <span class='doccomment'>/// Compares `lhs` and `rhs` with respect to their distance from `self`.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>cmp_distance</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>lhs</span>: <span class='kw-2'>&amp;</span><span class='ident'>XorName</span>, <span class='ident'>rhs</span>: <span class='kw-2'>&amp;</span><span class='ident'>XorName</span>) <span class='op'>-&gt;</span> <span class='ident'>Ordering</span> {
-        <span class='self'>self</span>.<span class='number'>0</span>.<span class='ident'>cmp_distance</span>(<span class='kw-2'>&amp;</span><span class='ident'>lhs</span>.<span class='number'>0</span>, <span class='kw-2'>&amp;</span><span class='ident'>rhs</span>.<span class='number'>0</span>)
-    }
-
-    <span class='doccomment'>/// Returns `true` if the `i`-th bit of `name` is different from the `i`-th bit of `self`.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>differs_in_bit</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>name</span>: <span class='kw-2'>&amp;</span><span class='ident'>XorName</span>, <span class='ident'>i</span>: <span class='ident'>usize</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> {
-        <span class='self'>self</span>.<span class='number'>0</span>.<span class='ident'>differs_in_bit</span>(<span class='kw-2'>&amp;</span><span class='ident'>name</span>.<span class='number'>0</span>, <span class='ident'>i</span>)
-    }
-
     <span class='doccomment'>/// Returns true if `lhs` is closer to `self` than `rhs`.</span>
     <span class='doccomment'>///</span>
     <span class='doccomment'>/// Equivalently, this returns `true` if in the most significant bit where `lhs` and `rhs`</span>
@@ -548,16 +476,32 @@
 }
 
 <span class='kw'>impl</span> <span class='ident'>Xorable</span> <span class='kw'>for</span> <span class='ident'>XorName</span> {
-    <span class='kw'>fn</span> <span class='ident'>bucket_index</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>other</span>: <span class='kw-2'>&amp;</span><span class='ident'>XorName</span>) <span class='op'>-&gt;</span> <span class='ident'>usize</span> {
-        <span class='self'>self</span>.<span class='ident'>bucket_index</span>(<span class='ident'>other</span>)
+    <span class='kw'>fn</span> <span class='ident'>common_prefix</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>other</span>: <span class='kw-2'>&amp;</span><span class='ident'>XorName</span>) <span class='op'>-&gt;</span> <span class='ident'>usize</span> {
+        <span class='self'>self</span>.<span class='number'>0</span>.<span class='ident'>common_prefix</span>(<span class='kw-2'>&amp;</span><span class='ident'>other</span>.<span class='number'>0</span>)
     }
 
     <span class='kw'>fn</span> <span class='ident'>cmp_distance</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>lhs</span>: <span class='kw-2'>&amp;</span><span class='ident'>XorName</span>, <span class='ident'>rhs</span>: <span class='kw-2'>&amp;</span><span class='ident'>XorName</span>) <span class='op'>-&gt;</span> <span class='ident'>Ordering</span> {
-        <span class='self'>self</span>.<span class='ident'>cmp_distance</span>(<span class='ident'>lhs</span>, <span class='ident'>rhs</span>)
+        <span class='self'>self</span>.<span class='number'>0</span>.<span class='ident'>cmp_distance</span>(<span class='kw-2'>&amp;</span><span class='ident'>lhs</span>.<span class='number'>0</span>, <span class='kw-2'>&amp;</span><span class='ident'>rhs</span>.<span class='number'>0</span>)
+    }
+
+    <span class='kw'>fn</span> <span class='ident'>bit</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>i</span>: <span class='ident'>usize</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> {
+        <span class='self'>self</span>.<span class='number'>0</span>.<span class='ident'>bit</span>(<span class='ident'>i</span>)
     }
 
     <span class='kw'>fn</span> <span class='ident'>differs_in_bit</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>name</span>: <span class='kw-2'>&amp;</span><span class='ident'>XorName</span>, <span class='ident'>i</span>: <span class='ident'>usize</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> {
-        <span class='self'>self</span>.<span class='ident'>differs_in_bit</span>(<span class='ident'>name</span>, <span class='ident'>i</span>)
+        <span class='self'>self</span>.<span class='number'>0</span>.<span class='ident'>differs_in_bit</span>(<span class='kw-2'>&amp;</span><span class='ident'>name</span>.<span class='number'>0</span>, <span class='ident'>i</span>)
+    }
+
+    <span class='kw'>fn</span> <span class='ident'>with_flipped_bit</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>i</span>: <span class='ident'>usize</span>) <span class='op'>-&gt;</span> <span class='ident'>XorName</span> {
+        <span class='ident'>XorName</span>(<span class='self'>self</span>.<span class='number'>0</span>.<span class='ident'>with_flipped_bit</span>(<span class='ident'>i</span>))
+    }
+
+    <span class='kw'>fn</span> <span class='ident'>binary</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>String</span> {
+        <span class='self'>self</span>.<span class='number'>0</span>.<span class='ident'>binary</span>()
+    }
+
+    <span class='kw'>fn</span> <span class='ident'>debug_binary</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>String</span> {
+        <span class='self'>self</span>.<span class='number'>0</span>.<span class='ident'>debug_binary</span>()
     }
 }
 
@@ -575,14 +519,7 @@
 
 <span class='kw'>impl</span> <span class='ident'>fmt</span>::<span class='ident'>Binary</span> <span class='kw'>for</span> <span class='ident'>XorName</span> {
     <span class='kw'>fn</span> <span class='ident'>fmt</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>formatter</span>: <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>fmt</span>::<span class='ident'>Formatter</span>) <span class='op'>-&gt;</span> <span class='ident'>fmt</span>::<span class='prelude-ty'>Result</span> {
-        <span class='macro'>write</span><span class='macro'>!</span>(<span class='ident'>formatter</span>,
-               <span class='string'>&quot;{:08b} {:08b} {:08b}..{:08b} {:08b} {:08b}&quot;</span>,
-               <span class='self'>self</span>.<span class='number'>0</span>[<span class='number'>0</span>],
-               <span class='self'>self</span>.<span class='number'>0</span>[<span class='number'>1</span>],
-               <span class='self'>self</span>.<span class='number'>0</span>[<span class='number'>2</span>],
-               <span class='self'>self</span>.<span class='number'>0</span>[<span class='ident'>XOR_NAME_LEN</span> <span class='op'>-</span> <span class='number'>3</span>],
-               <span class='self'>self</span>.<span class='number'>0</span>[<span class='ident'>XOR_NAME_LEN</span> <span class='op'>-</span> <span class='number'>2</span>],
-               <span class='self'>self</span>.<span class='number'>0</span>[<span class='ident'>XOR_NAME_LEN</span> <span class='op'>-</span> <span class='number'>1</span>])
+        <span class='macro'>write</span><span class='macro'>!</span>(<span class='ident'>formatter</span>, <span class='string'>&quot;{}&quot;</span>, <span class='self'>self</span>.<span class='ident'>debug_binary</span>())
     }
 }
 
@@ -662,6 +599,7 @@
 <span class='kw'>mod</span> <span class='ident'>tests</span> {
     <span class='kw'>use</span> <span class='ident'>maidsafe_utilities</span>::<span class='ident'>serialisation</span>::{<span class='ident'>deserialise</span>, <span class='ident'>serialise</span>};
     <span class='kw'>use</span> <span class='ident'>rand</span>;
+    <span class='kw'>use</span> <span class='ident'>routing_table</span>::<span class='ident'>Xorable</span>;
     <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>cmp</span>::<span class='ident'>Ordering</span>;
     <span class='kw'>use</span> <span class='kw'>super</span>::<span class='op'>*</span>;
 
@@ -742,10 +680,10 @@
     <span class='kw'>fn</span> <span class='ident'>with_flipped_bit</span>() {
         <span class='kw'>let</span> <span class='ident'>name</span>: <span class='ident'>XorName</span> <span class='op'>=</span> <span class='ident'>rand</span>::<span class='ident'>random</span>();
         <span class='kw'>for</span> <span class='ident'>i</span> <span class='kw'>in</span> <span class='number'>0</span>..<span class='number'>18</span> {
-            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>i</span>, <span class='ident'>name</span>.<span class='ident'>bucket_index</span>(<span class='kw-2'>&amp;</span><span class='ident'>name</span>.<span class='ident'>with_flipped_bit</span>(<span class='ident'>i</span>)));
+            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>i</span>, <span class='ident'>name</span>.<span class='ident'>common_prefix</span>(<span class='kw-2'>&amp;</span><span class='ident'>name</span>.<span class='ident'>with_flipped_bit</span>(<span class='ident'>i</span>)));
         }
         <span class='kw'>for</span> <span class='ident'>i</span> <span class='kw'>in</span> <span class='number'>0</span>..<span class='number'>10</span> {
-            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='number'>19</span> <span class='op'>*</span> <span class='ident'>i</span>, <span class='ident'>name</span>.<span class='ident'>bucket_index</span>(<span class='kw-2'>&amp;</span><span class='ident'>name</span>.<span class='ident'>with_flipped_bit</span>(<span class='number'>19</span> <span class='op'>*</span> <span class='ident'>i</span>)));
+            <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='number'>19</span> <span class='op'>*</span> <span class='ident'>i</span>, <span class='ident'>name</span>.<span class='ident'>common_prefix</span>(<span class='kw-2'>&amp;</span><span class='ident'>name</span>.<span class='ident'>with_flipped_bit</span>(<span class='number'>19</span> <span class='op'>*</span> <span class='ident'>i</span>)));
         }
         <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>name</span>, <span class='ident'>name</span>.<span class='ident'>with_flipped_bit</span>(<span class='ident'>XOR_NAME_BITS</span>));
         <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>name</span>, <span class='ident'>name</span>.<span class='ident'>with_flipped_bit</span>(<span class='ident'>XOR_NAME_BITS</span> <span class='op'>+</span> <span class='number'>1000</span>));
