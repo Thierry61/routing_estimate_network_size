@@ -1012,6 +1012,35 @@
 <span id="968">968</span>
 <span id="969">969</span>
 <span id="970">970</span>
+<span id="971">971</span>
+<span id="972">972</span>
+<span id="973">973</span>
+<span id="974">974</span>
+<span id="975">975</span>
+<span id="976">976</span>
+<span id="977">977</span>
+<span id="978">978</span>
+<span id="979">979</span>
+<span id="980">980</span>
+<span id="981">981</span>
+<span id="982">982</span>
+<span id="983">983</span>
+<span id="984">984</span>
+<span id="985">985</span>
+<span id="986">986</span>
+<span id="987">987</span>
+<span id="988">988</span>
+<span id="989">989</span>
+<span id="990">990</span>
+<span id="991">991</span>
+<span id="992">992</span>
+<span id="993">993</span>
+<span id="994">994</span>
+<span id="995">995</span>
+<span id="996">996</span>
+<span id="997">997</span>
+<span id="998">998</span>
+<span id="999">999</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2015 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -1043,6 +1072,7 @@
 <span class='kw'>use</span> <span class='ident'>maidsafe_utilities</span>::<span class='ident'>serialisation</span>::{<span class='ident'>deserialise</span>, <span class='ident'>serialise</span>};
 <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>feature</span> <span class='op'>=</span> <span class='string'>&quot;use-mock-crust&quot;</span>)]</span>
 <span class='kw'>use</span> <span class='ident'>mock_crust</span>::<span class='ident'>crust</span>::<span class='ident'>PeerId</span>;
+<span class='kw'>use</span> <span class='ident'>routing_table</span>::<span class='ident'>Prefix</span>;
 <span class='kw'>use</span> <span class='ident'>rust_sodium</span>::<span class='ident'>crypto</span>::{<span class='ident'>box_</span>, <span class='ident'>sign</span>};
 <span class='kw'>use</span> <span class='ident'>rust_sodium</span>::<span class='ident'>crypto</span>::<span class='ident'>hash</span>::<span class='ident'>sha256</span>;
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>collections</span>::{<span class='ident'>BTreeMap</span>, <span class='ident'>HashSet</span>};
@@ -1157,7 +1187,7 @@
     }
 }
 
-<span class='doccomment'>/// And individual hop message that represents a part of the route of a message in transit.</span>
+<span class='doccomment'>/// An individual hop message that represents a part of the route of a message in transit.</span>
 <span class='doccomment'>///</span>
 <span class='doccomment'>/// To relay a `SignedMessage` via another node, the `SignedMessage` is wrapped in a `HopMessage`.</span>
 <span class='doccomment'>/// The `signature` is from the node that sends this directly to a node in its routing table. To</span>
@@ -1376,6 +1406,22 @@
         <span class='doccomment'>/// The message ID.</span>
         <span class='ident'>message_id</span>: <span class='ident'>MessageId</span>,
     },
+    <span class='doccomment'>/// Sent amongst members of a newly-merged group to allow synchronisation of their routing</span>
+    <span class='doccomment'>/// tables before notifying other connected peers of the merge.</span>
+    <span class='ident'>OwnGroupMerge</span> {
+        <span class='ident'>prefix</span>: <span class='ident'>Prefix</span><span class='op'>&lt;</span><span class='ident'>XorName</span><span class='op'>&gt;</span>,
+        <span class='comment'>// The recipient will already be connected to these peers, so doesn&#39;t need their complete</span>
+        <span class='comment'>// `PublicId`s.</span>
+        <span class='ident'>connected_groups</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span>(<span class='ident'>Prefix</span><span class='op'>&lt;</span><span class='ident'>XorName</span><span class='op'>&gt;</span>, <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>XorName</span><span class='op'>&gt;</span>)<span class='op'>&gt;</span>,
+        <span class='comment'>// The recipient will not be connected to these peers, so needs their complete `PublicId`s.</span>
+        <span class='ident'>needed_groups</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span>(<span class='ident'>Prefix</span><span class='op'>&lt;</span><span class='ident'>XorName</span><span class='op'>&gt;</span>, <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>PublicId</span><span class='op'>&gt;</span>)<span class='op'>&gt;</span>,
+    },
+    <span class='doccomment'>/// Sent by members of a newly-merged group to peers outwith the merged group to notify them of</span>
+    <span class='doccomment'>/// the merge.</span>
+    <span class='ident'>OtherGroupMerge</span> {
+        <span class='ident'>prefix</span>: <span class='ident'>Prefix</span><span class='op'>&lt;</span><span class='ident'>XorName</span><span class='op'>&gt;</span>,
+        <span class='ident'>group</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>PublicId</span><span class='op'>&gt;</span>,
+    },
     <span class='doccomment'>/// Acknowledge receipt of any message except an `Ack`. It contains the hash of the</span>
     <span class='doccomment'>/// received message and the priority.</span>
     <span class='ident'>Ack</span>(<span class='ident'>Ack</span>, <span class='ident'>u8</span>),
@@ -1499,6 +1545,18 @@
                        <span class='string'>&quot;GetCloseGroupResponse {{ {:?}, {:?} }}&quot;</span>,
                        <span class='ident'>close_group_ids</span>,
                        <span class='ident'>message_id</span>)
+            }
+            <span class='ident'>MessageContent</span>::<span class='ident'>OwnGroupMerge</span> { <span class='kw-2'>ref</span> <span class='ident'>prefix</span>,
+                                            <span class='kw-2'>ref</span> <span class='ident'>connected_groups</span>,
+                                            <span class='kw-2'>ref</span> <span class='ident'>needed_groups</span> } <span class='op'>=&gt;</span> {
+                <span class='macro'>write</span><span class='macro'>!</span>(<span class='ident'>formatter</span>,
+                       <span class='string'>&quot;OwnGroupMerge {{ {:?}, {:?}, {:?} }}&quot;</span>,
+                       <span class='ident'>prefix</span>,
+                       <span class='ident'>connected_groups</span>,
+                       <span class='ident'>needed_groups</span>)
+            }
+            <span class='ident'>MessageContent</span>::<span class='ident'>OtherGroupMerge</span> { <span class='kw-2'>ref</span> <span class='ident'>prefix</span>, <span class='kw-2'>ref</span> <span class='ident'>group</span> } <span class='op'>=&gt;</span> {
+                <span class='macro'>write</span><span class='macro'>!</span>(<span class='ident'>formatter</span>, <span class='string'>&quot;OtherGroupMerge {{ {:?}, {:?} }}&quot;</span>, <span class='ident'>prefix</span>, <span class='ident'>group</span>)
             }
             <span class='ident'>MessageContent</span>::<span class='ident'>Ack</span>(<span class='ident'>ack</span>, <span class='ident'>priority</span>) <span class='op'>=&gt;</span> <span class='macro'>write</span><span class='macro'>!</span>(<span class='ident'>formatter</span>, <span class='string'>&quot;Ack({}, {})&quot;</span>, <span class='ident'>ack</span>, <span class='ident'>priority</span>),
             <span class='ident'>MessageContent</span>::<span class='ident'>GroupMessageHash</span>(<span class='kw-2'>ref</span> <span class='ident'>hash</span>, <span class='ident'>priority</span>) <span class='op'>=&gt;</span> {

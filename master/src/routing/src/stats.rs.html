@@ -236,6 +236,13 @@
 <span id="192">192</span>
 <span id="193">193</span>
 <span id="194">194</span>
+<span id="195">195</span>
+<span id="196">196</span>
+<span id="197">197</span>
+<span id="198">198</span>
+<span id="199">199</span>
+<span id="200">200</span>
+<span id="201">201</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2016 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -299,6 +306,8 @@
     <span class='ident'>msg_get_account_info_success</span>: <span class='ident'>usize</span>,
     <span class='ident'>msg_get_account_info_failure</span>: <span class='ident'>usize</span>,
     <span class='ident'>msg_get_close_group_rsp</span>: <span class='ident'>usize</span>,
+    <span class='ident'>msg_own_group_merge</span>: <span class='ident'>usize</span>,
+    <span class='ident'>msg_other_group_merge</span>: <span class='ident'>usize</span>,
     <span class='ident'>msg_get_node_name_rsp</span>: <span class='ident'>usize</span>,
     <span class='ident'>msg_ack</span>: <span class='ident'>usize</span>,
     <span class='ident'>msg_hash</span>: <span class='ident'>usize</span>,
@@ -364,6 +373,8 @@
             <span class='ident'>MessageContent</span>::<span class='ident'>GetCloseGroup</span>(..) <span class='op'>=&gt;</span> <span class='self'>self</span>.<span class='ident'>msg_get_close_group</span> <span class='op'>+=</span> <span class='number'>1</span>,
             <span class='ident'>MessageContent</span>::<span class='ident'>ConnectionInfo</span> { .. } <span class='op'>=&gt;</span> <span class='self'>self</span>.<span class='ident'>msg_connection_info</span> <span class='op'>+=</span> <span class='number'>1</span>,
             <span class='ident'>MessageContent</span>::<span class='ident'>GetCloseGroupResponse</span> { .. } <span class='op'>=&gt;</span> <span class='self'>self</span>.<span class='ident'>msg_get_close_group_rsp</span> <span class='op'>+=</span> <span class='number'>1</span>,
+            <span class='ident'>MessageContent</span>::<span class='ident'>OwnGroupMerge</span> { .. } <span class='op'>=&gt;</span> <span class='self'>self</span>.<span class='ident'>msg_own_group_merge</span> <span class='op'>+=</span> <span class='number'>1</span>,
+            <span class='ident'>MessageContent</span>::<span class='ident'>OtherGroupMerge</span> { .. } <span class='op'>=&gt;</span> <span class='self'>self</span>.<span class='ident'>msg_other_group_merge</span> <span class='op'>+=</span> <span class='number'>1</span>,
             <span class='ident'>MessageContent</span>::<span class='ident'>GetNodeNameResponse</span> { .. } <span class='op'>=&gt;</span> <span class='self'>self</span>.<span class='ident'>msg_get_node_name_rsp</span> <span class='op'>+=</span> <span class='number'>1</span>,
             <span class='ident'>MessageContent</span>::<span class='ident'>Ack</span>(..) <span class='op'>=&gt;</span> <span class='self'>self</span>.<span class='ident'>msg_ack</span> <span class='op'>+=</span> <span class='number'>1</span>,
             <span class='ident'>MessageContent</span>::<span class='ident'>GroupMessageHash</span>(..) <span class='op'>=&gt;</span> <span class='self'>self</span>.<span class='ident'>msg_hash</span> <span class='op'>+=</span> <span class='number'>1</span>,
@@ -401,12 +412,15 @@
                   <span class='self'>self</span>.<span class='ident'>msg_direct_node_identify</span>,
                   <span class='self'>self</span>.<span class='ident'>msg_direct_new_node</span>);
             <span class='macro'>info</span><span class='macro'>!</span>(<span class='string'>&quot;Stats - Hops (Request/Response) - GetNodeName: {}/{}, ExpectCloseNode: {}, \
-                   GetCloseGroup: {}/{}, ConnectionInfo: {}, Ack: {}, GroupMessageHash: {}&quot;</span>,
+                   GetCloseGroup: {}/{}, OwnGroupMerge: {}, OtherGroupMerge: {}, ConnectionInfo: \
+                   {}, Ack: {}, GroupMessageHash: {}&quot;</span>,
                   <span class='self'>self</span>.<span class='ident'>msg_get_node_name</span>,
                   <span class='self'>self</span>.<span class='ident'>msg_get_node_name_rsp</span>,
                   <span class='self'>self</span>.<span class='ident'>msg_expect_close_node</span>,
                   <span class='self'>self</span>.<span class='ident'>msg_get_close_group</span>,
                   <span class='self'>self</span>.<span class='ident'>msg_get_close_group_rsp</span>,
+                  <span class='self'>self</span>.<span class='ident'>msg_own_group_merge</span>,
+                  <span class='self'>self</span>.<span class='ident'>msg_other_group_merge</span>,
                   <span class='self'>self</span>.<span class='ident'>msg_connection_info</span>,
                   <span class='self'>self</span>.<span class='ident'>msg_ack</span>,
                   <span class='self'>self</span>.<span class='ident'>msg_hash</span>);

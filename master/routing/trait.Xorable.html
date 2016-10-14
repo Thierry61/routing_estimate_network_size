@@ -47,15 +47,17 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a id='src-5801' class='srclink' href='../src/routing/src/routing_table/xorable.rs.html#26-54' title='goto source code'>[src]</a></span></h1>
+               </span><a id='src-6025' class='srclink' href='../src/routing/src/routing_table/xorable.rs.html#25-62' title='goto source code'>[src]</a></span></h1>
 <pre class='rust trait'>pub trait Xorable: <a class='trait' href='https://doc.rust-lang.org/nightly/core/cmp/trait.Ord.html' title='core::cmp::Ord'>Ord</a> {
     fn <a href='#tymethod.common_prefix' class='fnname'>common_prefix</a>(&amp;self, other: &amp;Self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>;
     fn <a href='#tymethod.cmp_distance' class='fnname'>cmp_distance</a>(&amp;self, lhs: &amp;Self, rhs: &amp;Self) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/cmp/enum.Ordering.html' title='core::cmp::Ordering'>Ordering</a>;
     fn <a href='#tymethod.bit' class='fnname'>bit</a>(&amp;self, i: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a>;
     fn <a href='#tymethod.differs_in_bit' class='fnname'>differs_in_bit</a>(&amp;self, other: &amp;Self, i: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a>;
-    fn <a href='#tymethod.with_flipped_bit' class='fnname'>with_flipped_bit</a>(&amp;self, i: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>) -&gt; Self;
+    fn <a href='#tymethod.with_flipped_bit' class='fnname'>with_flipped_bit</a>(self, i: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>) -&gt; Self;
+    fn <a href='#tymethod.with_bit' class='fnname'>with_bit</a>(self, i: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>, bit: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a>) -&gt; Self;
     fn <a href='#tymethod.binary' class='fnname'>binary</a>(&amp;self) -&gt; <a class='struct' href='https://doc.rust-lang.org/nightly/collections/string/struct.String.html' title='collections::string::String'>String</a>;
     fn <a href='#tymethod.debug_binary' class='fnname'>debug_binary</a>(&amp;self) -&gt; <a class='struct' href='https://doc.rust-lang.org/nightly/collections/string/struct.String.html' title='collections::string::String'>String</a>;
+    fn <a href='#tymethod.set_remaining' class='fnname'>set_remaining</a>(self, n: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>, val: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a>) -&gt; Self;
 }</pre><div class='docblock'><p>A sequence of bits, as a point in XOR space.</p>
 
 <p>These are considered points in a space with the XOR metric, and need to implement the
@@ -72,11 +74,16 @@ the first one in which they differ.</p>
 equal if the arguments are equal.)</p>
 </div><h3 id='tymethod.bit' class='method stab '><code>fn <a href='#tymethod.bit' class='fnname'>bit</a>(&amp;self, i: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h3><div class='docblock'><p>Returns <code>true</code> if the <code>i</code>-th bit is <code>1</code>.</p>
 </div><h3 id='tymethod.differs_in_bit' class='method stab '><code>fn <a href='#tymethod.differs_in_bit' class='fnname'>differs_in_bit</a>(&amp;self, other: &amp;Self, i: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h3><div class='docblock'><p>Returns <code>true</code> if the <code>i</code>-th bit of other has a different value to the <code>i</code>-th bit of <code>self</code>.</p>
-</div><h3 id='tymethod.with_flipped_bit' class='method stab '><code>fn <a href='#tymethod.with_flipped_bit' class='fnname'>with_flipped_bit</a>(&amp;self, i: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>) -&gt; Self</code></h3><div class='docblock'><p>Returns a copy of <code>self</code>, with the <code>index</code>-th bit flipped.</p>
+</div><h3 id='tymethod.with_flipped_bit' class='method stab '><code>fn <a href='#tymethod.with_flipped_bit' class='fnname'>with_flipped_bit</a>(self, i: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>) -&gt; Self</code></h3><div class='docblock'><p>Returns a copy of <code>self</code>, with the <code>index</code>-th bit flipped.</p>
+
+<p>If <code>index</code> exceeds the number of bits in <code>self</code>, an unmodified copy of <code>self</code> is returned.</p>
+</div><h3 id='tymethod.with_bit' class='method stab '><code>fn <a href='#tymethod.with_bit' class='fnname'>with_bit</a>(self, i: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>, bit: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a>) -&gt; Self</code></h3><div class='docblock'><p>Returns a copy of <code>self</code>, with the <code>index</code>-th bit set to <code>bit</code>.</p>
 
 <p>If <code>index</code> exceeds the number of bits in <code>self</code>, an unmodified copy of <code>self</code> is returned.</p>
 </div><h3 id='tymethod.binary' class='method stab '><code>fn <a href='#tymethod.binary' class='fnname'>binary</a>(&amp;self) -&gt; <a class='struct' href='https://doc.rust-lang.org/nightly/collections/string/struct.String.html' title='collections::string::String'>String</a></code></h3><div class='docblock'><p>Returns a binary format string, with leading zero bits included.</p>
 </div><h3 id='tymethod.debug_binary' class='method stab '><code>fn <a href='#tymethod.debug_binary' class='fnname'>debug_binary</a>(&amp;self) -&gt; <a class='struct' href='https://doc.rust-lang.org/nightly/collections/string/struct.String.html' title='collections::string::String'>String</a></code></h3><div class='docblock'><p>Returns a binary debug format string of <code>????????...????????</code></p>
+</div><h3 id='tymethod.set_remaining' class='method stab '><code>fn <a href='#tymethod.set_remaining' class='fnname'>set_remaining</a>(self, n: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>, val: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a>) -&gt; Self</code></h3><div class='docblock'><p>Returns a copy of self with first <code>n</code> bits preserved, and remaining bits
+set to 0 (val == false) or 1 (val == true).</p>
 </div></div>
         <h2 id='implementors'>Implementors</h2>
         <ul class='item-list' id='implementors-list'>
