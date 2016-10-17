@@ -379,8 +379,6 @@
 <span id="335">335</span>
 <span id="336">336</span>
 <span id="337">337</span>
-<span id="338">338</span>
-<span id="339">339</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2016 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -407,10 +405,8 @@
 <span class='doccomment'>/// These are considered points in a space with the XOR metric, and need to implement the</span>
 <span class='doccomment'>/// functionality required by `RoutingTable` to use them as node names.</span>
 <span class='kw'>pub</span> <span class='kw'>trait</span> <span class='ident'>Xorable</span>: <span class='ident'>Ord</span> {
-    <span class='doccomment'>/// Returns the bucket that `other` belongs to, in the routing table of the node with name</span>
-    <span class='doccomment'>/// `self`. This must be the number of leading bits in which `self` and `other` agree. E. g.</span>
-    <span class='doccomment'>/// the bucket index of `other = 11110000` for `self = 11111111` is 4, because the fifth bit is</span>
-    <span class='doccomment'>/// the first one in which they differ.</span>
+    <span class='doccomment'>/// Returns the length of the common prefix with the `other` name; e. g.</span>
+    <span class='doccomment'>/// the when `other = 11110000` and `self = 11111111` this is 4.</span>
     <span class='kw'>fn</span> <span class='ident'>common_prefix</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>other</span>: <span class='kw-2'>&amp;</span><span class='self'>Self</span>) <span class='op'>-&gt;</span> <span class='ident'>usize</span>;
 
     <span class='doccomment'>/// Compares the distance of the arguments to `self`. Returns `Less` if `lhs` is closer,</span>

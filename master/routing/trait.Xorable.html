@@ -47,7 +47,7 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a id='src-6025' class='srclink' href='../src/routing/src/routing_table/xorable.rs.html#25-62' title='goto source code'>[src]</a></span></h1>
+               </span><a id='src-6034' class='srclink' href='../src/routing/src/routing_table/xorable.rs.html#25-60' title='goto source code'>[src]</a></span></h1>
 <pre class='rust trait'>pub trait Xorable: <a class='trait' href='https://doc.rust-lang.org/nightly/core/cmp/trait.Ord.html' title='core::cmp::Ord'>Ord</a> {
     fn <a href='#tymethod.common_prefix' class='fnname'>common_prefix</a>(&amp;self, other: &amp;Self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>;
     fn <a href='#tymethod.cmp_distance' class='fnname'>cmp_distance</a>(&amp;self, lhs: &amp;Self, rhs: &amp;Self) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/cmp/enum.Ordering.html' title='core::cmp::Ordering'>Ordering</a>;
@@ -65,10 +65,8 @@ functionality required by <code>RoutingTable</code> to use them as node names.</
 </div>
             <h2 id='required-methods'>Required Methods</h2>
             <div class='methods'>
-        <h3 id='tymethod.common_prefix' class='method stab '><code>fn <a href='#tymethod.common_prefix' class='fnname'>common_prefix</a>(&amp;self, other: &amp;Self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a></code></h3><div class='docblock'><p>Returns the bucket that <code>other</code> belongs to, in the routing table of the node with name
-<code>self</code>. This must be the number of leading bits in which <code>self</code> and <code>other</code> agree. E. g.
-the bucket index of <code>other = 11110000</code> for <code>self = 11111111</code> is 4, because the fifth bit is
-the first one in which they differ.</p>
+        <h3 id='tymethod.common_prefix' class='method stab '><code>fn <a href='#tymethod.common_prefix' class='fnname'>common_prefix</a>(&amp;self, other: &amp;Self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a></code></h3><div class='docblock'><p>Returns the length of the common prefix with the <code>other</code> name; e. g.
+the when <code>other = 11110000</code> and <code>self = 11111111</code> this is 4.</p>
 </div><h3 id='tymethod.cmp_distance' class='method stab '><code>fn <a href='#tymethod.cmp_distance' class='fnname'>cmp_distance</a>(&amp;self, lhs: &amp;Self, rhs: &amp;Self) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/cmp/enum.Ordering.html' title='core::cmp::Ordering'>Ordering</a></code></h3><div class='docblock'><p>Compares the distance of the arguments to <code>self</code>. Returns <code>Less</code> if <code>lhs</code> is closer,
 <code>Greater</code> if <code>rhs</code> is closer, and <code>Equal</code> if <code>lhs == rhs</code>. (The XOR distance can only be
 equal if the arguments are equal.)</p>

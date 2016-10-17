@@ -116,7 +116,7 @@
 
 <span class='macro'>quick_error</span><span class='macro'>!</span> {
     <span class='doccomment'>/// Routing table error variants.</span>
-    <span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Debug</span>)]</span>
+    <span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Debug</span>, <span class='ident'>PartialEq</span>, <span class='ident'>Eq</span>)]</span>
     <span class='kw'>pub</span> <span class='kw'>enum</span> <span class='ident'>Error</span> {
         <span class='doccomment'>/// Adding our own name to the routing table is disallowed.</span>
         <span class='ident'>OwnNameDisallowed</span> {
