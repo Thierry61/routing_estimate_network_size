@@ -563,8 +563,6 @@
 <span id="519">519</span>
 <span id="520">520</span>
 <span id="521">521</span>
-<span id="522">522</span>
-<span id="523">523</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2015 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -584,7 +582,7 @@
 <span class='comment'>// relating to use of the SAFE Network Software.</span>
 
 <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>not</span>(<span class='ident'>feature</span> <span class='op'>=</span> <span class='string'>&quot;use-mock-crust&quot;</span>))]</span>
-<span class='kw'>use</span> <span class='ident'>maidsafe_utilities</span>::<span class='ident'>thread</span>::<span class='ident'>RaiiThreadJoiner</span>;
+<span class='kw'>use</span> <span class='ident'>maidsafe_utilities</span>::<span class='ident'>thread</span>;
 <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>not</span>(<span class='ident'>feature</span> <span class='op'>=</span> <span class='string'>&quot;use-mock-crust&quot;</span>))]</span>
 <span class='kw'>use</span> <span class='ident'>rust_sodium</span>;
 <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>feature</span> <span class='op'>=</span> <span class='string'>&quot;use-mock-crust&quot;</span>)]</span>
@@ -652,9 +650,7 @@
                                                   <span class='self'>self</span>.<span class='ident'>deny_other_local_nodes</span>);
         <span class='kw'>let</span> (<span class='ident'>tx</span>, <span class='ident'>rx</span>) <span class='op'>=</span> <span class='ident'>channel</span>();
 
-        <span class='kw'>let</span> <span class='ident'>raii_joiner</span> <span class='op'>=</span> <span class='ident'>RaiiThreadJoiner</span>::<span class='ident'>new</span>(<span class='macro'>thread</span><span class='macro'>!</span>(<span class='string'>&quot;Node thread&quot;</span>, <span class='kw'>move</span> <span class='op'>||</span> {
-            <span class='ident'>core</span>.<span class='ident'>run</span>();
-        }));
+        <span class='kw'>let</span> <span class='ident'>raii_joiner</span> <span class='op'>=</span> <span class='ident'>thread</span>::<span class='ident'>named</span>(<span class='string'>&quot;Node thread&quot;</span>, <span class='kw'>move</span> <span class='op'>||</span> <span class='ident'>core</span>.<span class='ident'>run</span>());
 
         <span class='prelude-val'>Ok</span>(<span class='ident'>Node</span> {
             <span class='ident'>interface_result_tx</span>: <span class='ident'>tx</span>,
@@ -701,7 +697,7 @@
     <span class='ident'>core</span>: <span class='ident'>RefCell</span><span class='op'>&lt;</span><span class='ident'>Core</span><span class='op'>&gt;</span>,
 
     <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>not</span>(<span class='ident'>feature</span> <span class='op'>=</span> <span class='string'>&quot;use-mock-crust&quot;</span>))]</span>
-    <span class='ident'>_raii_joiner</span>: ::<span class='ident'>maidsafe_utilities</span>::<span class='ident'>thread</span>::<span class='ident'>RaiiThreadJoiner</span>,
+    <span class='ident'>_raii_joiner</span>: ::<span class='ident'>maidsafe_utilities</span>::<span class='ident'>thread</span>::<span class='ident'>Joiner</span>,
 }
 
 <span class='kw'>impl</span> <span class='ident'>Node</span> {
@@ -1073,7 +1069,7 @@
 <span class='comment'>//         let key = ::std::string::String::from(&quot;key&quot;);</span>
 <span class='comment'>//         let value = ::std::string::String::from(&quot;value&quot;);</span>
 <span class='comment'>//         let name = calculate_key_name(&amp;key.clone());</span>
-<span class='comment'>//         let data = unwrap_result!(::utils::encode(&amp;(key, value)));</span>
+<span class='comment'>//         let data = unwrap!(::utils::encode(&amp;(key, value)));</span>
 <span class='comment'>//         let data = ::data::Data::PlainData(::plain_data::PlainData::new(name.clone(), data));</span>
 
 <span class='comment'>//         debug!(&quot;Putting data {:?}&quot;, data);</span>

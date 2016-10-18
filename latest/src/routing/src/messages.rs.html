@@ -1003,7 +1003,6 @@
 <span id="959">959</span>
 <span id="960">960</span>
 <span id="961">961</span>
-<span id="962">962</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2015 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -1851,7 +1850,7 @@
 
         <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>signed_message_result</span>.<span class='ident'>is_ok</span>());
 
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>signed_message</span> <span class='op'>=</span> <span class='macro'>unwrap_result</span><span class='macro'>!</span>(<span class='ident'>signed_message_result</span>);
+        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>signed_message</span> <span class='op'>=</span> <span class='macro'>unwrap</span><span class='macro'>!</span>(<span class='ident'>signed_message_result</span>);
 
         <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>routing_message</span>, <span class='op'>*</span><span class='ident'>signed_message</span>.<span class='ident'>routing_message</span>());
         <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>full_id</span>.<span class='ident'>public_id</span>(), <span class='ident'>signed_message</span>.<span class='ident'>public_id</span>());
@@ -1861,7 +1860,7 @@
         <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>check_integrity_result</span>.<span class='ident'>is_ok</span>());
 
         <span class='kw'>let</span> <span class='ident'>full_id</span> <span class='op'>=</span> <span class='ident'>FullId</span>::<span class='ident'>new</span>();
-        <span class='kw'>let</span> <span class='ident'>bytes_to_sign</span> <span class='op'>=</span> <span class='macro'>unwrap_result</span><span class='macro'>!</span>(<span class='ident'>serialise</span>(<span class='kw-2'>&amp;</span>(<span class='kw-2'>&amp;</span><span class='ident'>routing_message</span>, <span class='ident'>full_id</span>.<span class='ident'>public_id</span>())));
+        <span class='kw'>let</span> <span class='ident'>bytes_to_sign</span> <span class='op'>=</span> <span class='macro'>unwrap</span><span class='macro'>!</span>(<span class='ident'>serialise</span>(<span class='kw-2'>&amp;</span>(<span class='kw-2'>&amp;</span><span class='ident'>routing_message</span>, <span class='ident'>full_id</span>.<span class='ident'>public_id</span>())));
         <span class='kw'>let</span> <span class='ident'>signature</span> <span class='op'>=</span> <span class='ident'>sign</span>::<span class='ident'>sign_detached</span>(<span class='kw-2'>&amp;</span><span class='ident'>bytes_to_sign</span>, <span class='ident'>full_id</span>.<span class='ident'>signing_private_key</span>());
 
         <span class='ident'>signed_message</span>.<span class='ident'>signature</span> <span class='op'>=</span> <span class='ident'>signature</span>;
@@ -1876,7 +1875,7 @@
         <span class='kw'>let</span> <span class='ident'>data_bytes</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>u8</span><span class='op'>&gt;</span> <span class='op'>=</span> (<span class='number'>0</span>..<span class='number'>10</span>).<span class='ident'>map</span>(<span class='op'>|</span><span class='ident'>i</span><span class='op'>|</span> <span class='ident'>i</span> <span class='kw'>as</span> <span class='ident'>u8</span>).<span class='ident'>collect</span>();
         <span class='kw'>let</span> <span class='ident'>data</span> <span class='op'>=</span> <span class='ident'>Data</span>::<span class='ident'>Immutable</span>(<span class='ident'>ImmutableData</span>::<span class='ident'>new</span>(<span class='ident'>data_bytes</span>));
         <span class='kw'>let</span> <span class='ident'>user_msg</span> <span class='op'>=</span> <span class='ident'>UserMessage</span>::<span class='ident'>Request</span>(<span class='ident'>Request</span>::<span class='ident'>Put</span>(<span class='ident'>data</span>, <span class='ident'>MessageId</span>::<span class='ident'>new</span>()));
-        <span class='kw'>let</span> <span class='ident'>parts</span> <span class='op'>=</span> <span class='macro'>unwrap_result</span><span class='macro'>!</span>(<span class='ident'>user_msg</span>.<span class='ident'>to_parts</span>(<span class='number'>1</span>));
+        <span class='kw'>let</span> <span class='ident'>parts</span> <span class='op'>=</span> <span class='macro'>unwrap</span><span class='macro'>!</span>(<span class='ident'>user_msg</span>.<span class='ident'>to_parts</span>(<span class='number'>1</span>));
         <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='number'>1</span>, <span class='ident'>parts</span>.<span class='ident'>len</span>());
         <span class='kw'>let</span> <span class='ident'>part</span> <span class='op'>=</span> <span class='ident'>parts</span>[<span class='number'>0</span>].<span class='ident'>clone</span>();
         <span class='kw'>let</span> <span class='ident'>name</span>: <span class='ident'>XorName</span> <span class='op'>=</span> <span class='ident'>rand</span>::<span class='ident'>random</span>();
@@ -1885,12 +1884,12 @@
             <span class='ident'>dst</span>: <span class='ident'>Authority</span>::<span class='ident'>ClientManager</span>(<span class='ident'>name</span>),
             <span class='ident'>content</span>: <span class='ident'>part</span>,
         };
-        <span class='kw'>let</span> <span class='ident'>hash_msg</span> <span class='op'>=</span> <span class='macro'>unwrap_result</span><span class='macro'>!</span>(<span class='ident'>routing_message</span>.<span class='ident'>to_grp_msg_hash</span>());
+        <span class='kw'>let</span> <span class='ident'>hash_msg</span> <span class='op'>=</span> <span class='macro'>unwrap</span><span class='macro'>!</span>(<span class='ident'>routing_message</span>.<span class='ident'>to_grp_msg_hash</span>());
         <span class='kw'>match</span> <span class='ident'>hash_msg</span>.<span class='ident'>content</span> {
             <span class='ident'>MessageContent</span>::<span class='ident'>GroupMessageHash</span>(..) <span class='op'>=&gt;</span> (),
             _ <span class='op'>=&gt;</span> <span class='macro'>panic</span><span class='macro'>!</span>(<span class='string'>&quot;Wrong content for hashed message: {:?}&quot;</span>, <span class='ident'>hash_msg</span>),
         }
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>hash_msg</span>, <span class='macro'>unwrap_result</span><span class='macro'>!</span>(<span class='ident'>hash_msg</span>.<span class='ident'>to_grp_msg_hash</span>()));
+        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>hash_msg</span>, <span class='macro'>unwrap</span><span class='macro'>!</span>(<span class='ident'>hash_msg</span>.<span class='ident'>to_grp_msg_hash</span>()));
 
         <span class='kw'>let</span> <span class='ident'>non_hash_routing_msg</span> <span class='op'>=</span> <span class='ident'>RoutingMessage</span> {
             <span class='ident'>src</span>: <span class='ident'>Authority</span>::<span class='ident'>ClientManager</span>(<span class='ident'>name</span>),
@@ -1898,7 +1897,7 @@
             <span class='ident'>content</span>: <span class='ident'>MessageContent</span>::<span class='ident'>GetCloseGroup</span>(<span class='ident'>MessageId</span>::<span class='ident'>zero</span>()),
         };
         <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>non_hash_routing_msg</span>,
-                   <span class='macro'>unwrap_result</span><span class='macro'>!</span>(<span class='ident'>non_hash_routing_msg</span>.<span class='ident'>to_grp_msg_hash</span>()));
+                   <span class='macro'>unwrap</span><span class='macro'>!</span>(<span class='ident'>non_hash_routing_msg</span>.<span class='ident'>to_grp_msg_hash</span>()));
     }
 
     <span class='attribute'>#[<span class='ident'>test</span>]</span>
@@ -1914,14 +1913,14 @@
 
         <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>signed_message_result</span>.<span class='ident'>is_ok</span>());
 
-        <span class='kw'>let</span> <span class='ident'>signed_message</span> <span class='op'>=</span> <span class='macro'>unwrap_result</span><span class='macro'>!</span>(<span class='ident'>signed_message_result</span>);
+        <span class='kw'>let</span> <span class='ident'>signed_message</span> <span class='op'>=</span> <span class='macro'>unwrap</span><span class='macro'>!</span>(<span class='ident'>signed_message_result</span>);
         <span class='kw'>let</span> (<span class='ident'>public_signing_key</span>, <span class='ident'>secret_signing_key</span>) <span class='op'>=</span> <span class='ident'>sign</span>::<span class='ident'>gen_keypair</span>();
         <span class='kw'>let</span> <span class='ident'>hop_message_result</span> <span class='op'>=</span>
             <span class='ident'>HopMessage</span>::<span class='ident'>new</span>(<span class='ident'>signed_message</span>.<span class='ident'>clone</span>(), <span class='number'>0</span>, <span class='macro'>vec</span><span class='macro'>!</span>[], <span class='kw-2'>&amp;</span><span class='ident'>secret_signing_key</span>);
 
         <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>hop_message_result</span>.<span class='ident'>is_ok</span>());
 
-        <span class='kw'>let</span> <span class='ident'>hop_message</span> <span class='op'>=</span> <span class='macro'>unwrap_result</span><span class='macro'>!</span>(<span class='ident'>hop_message_result</span>);
+        <span class='kw'>let</span> <span class='ident'>hop_message</span> <span class='op'>=</span> <span class='macro'>unwrap</span><span class='macro'>!</span>(<span class='ident'>hop_message_result</span>);
 
         <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>signed_message</span>, <span class='op'>*</span><span class='ident'>hop_message</span>.<span class='ident'>content</span>());
 
@@ -1941,7 +1940,7 @@
         <span class='kw'>let</span> <span class='ident'>data</span> <span class='op'>=</span> <span class='ident'>Data</span>::<span class='ident'>Immutable</span>(<span class='ident'>ImmutableData</span>::<span class='ident'>new</span>(<span class='ident'>data_bytes</span>));
         <span class='kw'>let</span> <span class='ident'>user_msg</span> <span class='op'>=</span> <span class='ident'>UserMessage</span>::<span class='ident'>Request</span>(<span class='ident'>Request</span>::<span class='ident'>Put</span>(<span class='ident'>data</span>, <span class='ident'>MessageId</span>::<span class='ident'>new</span>()));
         <span class='kw'>let</span> <span class='ident'>msg_hash</span> <span class='op'>=</span> <span class='ident'>maidsafe_utilities</span>::<span class='ident'>big_endian_sip_hash</span>(<span class='kw-2'>&amp;</span><span class='ident'>user_msg</span>);
-        <span class='kw'>let</span> <span class='ident'>parts</span> <span class='op'>=</span> <span class='macro'>unwrap_result</span><span class='macro'>!</span>(<span class='ident'>user_msg</span>.<span class='ident'>to_parts</span>(<span class='number'>42</span>));
+        <span class='kw'>let</span> <span class='ident'>parts</span> <span class='op'>=</span> <span class='macro'>unwrap</span><span class='macro'>!</span>(<span class='ident'>user_msg</span>.<span class='ident'>to_parts</span>(<span class='number'>42</span>));
         <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>parts</span>.<span class='ident'>len</span>(), <span class='number'>3</span>);
         <span class='kw'>let</span> <span class='ident'>payloads</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>u8</span><span class='op'>&gt;&gt;</span> <span class='op'>=</span> <span class='ident'>parts</span>.<span class='ident'>into_iter</span>()
             .<span class='ident'>enumerate</span>()
@@ -1962,8 +1961,7 @@
                 <span class='ident'>msg</span> <span class='op'>=&gt;</span> <span class='macro'>panic</span><span class='macro'>!</span>(<span class='string'>&quot;Unexpected message {:?}&quot;</span>, <span class='ident'>msg</span>),
             })
             .<span class='ident'>collect</span>();
-        <span class='kw'>let</span> <span class='ident'>deserialised_user_msg</span> <span class='op'>=</span> <span class='macro'>unwrap_result</span><span class='macro'>!</span>(<span class='ident'>UserMessage</span>::<span class='ident'>from_parts</span>(<span class='ident'>msg_hash</span>,
-                                                                           <span class='ident'>payloads</span>.<span class='ident'>iter</span>()));
+        <span class='kw'>let</span> <span class='ident'>deserialised_user_msg</span> <span class='op'>=</span> <span class='macro'>unwrap</span><span class='macro'>!</span>(<span class='ident'>UserMessage</span>::<span class='ident'>from_parts</span>(<span class='ident'>msg_hash</span>, <span class='ident'>payloads</span>.<span class='ident'>iter</span>()));
         <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>user_msg</span>, <span class='ident'>deserialised_user_msg</span>);
     }
 }
