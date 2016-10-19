@@ -264,6 +264,17 @@
 <span id="220">220</span>
 <span id="221">221</span>
 <span id="222">222</span>
+<span id="223">223</span>
+<span id="224">224</span>
+<span id="225">225</span>
+<span id="226">226</span>
+<span id="227">227</span>
+<span id="228">228</span>
+<span id="229">229</span>
+<span id="230">230</span>
+<span id="231">231</span>
+<span id="232">232</span>
+<span id="233">233</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2015 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -283,6 +294,7 @@
 <span class='comment'>// relating to use of the SAFE Network Software.</span>
 
 <span class='kw'>use</span> <span class='ident'>action</span>::<span class='ident'>Action</span>;
+<span class='kw'>use</span> <span class='ident'>append_types</span>::<span class='ident'>AppendWrapper</span>;
 <span class='kw'>use</span> <span class='ident'>authority</span>::<span class='ident'>Authority</span>;
 <span class='kw'>use</span> <span class='ident'>cache</span>::<span class='ident'>NullCache</span>;
 <span class='kw'>use</span> <span class='ident'>data</span>::{<span class='ident'>Data</span>, <span class='ident'>DataIdentifier</span>};
@@ -402,6 +414,16 @@
                                <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span>(), <span class='ident'>InterfaceError</span><span class='op'>&gt;</span> {
         <span class='self'>self</span>.<span class='ident'>send_action</span>(<span class='ident'>Request</span>::<span class='ident'>Delete</span>(<span class='ident'>data</span>, <span class='ident'>message_id</span>), <span class='ident'>dst</span>, <span class='ident'>DEFAULT_PRIORITY</span>)
     }
+
+    <span class='doccomment'>/// Append an item to appendable data.</span>
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>send_append_request</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>,
+                               <span class='ident'>dst</span>: <span class='ident'>Authority</span>,
+                               <span class='ident'>wrapper</span>: <span class='ident'>AppendWrapper</span>,
+                               <span class='ident'>message_id</span>: <span class='ident'>MessageId</span>)
+                               <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span>(), <span class='ident'>InterfaceError</span><span class='op'>&gt;</span> {
+        <span class='self'>self</span>.<span class='ident'>send_action</span>(<span class='ident'>Request</span>::<span class='ident'>Append</span>(<span class='ident'>wrapper</span>, <span class='ident'>message_id</span>), <span class='ident'>dst</span>, <span class='ident'>DEFAULT_PRIORITY</span>)
+    }
+
 
     <span class='doccomment'>/// Request account information for the Client calling this function</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>send_get_account_info_request</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>,

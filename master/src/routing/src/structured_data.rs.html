@@ -543,6 +543,13 @@
 <span id="499">499</span>
 <span id="500">500</span>
 <span id="501">501</span>
+<span id="502">502</span>
+<span id="503">503</span>
+<span id="504">504</span>
+<span id="505">505</span>
+<span id="506">506</span>
+<span id="507">507</span>
+<span id="508">508</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2015 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -561,7 +568,7 @@
 <span class='comment'>// Please review the Licences for the specific language governing permissions and limitations</span>
 <span class='comment'>// relating to use of the SAFE Network Software.</span>
 
-<span class='kw'>use</span> <span class='ident'>data</span>::<span class='ident'>DataIdentifier</span>;
+<span class='kw'>use</span> <span class='ident'>data</span>::{<span class='ident'>DataIdentifier</span>, <span class='ident'>NO_OWNER_PUB_KEY</span>, <span class='ident'>verify_detached</span>};
 <span class='kw'>use</span> <span class='ident'>error</span>::<span class='ident'>RoutingError</span>;
 <span class='kw'>use</span> <span class='ident'>maidsafe_utilities</span>::<span class='ident'>serialisation</span>::<span class='ident'>serialise</span>;
 <span class='kw'>use</span> <span class='ident'>rust_sodium</span>::<span class='ident'>crypto</span>::<span class='ident'>sign</span>::{<span class='self'>self</span>, <span class='ident'>PublicKey</span>, <span class='ident'>SecretKey</span>, <span class='ident'>Signature</span>};
@@ -572,8 +579,6 @@
 <span class='kw'>pub</span> <span class='kw'>const</span> <span class='ident'>MAX_STRUCTURED_DATA_SIZE_IN_BYTES</span>: <span class='ident'>usize</span> <span class='op'>=</span> <span class='number'>102400</span>;
 
 <span class='doccomment'>/// Mutable structured data.</span>
-<span class='doccomment'>///</span>
-<span class='doccomment'>/// The name is computed from the type tag and identifier, so these two fields are immutable.</span>
 <span class='doccomment'>///</span>
 <span class='doccomment'>/// These types may be stored unsigned with previous and current owner keys</span>
 <span class='doccomment'>/// set to the same keys. Updates require a signature to validate.</span>
@@ -644,13 +649,11 @@
         <span class='ident'>DataIdentifier</span>::<span class='ident'>Structured</span>(<span class='self'>self</span>.<span class='ident'>name</span>, <span class='self'>self</span>.<span class='ident'>type_tag</span>)
     }
 
-    <span class='doccomment'>/// Delete self</span>
+    <span class='doccomment'>/// Deletes the data by clearing all its fields, if the `other` data would be a valid</span>
+    <span class='doccomment'>/// successor.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>delete_if_valid_successor</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>,
                                      <span class='ident'>other</span>: <span class='kw-2'>&amp;</span><span class='ident'>StructuredData</span>)
                                      <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span>(), <span class='ident'>RoutingError</span><span class='op'>&gt;</span> {
-        <span class='kw'>if</span> <span class='op'>!</span>(<span class='ident'>other</span>.<span class='ident'>data</span>.<span class='ident'>is_empty</span>() <span class='op'>&amp;&amp;</span> <span class='ident'>other</span>.<span class='ident'>current_owner_keys</span>.<span class='ident'>is_empty</span>()) {
-            <span class='kw'>return</span> <span class='prelude-val'>Err</span>(<span class='ident'>RoutingError</span>::<span class='ident'>UnknownMessageType</span>);
-        }
         <span class='macro'>try</span><span class='macro'>!</span>(<span class='self'>self</span>.<span class='ident'>validate_self_against_successor</span>(<span class='ident'>other</span>));
         <span class='self'>self</span>.<span class='ident'>data</span>.<span class='ident'>clear</span>();
         <span class='self'>self</span>.<span class='ident'>previous_owner_keys</span>.<span class='ident'>clear</span>();
@@ -676,6 +679,10 @@
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>validate_self_against_successor</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>,
                                            <span class='ident'>other</span>: <span class='kw-2'>&amp;</span><span class='ident'>StructuredData</span>)
                                            <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span>(), <span class='ident'>RoutingError</span><span class='op'>&gt;</span> {
+        <span class='kw'>if</span> <span class='ident'>other</span>.<span class='ident'>current_owner_keys</span>.<span class='ident'>len</span>() <span class='op'>&gt;</span> <span class='number'>1</span> <span class='op'>&amp;&amp;</span>
+           <span class='ident'>other</span>.<span class='ident'>current_owner_keys</span>.<span class='ident'>contains</span>(<span class='kw-2'>&amp;</span><span class='ident'>NO_OWNER_PUB_KEY</span>) {
+            <span class='kw'>return</span> <span class='prelude-val'>Err</span>(<span class='ident'>RoutingError</span>::<span class='ident'>InvalidOwners</span>);
+        }
         <span class='kw'>let</span> <span class='ident'>owner_keys_to_match</span> <span class='op'>=</span> <span class='kw'>if</span> <span class='ident'>other</span>.<span class='ident'>previous_owner_keys</span>.<span class='ident'>is_empty</span>() {
             <span class='kw-2'>&amp;</span><span class='ident'>other</span>.<span class='ident'>current_owner_keys</span>
         } <span class='kw'>else</span> {
@@ -685,7 +692,7 @@
         <span class='comment'>// TODO(dirvine) Increase error types to be more descriptive  :07/07/2015</span>
         <span class='kw'>if</span> <span class='ident'>other</span>.<span class='ident'>type_tag</span> <span class='op'>!=</span> <span class='self'>self</span>.<span class='ident'>type_tag</span> <span class='op'>||</span> <span class='ident'>other</span>.<span class='ident'>name</span> <span class='op'>!=</span> <span class='self'>self</span>.<span class='ident'>name</span> <span class='op'>||</span>
            <span class='ident'>other</span>.<span class='ident'>version</span> <span class='op'>!=</span> <span class='self'>self</span>.<span class='ident'>version</span> <span class='op'>+</span> <span class='number'>1</span> <span class='op'>||</span>
-           <span class='op'>*</span><span class='ident'>owner_keys_to_match</span> <span class='op'>!=</span> <span class='self'>self</span>.<span class='ident'>current_owner_keys</span> {
+           (<span class='op'>!</span><span class='self'>self</span>.<span class='ident'>is_deleted</span>() <span class='op'>&amp;&amp;</span> <span class='op'>*</span><span class='ident'>owner_keys_to_match</span> <span class='op'>!=</span> <span class='self'>self</span>.<span class='ident'>current_owner_keys</span>) {
             <span class='kw'>return</span> <span class='prelude-val'>Err</span>(<span class='ident'>RoutingError</span>::<span class='ident'>UnknownMessageType</span>);
         }
         <span class='ident'>other</span>.<span class='ident'>verify_previous_owner_signatures</span>(<span class='ident'>owner_keys_to_match</span>)
@@ -714,7 +721,7 @@
         <span class='comment'>// Count valid previous_owner_signatures and refuse if quantity is not enough</span>
 
         <span class='kw'>let</span> <span class='ident'>check_all_keys</span> <span class='op'>=</span>
-            <span class='op'>|</span><span class='kw-2'>&amp;</span><span class='ident'>sig</span><span class='op'>|</span> <span class='ident'>owner_keys</span>.<span class='ident'>iter</span>().<span class='ident'>any</span>(<span class='op'>|</span><span class='ident'>pub_key</span><span class='op'>|</span> <span class='ident'>sign</span>::<span class='ident'>verify_detached</span>(<span class='kw-2'>&amp;</span><span class='ident'>sig</span>, <span class='kw-2'>&amp;</span><span class='ident'>data</span>, <span class='ident'>pub_key</span>));
+            <span class='op'>|</span><span class='kw-2'>&amp;</span><span class='ident'>sig</span><span class='op'>|</span> <span class='ident'>owner_keys</span>.<span class='ident'>iter</span>().<span class='ident'>any</span>(<span class='op'>|</span><span class='ident'>pub_key</span><span class='op'>|</span> <span class='ident'>verify_detached</span>(<span class='kw-2'>&amp;</span><span class='ident'>sig</span>, <span class='kw-2'>&amp;</span><span class='ident'>data</span>, <span class='ident'>pub_key</span>));
 
         <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>previous_owner_signatures</span>
             .<span class='ident'>iter</span>()
@@ -790,9 +797,15 @@
         <span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='ident'>previous_owner_signatures</span>
     }
 
-    <span class='doccomment'>/// Return data size.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>payload_size</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>usize</span> {
-        <span class='self'>self</span>.<span class='ident'>data</span>.<span class='ident'>len</span>()
+    <span class='doccomment'>/// Return true if the size is valid</span>
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>validate_size</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> {
+        <span class='kw'>match</span> <span class='ident'>serialise</span>(<span class='self'>self</span>) {
+            <span class='prelude-val'>Ok</span>(<span class='ident'>raw</span>) <span class='op'>=&gt;</span> <span class='ident'>raw</span>.<span class='ident'>len</span>() <span class='op'>&lt;=</span> <span class='ident'>MAX_STRUCTURED_DATA_SIZE_IN_BYTES</span>,
+            <span class='prelude-val'>Err</span>(<span class='ident'>e</span>) <span class='op'>=&gt;</span> {
+                <span class='macro'>warn</span><span class='macro'>!</span>(<span class='string'>&quot;Failed to serialise StructuredData: {:?}&quot;</span>, <span class='ident'>e</span>);
+                <span class='bool-val'>false</span>
+            }
+        }
     }
 }
 
@@ -837,6 +850,7 @@
 <span class='kw'>mod</span> <span class='ident'>tests</span> {
     <span class='kw'>extern</span> <span class='kw'>crate</span> <span class='ident'>rand</span>;
 
+    <span class='kw'>use</span> <span class='kw'>super</span>::<span class='op'>*</span>;
     <span class='kw'>use</span> <span class='ident'>rust_sodium</span>::<span class='ident'>crypto</span>::<span class='ident'>sign</span>;
     <span class='kw'>use</span> <span class='ident'>xor_name</span>::<span class='ident'>XorName</span>;
 
@@ -845,13 +859,13 @@
         <span class='kw'>let</span> <span class='ident'>keys</span> <span class='op'>=</span> <span class='ident'>sign</span>::<span class='ident'>gen_keypair</span>();
         <span class='kw'>let</span> <span class='ident'>owner_keys</span> <span class='op'>=</span> <span class='macro'>vec</span><span class='macro'>!</span>[<span class='ident'>keys</span>.<span class='number'>0</span>];
 
-        <span class='kw'>match</span> <span class='kw'>super</span>::<span class='ident'>StructuredData</span>::<span class='ident'>new</span>(<span class='number'>0</span>,
-                                         <span class='ident'>rand</span>::<span class='ident'>random</span>(),
-                                         <span class='number'>0</span>,
-                                         <span class='macro'>vec</span><span class='macro'>!</span>[],
-                                         <span class='ident'>owner_keys</span>.<span class='ident'>clone</span>(),
-                                         <span class='macro'>vec</span><span class='macro'>!</span>[],
-                                         <span class='prelude-val'>Some</span>(<span class='kw-2'>&amp;</span><span class='ident'>keys</span>.<span class='number'>1</span>)) {
+        <span class='kw'>match</span> <span class='ident'>StructuredData</span>::<span class='ident'>new</span>(<span class='number'>0</span>,
+                                  <span class='ident'>rand</span>::<span class='ident'>random</span>(),
+                                  <span class='number'>0</span>,
+                                  <span class='macro'>vec</span><span class='macro'>!</span>[],
+                                  <span class='ident'>owner_keys</span>.<span class='ident'>clone</span>(),
+                                  <span class='macro'>vec</span><span class='macro'>!</span>[],
+                                  <span class='prelude-val'>Some</span>(<span class='kw-2'>&amp;</span><span class='ident'>keys</span>.<span class='number'>1</span>)) {
             <span class='prelude-val'>Ok</span>(<span class='ident'>structured_data</span>) <span class='op'>=&gt;</span> {
                 <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>structured_data</span>.<span class='ident'>verify_previous_owner_signatures</span>(<span class='kw-2'>&amp;</span><span class='ident'>owner_keys</span>).<span class='ident'>ok</span>(),
                            <span class='prelude-val'>Some</span>(()))
@@ -866,13 +880,13 @@
         <span class='kw'>let</span> <span class='ident'>keys</span> <span class='op'>=</span> <span class='ident'>sign</span>::<span class='ident'>gen_keypair</span>();
         <span class='kw'>let</span> <span class='ident'>owner_keys</span> <span class='op'>=</span> <span class='macro'>vec</span><span class='macro'>!</span>[<span class='ident'>keys</span>.<span class='number'>0</span>];
 
-        <span class='kw'>match</span> <span class='kw'>super</span>::<span class='ident'>StructuredData</span>::<span class='ident'>new</span>(<span class='number'>0</span>,
-                                         <span class='ident'>rand</span>::<span class='ident'>random</span>(),
-                                         <span class='number'>0</span>,
-                                         <span class='macro'>vec</span><span class='macro'>!</span>[],
-                                         <span class='ident'>owner_keys</span>.<span class='ident'>clone</span>(),
-                                         <span class='macro'>vec</span><span class='macro'>!</span>[],
-                                         <span class='prelude-val'>None</span>) {
+        <span class='kw'>match</span> <span class='ident'>StructuredData</span>::<span class='ident'>new</span>(<span class='number'>0</span>,
+                                  <span class='ident'>rand</span>::<span class='ident'>random</span>(),
+                                  <span class='number'>0</span>,
+                                  <span class='macro'>vec</span><span class='macro'>!</span>[],
+                                  <span class='ident'>owner_keys</span>.<span class='ident'>clone</span>(),
+                                  <span class='macro'>vec</span><span class='macro'>!</span>[],
+                                  <span class='prelude-val'>None</span>) {
             <span class='prelude-val'>Ok</span>(<span class='ident'>structured_data</span>) <span class='op'>=&gt;</span> {
                 <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>structured_data</span>.<span class='ident'>verify_previous_owner_signatures</span>(<span class='kw-2'>&amp;</span><span class='ident'>owner_keys</span>).<span class='ident'>ok</span>(),
                            <span class='prelude-val'>Some</span>(()))
@@ -888,13 +902,13 @@
         <span class='kw'>let</span> <span class='ident'>owner_keys</span> <span class='op'>=</span> <span class='macro'>vec</span><span class='macro'>!</span>[<span class='ident'>keys</span>.<span class='number'>0</span>];
         <span class='kw'>let</span> <span class='ident'>other_keys</span> <span class='op'>=</span> <span class='ident'>sign</span>::<span class='ident'>gen_keypair</span>();
 
-        <span class='kw'>match</span> <span class='kw'>super</span>::<span class='ident'>StructuredData</span>::<span class='ident'>new</span>(<span class='number'>0</span>,
-                                         <span class='ident'>rand</span>::<span class='ident'>random</span>(),
-                                         <span class='number'>0</span>,
-                                         <span class='macro'>vec</span><span class='macro'>!</span>[],
-                                         <span class='ident'>owner_keys</span>.<span class='ident'>clone</span>(),
-                                         <span class='macro'>vec</span><span class='macro'>!</span>[],
-                                         <span class='prelude-val'>Some</span>(<span class='kw-2'>&amp;</span><span class='ident'>other_keys</span>.<span class='number'>1</span>)) {
+        <span class='kw'>match</span> <span class='ident'>StructuredData</span>::<span class='ident'>new</span>(<span class='number'>0</span>,
+                                  <span class='ident'>rand</span>::<span class='ident'>random</span>(),
+                                  <span class='number'>0</span>,
+                                  <span class='macro'>vec</span><span class='macro'>!</span>[],
+                                  <span class='ident'>owner_keys</span>.<span class='ident'>clone</span>(),
+                                  <span class='macro'>vec</span><span class='macro'>!</span>[],
+                                  <span class='prelude-val'>Some</span>(<span class='kw-2'>&amp;</span><span class='ident'>other_keys</span>.<span class='number'>1</span>)) {
             <span class='prelude-val'>Ok</span>(<span class='ident'>structured_data</span>) <span class='op'>=&gt;</span> {
                 <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>structured_data</span>.<span class='ident'>verify_previous_owner_signatures</span>(<span class='kw-2'>&amp;</span><span class='ident'>owner_keys</span>).<span class='ident'>ok</span>(),
                            <span class='prelude-val'>Some</span>(()))
@@ -910,13 +924,13 @@
         <span class='kw'>let</span> <span class='ident'>owner_keys</span> <span class='op'>=</span> <span class='macro'>vec</span><span class='macro'>!</span>[<span class='ident'>keys</span>.<span class='number'>0</span>];
         <span class='kw'>let</span> <span class='ident'>other_keys</span> <span class='op'>=</span> <span class='ident'>sign</span>::<span class='ident'>gen_keypair</span>();
 
-        <span class='kw'>match</span> <span class='kw'>super</span>::<span class='ident'>StructuredData</span>::<span class='ident'>new</span>(<span class='number'>0</span>,
-                                         <span class='ident'>rand</span>::<span class='ident'>random</span>(),
-                                         <span class='number'>0</span>,
-                                         <span class='macro'>vec</span><span class='macro'>!</span>[],
-                                         <span class='ident'>owner_keys</span>.<span class='ident'>clone</span>(),
-                                         <span class='macro'>vec</span><span class='macro'>!</span>[],
-                                         <span class='prelude-val'>None</span>) {
+        <span class='kw'>match</span> <span class='ident'>StructuredData</span>::<span class='ident'>new</span>(<span class='number'>0</span>,
+                                  <span class='ident'>rand</span>::<span class='ident'>random</span>(),
+                                  <span class='number'>0</span>,
+                                  <span class='macro'>vec</span><span class='macro'>!</span>[],
+                                  <span class='ident'>owner_keys</span>.<span class='ident'>clone</span>(),
+                                  <span class='macro'>vec</span><span class='macro'>!</span>[],
+                                  <span class='prelude-val'>None</span>) {
             <span class='prelude-val'>Ok</span>(<span class='kw-2'>mut</span> <span class='ident'>structured_data</span>) <span class='op'>=&gt;</span> {
                 <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>structured_data</span>.<span class='ident'>add_signature</span>(<span class='kw-2'>&amp;</span><span class='ident'>other_keys</span>.<span class='number'>1</span>).<span class='ident'>ok</span>(), <span class='prelude-val'>Some</span>(<span class='number'>0</span>));
                 <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>structured_data</span>.<span class='ident'>verify_previous_owner_signatures</span>(<span class='kw-2'>&amp;</span><span class='ident'>owner_keys</span>).<span class='ident'>ok</span>(),
@@ -934,13 +948,13 @@
 
         <span class='kw'>let</span> <span class='ident'>owner_keys</span> <span class='op'>=</span> <span class='macro'>vec</span><span class='macro'>!</span>[<span class='ident'>keys1</span>.<span class='number'>0</span>, <span class='ident'>keys2</span>.<span class='number'>0</span>, <span class='ident'>keys3</span>.<span class='number'>0</span>];
 
-        <span class='kw'>match</span> <span class='kw'>super</span>::<span class='ident'>StructuredData</span>::<span class='ident'>new</span>(<span class='number'>0</span>,
-                                         <span class='ident'>rand</span>::<span class='ident'>random</span>(),
-                                         <span class='number'>0</span>,
-                                         <span class='macro'>vec</span><span class='macro'>!</span>[],
-                                         <span class='ident'>owner_keys</span>.<span class='ident'>clone</span>(),
-                                         <span class='macro'>vec</span><span class='macro'>!</span>[],
-                                         <span class='prelude-val'>None</span>) {
+        <span class='kw'>match</span> <span class='ident'>StructuredData</span>::<span class='ident'>new</span>(<span class='number'>0</span>,
+                                  <span class='ident'>rand</span>::<span class='ident'>random</span>(),
+                                  <span class='number'>0</span>,
+                                  <span class='macro'>vec</span><span class='macro'>!</span>[],
+                                  <span class='ident'>owner_keys</span>.<span class='ident'>clone</span>(),
+                                  <span class='macro'>vec</span><span class='macro'>!</span>[],
+                                  <span class='prelude-val'>None</span>) {
             <span class='prelude-val'>Ok</span>(<span class='kw-2'>mut</span> <span class='ident'>structured_data</span>) <span class='op'>=&gt;</span> {
                 <span class='comment'>// After one signature, one more is required to reach majority.</span>
                 <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='macro'>unwrap</span><span class='macro'>!</span>(<span class='ident'>structured_data</span>.<span class='ident'>add_signature</span>(<span class='kw-2'>&amp;</span><span class='ident'>keys1</span>.<span class='number'>1</span>)), <span class='number'>1</span>);
@@ -965,13 +979,13 @@
 
         <span class='kw'>let</span> <span class='ident'>owner_keys</span> <span class='op'>=</span> <span class='macro'>vec</span><span class='macro'>!</span>[<span class='ident'>keys1</span>.<span class='number'>0</span>, <span class='ident'>keys2</span>.<span class='number'>0</span>, <span class='ident'>keys3</span>.<span class='number'>0</span>, <span class='ident'>keys4</span>.<span class='number'>0</span>];
 
-        <span class='kw'>match</span> <span class='kw'>super</span>::<span class='ident'>StructuredData</span>::<span class='ident'>new</span>(<span class='number'>0</span>,
-                                         <span class='ident'>rand</span>::<span class='ident'>random</span>(),
-                                         <span class='number'>0</span>,
-                                         <span class='macro'>vec</span><span class='macro'>!</span>[],
-                                         <span class='ident'>owner_keys</span>.<span class='ident'>clone</span>(),
-                                         <span class='macro'>vec</span><span class='macro'>!</span>[],
-                                         <span class='prelude-val'>Some</span>(<span class='kw-2'>&amp;</span><span class='ident'>keys1</span>.<span class='number'>1</span>)) {
+        <span class='kw'>match</span> <span class='ident'>StructuredData</span>::<span class='ident'>new</span>(<span class='number'>0</span>,
+                                  <span class='ident'>rand</span>::<span class='ident'>random</span>(),
+                                  <span class='number'>0</span>,
+                                  <span class='macro'>vec</span><span class='macro'>!</span>[],
+                                  <span class='ident'>owner_keys</span>.<span class='ident'>clone</span>(),
+                                  <span class='macro'>vec</span><span class='macro'>!</span>[],
+                                  <span class='prelude-val'>Some</span>(<span class='kw-2'>&amp;</span><span class='ident'>keys1</span>.<span class='number'>1</span>)) {
             <span class='prelude-val'>Ok</span>(<span class='kw-2'>mut</span> <span class='ident'>structured_data</span>) <span class='op'>=&gt;</span> {
                 <span class='comment'>// Two signatures are not enough because they don&#39;t have a strict majority.</span>
                 <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='macro'>unwrap</span><span class='macro'>!</span>(<span class='ident'>structured_data</span>.<span class='ident'>add_signature</span>(<span class='kw-2'>&amp;</span><span class='ident'>keys2</span>.<span class='number'>1</span>)), <span class='number'>1</span>);
@@ -997,23 +1011,23 @@
         <span class='kw'>let</span> <span class='ident'>identifier</span>: <span class='ident'>XorName</span> <span class='op'>=</span> <span class='ident'>rand</span>::<span class='ident'>random</span>();
 
         <span class='comment'>// Owned by keys1 keys2 and keys3</span>
-        <span class='kw'>match</span> <span class='kw'>super</span>::<span class='ident'>StructuredData</span>::<span class='ident'>new</span>(<span class='number'>0</span>,
-                                         <span class='ident'>identifier</span>,
-                                         <span class='number'>0</span>,
-                                         <span class='macro'>vec</span><span class='macro'>!</span>[],
-                                         <span class='macro'>vec</span><span class='macro'>!</span>[<span class='ident'>keys1</span>.<span class='number'>0</span>, <span class='ident'>keys2</span>.<span class='number'>0</span>, <span class='ident'>keys3</span>.<span class='number'>0</span>],
-                                         <span class='macro'>vec</span><span class='macro'>!</span>[],
-                                         <span class='prelude-val'>Some</span>(<span class='kw-2'>&amp;</span><span class='ident'>keys1</span>.<span class='number'>1</span>)) {
+        <span class='kw'>match</span> <span class='ident'>StructuredData</span>::<span class='ident'>new</span>(<span class='number'>0</span>,
+                                  <span class='ident'>identifier</span>,
+                                  <span class='number'>0</span>,
+                                  <span class='macro'>vec</span><span class='macro'>!</span>[],
+                                  <span class='macro'>vec</span><span class='macro'>!</span>[<span class='ident'>keys1</span>.<span class='number'>0</span>, <span class='ident'>keys2</span>.<span class='number'>0</span>, <span class='ident'>keys3</span>.<span class='number'>0</span>],
+                                  <span class='macro'>vec</span><span class='macro'>!</span>[],
+                                  <span class='prelude-val'>Some</span>(<span class='kw-2'>&amp;</span><span class='ident'>keys1</span>.<span class='number'>1</span>)) {
             <span class='prelude-val'>Ok</span>(<span class='kw-2'>mut</span> <span class='ident'>orig_structured_data</span>) <span class='op'>=&gt;</span> {
                 <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>orig_structured_data</span>.<span class='ident'>add_signature</span>(<span class='kw-2'>&amp;</span><span class='ident'>keys2</span>.<span class='number'>1</span>).<span class='ident'>ok</span>(), <span class='prelude-val'>Some</span>(<span class='number'>0</span>));
                 <span class='comment'>// Transfer ownership and update to new owner</span>
-                <span class='kw'>match</span> <span class='kw'>super</span>::<span class='ident'>StructuredData</span>::<span class='ident'>new</span>(<span class='number'>0</span>,
-                                                 <span class='ident'>identifier</span>,
-                                                 <span class='number'>1</span>,
-                                                 <span class='macro'>vec</span><span class='macro'>!</span>[],
-                                                 <span class='macro'>vec</span><span class='macro'>!</span>[<span class='ident'>new_owner</span>.<span class='number'>0</span>],
-                                                 <span class='macro'>vec</span><span class='macro'>!</span>[<span class='ident'>keys1</span>.<span class='number'>0</span>, <span class='ident'>keys2</span>.<span class='number'>0</span>, <span class='ident'>keys3</span>.<span class='number'>0</span>],
-                                                 <span class='prelude-val'>Some</span>(<span class='kw-2'>&amp;</span><span class='ident'>keys1</span>.<span class='number'>1</span>)) {
+                <span class='kw'>match</span> <span class='ident'>StructuredData</span>::<span class='ident'>new</span>(<span class='number'>0</span>,
+                                          <span class='ident'>identifier</span>,
+                                          <span class='number'>1</span>,
+                                          <span class='macro'>vec</span><span class='macro'>!</span>[],
+                                          <span class='macro'>vec</span><span class='macro'>!</span>[<span class='ident'>new_owner</span>.<span class='number'>0</span>],
+                                          <span class='macro'>vec</span><span class='macro'>!</span>[<span class='ident'>keys1</span>.<span class='number'>0</span>, <span class='ident'>keys2</span>.<span class='number'>0</span>, <span class='ident'>keys3</span>.<span class='number'>0</span>],
+                                          <span class='prelude-val'>Some</span>(<span class='kw-2'>&amp;</span><span class='ident'>keys1</span>.<span class='number'>1</span>)) {
                     <span class='prelude-val'>Ok</span>(<span class='kw-2'>mut</span> <span class='ident'>new_structured_data</span>) <span class='op'>=&gt;</span> {
                         <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>new_structured_data</span>.<span class='ident'>add_signature</span>(<span class='kw-2'>&amp;</span><span class='ident'>keys2</span>.<span class='number'>1</span>).<span class='ident'>ok</span>(), <span class='prelude-val'>Some</span>(<span class='number'>0</span>));
                         <span class='kw'>match</span> <span class='ident'>orig_structured_data</span>.<span class='ident'>replace_with_other</span>(<span class='ident'>new_structured_data</span>) {
@@ -1021,13 +1035,13 @@
                             <span class='prelude-val'>Err</span>(<span class='ident'>e</span>) <span class='op'>=&gt;</span> <span class='macro'>panic</span><span class='macro'>!</span>(<span class='string'>&quot;Error {:?}&quot;</span>, <span class='ident'>e</span>),
                         }
                         <span class='comment'>// transfer ownership back to keys1 only</span>
-                        <span class='kw'>match</span> <span class='kw'>super</span>::<span class='ident'>StructuredData</span>::<span class='ident'>new</span>(<span class='number'>0</span>,
-                                                         <span class='ident'>identifier</span>,
-                                                         <span class='number'>2</span>,
-                                                         <span class='macro'>vec</span><span class='macro'>!</span>[],
-                                                         <span class='macro'>vec</span><span class='macro'>!</span>[<span class='ident'>keys1</span>.<span class='number'>0</span>],
-                                                         <span class='macro'>vec</span><span class='macro'>!</span>[<span class='ident'>new_owner</span>.<span class='number'>0</span>],
-                                                         <span class='prelude-val'>Some</span>(<span class='kw-2'>&amp;</span><span class='ident'>new_owner</span>.<span class='number'>1</span>)) {
+                        <span class='kw'>match</span> <span class='ident'>StructuredData</span>::<span class='ident'>new</span>(<span class='number'>0</span>,
+                                                  <span class='ident'>identifier</span>,
+                                                  <span class='number'>2</span>,
+                                                  <span class='macro'>vec</span><span class='macro'>!</span>[],
+                                                  <span class='macro'>vec</span><span class='macro'>!</span>[<span class='ident'>keys1</span>.<span class='number'>0</span>],
+                                                  <span class='macro'>vec</span><span class='macro'>!</span>[<span class='ident'>new_owner</span>.<span class='number'>0</span>],
+                                                  <span class='prelude-val'>Some</span>(<span class='kw-2'>&amp;</span><span class='ident'>new_owner</span>.<span class='number'>1</span>)) {
                             <span class='prelude-val'>Ok</span>(<span class='ident'>another_new_structured_data</span>) <span class='op'>=&gt;</span> {
                                 <span class='kw'>match</span> <span class='ident'>orig_structured_data</span>.<span class='ident'>replace_with_other</span>(
                                         <span class='ident'>another_new_structured_data</span>) {

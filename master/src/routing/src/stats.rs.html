@@ -243,6 +243,16 @@
 <span id="199">199</span>
 <span id="200">200</span>
 <span id="201">201</span>
+<span id="202">202</span>
+<span id="203">203</span>
+<span id="204">204</span>
+<span id="205">205</span>
+<span id="206">206</span>
+<span id="207">207</span>
+<span id="208">208</span>
+<span id="209">209</span>
+<span id="210">210</span>
+<span id="211">211</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2016 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -289,6 +299,7 @@
     <span class='ident'>msg_put</span>: <span class='ident'>usize</span>,
     <span class='ident'>msg_post</span>: <span class='ident'>usize</span>,
     <span class='ident'>msg_delete</span>: <span class='ident'>usize</span>,
+    <span class='ident'>msg_append</span>: <span class='ident'>usize</span>,
     <span class='ident'>msg_get_account_info</span>: <span class='ident'>usize</span>,
     <span class='ident'>msg_get_close_group</span>: <span class='ident'>usize</span>,
     <span class='ident'>msg_get_node_name</span>: <span class='ident'>usize</span>,
@@ -303,6 +314,8 @@
     <span class='ident'>msg_post_failure</span>: <span class='ident'>usize</span>,
     <span class='ident'>msg_delete_success</span>: <span class='ident'>usize</span>,
     <span class='ident'>msg_delete_failure</span>: <span class='ident'>usize</span>,
+    <span class='ident'>msg_append_success</span>: <span class='ident'>usize</span>,
+    <span class='ident'>msg_append_failure</span>: <span class='ident'>usize</span>,
     <span class='ident'>msg_get_account_info_success</span>: <span class='ident'>usize</span>,
     <span class='ident'>msg_get_account_info_failure</span>: <span class='ident'>usize</span>,
     <span class='ident'>msg_get_close_group_rsp</span>: <span class='ident'>usize</span>,
@@ -340,6 +353,7 @@
                     <span class='ident'>Request</span>::<span class='ident'>Put</span>(..) <span class='op'>=&gt;</span> <span class='self'>self</span>.<span class='ident'>msg_put</span> <span class='op'>+=</span> <span class='number'>1</span>,
                     <span class='ident'>Request</span>::<span class='ident'>Post</span>(..) <span class='op'>=&gt;</span> <span class='self'>self</span>.<span class='ident'>msg_post</span> <span class='op'>+=</span> <span class='number'>1</span>,
                     <span class='ident'>Request</span>::<span class='ident'>Delete</span>(..) <span class='op'>=&gt;</span> <span class='self'>self</span>.<span class='ident'>msg_delete</span> <span class='op'>+=</span> <span class='number'>1</span>,
+                    <span class='ident'>Request</span>::<span class='ident'>Append</span>(..) <span class='op'>=&gt;</span> <span class='self'>self</span>.<span class='ident'>msg_append</span> <span class='op'>+=</span> <span class='number'>1</span>,
                     <span class='ident'>Request</span>::<span class='ident'>GetAccountInfo</span>(..) <span class='op'>=&gt;</span> <span class='self'>self</span>.<span class='ident'>msg_get_account_info</span> <span class='op'>+=</span> <span class='number'>1</span>,
                 }
             }
@@ -353,6 +367,8 @@
                     <span class='ident'>Response</span>::<span class='ident'>PostFailure</span> { .. } <span class='op'>=&gt;</span> <span class='self'>self</span>.<span class='ident'>msg_post_failure</span> <span class='op'>+=</span> <span class='number'>1</span>,
                     <span class='ident'>Response</span>::<span class='ident'>DeleteSuccess</span>(..) <span class='op'>=&gt;</span> <span class='self'>self</span>.<span class='ident'>msg_delete_success</span> <span class='op'>+=</span> <span class='number'>1</span>,
                     <span class='ident'>Response</span>::<span class='ident'>DeleteFailure</span> { .. } <span class='op'>=&gt;</span> <span class='self'>self</span>.<span class='ident'>msg_delete_failure</span> <span class='op'>+=</span> <span class='number'>1</span>,
+                    <span class='ident'>Response</span>::<span class='ident'>AppendSuccess</span>(..) <span class='op'>=&gt;</span> <span class='self'>self</span>.<span class='ident'>msg_append_success</span> <span class='op'>+=</span> <span class='number'>1</span>,
+                    <span class='ident'>Response</span>::<span class='ident'>AppendFailure</span> { .. } <span class='op'>=&gt;</span> <span class='self'>self</span>.<span class='ident'>msg_append_failure</span> <span class='op'>+=</span> <span class='number'>1</span>,
                     <span class='ident'>Response</span>::<span class='ident'>GetAccountInfoSuccess</span> { .. } <span class='op'>=&gt;</span> {
                         <span class='self'>self</span>.<span class='ident'>msg_get_account_info_success</span> <span class='op'>+=</span> <span class='number'>1</span>
                     }
@@ -425,7 +441,8 @@
                   <span class='self'>self</span>.<span class='ident'>msg_ack</span>,
                   <span class='self'>self</span>.<span class='ident'>msg_hash</span>);
             <span class='macro'>info</span><span class='macro'>!</span>(<span class='string'>&quot;Stats - User (Request/Success/Failure) - Get: {}/{}/{}, Put: {}/{}/{}, \
-                   Post: {}/{}/{}, Delete: {}/{}/{}, GetAccountInfo: {}/{}/{}, Refresh: {}&quot;</span>,
+                   Post: {}/{}/{}, Delete: {}/{}/{}, Append: {}/{}/{}, GetAccountInfo: {}/{}/{}, \
+                   Refresh: {}&quot;</span>,
                   <span class='self'>self</span>.<span class='ident'>msg_get</span>,
                   <span class='self'>self</span>.<span class='ident'>msg_get_success</span>,
                   <span class='self'>self</span>.<span class='ident'>msg_get_failure</span>,
@@ -438,6 +455,9 @@
                   <span class='self'>self</span>.<span class='ident'>msg_delete</span>,
                   <span class='self'>self</span>.<span class='ident'>msg_delete_success</span>,
                   <span class='self'>self</span>.<span class='ident'>msg_delete_failure</span>,
+                  <span class='self'>self</span>.<span class='ident'>msg_append</span>,
+                  <span class='self'>self</span>.<span class='ident'>msg_append_success</span>,
+                  <span class='self'>self</span>.<span class='ident'>msg_append_failure</span>,
                   <span class='self'>self</span>.<span class='ident'>msg_get_account_info</span>,
                   <span class='self'>self</span>.<span class='ident'>msg_get_account_info_success</span>,
                   <span class='self'>self</span>.<span class='ident'>msg_get_account_info_failure</span>,

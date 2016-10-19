@@ -273,7 +273,7 @@
 <span class='kw'>use</span> <span class='ident'>xor_name</span>::<span class='ident'>XorName</span>;
 
 <span class='kw'>static</span> <span class='ident'>INITIALISE_SODIUMOXIDE</span>: <span class='ident'>Once</span> <span class='op'>=</span> <span class='ident'>ONCE_INIT</span>;
-<span class='kw'>static</span> <span class='kw-2'>mut</span> <span class='ident'>rust_sodium_init_result</span>: <span class='ident'>bool</span> <span class='op'>=</span> <span class='bool-val'>false</span>;
+<span class='kw'>static</span> <span class='kw-2'>mut</span> <span class='ident'>RUST_SODIUM_INIT_RESULT</span>: <span class='ident'>bool</span> <span class='op'>=</span> <span class='bool-val'>false</span>;
 
 <span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>PartialEq</span>, <span class='ident'>Eq</span>, <span class='ident'>Hash</span>, <span class='ident'>Clone</span>, <span class='ident'>RustcDecodable</span>, <span class='ident'>RustcEncodable</span>)]</span>
 <span class='kw'>struct</span> <span class='ident'>Detail</span> {
@@ -367,9 +367,9 @@
     <span class='kw'>fn</span> <span class='ident'>initialise_rust_sodium</span>() <span class='op'>-&gt;</span> <span class='ident'>bool</span> {
         <span class='kw'>unsafe</span> {
             <span class='ident'>INITIALISE_SODIUMOXIDE</span>.<span class='ident'>call_once</span>(<span class='op'>||</span> {
-                <span class='ident'>rust_sodium_init_result</span> <span class='op'>=</span> <span class='ident'>rust_sodium</span>::<span class='ident'>init</span>();
+                <span class='ident'>RUST_SODIUM_INIT_RESULT</span> <span class='op'>=</span> <span class='ident'>rust_sodium</span>::<span class='ident'>init</span>();
             });
-            <span class='ident'>rust_sodium_init_result</span>
+            <span class='ident'>RUST_SODIUM_INIT_RESULT</span>
         }
     }
 }

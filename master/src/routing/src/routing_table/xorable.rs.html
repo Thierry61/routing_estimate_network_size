@@ -520,7 +520,7 @@
             <span class='kw'>fn</span> <span class='ident'>debug_binary</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>String</span> {
                 <span class='ident'>debug_format</span>(<span class='self'>self</span>.<span class='ident'>binary</span>())
             }
-            
+
             <span class='kw'>fn</span> <span class='ident'>set_remaining</span>(<span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>n</span>: <span class='ident'>usize</span>, <span class='ident'>val</span>: <span class='ident'>bool</span>) <span class='op'>-&gt;</span> <span class='self'>Self</span> {
                 <span class='kw'>let</span> <span class='ident'>bits</span> <span class='op'>=</span> <span class='ident'>mem</span>::<span class='ident'>size_of</span>::<span class='op'>&lt;</span><span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>t</span><span class='op'>&gt;</span>() <span class='op'>*</span> <span class='number'>8</span>;
                 <span class='kw'>for</span> (<span class='ident'>i</span>, <span class='ident'>x</span>) <span class='kw'>in</span> <span class='self'>self</span>.<span class='ident'>iter_mut</span>().<span class='ident'>enumerate</span>() {
@@ -597,7 +597,7 @@
             <span class='kw'>fn</span> <span class='ident'>debug_binary</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>String</span> {
                 <span class='ident'>debug_format</span>(<span class='self'>self</span>.<span class='ident'>binary</span>())
             }
-            
+
             <span class='kw'>fn</span> <span class='ident'>set_remaining</span>(<span class='self'>self</span>, <span class='ident'>n</span>: <span class='ident'>usize</span>, <span class='ident'>val</span>: <span class='ident'>bool</span>) <span class='op'>-&gt;</span> <span class='self'>Self</span> {
                 <span class='kw'>let</span> <span class='ident'>bits</span> <span class='op'>=</span> <span class='ident'>mem</span>::<span class='ident'>size_of</span>::<span class='op'>&lt;</span><span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>t</span><span class='op'>&gt;</span>() <span class='op'>*</span> <span class='number'>8</span>;
                 <span class='kw'>if</span> <span class='ident'>n</span> <span class='op'>&gt;=</span> <span class='ident'>bits</span> {

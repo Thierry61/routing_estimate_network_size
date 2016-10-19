@@ -200,6 +200,10 @@
 <span id="156">156</span>
 <span id="157">157</span>
 <span id="158">158</span>
+<span id="159">159</span>
+<span id="160">160</span>
+<span id="161">161</span>
+<span id="162">162</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2015 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -274,6 +278,8 @@
     <span class='ident'>NoSuchData</span>,
     <span class='doccomment'>/// Attempt to create a mutable data when data with such a name already exists</span>
     <span class='ident'>DataExists</span>,
+    <span class='doccomment'>/// Attempt to create/post a data exceeds size limit</span>
+    <span class='ident'>DataTooLarge</span>,
     <span class='doccomment'>/// Insufficient balance for performing a given mutating operation</span>
     <span class='ident'>LowBalance</span>,
     <span class='doccomment'>/// Invalid successor for performing a given mutating operation, e.g. signature mismatch or</span>
@@ -302,6 +308,7 @@
             <span class='ident'>MutationError</span>::<span class='ident'>AccountExists</span> <span class='op'>=&gt;</span> <span class='macro'>write</span><span class='macro'>!</span>(<span class='ident'>formatter</span>, <span class='string'>&quot;Account already exists for client&quot;</span>),
             <span class='ident'>MutationError</span>::<span class='ident'>NoSuchData</span> <span class='op'>=&gt;</span> <span class='macro'>write</span><span class='macro'>!</span>(<span class='ident'>formatter</span>, <span class='string'>&quot;Requested data not found&quot;</span>),
             <span class='ident'>MutationError</span>::<span class='ident'>DataExists</span> <span class='op'>=&gt;</span> <span class='macro'>write</span><span class='macro'>!</span>(<span class='ident'>formatter</span>, <span class='string'>&quot;Data given already exists&quot;</span>),
+            <span class='ident'>MutationError</span>::<span class='ident'>DataTooLarge</span> <span class='op'>=&gt;</span> <span class='macro'>write</span><span class='macro'>!</span>(<span class='ident'>formatter</span>, <span class='string'>&quot;Data given is too large&quot;</span>),
             <span class='ident'>MutationError</span>::<span class='ident'>LowBalance</span> <span class='op'>=&gt;</span> {
                 <span class='macro'>write</span><span class='macro'>!</span>(<span class='ident'>formatter</span>, <span class='string'>&quot;Insufficient account balance for this operation&quot;</span>)
             }
@@ -329,6 +336,7 @@
             <span class='ident'>MutationError</span>::<span class='ident'>AccountExists</span> <span class='op'>=&gt;</span> <span class='string'>&quot;Account exists&quot;</span>,
             <span class='ident'>MutationError</span>::<span class='ident'>NoSuchData</span> <span class='op'>=&gt;</span> <span class='string'>&quot;No such data&quot;</span>,
             <span class='ident'>MutationError</span>::<span class='ident'>DataExists</span> <span class='op'>=&gt;</span> <span class='string'>&quot;Data exists&quot;</span>,
+            <span class='ident'>MutationError</span>::<span class='ident'>DataTooLarge</span> <span class='op'>=&gt;</span> <span class='string'>&quot;Data is too large&quot;</span>,
             <span class='ident'>MutationError</span>::<span class='ident'>LowBalance</span> <span class='op'>=&gt;</span> <span class='string'>&quot;Low account balance&quot;</span>,
             <span class='ident'>MutationError</span>::<span class='ident'>InvalidSuccessor</span> <span class='op'>=&gt;</span> <span class='string'>&quot;Invalid data successor&quot;</span>,
             <span class='ident'>MutationError</span>::<span class='ident'>InvalidOperation</span> <span class='op'>=&gt;</span> <span class='string'>&quot;Invalid operation&quot;</span>,
