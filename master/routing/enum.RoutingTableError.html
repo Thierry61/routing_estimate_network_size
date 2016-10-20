@@ -55,6 +55,7 @@
     CannotRoute,
     OwnName,
     NoSuchPeer,
+    InvariantViolation,
 }</pre><div class='docblock'><p>Routing table error variants.</p>
 </div><h2 class='variants'>Variants</h2>
 <span id='variant.OwnNameDisallowed' class='variant'><code>OwnNameDisallowed</code></span><div class='docblock'><p>Adding our own name to the routing table is disallowed.</p>
@@ -64,6 +65,7 @@
 </div><span id='variant.OwnName' class='variant'><code>OwnName</code></span><div class='docblock'><p>The target destination is this node&#39;s own name.</p>
 </div><span id='variant.NoSuchPeer' class='variant'><code>NoSuchPeer</code></span><div class='docblock'><p>The target peer doesn&#39;t exist on the network.  (If it did, it would be in our own group
 and we would know of it).</p>
+</div><span id='variant.InvariantViolation' class='variant'><code>InvariantViolation</code></span><div class='docblock'><p>The routing table state violates the network invariant</p>
 </div><h2 id='implementations'>Trait Implementations</h2><h3 class='impl'><span class='in-band'><code>impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/cmp/trait.Eq.html' title='core::cmp::Eq'>Eq</a> for <a class='enum' href='../routing/enum.RoutingTableError.html' title='routing::RoutingTableError'>Error</a></code></span><span class='out-of-band'><div class='ghost'></div><a id='src-7748' class='srclink' href='../src/routing/src/routing_table/error.rs.html#20' title='goto source code'>[src]</a></span></h3>
 <div class='impl-items'></div><h3 class='impl'><span class='in-band'><code>impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html' title='core::cmp::PartialEq'>PartialEq</a> for <a class='enum' href='../routing/enum.RoutingTableError.html' title='routing::RoutingTableError'>Error</a></code></span><span class='out-of-band'><div class='ghost'></div><a id='src-7751' class='srclink' href='../src/routing/src/routing_table/error.rs.html#20' title='goto source code'>[src]</a></span></h3>
 <div class='impl-items'><h4 id='method.eq' class='method'><code>fn <a href='https://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html#tymethod.eq' class='fnname'>eq</a>(&amp;self, __arg_0: &amp;<a class='enum' href='../routing/enum.RoutingTableError.html' title='routing::RoutingTableError'>Error</a>) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>

@@ -222,22 +222,6 @@
 <span id="178">178</span>
 <span id="179">179</span>
 <span id="180">180</span>
-<span id="181">181</span>
-<span id="182">182</span>
-<span id="183">183</span>
-<span id="184">184</span>
-<span id="185">185</span>
-<span id="186">186</span>
-<span id="187">187</span>
-<span id="188">188</span>
-<span id="189">189</span>
-<span id="190">190</span>
-<span id="191">191</span>
-<span id="192">192</span>
-<span id="193">193</span>
-<span id="194">194</span>
-<span id="195">195</span>
-<span id="196">196</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2016 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -263,17 +247,12 @@
 
 <span class='kw'>use</span> <span class='ident'>maidsafe_utilities</span>::<span class='ident'>serialisation</span>::<span class='ident'>serialise</span>;
 <span class='kw'>use</span> <span class='ident'>rand</span>::{<span class='self'>self</span>, <span class='ident'>Rng</span>};
-<span class='kw'>use</span> <span class='ident'>rust_sodium</span>;
 <span class='kw'>use</span> <span class='ident'>rust_sodium</span>::<span class='ident'>crypto</span>::<span class='ident'>hash</span>::<span class='ident'>sha256</span>;
 <span class='kw'>use</span> <span class='ident'>rust_sodium</span>::<span class='ident'>crypto</span>::<span class='ident'>sign</span>::{<span class='self'>self</span>, <span class='ident'>PublicKey</span>, <span class='ident'>SecretKey</span>, <span class='ident'>Signature</span>};
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>fmt</span>::{<span class='self'>self</span>, <span class='ident'>Debug</span>, <span class='ident'>Formatter</span>};
-<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>sync</span>::{<span class='ident'>ONCE_INIT</span>, <span class='ident'>Once</span>};
 <span class='kw'>use</span> <span class='kw'>super</span>::{<span class='ident'>Error</span>, <span class='ident'>GUID_SIZE</span>};
 <span class='kw'>use</span> <span class='ident'>utils</span>;
 <span class='kw'>use</span> <span class='ident'>xor_name</span>::<span class='ident'>XorName</span>;
-
-<span class='kw'>static</span> <span class='ident'>INITIALISE_SODIUMOXIDE</span>: <span class='ident'>Once</span> <span class='op'>=</span> <span class='ident'>ONCE_INIT</span>;
-<span class='kw'>static</span> <span class='kw-2'>mut</span> <span class='ident'>RUST_SODIUM_INIT_RESULT</span>: <span class='ident'>bool</span> <span class='op'>=</span> <span class='bool-val'>false</span>;
 
 <span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>PartialEq</span>, <span class='ident'>Eq</span>, <span class='ident'>Hash</span>, <span class='ident'>Clone</span>, <span class='ident'>RustcDecodable</span>, <span class='ident'>RustcEncodable</span>)]</span>
 <span class='kw'>struct</span> <span class='ident'>Detail</span> {
@@ -309,7 +288,6 @@
                <span class='ident'>metadata</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>u8</span><span class='op'>&gt;</span>,
                <span class='ident'>secret_key</span>: <span class='kw-2'>&amp;</span><span class='ident'>SecretKey</span>)
                <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>MpidHeader</span>, <span class='ident'>Error</span><span class='op'>&gt;</span> {
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='self'>Self</span>::<span class='ident'>initialise_rust_sodium</span>());
         <span class='kw'>if</span> <span class='ident'>metadata</span>.<span class='ident'>len</span>() <span class='op'>&gt;</span> <span class='ident'>MAX_HEADER_METADATA_SIZE</span> {
             <span class='kw'>return</span> <span class='prelude-val'>Err</span>(<span class='ident'>Error</span>::<span class='ident'>MetadataTooLarge</span>);
         }
@@ -360,16 +338,6 @@
         <span class='kw'>match</span> <span class='ident'>serialise</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='ident'>detail</span>) {
             <span class='prelude-val'>Ok</span>(<span class='ident'>encoded</span>) <span class='op'>=&gt;</span> <span class='ident'>sign</span>::<span class='ident'>verify_detached</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='ident'>signature</span>, <span class='kw-2'>&amp;</span><span class='ident'>encoded</span>, <span class='ident'>public_key</span>),
             <span class='prelude-val'>Err</span>(_) <span class='op'>=&gt;</span> <span class='bool-val'>false</span>,
-        }
-    }
-
-    <span class='attribute'>#[<span class='ident'>allow</span>(<span class='ident'>unsafe_code</span>)]</span>
-    <span class='kw'>fn</span> <span class='ident'>initialise_rust_sodium</span>() <span class='op'>-&gt;</span> <span class='ident'>bool</span> {
-        <span class='kw'>unsafe</span> {
-            <span class='ident'>INITIALISE_SODIUMOXIDE</span>.<span class='ident'>call_once</span>(<span class='op'>||</span> {
-                <span class='ident'>RUST_SODIUM_INIT_RESULT</span> <span class='op'>=</span> <span class='ident'>rust_sodium</span>::<span class='ident'>init</span>();
-            });
-            <span class='ident'>RUST_SODIUM_INIT_RESULT</span>
         }
     }
 }

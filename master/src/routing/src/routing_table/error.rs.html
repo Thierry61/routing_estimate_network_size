@@ -96,6 +96,11 @@
 <span id="52">52</span>
 <span id="53">53</span>
 <span id="54">54</span>
+<span id="55">55</span>
+<span id="56">56</span>
+<span id="57">57</span>
+<span id="58">58</span>
+<span id="59">59</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2016 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -148,6 +153,11 @@
         <span class='ident'>NoSuchPeer</span> {
             <span class='ident'>description</span>(<span class='string'>&quot;No such peer&quot;</span>)
             <span class='ident'>display</span>(<span class='string'>&quot;Peer doesn&#39;t exist on the network.&quot;</span>)
+        }
+        <span class='doccomment'>/// The routing table state violates the network invariant</span>
+        <span class='ident'>InvariantViolation</span> {
+            <span class='ident'>description</span>(<span class='string'>&quot;Network invariant violation&quot;</span>)
+            <span class='ident'>display</span>(<span class='string'>&quot;The routing table state violates the network invariant.&quot;</span>)
         }
     }
 }
