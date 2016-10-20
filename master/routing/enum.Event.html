@@ -61,8 +61,8 @@
     },
     NodeAdded(<a class='struct' href='../routing/struct.XorName.html' title='routing::XorName'>XorName</a>,&nbsp;RoutingTable&lt;<a class='struct' href='../routing/struct.XorName.html' title='routing::XorName'>XorName</a>&gt;),
     NodeLost(<a class='struct' href='../routing/struct.XorName.html' title='routing::XorName'>XorName</a>,&nbsp;RoutingTable&lt;<a class='struct' href='../routing/struct.XorName.html' title='routing::XorName'>XorName</a>&gt;),
-    GroupSplit(Prefix&lt;<a class='struct' href='../routing/struct.XorName.html' title='routing::XorName'>XorName</a>&gt;),
-    GroupMerge(Prefix&lt;<a class='struct' href='../routing/struct.XorName.html' title='routing::XorName'>XorName</a>&gt;),
+    GroupSplit(<a class='struct' href='../routing/struct.Prefix.html' title='routing::Prefix'>Prefix</a>&lt;<a class='struct' href='../routing/struct.XorName.html' title='routing::XorName'>XorName</a>&gt;),
+    GroupMerge(<a class='struct' href='../routing/struct.Prefix.html' title='routing::Prefix'>Prefix</a>&lt;<a class='struct' href='../routing/struct.XorName.html' title='routing::XorName'>XorName</a>&gt;),
     Connected,
     RestartRequired,
     Terminate,
@@ -89,8 +89,8 @@ reached, i. e. enough members of the group have sent the same message.</p>
 </div></td></tr><tr><td id='variant.Response.field.dst'><code>dst:&nbsp;<a class='enum' href='../routing/enum.Authority.html' title='routing::Authority'>Authority</a></code></td><td><div class='docblock'><p>The destination authority that receives the response.</p>
 </div></td></tr></table><span id='variant.NodeAdded' class='variant'><code>NodeAdded(<a class='struct' href='../routing/struct.XorName.html' title='routing::XorName'>XorName</a>,&nbsp;RoutingTable&lt;<a class='struct' href='../routing/struct.XorName.html' title='routing::XorName'>XorName</a>&gt;)</code></span><div class='docblock'><p>A new node joined the network and may be a member of group authorities we also belong to.</p>
 </div><span id='variant.NodeLost' class='variant'><code>NodeLost(<a class='struct' href='../routing/struct.XorName.html' title='routing::XorName'>XorName</a>,&nbsp;RoutingTable&lt;<a class='struct' href='../routing/struct.XorName.html' title='routing::XorName'>XorName</a>&gt;)</code></span><div class='docblock'><p>A node left the network and may have been a member of group authorities we also belong to.</p>
-</div><span id='variant.GroupSplit' class='variant'><code>GroupSplit(Prefix&lt;<a class='struct' href='../routing/struct.XorName.html' title='routing::XorName'>XorName</a>&gt;)</code></span><div class='docblock'><p>Our own group has been split, resulting in the included <code>Prefix</code> for our new group.</p>
-</div><span id='variant.GroupMerge' class='variant'><code>GroupMerge(Prefix&lt;<a class='struct' href='../routing/struct.XorName.html' title='routing::XorName'>XorName</a>&gt;)</code></span><div class='docblock'><p>Our own group requires merged with others, resulting in the included <code>Prefix</code> for our new
+</div><span id='variant.GroupSplit' class='variant'><code>GroupSplit(<a class='struct' href='../routing/struct.Prefix.html' title='routing::Prefix'>Prefix</a>&lt;<a class='struct' href='../routing/struct.XorName.html' title='routing::XorName'>XorName</a>&gt;)</code></span><div class='docblock'><p>Our own group has been split, resulting in the included <code>Prefix</code> for our new group.</p>
+</div><span id='variant.GroupMerge' class='variant'><code>GroupMerge(<a class='struct' href='../routing/struct.Prefix.html' title='routing::Prefix'>Prefix</a>&lt;<a class='struct' href='../routing/struct.XorName.html' title='routing::XorName'>XorName</a>&gt;)</code></span><div class='docblock'><p>Our own group requires merged with others, resulting in the included <code>Prefix</code> for our new
 group.</p>
 </div><span id='variant.Connected' class='variant'><code>Connected</code></span><div class='docblock'><p>The client has successfully connected to a proxy node on the network.</p>
 </div><span id='variant.RestartRequired' class='variant'><code>RestartRequired</code></span><div class='docblock'><p>Disconnected or failed to connect - restart required.</p>
