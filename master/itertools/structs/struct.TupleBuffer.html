@@ -47,14 +47,14 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a id='src-1936' class='srclink' href='../../src/itertools/tuple_impl.rs.html#9-14' title='goto source code'>[src]</a></span></h1>
+               </span><a id='src-1987' class='srclink' href='../../src/itertools/tuple_impl.rs.html#9-14' title='goto source code'>[src]</a></span></h1>
 <pre class='rust struct'>pub struct TupleBuffer&lt;T&gt; <span class='where'>where T: TupleCollect</span> {
     // some fields omitted
 }</pre><div class='docblock'><p>An iterator over a incomplete tuple.</p>
 
 <p>See <a href="../trait.Itertools.html#method.tuples"><code>.tuples()</code></a> and
 <a href="struct.Tuples.html#method.into_buffer"><code>Tuples::into_buffer()</code></a>.</p>
-</div><h2 id='implementations'>Trait Implementations</h2><h3 class='impl'><span class='in-band'><code>impl&lt;T&gt; <a class='trait' href='https://doc.rust-lang.org/nightly/core/iter/iterator/trait.Iterator.html' title='core::iter::iterator::Iterator'>Iterator</a> for <a class='struct' href='../../itertools/structs/struct.TupleBuffer.html' title='itertools::structs::TupleBuffer'>TupleBuffer</a>&lt;T&gt; <span class='where'>where T: TupleCollect</span></code></span><span class='out-of-band'><div class='ghost'></div><a id='src-1944' class='srclink' href='../../src/itertools/tuple_impl.rs.html#27-41' title='goto source code'>[src]</a></span></h3>
+</div><h2 id='implementations'>Trait Implementations</h2><h3 class='impl'><span class='in-band'><code>impl&lt;T&gt; <a class='trait' href='https://doc.rust-lang.org/nightly/core/iter/iterator/trait.Iterator.html' title='core::iter::iterator::Iterator'>Iterator</a> for <a class='struct' href='../../itertools/structs/struct.TupleBuffer.html' title='itertools::structs::TupleBuffer'>TupleBuffer</a>&lt;T&gt; <span class='where'>where T: TupleCollect</span></code></span><span class='out-of-band'><div class='ghost'></div><a id='src-1995' class='srclink' href='../../src/itertools/tuple_impl.rs.html#27-41' title='goto source code'>[src]</a></span></h3>
 <div class='impl-items'><h4 id='associatedtype.Item' class='type'><code>type <a href='https://doc.rust-lang.org/nightly/core/iter/iterator/trait.Iterator.html#associatedtype.Item' class='type'>Item</a> = T::Item</code></h4>
 <div class='docblock'><p>The type of the elements being iterated over.</p>
 </div><h4 id='method.next' class='method'><code>fn <a href='https://doc.rust-lang.org/nightly/core/iter/iterator/trait.Iterator.html#tymethod.next' class='fnname'>next</a>(&amp;mut self) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;Self::Item&gt;</code></h4>

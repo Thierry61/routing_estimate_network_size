@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="rustdoc">
-    <meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/itertools-0.5.2/src/adaptors.rs`.">
+    <meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/itertools-0.5.4/src/adaptors.rs`.">
     <meta name="keywords" content="rust, rustlang, rust-lang">
 
     <title>adaptors.rs.html -- source</title>
@@ -1428,6 +1428,47 @@
 <span id="1384">1384</span>
 <span id="1385">1385</span>
 <span id="1386">1386</span>
+<span id="1387">1387</span>
+<span id="1388">1388</span>
+<span id="1389">1389</span>
+<span id="1390">1390</span>
+<span id="1391">1391</span>
+<span id="1392">1392</span>
+<span id="1393">1393</span>
+<span id="1394">1394</span>
+<span id="1395">1395</span>
+<span id="1396">1396</span>
+<span id="1397">1397</span>
+<span id="1398">1398</span>
+<span id="1399">1399</span>
+<span id="1400">1400</span>
+<span id="1401">1401</span>
+<span id="1402">1402</span>
+<span id="1403">1403</span>
+<span id="1404">1404</span>
+<span id="1405">1405</span>
+<span id="1406">1406</span>
+<span id="1407">1407</span>
+<span id="1408">1408</span>
+<span id="1409">1409</span>
+<span id="1410">1410</span>
+<span id="1411">1411</span>
+<span id="1412">1412</span>
+<span id="1413">1413</span>
+<span id="1414">1414</span>
+<span id="1415">1415</span>
+<span id="1416">1416</span>
+<span id="1417">1417</span>
+<span id="1418">1418</span>
+<span id="1419">1419</span>
+<span id="1420">1420</span>
+<span id="1421">1421</span>
+<span id="1422">1422</span>
+<span id="1423">1423</span>
+<span id="1424">1424</span>
+<span id="1425">1425</span>
+<span id="1426">1426</span>
+<span id="1427">1427</span>
 </pre><pre class='rust '>
 <span class='doccomment'>//! Licensed under the Apache License, Version 2.0</span>
 <span class='doccomment'>//! http://www.apache.org/licenses/LICENSE-2.0 or the MIT license</span>
@@ -1664,6 +1705,27 @@
     <span class='kw'>fn</span> <span class='ident'>size_hint</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> (<span class='ident'>usize</span>, <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>usize</span><span class='op'>&gt;</span>) {
         <span class='comment'>// Not ExactSizeIterator because size may be larger than usize</span>
         <span class='ident'>size_hint</span>::<span class='ident'>add_scalar</span>(<span class='self'>self</span>.<span class='ident'>iter</span>.<span class='ident'>size_hint</span>(), <span class='self'>self</span>.<span class='ident'>top</span>.<span class='ident'>is_some</span>() <span class='kw'>as</span> <span class='ident'>usize</span>)
+    }
+
+    <span class='kw'>fn</span> <span class='ident'>all</span><span class='op'>&lt;</span><span class='ident'>G</span><span class='op'>&gt;</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='kw-2'>mut</span> <span class='ident'>f</span>: <span class='ident'>G</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span>
+        <span class='kw'>where</span> <span class='ident'>G</span>: <span class='ident'>FnMut</span>(<span class='self'>Self</span>::<span class='ident'>Item</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span>
+    {
+        <span class='kw'>if</span> <span class='kw'>let</span> <span class='prelude-val'>Some</span>(<span class='ident'>elt</span>) <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>top</span>.<span class='ident'>take</span>() {
+            <span class='kw'>if</span> <span class='op'>!</span><span class='ident'>f</span>(<span class='ident'>elt</span>) {
+                <span class='kw'>return</span> <span class='bool-val'>false</span>;
+            }
+        }
+        <span class='self'>self</span>.<span class='ident'>iter</span>.<span class='ident'>all</span>(<span class='ident'>f</span>)
+    }
+
+    <span class='kw'>fn</span> <span class='ident'>fold</span><span class='op'>&lt;</span><span class='ident'>Acc</span>, <span class='ident'>G</span><span class='op'>&gt;</span>(<span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>init</span>: <span class='ident'>Acc</span>, <span class='kw-2'>mut</span> <span class='ident'>f</span>: <span class='ident'>G</span>) <span class='op'>-&gt;</span> <span class='ident'>Acc</span>
+        <span class='kw'>where</span> <span class='ident'>G</span>: <span class='ident'>FnMut</span>(<span class='ident'>Acc</span>, <span class='self'>Self</span>::<span class='ident'>Item</span>) <span class='op'>-&gt;</span> <span class='ident'>Acc</span>,
+    {
+        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>accum</span> <span class='op'>=</span> <span class='ident'>init</span>;
+        <span class='kw'>if</span> <span class='kw'>let</span> <span class='prelude-val'>Some</span>(<span class='ident'>elt</span>) <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>top</span>.<span class='ident'>take</span>() {
+            <span class='ident'>accum</span> <span class='op'>=</span> <span class='ident'>f</span>(<span class='ident'>accum</span>, <span class='ident'>elt</span>);
+        }
+        <span class='self'>self</span>.<span class='ident'>iter</span>.<span class='ident'>fold</span>(<span class='ident'>accum</span>, <span class='ident'>f</span>)
     }
 }
 
@@ -2562,9 +2624,12 @@
 }
 
 <span class='doccomment'>/// Create a new `Combinations` from a clonable iterator.</span>
+<span class='doccomment'>///</span>
+<span class='doccomment'>/// **Panics** if `n` is zero.</span>
 <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>combinations</span><span class='op'>&lt;</span><span class='ident'>I</span><span class='op'>&gt;</span>(<span class='ident'>iter</span>: <span class='ident'>I</span>, <span class='ident'>n</span>: <span class='ident'>usize</span>) <span class='op'>-&gt;</span> <span class='ident'>Combinations</span><span class='op'>&lt;</span><span class='ident'>I</span><span class='op'>&gt;</span>
     <span class='kw'>where</span> <span class='ident'>I</span>: <span class='ident'>Iterator</span>
 {
+    <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>n</span> <span class='op'>!=</span> <span class='number'>0</span>);
     <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>indices</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>usize</span><span class='op'>&gt;</span> <span class='op'>=</span> <span class='ident'>Vec</span>::<span class='ident'>with_capacity</span>(<span class='ident'>n</span>);
     <span class='kw'>for</span> <span class='ident'>i</span> <span class='kw'>in</span> <span class='number'>0</span>..<span class='ident'>n</span> {
         <span class='ident'>indices</span>.<span class='ident'>push</span>(<span class='ident'>i</span>);
@@ -2784,6 +2849,23 @@
             }
         }
         <span class='prelude-val'>None</span>
+    }
+
+    <span class='comment'>// special case to convert segmented iterator into consecutive loops</span>
+    <span class='kw'>fn</span> <span class='ident'>fold</span><span class='op'>&lt;</span><span class='ident'>Acc</span>, <span class='ident'>G</span><span class='op'>&gt;</span>(<span class='self'>self</span>, <span class='ident'>init</span>: <span class='ident'>Acc</span>, <span class='kw-2'>mut</span> <span class='ident'>f</span>: <span class='ident'>G</span>) <span class='op'>-&gt;</span> <span class='ident'>Acc</span>
+        <span class='kw'>where</span> <span class='ident'>G</span>: <span class='ident'>FnMut</span>(<span class='ident'>Acc</span>, <span class='self'>Self</span>::<span class='ident'>Item</span>) <span class='op'>-&gt;</span> <span class='ident'>Acc</span>,
+    {
+        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>accum</span> <span class='op'>=</span> <span class='ident'>init</span>;
+        <span class='kw'>if</span> <span class='kw'>let</span> <span class='prelude-val'>Some</span>(<span class='ident'>iter</span>) <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>front</span> {
+            <span class='ident'>accum</span> <span class='op'>=</span> <span class='ident'>iter</span>.<span class='ident'>fold</span>(<span class='ident'>accum</span>, <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>f</span>);
+        }
+        <span class='kw'>for</span> <span class='ident'>iter</span> <span class='kw'>in</span> <span class='self'>self</span>.<span class='ident'>iter</span> {
+            <span class='ident'>accum</span> <span class='op'>=</span> <span class='ident'>iter</span>.<span class='ident'>into_iter</span>().<span class='ident'>fold</span>(<span class='ident'>accum</span>, <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>f</span>);
+        }
+        <span class='kw'>if</span> <span class='kw'>let</span> <span class='prelude-val'>Some</span>(<span class='ident'>iter</span>) <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>back</span> {
+            <span class='ident'>accum</span> <span class='op'>=</span> <span class='ident'>iter</span>.<span class='ident'>fold</span>(<span class='ident'>accum</span>, <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>f</span>);
+        }
+        <span class='ident'>accum</span>
     }
 }
 

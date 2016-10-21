@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="rustdoc">
-    <meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/itertools-0.5.2/src/lib.rs`.">
+    <meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/itertools-0.5.4/src/lib.rs`.">
     <meta name="keywords" content="rust, rustlang, rust-lang">
 
     <title>lib.rs.html -- source</title>
@@ -1617,6 +1617,7 @@
 <span id="1573">1573</span>
 <span id="1574">1574</span>
 <span id="1575">1575</span>
+<span id="1576">1576</span>
 </pre><pre class='rust '>
 <span class='attribute'>#<span class='op'>!</span>[<span class='ident'>warn</span>(<span class='ident'>missing_docs</span>)]</span>
 <span class='attribute'>#<span class='op'>!</span>[<span class='ident'>crate_name</span><span class='op'>=</span><span class='string'>&quot;itertools&quot;</span>]</span>
@@ -1688,7 +1689,7 @@
     <span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>pad_tail</span>::<span class='ident'>PadUsing</span>;
     <span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>rciter_impl</span>::<span class='ident'>RcIter</span>;
     <span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>repeatn</span>::<span class='ident'>RepeatN</span>;
-    <span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>sources</span>::{<span class='ident'>RepeatCall</span>, <span class='ident'>Unfold</span>};
+    <span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>sources</span>::{<span class='ident'>RepeatCall</span>, <span class='ident'>Unfold</span>, <span class='ident'>Iterate</span>};
     <span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>tee</span>::<span class='ident'>Tee</span>;
     <span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>tuple_impl</span>::{<span class='ident'>TupleBuffer</span>, <span class='ident'>TupleWindows</span>, <span class='ident'>Tuples</span>};
     <span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>zip_eq_impl</span>::<span class='ident'>ZipEq</span>;
@@ -1700,7 +1701,7 @@
 <span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>diff</span>::<span class='ident'>diff_with</span>;
 <span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>diff</span>::<span class='ident'>Diff</span>;
 <span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>minmax</span>::<span class='ident'>MinMaxResult</span>;
-<span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>sources</span>::{<span class='ident'>repeat_call</span>, <span class='ident'>unfold</span>};
+<span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>sources</span>::{<span class='ident'>repeat_call</span>, <span class='ident'>unfold</span>, <span class='ident'>iterate</span>};
 <span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>zip_longest</span>::<span class='ident'>EitherOrBoth</span>;
 <span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>ziptuple</span>::<span class='ident'>multizip</span>;
 <span class='kw'>mod</span> <span class='ident'>adaptors</span>;
@@ -2428,6 +2429,8 @@
     <span class='doccomment'>/// Iterator element type is `Vec&lt;Self::Item&gt;`. The iterator produces a new Vec per iteration,</span>
     <span class='doccomment'>/// and clones the iterator elements.</span>
     <span class='doccomment'>///</span>
+    <span class='doccomment'>/// **Panics** if `n` is zero.</span>
+    <span class='doccomment'>///</span>
     <span class='doccomment'>/// ```</span>
     <span class='doccomment'>/// use itertools::Itertools;</span>
     <span class='doccomment'>///</span>
@@ -2603,9 +2606,8 @@
     <span class='kw'>fn</span> <span class='ident'>foreach</span><span class='op'>&lt;</span><span class='ident'>F</span><span class='op'>&gt;</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='kw-2'>mut</span> <span class='ident'>f</span>: <span class='ident'>F</span>)
         <span class='kw'>where</span> <span class='ident'>F</span>: <span class='ident'>FnMut</span>(<span class='self'>Self</span>::<span class='ident'>Item</span>)
     {
-        <span class='kw'>for</span> <span class='ident'>elt</span> <span class='kw'>in</span> <span class='self'>self</span> {
-            <span class='ident'>f</span>(<span class='ident'>elt</span>)
-        }
+        <span class='comment'>// use fold to exploit iterator-specific implementations</span>
+        <span class='self'>self</span>.<span class='ident'>fold</span>((), <span class='kw'>move</span> <span class='op'>|</span>(), <span class='ident'>element</span><span class='op'>|</span> <span class='ident'>f</span>(<span class='ident'>element</span>))
     }
 
     <span class='doccomment'>/// `.collect_vec()` is simply a type specialization of `.collect()`,</span>

@@ -1062,11 +1062,6 @@
 <span id="1018">1018</span>
 <span id="1019">1019</span>
 <span id="1020">1020</span>
-<span id="1021">1021</span>
-<span id="1022">1022</span>
-<span id="1023">1023</span>
-<span id="1024">1024</span>
-<span id="1025">1025</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2015 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -1436,12 +1431,9 @@
     <span class='doccomment'>/// Sent amongst members of a newly-merged group to allow synchronisation of their routing</span>
     <span class='doccomment'>/// tables before notifying other connected peers of the merge.</span>
     <span class='ident'>OwnGroupMerge</span> {
-        <span class='ident'>prefix</span>: <span class='ident'>Prefix</span><span class='op'>&lt;</span><span class='ident'>XorName</span><span class='op'>&gt;</span>,
-        <span class='comment'>// The recipient will already be connected to these peers, so doesn&#39;t need their complete</span>
-        <span class='comment'>// `PublicId`s.</span>
-        <span class='ident'>connected_groups</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span>(<span class='ident'>Prefix</span><span class='op'>&lt;</span><span class='ident'>XorName</span><span class='op'>&gt;</span>, <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>XorName</span><span class='op'>&gt;</span>)<span class='op'>&gt;</span>,
-        <span class='comment'>// The recipient will not be connected to these peers, so needs their complete `PublicId`s.</span>
-        <span class='ident'>needed_groups</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span>(<span class='ident'>Prefix</span><span class='op'>&lt;</span><span class='ident'>XorName</span><span class='op'>&gt;</span>, <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>PublicId</span><span class='op'>&gt;</span>)<span class='op'>&gt;</span>,
+        <span class='ident'>sender_prefix</span>: <span class='ident'>Prefix</span><span class='op'>&lt;</span><span class='ident'>XorName</span><span class='op'>&gt;</span>,
+        <span class='ident'>merge_prefix</span>: <span class='ident'>Prefix</span><span class='op'>&lt;</span><span class='ident'>XorName</span><span class='op'>&gt;</span>,
+        <span class='ident'>groups</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span>(<span class='ident'>Prefix</span><span class='op'>&lt;</span><span class='ident'>XorName</span><span class='op'>&gt;</span>, <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>PublicId</span><span class='op'>&gt;</span>)<span class='op'>&gt;</span>,
     },
     <span class='doccomment'>/// Sent by members of a newly-merged group to peers outwith the merged group to notify them of</span>
     <span class='doccomment'>/// the merge.</span>
@@ -1573,14 +1565,12 @@
                        <span class='ident'>close_group_ids</span>,
                        <span class='ident'>message_id</span>)
             }
-            <span class='ident'>MessageContent</span>::<span class='ident'>OwnGroupMerge</span> { <span class='kw-2'>ref</span> <span class='ident'>prefix</span>,
-                                            <span class='kw-2'>ref</span> <span class='ident'>connected_groups</span>,
-                                            <span class='kw-2'>ref</span> <span class='ident'>needed_groups</span> } <span class='op'>=&gt;</span> {
+            <span class='ident'>MessageContent</span>::<span class='ident'>OwnGroupMerge</span> { <span class='kw-2'>ref</span> <span class='ident'>sender_prefix</span>, <span class='kw-2'>ref</span> <span class='ident'>merge_prefix</span>, <span class='kw-2'>ref</span> <span class='ident'>groups</span> } <span class='op'>=&gt;</span> {
                 <span class='macro'>write</span><span class='macro'>!</span>(<span class='ident'>formatter</span>,
                        <span class='string'>&quot;OwnGroupMerge {{ {:?}, {:?}, {:?} }}&quot;</span>,
-                       <span class='ident'>prefix</span>,
-                       <span class='ident'>connected_groups</span>,
-                       <span class='ident'>needed_groups</span>)
+                       <span class='ident'>sender_prefix</span>,
+                       <span class='ident'>merge_prefix</span>,
+                       <span class='ident'>groups</span>)
             }
             <span class='ident'>MessageContent</span>::<span class='ident'>OtherGroupMerge</span> { <span class='kw-2'>ref</span> <span class='ident'>prefix</span>, <span class='kw-2'>ref</span> <span class='ident'>group</span> } <span class='op'>=&gt;</span> {
                 <span class='macro'>write</span><span class='macro'>!</span>(<span class='ident'>formatter</span>, <span class='string'>&quot;OtherGroupMerge {{ {:?}, {:?} }}&quot;</span>, <span class='ident'>prefix</span>, <span class='ident'>group</span>)
