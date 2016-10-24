@@ -1341,7 +1341,7 @@
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>ack_from</span>(<span class='ident'>msg</span>: <span class='kw-2'>&amp;</span><span class='ident'>RoutingMessage</span>, <span class='ident'>src</span>: <span class='ident'>Authority</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='self'>Self</span>, <span class='ident'>RoutingError</span><span class='op'>&gt;</span> {
         <span class='prelude-val'>Ok</span>(<span class='ident'>RoutingMessage</span> {
             <span class='ident'>src</span>: <span class='ident'>src</span>,
-            <span class='ident'>dst</span>: <span class='ident'>msg</span>.<span class='ident'>src</span>.<span class='ident'>clone</span>(),
+            <span class='ident'>dst</span>: <span class='ident'>msg</span>.<span class='ident'>src</span>,
             <span class='ident'>content</span>: <span class='ident'>MessageContent</span>::<span class='ident'>Ack</span>(<span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>Ack</span>::<span class='ident'>compute</span>(<span class='ident'>msg</span>)), <span class='ident'>msg</span>.<span class='ident'>priority</span>()),
         })
     }
@@ -1363,8 +1363,8 @@
             _ <span class='op'>=&gt;</span> <span class='self'>self</span>.<span class='ident'>content</span>.<span class='ident'>clone</span>(),
         };
         <span class='prelude-val'>Ok</span>(<span class='ident'>RoutingMessage</span> {
-            <span class='ident'>src</span>: <span class='self'>self</span>.<span class='ident'>src</span>.<span class='ident'>clone</span>(),
-            <span class='ident'>dst</span>: <span class='self'>self</span>.<span class='ident'>dst</span>.<span class='ident'>clone</span>(),
+            <span class='ident'>src</span>: <span class='self'>self</span>.<span class='ident'>src</span>,
+            <span class='ident'>dst</span>: <span class='self'>self</span>.<span class='ident'>dst</span>,
             <span class='ident'>content</span>: <span class='ident'>content</span>,
         })
     }

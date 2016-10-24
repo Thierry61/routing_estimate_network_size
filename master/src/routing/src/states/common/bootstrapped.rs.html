@@ -342,7 +342,7 @@
     }
 
     <span class='kw'>fn</span> <span class='ident'>send_ack</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>routing_msg</span>: <span class='kw-2'>&amp;</span><span class='ident'>RoutingMessage</span>, <span class='ident'>route</span>: <span class='ident'>u8</span>) {
-        <span class='self'>self</span>.<span class='ident'>send_ack_from</span>(<span class='ident'>routing_msg</span>, <span class='ident'>route</span>, <span class='ident'>routing_msg</span>.<span class='ident'>dst</span>.<span class='ident'>clone</span>());
+        <span class='self'>self</span>.<span class='ident'>send_ack_from</span>(<span class='ident'>routing_msg</span>, <span class='ident'>route</span>, <span class='ident'>routing_msg</span>.<span class='ident'>dst</span>);
     }
 
     <span class='kw'>fn</span> <span class='ident'>send_ack_from</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>routing_msg</span>: <span class='kw-2'>&amp;</span><span class='ident'>RoutingMessage</span>, <span class='ident'>route</span>: <span class='ident'>u8</span>, <span class='ident'>src</span>: <span class='ident'>Authority</span>) {

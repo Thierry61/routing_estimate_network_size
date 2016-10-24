@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="rustdoc">
-    <meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/either-1.0.0/src/lib.rs`.">
+    <meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/either-1.0.1/src/lib.rs`.">
     <meta name="keywords" content="rust, rustlang, rust-lang">
 
     <title>lib.rs.html -- source</title>
@@ -561,10 +561,16 @@
 <span id="517">517</span>
 <span id="518">518</span>
 <span id="519">519</span>
+<span id="520">520</span>
+<span id="521">521</span>
+<span id="522">522</span>
+<span id="523">523</span>
+<span id="524">524</span>
+<span id="525">525</span>
 </pre><pre class='rust '>
 <span class='doccomment'>//! The enum [**Either**](enum.Either.html).</span>
 <span class='doccomment'>//!</span>
-<span class='doccomment'>//! Crate features:</span>
+<span class='doccomment'>//! **Crate features:**</span>
 <span class='doccomment'>//!</span>
 <span class='doccomment'>//! * `&quot;use_std&quot;`</span>
 <span class='doccomment'>//! Enabled by default. Disable to make the library `#![no_std]`.</span>
@@ -878,6 +884,12 @@
 
     <span class='kw'>fn</span> <span class='ident'>size_hint</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> (<span class='ident'>usize</span>, <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>usize</span><span class='op'>&gt;</span>) {
         <span class='macro'>either</span><span class='macro'>!</span>(<span class='op'>*</span><span class='self'>self</span>, <span class='kw-2'>ref</span> <span class='ident'>inner</span> <span class='op'>=&gt;</span> <span class='ident'>inner</span>.<span class='ident'>size_hint</span>())
+    }
+
+    <span class='kw'>fn</span> <span class='ident'>fold</span><span class='op'>&lt;</span><span class='ident'>Acc</span>, <span class='ident'>G</span><span class='op'>&gt;</span>(<span class='self'>self</span>, <span class='ident'>init</span>: <span class='ident'>Acc</span>, <span class='ident'>f</span>: <span class='ident'>G</span>) <span class='op'>-&gt;</span> <span class='ident'>Acc</span>
+        <span class='kw'>where</span> <span class='ident'>G</span>: <span class='ident'>FnMut</span>(<span class='ident'>Acc</span>, <span class='self'>Self</span>::<span class='ident'>Item</span>) <span class='op'>-&gt;</span> <span class='ident'>Acc</span>,
+    {
+        <span class='macro'>either</span><span class='macro'>!</span>(<span class='self'>self</span>, <span class='ident'>inner</span> <span class='op'>=&gt;</span> <span class='ident'>inner</span>.<span class='ident'>fold</span>(<span class='ident'>init</span>, <span class='ident'>f</span>))
     }
 }
 
