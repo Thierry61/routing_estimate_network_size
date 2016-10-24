@@ -1062,6 +1062,9 @@
 <span id="1018">1018</span>
 <span id="1019">1019</span>
 <span id="1020">1020</span>
+<span id="1021">1021</span>
+<span id="1022">1022</span>
+<span id="1023">1023</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2015 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -1097,7 +1100,7 @@
 <span class='kw'>use</span> <span class='ident'>routing_table</span>::<span class='ident'>Prefix</span>;
 <span class='kw'>use</span> <span class='ident'>rust_sodium</span>::<span class='ident'>crypto</span>::{<span class='ident'>box_</span>, <span class='ident'>sign</span>};
 <span class='kw'>use</span> <span class='ident'>rust_sodium</span>::<span class='ident'>crypto</span>::<span class='ident'>hash</span>::<span class='ident'>sha256</span>;
-<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>collections</span>::{<span class='ident'>BTreeMap</span>, <span class='ident'>HashSet</span>};
+<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>collections</span>::<span class='ident'>BTreeMap</span>;
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>fmt</span>::{<span class='self'>self</span>, <span class='ident'>Debug</span>, <span class='ident'>Formatter</span>};
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>time</span>::<span class='ident'>Duration</span>;
 <span class='kw'>use</span> <span class='ident'>types</span>::<span class='ident'>MessageId</span>;
@@ -1190,8 +1193,6 @@
     <span class='doccomment'>/// Sent from a node that found a new node in the network to all its contacts who might need to</span>
     <span class='doccomment'>/// add the new node to their routing table.</span>
     <span class='ident'>NewNode</span>(<span class='ident'>PublicId</span>),
-    <span class='doccomment'>/// Sent to a joining node to allow it to establish connections to the included contacts.</span>
-    <span class='ident'>RoutingTable</span>(<span class='ident'>HashSet</span><span class='op'>&lt;</span><span class='ident'>PublicId</span><span class='op'>&gt;</span>),
     <span class='doccomment'>/// Sent from a node that needs a tunnel to be able to connect to the given peer.</span>
     <span class='ident'>TunnelRequest</span>(<span class='ident'>PeerId</span>),
     <span class='doccomment'>/// Sent as a response to `TunnelRequest` if the node can act as a tunnel.</span>
@@ -1428,6 +1429,10 @@
         <span class='doccomment'>/// The message ID.</span>
         <span class='ident'>message_id</span>: <span class='ident'>MessageId</span>,
     },
+    <span class='doccomment'>/// Sent to a joining node to allow it to establish connections to the included contacts.</span>
+    <span class='ident'>RoutingTable</span>(<span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>PublicId</span><span class='op'>&gt;</span>),
+    <span class='doccomment'>/// Sent to all connected peers when our own group splits</span>
+    <span class='ident'>GroupSplit</span>(<span class='ident'>Prefix</span><span class='op'>&lt;</span><span class='ident'>XorName</span><span class='op'>&gt;</span>),
     <span class='doccomment'>/// Sent amongst members of a newly-merged group to allow synchronisation of their routing</span>
     <span class='doccomment'>/// tables before notifying other connected peers of the merge.</span>
     <span class='ident'>OwnGroupMerge</span> {
@@ -1495,9 +1500,6 @@
             }
             <span class='ident'>DirectMessage</span>::<span class='ident'>NodeIdentify</span> { .. } <span class='op'>=&gt;</span> <span class='macro'>write</span><span class='macro'>!</span>(<span class='ident'>formatter</span>, <span class='string'>&quot;NodeIdentify {{ .. }}&quot;</span>),
             <span class='ident'>DirectMessage</span>::<span class='ident'>NewNode</span>(<span class='kw-2'>ref</span> <span class='ident'>public_id</span>) <span class='op'>=&gt;</span> <span class='macro'>write</span><span class='macro'>!</span>(<span class='ident'>formatter</span>, <span class='string'>&quot;NewNode({:?})&quot;</span>, <span class='ident'>public_id</span>),
-            <span class='ident'>DirectMessage</span>::<span class='ident'>RoutingTable</span>(<span class='kw-2'>ref</span> <span class='ident'>routing_table</span>) <span class='op'>=&gt;</span> {
-                <span class='macro'>write</span><span class='macro'>!</span>(<span class='ident'>formatter</span>, <span class='string'>&quot;{:?}&quot;</span>, <span class='ident'>routing_table</span>)
-            }
             <span class='ident'>DirectMessage</span>::<span class='ident'>TunnelRequest</span>(<span class='ident'>peer_id</span>) <span class='op'>=&gt;</span> {
                 <span class='macro'>write</span><span class='macro'>!</span>(<span class='ident'>formatter</span>, <span class='string'>&quot;TunnelRequest({:?})&quot;</span>, <span class='ident'>peer_id</span>)
             }
@@ -1565,6 +1567,10 @@
                        <span class='ident'>close_group_ids</span>,
                        <span class='ident'>message_id</span>)
             }
+            <span class='ident'>MessageContent</span>::<span class='ident'>RoutingTable</span>(<span class='kw-2'>ref</span> <span class='ident'>public_ids</span>) <span class='op'>=&gt;</span> {
+                <span class='macro'>write</span><span class='macro'>!</span>(<span class='ident'>formatter</span>, <span class='string'>&quot;RoutingTable({:?})&quot;</span>, <span class='ident'>public_ids</span>)
+            }
+            <span class='ident'>MessageContent</span>::<span class='ident'>GroupSplit</span>(<span class='kw-2'>ref</span> <span class='ident'>prefix</span>) <span class='op'>=&gt;</span> <span class='macro'>write</span><span class='macro'>!</span>(<span class='ident'>formatter</span>, <span class='string'>&quot;GroupSplit({:?})&quot;</span>, <span class='ident'>prefix</span>),
             <span class='ident'>MessageContent</span>::<span class='ident'>OwnGroupMerge</span> { <span class='kw-2'>ref</span> <span class='ident'>sender_prefix</span>, <span class='kw-2'>ref</span> <span class='ident'>merge_prefix</span>, <span class='kw-2'>ref</span> <span class='ident'>groups</span> } <span class='op'>=&gt;</span> {
                 <span class='macro'>write</span><span class='macro'>!</span>(<span class='ident'>formatter</span>,
                        <span class='string'>&quot;OwnGroupMerge {{ {:?}, {:?}, {:?} }}&quot;</span>,

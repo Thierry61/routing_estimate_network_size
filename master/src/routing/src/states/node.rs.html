@@ -1991,6 +1991,41 @@
 <span id="1947">1947</span>
 <span id="1948">1948</span>
 <span id="1949">1949</span>
+<span id="1950">1950</span>
+<span id="1951">1951</span>
+<span id="1952">1952</span>
+<span id="1953">1953</span>
+<span id="1954">1954</span>
+<span id="1955">1955</span>
+<span id="1956">1956</span>
+<span id="1957">1957</span>
+<span id="1958">1958</span>
+<span id="1959">1959</span>
+<span id="1960">1960</span>
+<span id="1961">1961</span>
+<span id="1962">1962</span>
+<span id="1963">1963</span>
+<span id="1964">1964</span>
+<span id="1965">1965</span>
+<span id="1966">1966</span>
+<span id="1967">1967</span>
+<span id="1968">1968</span>
+<span id="1969">1969</span>
+<span id="1970">1970</span>
+<span id="1971">1971</span>
+<span id="1972">1972</span>
+<span id="1973">1973</span>
+<span id="1974">1974</span>
+<span id="1975">1975</span>
+<span id="1976">1976</span>
+<span id="1977">1977</span>
+<span id="1978">1978</span>
+<span id="1979">1979</span>
+<span id="1980">1980</span>
+<span id="1981">1981</span>
+<span id="1982">1982</span>
+<span id="1983">1983</span>
+<span id="1984">1984</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2015 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -2446,17 +2481,6 @@
                 }
                 <span class='prelude-val'>Ok</span>(())
             }
-            <span class='ident'>DirectMessage</span>::<span class='ident'>RoutingTable</span>(<span class='ident'>public_ids</span>) <span class='op'>=&gt;</span> {
-                <span class='kw'>for</span> <span class='ident'>public_id</span> <span class='kw'>in</span> <span class='kw-2'>&amp;</span><span class='ident'>public_ids</span> {
-                    <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>peer_mgr</span>.<span class='ident'>routing_table</span>().<span class='ident'>need_to_add</span>(<span class='ident'>public_id</span>.<span class='ident'>name</span>()).<span class='ident'>is_ok</span>() {
-                        <span class='kw'>let</span> <span class='ident'>our_name</span> <span class='op'>=</span> <span class='op'>*</span><span class='self'>self</span>.<span class='ident'>name</span>();
-                        <span class='kw'>let</span> _ <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>send_connection_info</span>(<span class='op'>*</span><span class='ident'>public_id</span>,
-                                                  <span class='ident'>Authority</span>::<span class='ident'>ManagedNode</span>(<span class='ident'>our_name</span>),
-                                                  <span class='ident'>Authority</span>::<span class='ident'>ManagedNode</span>(<span class='op'>*</span><span class='ident'>public_id</span>.<span class='ident'>name</span>()));
-                    }
-                }
-                <span class='prelude-val'>Ok</span>(())
-            }
             <span class='ident'>DirectMessage</span>::<span class='ident'>TunnelRequest</span>(<span class='ident'>dst_id</span>) <span class='op'>=&gt;</span> <span class='self'>self</span>.<span class='ident'>handle_tunnel_request</span>(<span class='ident'>peer_id</span>, <span class='ident'>dst_id</span>),
             <span class='ident'>DirectMessage</span>::<span class='ident'>TunnelSuccess</span>(<span class='ident'>dst_id</span>) <span class='op'>=&gt;</span> <span class='self'>self</span>.<span class='ident'>handle_tunnel_success</span>(<span class='ident'>peer_id</span>, <span class='ident'>dst_id</span>),
             <span class='ident'>DirectMessage</span>::<span class='ident'>TunnelClosed</span>(<span class='ident'>dst_id</span>) <span class='op'>=&gt;</span> <span class='self'>self</span>.<span class='ident'>handle_tunnel_closed</span>(<span class='ident'>peer_id</span>, <span class='ident'>dst_id</span>),
@@ -2628,6 +2652,10 @@
             (<span class='ident'>MessageContent</span>::<span class='ident'>GetCloseGroupResponse</span> { <span class='ident'>close_group_ids</span>, .. },
              <span class='ident'>Authority</span>::<span class='ident'>ManagedNode</span>(_),
              <span class='ident'>dst</span>) <span class='op'>=&gt;</span> <span class='self'>self</span>.<span class='ident'>handle_get_close_group_response</span>(<span class='ident'>close_group_ids</span>, <span class='ident'>dst</span>),
+            (<span class='ident'>MessageContent</span>::<span class='ident'>RoutingTable</span>(<span class='ident'>public_ids</span>), _, _) <span class='op'>=&gt;</span> {
+                <span class='self'>self</span>.<span class='ident'>handle_routing_table</span>(<span class='ident'>public_ids</span>)
+            }
+            (<span class='ident'>MessageContent</span>::<span class='ident'>GroupSplit</span>(<span class='ident'>prefix</span>), _, _) <span class='op'>=&gt;</span> <span class='self'>self</span>.<span class='ident'>handle_group_split</span>(<span class='ident'>prefix</span>),
             (<span class='ident'>MessageContent</span>::<span class='ident'>OwnGroupMerge</span> { <span class='ident'>sender_prefix</span>, <span class='ident'>merge_prefix</span>, <span class='ident'>groups</span> }, <span class='ident'>src</span>, _) <span class='op'>=&gt;</span> {
                 <span class='self'>self</span>.<span class='ident'>handle_own_group_merge</span>(<span class='ident'>src</span>, <span class='ident'>sender_prefix</span>, <span class='ident'>merge_prefix</span>, <span class='ident'>groups</span>)
             }
@@ -2862,17 +2890,16 @@
                 }
 
                 <span class='kw'>if</span> <span class='ident'>should_split</span> {
-                    <span class='comment'>// None of the `peers_to_drop` will have been in our group, so no need to notify</span>
-                    <span class='comment'>// Routing user about them.</span>
                     <span class='kw'>let</span> <span class='ident'>our_group_prefix</span> <span class='op'>=</span> <span class='op'>*</span><span class='self'>self</span>.<span class='ident'>peer_mgr</span>.<span class='ident'>routing_table</span>().<span class='ident'>our_group_prefix</span>();
-                    <span class='kw'>let</span> <span class='ident'>peers_to_drop</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>peer_mgr</span>.<span class='ident'>split_group</span>(<span class='ident'>our_group_prefix</span>);
-                    <span class='kw'>let</span> <span class='ident'>our_new_prefix</span> <span class='op'>=</span> <span class='op'>*</span><span class='self'>self</span>.<span class='ident'>peer_mgr</span>.<span class='ident'>routing_table</span>().<span class='ident'>our_group_prefix</span>();
-                    <span class='kw'>if</span> <span class='kw'>let</span> <span class='prelude-val'>Err</span>(<span class='ident'>err</span>) <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>event_sender</span>.<span class='ident'>send</span>(<span class='ident'>Event</span>::<span class='ident'>GroupSplit</span>(<span class='ident'>our_new_prefix</span>)) {
-                        <span class='macro'>error</span><span class='macro'>!</span>(<span class='string'>&quot;{:?} Error sending event to routing user - {:?}&quot;</span>, <span class='self'>self</span>, <span class='ident'>err</span>);
-                    }
-
-                    <span class='kw'>for</span> <span class='ident'>peer_id</span> <span class='kw'>in</span> <span class='ident'>peers_to_drop</span> {
-                        <span class='self'>self</span>.<span class='ident'>disconnect_peer</span>(<span class='kw-2'>&amp;</span><span class='ident'>peer_id</span>);
+                    <span class='kw'>for</span> <span class='ident'>prefix</span> <span class='kw'>in</span> <span class='self'>self</span>.<span class='ident'>peer_mgr</span>.<span class='ident'>routing_table</span>().<span class='ident'>prefixes</span>() {
+                        <span class='kw'>let</span> <span class='ident'>request_msg</span> <span class='op'>=</span> <span class='ident'>RoutingMessage</span> {
+                            <span class='ident'>src</span>: <span class='ident'>Authority</span>::<span class='ident'>NaeManager</span>(<span class='ident'>our_group_prefix</span>.<span class='ident'>lower_bound</span>()),
+                            <span class='ident'>dst</span>: <span class='ident'>Authority</span>::<span class='ident'>NaeManager</span>(<span class='ident'>prefix</span>.<span class='ident'>lower_bound</span>()),
+                            <span class='ident'>content</span>: <span class='ident'>MessageContent</span>::<span class='ident'>GroupSplit</span>(<span class='ident'>our_group_prefix</span>),
+                        };
+                        <span class='kw'>if</span> <span class='kw'>let</span> <span class='prelude-val'>Err</span>(<span class='ident'>err</span>) <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>send_routing_message</span>(<span class='ident'>request_msg</span>) {
+                            <span class='macro'>debug</span><span class='macro'>!</span>(<span class='string'>&quot;{:?} Failed to send GroupSplit: {:?}.&quot;</span>, <span class='self'>self</span>, <span class='ident'>err</span>);
+                        }
                     }
                 }
 
@@ -2883,9 +2910,21 @@
                     .<span class='ident'>cloned</span>()
                     .<span class='ident'>collect</span>();
                 <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>peer_mgr</span>.<span class='ident'>routing_table</span>().<span class='ident'>is_in_our_group</span>(<span class='ident'>public_id</span>.<span class='ident'>name</span>()) {
-                    <span class='kw'>let</span> <span class='ident'>message</span> <span class='op'>=</span> <span class='ident'>DirectMessage</span>::<span class='ident'>RoutingTable</span>(<span class='self'>self</span>.<span class='ident'>peer_mgr</span>
-                        .<span class='ident'>get_pub_ids</span>(<span class='kw-2'>&amp;</span><span class='ident'>all_rt_contacts</span>));
-                    <span class='kw'>let</span> _ <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>send_direct_message</span>(<span class='kw-2'>&amp;</span><span class='ident'>peer_id</span>, <span class='ident'>message</span>);
+                    <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>public_ids</span> <span class='op'>=</span>
+                        <span class='self'>self</span>.<span class='ident'>peer_mgr</span>.<span class='ident'>get_pub_ids</span>(<span class='kw-2'>&amp;</span><span class='ident'>all_rt_contacts</span>).<span class='ident'>into_iter</span>().<span class='ident'>collect_vec</span>();
+                    <span class='ident'>public_ids</span>.<span class='ident'>sort</span>();
+                    <span class='kw'>let</span> <span class='ident'>request_content</span> <span class='op'>=</span> <span class='ident'>MessageContent</span>::<span class='ident'>RoutingTable</span>(<span class='ident'>public_ids</span>);
+                    <span class='kw'>let</span> <span class='ident'>request_msg</span> <span class='op'>=</span> <span class='ident'>RoutingMessage</span> {
+                        <span class='ident'>src</span>: <span class='ident'>Authority</span>::<span class='ident'>NaeManager</span>(<span class='self'>self</span>.<span class='ident'>peer_mgr</span>
+                            .<span class='ident'>routing_table</span>()
+                            .<span class='ident'>our_group_prefix</span>()
+                            .<span class='ident'>lower_bound</span>()),
+                        <span class='ident'>dst</span>: <span class='ident'>Authority</span>::<span class='ident'>ManagedNode</span>(<span class='op'>*</span><span class='ident'>public_id</span>.<span class='ident'>name</span>()),
+                        <span class='ident'>content</span>: <span class='ident'>request_content</span>,
+                    };
+                    <span class='kw'>if</span> <span class='kw'>let</span> <span class='prelude-val'>Err</span>(<span class='ident'>err</span>) <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>send_routing_message</span>(<span class='ident'>request_msg</span>) {
+                        <span class='macro'>debug</span><span class='macro'>!</span>(<span class='string'>&quot;{:?} Failed to send RoutingTable: {:?}.&quot;</span>, <span class='self'>self</span>, <span class='ident'>err</span>);
+                    }
                     <span class='kw'>let</span> <span class='ident'>event</span> <span class='op'>=</span> <span class='ident'>Event</span>::<span class='ident'>NodeAdded</span>(<span class='op'>*</span><span class='ident'>public_id</span>.<span class='ident'>name</span>(),
                                                  <span class='self'>self</span>.<span class='ident'>peer_mgr</span>.<span class='ident'>routing_table</span>().<span class='ident'>clone</span>());
                     <span class='kw'>if</span> <span class='kw'>let</span> <span class='prelude-val'>Err</span>(<span class='ident'>err</span>) <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>event_sender</span>.<span class='ident'>send</span>(<span class='ident'>event</span>) {
@@ -3268,6 +3307,34 @@
                 <span class='kw'>let</span> <span class='ident'>ci_dst</span> <span class='op'>=</span> <span class='ident'>Authority</span>::<span class='ident'>ManagedNode</span>(<span class='op'>*</span><span class='ident'>close_node_id</span>.<span class='ident'>name</span>());
                 <span class='macro'>try</span><span class='macro'>!</span>(<span class='self'>self</span>.<span class='ident'>send_connection_info</span>(<span class='ident'>close_node_id</span>, <span class='ident'>dst</span>, <span class='ident'>ci_dst</span>));
             }
+        }
+        <span class='prelude-val'>Ok</span>(())
+    }
+
+    <span class='kw'>fn</span> <span class='ident'>handle_routing_table</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>public_ids</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>PublicId</span><span class='op'>&gt;</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span>(), <span class='ident'>RoutingError</span><span class='op'>&gt;</span> {
+        <span class='kw'>for</span> <span class='ident'>public_id</span> <span class='kw'>in</span> <span class='kw-2'>&amp;</span><span class='ident'>public_ids</span> {
+            <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>peer_mgr</span>.<span class='ident'>routing_table</span>().<span class='ident'>need_to_add</span>(<span class='ident'>public_id</span>.<span class='ident'>name</span>()).<span class='ident'>is_ok</span>() {
+                <span class='kw'>let</span> <span class='ident'>our_name</span> <span class='op'>=</span> <span class='op'>*</span><span class='self'>self</span>.<span class='ident'>name</span>();
+                <span class='kw'>let</span> _ <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>send_connection_info</span>(<span class='op'>*</span><span class='ident'>public_id</span>,
+                                                  <span class='ident'>Authority</span>::<span class='ident'>ManagedNode</span>(<span class='ident'>our_name</span>),
+                                                  <span class='ident'>Authority</span>::<span class='ident'>ManagedNode</span>(<span class='op'>*</span><span class='ident'>public_id</span>.<span class='ident'>name</span>()));
+            }
+        }
+        <span class='prelude-val'>Ok</span>(())
+    }
+
+    <span class='kw'>fn</span> <span class='ident'>handle_group_split</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>prefix</span>: <span class='ident'>Prefix</span><span class='op'>&lt;</span><span class='ident'>XorName</span><span class='op'>&gt;</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span>(), <span class='ident'>RoutingError</span><span class='op'>&gt;</span> {
+        <span class='comment'>// None of the `peers_to_drop` will have been in our group, so no need to notify Routing</span>
+        <span class='comment'>// user about them.</span>
+        <span class='kw'>let</span> (<span class='ident'>peers_to_drop</span>, <span class='ident'>our_new_prefix</span>) <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>peer_mgr</span>.<span class='ident'>split_group</span>(<span class='ident'>prefix</span>);
+        <span class='kw'>if</span> <span class='kw'>let</span> <span class='prelude-val'>Some</span>(<span class='ident'>new_prefix</span>) <span class='op'>=</span> <span class='ident'>our_new_prefix</span> {
+            <span class='kw'>if</span> <span class='kw'>let</span> <span class='prelude-val'>Err</span>(<span class='ident'>err</span>) <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>event_sender</span>.<span class='ident'>send</span>(<span class='ident'>Event</span>::<span class='ident'>GroupSplit</span>(<span class='ident'>new_prefix</span>)) {
+                <span class='macro'>error</span><span class='macro'>!</span>(<span class='string'>&quot;{:?} Error sending event to routing user - {:?}&quot;</span>, <span class='self'>self</span>, <span class='ident'>err</span>);
+            }
+        }
+
+        <span class='kw'>for</span> <span class='ident'>peer_id</span> <span class='kw'>in</span> <span class='ident'>peers_to_drop</span> {
+            <span class='self'>self</span>.<span class='ident'>disconnect_peer</span>(<span class='kw-2'>&amp;</span><span class='ident'>peer_id</span>);
         }
         <span class='prelude-val'>Ok</span>(())
     }
@@ -3719,12 +3786,15 @@
                             <span class='ident'>targets</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>Prefix</span><span class='op'>&lt;</span><span class='ident'>XorName</span><span class='op'>&gt;&gt;</span>,
                             <span class='ident'>merge_details</span>: <span class='ident'>OwnMergeDetails</span><span class='op'>&lt;</span><span class='ident'>XorName</span><span class='op'>&gt;</span>,
                             <span class='ident'>src</span>: <span class='ident'>Authority</span>) {
-        <span class='kw'>let</span> <span class='ident'>groups</span> <span class='op'>=</span> <span class='ident'>merge_details</span>.<span class='ident'>groups</span>
+        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>groups</span> <span class='op'>=</span> <span class='ident'>merge_details</span>.<span class='ident'>groups</span>
             .<span class='ident'>into_iter</span>()
             .<span class='ident'>map</span>(<span class='op'>|</span>(<span class='ident'>prefix</span>, <span class='ident'>members</span>)<span class='op'>|</span> {
-                (<span class='ident'>prefix</span>, <span class='self'>self</span>.<span class='ident'>peer_mgr</span>.<span class='ident'>get_pub_ids</span>(<span class='kw-2'>&amp;</span><span class='ident'>members</span>).<span class='ident'>into_iter</span>().<span class='ident'>collect</span>())
+                <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>group</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>peer_mgr</span>.<span class='ident'>get_pub_ids</span>(<span class='kw-2'>&amp;</span><span class='ident'>members</span>).<span class='ident'>into_iter</span>().<span class='ident'>collect_vec</span>();
+                <span class='ident'>group</span>.<span class='ident'>sort</span>();
+                (<span class='ident'>prefix</span>, <span class='ident'>group</span>)
             })
-            .<span class='ident'>collect</span>();
+            .<span class='ident'>collect_vec</span>();
+        <span class='ident'>groups</span>.<span class='ident'>sort</span>();
         <span class='kw'>let</span> <span class='ident'>request_content</span> <span class='op'>=</span> <span class='ident'>MessageContent</span>::<span class='ident'>OwnGroupMerge</span> {
             <span class='ident'>sender_prefix</span>: <span class='ident'>merge_details</span>.<span class='ident'>sender_prefix</span>,
             <span class='ident'>merge_prefix</span>: <span class='ident'>merge_details</span>.<span class='ident'>merge_prefix</span>,
