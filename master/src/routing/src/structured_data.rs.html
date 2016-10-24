@@ -544,12 +544,6 @@
 <span id="500">500</span>
 <span id="501">501</span>
 <span id="502">502</span>
-<span id="503">503</span>
-<span id="504">504</span>
-<span id="505">505</span>
-<span id="506">506</span>
-<span id="507">507</span>
-<span id="508">508</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2015 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -570,13 +564,13 @@
 
 <span class='kw'>use</span> <span class='ident'>data</span>::{<span class='ident'>DataIdentifier</span>, <span class='ident'>NO_OWNER_PUB_KEY</span>, <span class='ident'>verify_detached</span>};
 <span class='kw'>use</span> <span class='ident'>error</span>::<span class='ident'>RoutingError</span>;
-<span class='kw'>use</span> <span class='ident'>maidsafe_utilities</span>::<span class='ident'>serialisation</span>::<span class='ident'>serialise</span>;
+<span class='kw'>use</span> <span class='ident'>maidsafe_utilities</span>::<span class='ident'>serialisation</span>::{<span class='ident'>serialise</span>, <span class='ident'>serialised_size</span>};
 <span class='kw'>use</span> <span class='ident'>rust_sodium</span>::<span class='ident'>crypto</span>::<span class='ident'>sign</span>::{<span class='self'>self</span>, <span class='ident'>PublicKey</span>, <span class='ident'>SecretKey</span>, <span class='ident'>Signature</span>};
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>fmt</span>::{<span class='self'>self</span>, <span class='ident'>Debug</span>, <span class='ident'>Formatter</span>};
 <span class='kw'>use</span> <span class='ident'>xor_name</span>::<span class='ident'>XorName</span>;
 
 <span class='doccomment'>/// Maximum allowed size for a Structured Data to grow to</span>
-<span class='kw'>pub</span> <span class='kw'>const</span> <span class='ident'>MAX_STRUCTURED_DATA_SIZE_IN_BYTES</span>: <span class='ident'>usize</span> <span class='op'>=</span> <span class='number'>102400</span>;
+<span class='kw'>pub</span> <span class='kw'>const</span> <span class='ident'>MAX_STRUCTURED_DATA_SIZE_IN_BYTES</span>: <span class='ident'>u64</span> <span class='op'>=</span> <span class='number'>102400</span>;
 
 <span class='doccomment'>/// Mutable structured data.</span>
 <span class='doccomment'>///</span>
@@ -799,13 +793,7 @@
 
     <span class='doccomment'>/// Return true if the size is valid</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>validate_size</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> {
-        <span class='kw'>match</span> <span class='ident'>serialise</span>(<span class='self'>self</span>) {
-            <span class='prelude-val'>Ok</span>(<span class='ident'>raw</span>) <span class='op'>=&gt;</span> <span class='ident'>raw</span>.<span class='ident'>len</span>() <span class='op'>&lt;=</span> <span class='ident'>MAX_STRUCTURED_DATA_SIZE_IN_BYTES</span>,
-            <span class='prelude-val'>Err</span>(<span class='ident'>e</span>) <span class='op'>=&gt;</span> {
-                <span class='macro'>warn</span><span class='macro'>!</span>(<span class='string'>&quot;Failed to serialise StructuredData: {:?}&quot;</span>, <span class='ident'>e</span>);
-                <span class='bool-val'>false</span>
-            }
-        }
+        <span class='ident'>serialised_size</span>(<span class='self'>self</span>) <span class='op'>&lt;=</span> <span class='ident'>MAX_STRUCTURED_DATA_SIZE_IN_BYTES</span>
     }
 }
 

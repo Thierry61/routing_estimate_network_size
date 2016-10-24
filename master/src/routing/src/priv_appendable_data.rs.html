@@ -775,12 +775,6 @@
 <span id="731">731</span>
 <span id="732">732</span>
 <span id="733">733</span>
-<span id="734">734</span>
-<span id="735">735</span>
-<span id="736">736</span>
-<span id="737">737</span>
-<span id="738">738</span>
-<span id="739">739</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2015 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -799,7 +793,7 @@
 <span class='comment'>// Please review the Licences for the specific language governing permissions and limitations</span>
 <span class='comment'>// relating to use of the SAFE Network Software.</span>
 
-<span class='kw'>use</span> <span class='ident'>maidsafe_utilities</span>::<span class='ident'>serialisation</span>::{<span class='ident'>deserialise</span>, <span class='ident'>serialise</span>};
+<span class='kw'>use</span> <span class='ident'>maidsafe_utilities</span>::<span class='ident'>serialisation</span>::{<span class='ident'>deserialise</span>, <span class='ident'>serialise</span>, <span class='ident'>serialised_size</span>};
 <span class='kw'>use</span> <span class='ident'>rust_sodium</span>::<span class='ident'>crypto</span>::{<span class='ident'>box_</span>, <span class='ident'>sealedbox</span>};
 <span class='kw'>use</span> <span class='ident'>rust_sodium</span>::<span class='ident'>crypto</span>::<span class='ident'>sign</span>::{<span class='self'>self</span>, <span class='ident'>PublicKey</span>, <span class='ident'>SecretKey</span>, <span class='ident'>Signature</span>};
 <span class='kw'>use</span> <span class='ident'>rustc_serialize</span>::{<span class='ident'>Decodable</span>, <span class='ident'>Decoder</span>};
@@ -811,7 +805,7 @@
 <span class='kw'>use</span> <span class='ident'>append_types</span>::{<span class='ident'>AppendWrapper</span>, <span class='ident'>AppendedData</span>, <span class='ident'>Filter</span>};
 
 <span class='doccomment'>/// Maximum allowed size for a private appendable data to grow to</span>
-<span class='kw'>pub</span> <span class='kw'>const</span> <span class='ident'>MAX_PRIV_APPENDABLE_DATA_SIZE_IN_BYTES</span>: <span class='ident'>usize</span> <span class='op'>=</span> <span class='number'>102400</span>;
+<span class='kw'>pub</span> <span class='kw'>const</span> <span class='ident'>MAX_PRIV_APPENDABLE_DATA_SIZE_IN_BYTES</span>: <span class='ident'>u64</span> <span class='op'>=</span> <span class='number'>102400</span>;
 
 <span class='doccomment'>/// Maximum size of a serialised `PrivAppendedData` item, in bytes.</span>
 <span class='kw'>pub</span> <span class='kw'>const</span> <span class='ident'>MAX_PRIV_APPENDED_DATA_BYTES</span>: <span class='ident'>usize</span> <span class='op'>=</span> <span class='number'>220</span>;
@@ -1098,13 +1092,7 @@
 
     <span class='doccomment'>/// Return true if the size is valid</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>validate_size</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> {
-        <span class='kw'>match</span> <span class='ident'>serialise</span>(<span class='self'>self</span>) {
-            <span class='prelude-val'>Ok</span>(<span class='ident'>raw</span>) <span class='op'>=&gt;</span> <span class='ident'>raw</span>.<span class='ident'>len</span>() <span class='op'>&lt;=</span> <span class='ident'>MAX_PRIV_APPENDABLE_DATA_SIZE_IN_BYTES</span>,
-            <span class='prelude-val'>Err</span>(<span class='ident'>e</span>) <span class='op'>=&gt;</span> {
-                <span class='macro'>warn</span><span class='macro'>!</span>(<span class='string'>&quot;Failed to serialise PrivAppendableData: {:?}&quot;</span>, <span class='ident'>e</span>);
-                <span class='bool-val'>false</span>
-            }
-        }
+        <span class='ident'>serialised_size</span>(<span class='self'>self</span>) <span class='op'>&lt;=</span> <span class='ident'>MAX_PRIV_APPENDABLE_DATA_SIZE_IN_BYTES</span>
     }
 }
 
