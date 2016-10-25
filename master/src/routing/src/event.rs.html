@@ -166,7 +166,7 @@
 
 <span class='kw'>use</span> <span class='ident'>authority</span>::<span class='ident'>Authority</span>;
 <span class='kw'>use</span> <span class='ident'>messages</span>::{<span class='ident'>Request</span>, <span class='ident'>Response</span>};
-<span class='kw'>use</span> <span class='ident'>routing_table</span>::{<span class='ident'>Prefix</span>, <span class='ident'>RoutingTable</span>};
+<span class='kw'>use</span> <span class='ident'>routing_table</span>::<span class='ident'>Prefix</span>;
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>fmt</span>::{<span class='self'>self</span>, <span class='ident'>Debug</span>, <span class='ident'>Formatter</span>};
 <span class='kw'>use</span> <span class='ident'>xor_name</span>::<span class='ident'>XorName</span>;
 
@@ -198,9 +198,9 @@
         <span class='ident'>dst</span>: <span class='ident'>Authority</span>,
     },
     <span class='doccomment'>/// A new node joined the network and may be a member of group authorities we also belong to.</span>
-    <span class='ident'>NodeAdded</span>(<span class='ident'>XorName</span>, <span class='ident'>RoutingTable</span><span class='op'>&lt;</span><span class='ident'>XorName</span><span class='op'>&gt;</span>),
+    <span class='ident'>NodeAdded</span>(<span class='ident'>XorName</span>),
     <span class='doccomment'>/// A node left the network and may have been a member of group authorities we also belong to.</span>
-    <span class='ident'>NodeLost</span>(<span class='ident'>XorName</span>, <span class='ident'>RoutingTable</span><span class='op'>&lt;</span><span class='ident'>XorName</span><span class='op'>&gt;</span>),
+    <span class='ident'>NodeLost</span>(<span class='ident'>XorName</span>),
     <span class='doccomment'>/// Our own group has been split, resulting in the included `Prefix` for our new group.</span>
     <span class='ident'>GroupSplit</span>(<span class='ident'>Prefix</span><span class='op'>&lt;</span><span class='ident'>XorName</span><span class='op'>&gt;</span>),
     <span class='doccomment'>/// Our own group requires merged with others, resulting in the included `Prefix` for our new</span>
@@ -234,12 +234,12 @@
                        <span class='ident'>src</span>,
                        <span class='ident'>dst</span>)
             }
-            <span class='ident'>Event</span>::<span class='ident'>NodeAdded</span>(<span class='kw-2'>ref</span> <span class='ident'>node_name</span>, _) <span class='op'>=&gt;</span> {
+            <span class='ident'>Event</span>::<span class='ident'>NodeAdded</span>(<span class='kw-2'>ref</span> <span class='ident'>node_name</span>) <span class='op'>=&gt;</span> {
                 <span class='macro'>write</span><span class='macro'>!</span>(<span class='ident'>formatter</span>,
                        <span class='string'>&quot;Event::NodeAdded({:?}, routing_table)&quot;</span>,
                        <span class='ident'>node_name</span>)
             }
-            <span class='ident'>Event</span>::<span class='ident'>NodeLost</span>(<span class='kw-2'>ref</span> <span class='ident'>node_name</span>, _) <span class='op'>=&gt;</span> {
+            <span class='ident'>Event</span>::<span class='ident'>NodeLost</span>(<span class='kw-2'>ref</span> <span class='ident'>node_name</span>) <span class='op'>=&gt;</span> {
                 <span class='macro'>write</span><span class='macro'>!</span>(<span class='ident'>formatter</span>, <span class='string'>&quot;Event::NodeLost({:?}, routing_table)&quot;</span>, <span class='ident'>node_name</span>)
             }
             <span class='ident'>Event</span>::<span class='ident'>GroupSplit</span>(<span class='kw-2'>ref</span> <span class='ident'>prefix</span>) <span class='op'>=&gt;</span> <span class='macro'>write</span><span class='macro'>!</span>(<span class='ident'>formatter</span>, <span class='string'>&quot;Event::GroupSplit({:?})&quot;</span>, <span class='ident'>prefix</span>),

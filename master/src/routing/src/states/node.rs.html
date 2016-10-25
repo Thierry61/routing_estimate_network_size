@@ -2025,7 +2025,6 @@
 <span id="1981">1981</span>
 <span id="1982">1982</span>
 <span id="1983">1983</span>
-<span id="1984">1984</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2015 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -2925,8 +2924,7 @@
                     <span class='kw'>if</span> <span class='kw'>let</span> <span class='prelude-val'>Err</span>(<span class='ident'>err</span>) <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>send_routing_message</span>(<span class='ident'>request_msg</span>) {
                         <span class='macro'>debug</span><span class='macro'>!</span>(<span class='string'>&quot;{:?} Failed to send RoutingTable: {:?}.&quot;</span>, <span class='self'>self</span>, <span class='ident'>err</span>);
                     }
-                    <span class='kw'>let</span> <span class='ident'>event</span> <span class='op'>=</span> <span class='ident'>Event</span>::<span class='ident'>NodeAdded</span>(<span class='op'>*</span><span class='ident'>public_id</span>.<span class='ident'>name</span>(),
-                                                 <span class='self'>self</span>.<span class='ident'>peer_mgr</span>.<span class='ident'>routing_table</span>().<span class='ident'>clone</span>());
+                    <span class='kw'>let</span> <span class='ident'>event</span> <span class='op'>=</span> <span class='ident'>Event</span>::<span class='ident'>NodeAdded</span>(<span class='op'>*</span><span class='ident'>public_id</span>.<span class='ident'>name</span>());
                     <span class='kw'>if</span> <span class='kw'>let</span> <span class='prelude-val'>Err</span>(<span class='ident'>err</span>) <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>event_sender</span>.<span class='ident'>send</span>(<span class='ident'>event</span>) {
                         <span class='macro'>error</span><span class='macro'>!</span>(<span class='string'>&quot;{:?} Error sending event to routing user - {:?}&quot;</span>, <span class='self'>self</span>, <span class='ident'>err</span>);
                     }
@@ -3753,7 +3751,7 @@
               <span class='ident'>details</span>.<span class='ident'>name</span>);
 
         <span class='kw'>if</span> <span class='ident'>details</span>.<span class='ident'>was_in_our_group</span> {
-            <span class='kw'>let</span> <span class='ident'>event</span> <span class='op'>=</span> <span class='ident'>Event</span>::<span class='ident'>NodeLost</span>(<span class='ident'>details</span>.<span class='ident'>name</span>, <span class='self'>self</span>.<span class='ident'>peer_mgr</span>.<span class='ident'>routing_table</span>().<span class='ident'>clone</span>());
+            <span class='kw'>let</span> <span class='ident'>event</span> <span class='op'>=</span> <span class='ident'>Event</span>::<span class='ident'>NodeLost</span>(<span class='ident'>details</span>.<span class='ident'>name</span>);
             <span class='kw'>if</span> <span class='kw'>let</span> <span class='prelude-val'>Err</span>(<span class='ident'>err</span>) <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>event_sender</span>.<span class='ident'>send</span>(<span class='ident'>event</span>) {
                 <span class='macro'>error</span><span class='macro'>!</span>(<span class='string'>&quot;{:?} Error sending event to routing user - {:?}&quot;</span>, <span class='self'>self</span>, <span class='ident'>err</span>);
             }

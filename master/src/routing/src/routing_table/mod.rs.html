@@ -1084,6 +1084,9 @@
 <span id="1040">1040</span>
 <span id="1041">1041</span>
 <span id="1042">1042</span>
+<span id="1043">1043</span>
+<span id="1044">1044</span>
+<span id="1045">1045</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2016 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -1380,6 +1383,7 @@
         }
     }
 
+    <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>any</span>(<span class='ident'>test</span>, <span class='ident'>feature</span> <span class='op'>=</span> <span class='string'>&quot;use-mock-crust&quot;</span>))]</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>our_name</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='kw-2'>&amp;</span><span class='ident'>T</span> {
         <span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='ident'>our_name</span>
     }
@@ -1393,6 +1397,7 @@
         <span class='self'>self</span>.<span class='ident'>groups</span>.<span class='ident'>values</span>().<span class='ident'>fold</span>(<span class='number'>0</span>, <span class='op'>|</span><span class='ident'>acc</span>, <span class='ident'>group</span><span class='op'>|</span> <span class='ident'>acc</span> <span class='op'>+</span> <span class='ident'>group</span>.<span class='ident'>len</span>())
     }
 
+    <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>any</span>(<span class='ident'>test</span>, <span class='ident'>feature</span> <span class='op'>=</span> <span class='string'>&quot;use-mock-crust&quot;</span>))]</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>is_empty</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> {
         <span class='self'>self</span>.<span class='ident'>groups</span>.<span class='ident'>values</span>().<span class='ident'>all</span>(<span class='ident'>HashSet</span>::<span class='ident'>is_empty</span>)
     }
@@ -1437,8 +1442,9 @@
         }
     }
 
-    <span class='comment'>// Returns the list of contacts as a result of a merge to which we aren&#39;t currently connected,</span>
-    <span class='comment'>// but should be.</span>
+    <span class='doccomment'>/// Returns the list of contacts as a result of a merge to which we aren&#39;t currently connected,</span>
+    <span class='doccomment'>/// but should be.</span>
+    <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>any</span>(<span class='ident'>test</span>, <span class='ident'>feature</span> <span class='op'>=</span> <span class='string'>&quot;use-mock-crust&quot;</span>))]</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>needed</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='kw-2'>&amp;</span><span class='ident'>Groups</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
         <span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='ident'>needed</span>
     }
