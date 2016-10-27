@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="rustdoc">
-    <meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/itertools-0.5.4/src/adaptors.rs`.">
+    <meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/itertools-0.5.5/src/adaptors.rs`.">
     <meta name="keywords" content="rust, rustlang, rust-lang">
 
     <title>adaptors.rs.html -- source</title>
@@ -1469,6 +1469,83 @@
 <span id="1425">1425</span>
 <span id="1426">1426</span>
 <span id="1427">1427</span>
+<span id="1428">1428</span>
+<span id="1429">1429</span>
+<span id="1430">1430</span>
+<span id="1431">1431</span>
+<span id="1432">1432</span>
+<span id="1433">1433</span>
+<span id="1434">1434</span>
+<span id="1435">1435</span>
+<span id="1436">1436</span>
+<span id="1437">1437</span>
+<span id="1438">1438</span>
+<span id="1439">1439</span>
+<span id="1440">1440</span>
+<span id="1441">1441</span>
+<span id="1442">1442</span>
+<span id="1443">1443</span>
+<span id="1444">1444</span>
+<span id="1445">1445</span>
+<span id="1446">1446</span>
+<span id="1447">1447</span>
+<span id="1448">1448</span>
+<span id="1449">1449</span>
+<span id="1450">1450</span>
+<span id="1451">1451</span>
+<span id="1452">1452</span>
+<span id="1453">1453</span>
+<span id="1454">1454</span>
+<span id="1455">1455</span>
+<span id="1456">1456</span>
+<span id="1457">1457</span>
+<span id="1458">1458</span>
+<span id="1459">1459</span>
+<span id="1460">1460</span>
+<span id="1461">1461</span>
+<span id="1462">1462</span>
+<span id="1463">1463</span>
+<span id="1464">1464</span>
+<span id="1465">1465</span>
+<span id="1466">1466</span>
+<span id="1467">1467</span>
+<span id="1468">1468</span>
+<span id="1469">1469</span>
+<span id="1470">1470</span>
+<span id="1471">1471</span>
+<span id="1472">1472</span>
+<span id="1473">1473</span>
+<span id="1474">1474</span>
+<span id="1475">1475</span>
+<span id="1476">1476</span>
+<span id="1477">1477</span>
+<span id="1478">1478</span>
+<span id="1479">1479</span>
+<span id="1480">1480</span>
+<span id="1481">1481</span>
+<span id="1482">1482</span>
+<span id="1483">1483</span>
+<span id="1484">1484</span>
+<span id="1485">1485</span>
+<span id="1486">1486</span>
+<span id="1487">1487</span>
+<span id="1488">1488</span>
+<span id="1489">1489</span>
+<span id="1490">1490</span>
+<span id="1491">1491</span>
+<span id="1492">1492</span>
+<span id="1493">1493</span>
+<span id="1494">1494</span>
+<span id="1495">1495</span>
+<span id="1496">1496</span>
+<span id="1497">1497</span>
+<span id="1498">1498</span>
+<span id="1499">1499</span>
+<span id="1500">1500</span>
+<span id="1501">1501</span>
+<span id="1502">1502</span>
+<span id="1503">1503</span>
+<span id="1504">1504</span>
 </pre><pre class='rust '>
 <span class='doccomment'>//! Licensed under the Apache License, Version 2.0</span>
 <span class='doccomment'>//! http://www.apache.org/licenses/LICENSE-2.0 or the MIT license</span>
@@ -1477,12 +1554,15 @@
 <span class='doccomment'>//! except according to those terms.</span>
 
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>cmp</span>;
+<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>fmt</span>;
+<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>mem</span>::<span class='ident'>replace</span>;
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>ops</span>::<span class='ident'>Index</span>;
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>iter</span>::{<span class='ident'>Fuse</span>, <span class='ident'>Peekable</span>};
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>collections</span>::<span class='ident'>HashSet</span>;
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>hash</span>::<span class='ident'>Hash</span>;
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>marker</span>::<span class='ident'>PhantomData</span>;
 <span class='kw'>use</span> <span class='ident'>size_hint</span>;
+<span class='kw'>use</span> <span class='ident'>fold</span>;
 
 <span class='macro'>macro_rules</span><span class='macro'>!</span> <span class='ident'>clone_fields</span> {
     (<span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>name</span>:<span class='ident'>ident</span>, <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>base</span>:<span class='ident'>expr</span>, $(<span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>field</span>:<span class='ident'>ident</span>),<span class='op'>+</span>) <span class='op'>=&gt;</span> (
@@ -1494,13 +1574,14 @@
     );
 }
 
+
 <span class='doccomment'>/// An iterator adaptor that alternates elements from two iterators until both</span>
 <span class='doccomment'>/// run out.</span>
 <span class='doccomment'>///</span>
 <span class='doccomment'>/// This iterator is *fused*.</span>
 <span class='doccomment'>///</span>
 <span class='doccomment'>/// See [`.interleave()`](../trait.Itertools.html#method.interleave) for more information.</span>
-<span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Clone</span>)]</span>
+<span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Clone</span>, <span class='ident'>Debug</span>)]</span>
 <span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>Interleave</span><span class='op'>&lt;</span><span class='ident'>I</span>, <span class='ident'>J</span><span class='op'>&gt;</span> {
     <span class='ident'>a</span>: <span class='ident'>Fuse</span><span class='op'>&lt;</span><span class='ident'>I</span><span class='op'>&gt;</span>,
     <span class='ident'>b</span>: <span class='ident'>Fuse</span><span class='op'>&lt;</span><span class='ident'>J</span><span class='op'>&gt;</span>,
@@ -1562,7 +1643,7 @@
 <span class='doccomment'>///</span>
 <span class='doccomment'>/// See [`.interleave_shortest()`](../trait.Itertools.html#method.interleave_shortest)</span>
 <span class='doccomment'>/// for more information.</span>
-<span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Clone</span>)]</span>
+<span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Clone</span>, <span class='ident'>Debug</span>)]</span>
 <span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>InterleaveShortest</span><span class='op'>&lt;</span><span class='ident'>I</span>, <span class='ident'>J</span><span class='op'>&gt;</span>
     <span class='kw'>where</span> <span class='ident'>I</span>: <span class='ident'>Iterator</span>,
           <span class='ident'>J</span>: <span class='ident'>Iterator</span><span class='op'>&lt;</span><span class='ident'>Item</span> <span class='op'>=</span> <span class='ident'>I</span>::<span class='ident'>Item</span><span class='op'>&gt;</span>
@@ -1633,7 +1714,7 @@
     }
 }
 
-<span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Clone</span>)]</span>
+<span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Clone</span>, <span class='ident'>Debug</span>)]</span>
 <span class='doccomment'>/// An iterator adaptor that allows putting back a single</span>
 <span class='doccomment'>/// item to the front of the iterator.</span>
 <span class='doccomment'>///</span>
@@ -1733,6 +1814,7 @@
 <span class='doccomment'>/// items in front of the iterator.</span>
 <span class='doccomment'>///</span>
 <span class='doccomment'>/// Iterator element type is `I::Item`.</span>
+<span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Debug</span>, <span class='ident'>Clone</span>)]</span>
 <span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>PutBackN</span><span class='op'>&lt;</span><span class='ident'>I</span>: <span class='ident'>Iterator</span><span class='op'>&gt;</span> {
     <span class='ident'>top</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>I</span>::<span class='ident'>Item</span><span class='op'>&gt;</span>,
     <span class='ident'>iter</span>: <span class='ident'>I</span>,
@@ -1760,7 +1842,8 @@
     }
 
     <span class='doccomment'>/// Puts x in front of the iterator.</span>
-    <span class='doccomment'>/// The values are yielded in order.</span>
+    <span class='doccomment'>/// The values are yielded in order of the most recently put back</span>
+    <span class='doccomment'>/// values first.</span>
     <span class='doccomment'>///</span>
     <span class='doccomment'>/// ```rust</span>
     <span class='doccomment'>/// use itertools::PutBackN;</span>
@@ -1795,16 +1878,7 @@
     }
 }
 
-<span class='kw'>impl</span><span class='op'>&lt;</span><span class='ident'>I</span>: <span class='ident'>Iterator</span><span class='op'>&gt;</span> <span class='ident'>Clone</span> <span class='kw'>for</span> <span class='ident'>PutBackN</span><span class='op'>&lt;</span><span class='ident'>I</span><span class='op'>&gt;</span>
-    <span class='kw'>where</span> <span class='ident'>I</span>: <span class='ident'>Clone</span>,
-          <span class='ident'>I</span>::<span class='ident'>Item</span>: <span class='ident'>Clone</span>
-{
-    <span class='kw'>fn</span> <span class='ident'>clone</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='self'>Self</span> {
-        <span class='macro'>clone_fields</span><span class='macro'>!</span>(<span class='ident'>PutBackN</span>, <span class='self'>self</span>, <span class='ident'>top</span>, <span class='ident'>iter</span>)
-    }
-}
-
-<span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Clone</span>)]</span>
+<span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Debug</span>, <span class='ident'>Clone</span>)]</span>
 <span class='doccomment'>/// An iterator adaptor that iterates over the cartesian product of</span>
 <span class='doccomment'>/// the element sets of two iterators `I` and `J`.</span>
 <span class='doccomment'>///</span>
@@ -1889,6 +1963,10 @@
     <span class='ident'>iter</span>: <span class='ident'>I</span>,
 }
 
+<span class='kw'>impl</span><span class='op'>&lt;</span><span class='ident'>I</span>, <span class='ident'>F</span><span class='op'>&gt;</span> <span class='ident'>fmt</span>::<span class='ident'>Debug</span> <span class='kw'>for</span> <span class='ident'>Batching</span><span class='op'>&lt;</span><span class='ident'>I</span>, <span class='ident'>F</span><span class='op'>&gt;</span> <span class='kw'>where</span> <span class='ident'>I</span>: <span class='ident'>fmt</span>::<span class='ident'>Debug</span> {
+    <span class='macro'>debug_fmt_fields</span><span class='macro'>!</span>(<span class='ident'>Batching</span>, <span class='ident'>iter</span>);
+}
+
 <span class='doccomment'>/// Create a new Batching iterator.</span>
 <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>batching</span><span class='op'>&lt;</span><span class='ident'>I</span>, <span class='ident'>F</span><span class='op'>&gt;</span>(<span class='ident'>iter</span>: <span class='ident'>I</span>, <span class='ident'>f</span>: <span class='ident'>F</span>) <span class='op'>-&gt;</span> <span class='ident'>Batching</span><span class='op'>&lt;</span><span class='ident'>I</span>, <span class='ident'>F</span><span class='op'>&gt;</span> {
     <span class='ident'>Batching</span> { <span class='ident'>f</span>: <span class='ident'>f</span>, <span class='ident'>iter</span>: <span class='ident'>iter</span> }
@@ -1918,7 +1996,7 @@
 <span class='doccomment'>/// then skipping forward *n-1* elements.</span>
 <span class='doccomment'>///</span>
 <span class='doccomment'>/// See [`.step()`](../trait.Itertools.html#method.step) for more information.</span>
-<span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Clone</span>)]</span>
+<span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Clone</span>, <span class='ident'>Debug</span>)]</span>
 <span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>Step</span><span class='op'>&lt;</span><span class='ident'>I</span><span class='op'>&gt;</span> {
     <span class='ident'>iter</span>: <span class='ident'>Fuse</span><span class='op'>&lt;</span><span class='ident'>I</span><span class='op'>&gt;</span>,
     <span class='ident'>skip</span>: <span class='ident'>usize</span>,
@@ -2050,6 +2128,13 @@
     }
 }
 
+<span class='kw'>impl</span><span class='op'>&lt;</span><span class='ident'>I</span>, <span class='ident'>J</span><span class='op'>&gt;</span> <span class='ident'>fmt</span>::<span class='ident'>Debug</span> <span class='kw'>for</span> <span class='ident'>Merge</span><span class='op'>&lt;</span><span class='ident'>I</span>, <span class='ident'>J</span><span class='op'>&gt;</span>
+    <span class='kw'>where</span> <span class='ident'>I</span>: <span class='ident'>Iterator</span> <span class='op'>+</span> <span class='ident'>fmt</span>::<span class='ident'>Debug</span>, <span class='ident'>J</span>: <span class='ident'>Iterator</span><span class='op'>&lt;</span><span class='ident'>Item</span> <span class='op'>=</span> <span class='ident'>I</span>::<span class='ident'>Item</span><span class='op'>&gt;</span> <span class='op'>+</span> <span class='ident'>fmt</span>::<span class='ident'>Debug</span>,
+          <span class='ident'>I</span>::<span class='ident'>Item</span>: <span class='ident'>fmt</span>::<span class='ident'>Debug</span>,
+{
+    <span class='macro'>debug_fmt_fields</span><span class='macro'>!</span>(<span class='ident'>Merge</span>, <span class='ident'>merge</span>.<span class='ident'>a</span>, <span class='ident'>merge</span>.<span class='ident'>b</span>);
+}
+
 <span class='doccomment'>/// Create an iterator that merges elements in `i` and `j`.</span>
 <span class='doccomment'>///</span>
 <span class='doccomment'>/// `IntoIterator` enabled version of `i.merge(j)`.</span>
@@ -2105,6 +2190,13 @@
     <span class='ident'>cmp</span>: <span class='ident'>F</span>,
 }
 
+<span class='kw'>impl</span><span class='op'>&lt;</span><span class='ident'>I</span>, <span class='ident'>J</span>, <span class='ident'>F</span><span class='op'>&gt;</span> <span class='ident'>fmt</span>::<span class='ident'>Debug</span> <span class='kw'>for</span> <span class='ident'>MergeBy</span><span class='op'>&lt;</span><span class='ident'>I</span>, <span class='ident'>J</span>, <span class='ident'>F</span><span class='op'>&gt;</span>
+    <span class='kw'>where</span> <span class='ident'>I</span>: <span class='ident'>Iterator</span> <span class='op'>+</span> <span class='ident'>fmt</span>::<span class='ident'>Debug</span>, <span class='ident'>J</span>: <span class='ident'>Iterator</span><span class='op'>&lt;</span><span class='ident'>Item</span> <span class='op'>=</span> <span class='ident'>I</span>::<span class='ident'>Item</span><span class='op'>&gt;</span> <span class='op'>+</span> <span class='ident'>fmt</span>::<span class='ident'>Debug</span>,
+          <span class='ident'>I</span>::<span class='ident'>Item</span>: <span class='ident'>fmt</span>::<span class='ident'>Debug</span>,
+{
+    <span class='macro'>debug_fmt_fields</span><span class='macro'>!</span>(<span class='ident'>MergeBy</span>, <span class='ident'>merge</span>.<span class='ident'>a</span>, <span class='ident'>merge</span>.<span class='ident'>b</span>);
+}
+
 <span class='doccomment'>/// Create a `MergeBy` iterator.</span>
 <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>merge_by_new</span><span class='op'>&lt;</span><span class='ident'>I</span>, <span class='ident'>J</span>, <span class='ident'>F</span><span class='op'>&gt;</span>(<span class='ident'>a</span>: <span class='ident'>I</span>, <span class='ident'>b</span>: <span class='ident'>J</span>, <span class='ident'>cmp</span>: <span class='ident'>F</span>) <span class='op'>-&gt;</span> <span class='ident'>MergeBy</span><span class='op'>&lt;</span><span class='ident'>I</span>, <span class='ident'>J</span>, <span class='ident'>F</span><span class='op'>&gt;</span>
     <span class='kw'>where</span> <span class='ident'>I</span>: <span class='ident'>Iterator</span>,
@@ -2149,7 +2241,7 @@
 }
 
 <span class='doccomment'>/// See [`multipeek()`](../fn.multipeek.html) for more information.</span>
-<span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Clone</span>)]</span>
+<span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Clone</span>, <span class='ident'>Debug</span>)]</span>
 <span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>MultiPeek</span><span class='op'>&lt;</span><span class='ident'>I</span><span class='op'>&gt;</span>
     <span class='kw'>where</span> <span class='ident'>I</span>: <span class='ident'>Iterator</span>
 {
@@ -2216,7 +2308,7 @@
     <span class='kw'>where</span> <span class='ident'>I</span>: <span class='ident'>ExactSizeIterator</span>
 {}
 
-<span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Clone</span>)]</span>
+<span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Clone</span>, <span class='ident'>Debug</span>)]</span>
 <span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>CoalesceCore</span><span class='op'>&lt;</span><span class='ident'>I</span><span class='op'>&gt;</span>
     <span class='kw'>where</span> <span class='ident'>I</span>: <span class='ident'>Iterator</span>
 {
@@ -2272,6 +2364,13 @@
     <span class='kw'>fn</span> <span class='ident'>clone</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='self'>Self</span> {
         <span class='macro'>clone_fields</span><span class='macro'>!</span>(<span class='ident'>Coalesce</span>, <span class='self'>self</span>, <span class='ident'>iter</span>, <span class='ident'>f</span>)
     }
+}
+
+<span class='kw'>impl</span><span class='op'>&lt;</span><span class='ident'>I</span>, <span class='ident'>F</span><span class='op'>&gt;</span> <span class='ident'>fmt</span>::<span class='ident'>Debug</span> <span class='kw'>for</span> <span class='ident'>Coalesce</span><span class='op'>&lt;</span><span class='ident'>I</span>, <span class='ident'>F</span><span class='op'>&gt;</span>
+    <span class='kw'>where</span> <span class='ident'>I</span>: <span class='ident'>Iterator</span> <span class='op'>+</span> <span class='ident'>fmt</span>::<span class='ident'>Debug</span>,
+          <span class='ident'>I</span>::<span class='ident'>Item</span>: <span class='ident'>fmt</span>::<span class='ident'>Debug</span>,
+{
+    <span class='macro'>debug_fmt_fields</span><span class='macro'>!</span>(<span class='ident'>Coalesce</span>, <span class='ident'>iter</span>);
 }
 
 <span class='doccomment'>/// Create a new `Coalesce`.</span>
@@ -2332,6 +2431,13 @@
     }
 }
 
+<span class='kw'>impl</span><span class='op'>&lt;</span><span class='ident'>I</span><span class='op'>&gt;</span> <span class='ident'>fmt</span>::<span class='ident'>Debug</span> <span class='kw'>for</span> <span class='ident'>Dedup</span><span class='op'>&lt;</span><span class='ident'>I</span><span class='op'>&gt;</span>
+    <span class='kw'>where</span> <span class='ident'>I</span>: <span class='ident'>Iterator</span> <span class='op'>+</span> <span class='ident'>fmt</span>::<span class='ident'>Debug</span>,
+          <span class='ident'>I</span>::<span class='ident'>Item</span>: <span class='ident'>fmt</span>::<span class='ident'>Debug</span>,
+{
+    <span class='macro'>debug_fmt_fields</span><span class='macro'>!</span>(<span class='ident'>Dedup</span>, <span class='ident'>iter</span>);
+}
+
 <span class='kw'>impl</span><span class='op'>&lt;</span><span class='ident'>I</span><span class='op'>&gt;</span> <span class='ident'>Iterator</span> <span class='kw'>for</span> <span class='ident'>Dedup</span><span class='op'>&lt;</span><span class='ident'>I</span><span class='op'>&gt;</span>
     <span class='kw'>where</span> <span class='ident'>I</span>: <span class='ident'>Iterator</span>,
           <span class='ident'>I</span>::<span class='ident'>Item</span>: <span class='ident'>PartialEq</span>
@@ -2347,6 +2453,23 @@
     <span class='kw'>fn</span> <span class='ident'>size_hint</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> (<span class='ident'>usize</span>, <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>usize</span><span class='op'>&gt;</span>) {
         <span class='self'>self</span>.<span class='ident'>iter</span>.<span class='ident'>size_hint</span>()
     }
+
+    <span class='kw'>fn</span> <span class='ident'>fold</span><span class='op'>&lt;</span><span class='ident'>Acc</span>, <span class='ident'>G</span><span class='op'>&gt;</span>(<span class='self'>self</span>, <span class='kw-2'>mut</span> <span class='ident'>accum</span>: <span class='ident'>Acc</span>, <span class='kw-2'>mut</span> <span class='ident'>f</span>: <span class='ident'>G</span>) <span class='op'>-&gt;</span> <span class='ident'>Acc</span>
+        <span class='kw'>where</span> <span class='ident'>G</span>: <span class='ident'>FnMut</span>(<span class='ident'>Acc</span>, <span class='self'>Self</span>::<span class='ident'>Item</span>) <span class='op'>-&gt;</span> <span class='ident'>Acc</span>,
+    {
+        <span class='kw'>if</span> <span class='kw'>let</span> <span class='prelude-val'>Some</span>(<span class='kw-2'>mut</span> <span class='ident'>last</span>) <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>iter</span>.<span class='ident'>last</span> {
+            <span class='ident'>accum</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>iter</span>.<span class='ident'>iter</span>.<span class='ident'>fold</span>(<span class='ident'>accum</span>, <span class='op'>|</span><span class='ident'>acc</span>, <span class='ident'>elt</span><span class='op'>|</span> {
+                <span class='kw'>if</span> <span class='ident'>elt</span> <span class='op'>==</span> <span class='ident'>last</span> {
+                    <span class='ident'>acc</span>
+                } <span class='kw'>else</span> {
+                    <span class='ident'>f</span>(<span class='ident'>acc</span>, <span class='ident'>replace</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>last</span>, <span class='ident'>elt</span>))
+                }
+            });
+            <span class='ident'>f</span>(<span class='ident'>accum</span>, <span class='ident'>last</span>)
+        } <span class='kw'>else</span> {
+            <span class='ident'>accum</span>
+        }
+    }
 }
 
 <span class='doccomment'>/// An iterator adaptor that borrows from a `Clone`-able iterator</span>
@@ -2356,6 +2479,12 @@
 <span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>TakeWhileRef</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='ident'>I</span>: <span class='lifetime'>&#39;a</span>, <span class='ident'>F</span><span class='op'>&gt;</span> {
     <span class='ident'>iter</span>: <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> <span class='kw-2'>mut</span> <span class='ident'>I</span>,
     <span class='ident'>f</span>: <span class='ident'>F</span>,
+}
+
+<span class='kw'>impl</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='ident'>I</span>, <span class='ident'>F</span><span class='op'>&gt;</span> <span class='ident'>fmt</span>::<span class='ident'>Debug</span> <span class='kw'>for</span> <span class='ident'>TakeWhileRef</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='ident'>I</span>, <span class='ident'>F</span><span class='op'>&gt;</span>
+    <span class='kw'>where</span> <span class='ident'>I</span>: <span class='ident'>Iterator</span> <span class='op'>+</span> <span class='ident'>fmt</span>::<span class='ident'>Debug</span>,
+{
+    <span class='macro'>debug_fmt_fields</span><span class='macro'>!</span>(<span class='ident'>TakeWhileRef</span>, <span class='ident'>iter</span>);
 }
 
 <span class='doccomment'>/// Create a new `TakeWhileRef` from a reference to clonable iterator.</span>
@@ -2396,7 +2525,7 @@
 <span class='doccomment'>/// and produces `A`. Stops on the first `None` encountered.</span>
 <span class='doccomment'>///</span>
 <span class='doccomment'>/// See [`.while_some()`](../trait.Itertools.html#method.while_some) for more information.</span>
-<span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Clone</span>)]</span>
+<span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Clone</span>, <span class='ident'>Debug</span>)]</span>
 <span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>WhileSome</span><span class='op'>&lt;</span><span class='ident'>I</span><span class='op'>&gt;</span> {
     <span class='ident'>iter</span>: <span class='ident'>I</span>,
 }
@@ -2429,6 +2558,7 @@
 <span class='doccomment'>///</span>
 <span class='doccomment'>/// See [`.tuple_combinations()`](../trait.Itertools.html#method.tuple_combinations) for more</span>
 <span class='doccomment'>/// information.</span>
+<span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Debug</span>)]</span>
 <span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>TupleCombinations</span><span class='op'>&lt;</span><span class='ident'>I</span>, <span class='ident'>T</span><span class='op'>&gt;</span>
     <span class='kw'>where</span> <span class='ident'>I</span>: <span class='ident'>Iterator</span>,
           <span class='ident'>T</span>: <span class='ident'>HasCombination</span><span class='op'>&lt;</span><span class='ident'>I</span><span class='op'>&gt;</span>
@@ -2466,6 +2596,7 @@
     }
 }
 
+<span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Debug</span>)]</span>
 <span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>Tuple1Combination</span><span class='op'>&lt;</span><span class='ident'>I</span><span class='op'>&gt;</span> {
     <span class='ident'>iter</span>: <span class='ident'>I</span>,
 }
@@ -2490,6 +2621,7 @@
 
 <span class='macro'>macro_rules</span><span class='macro'>!</span> <span class='ident'>impl_tuple_combination</span> {
     (<span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>C</span>:<span class='ident'>ident</span> <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>P</span>:<span class='ident'>ident</span> ; <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>A</span>:<span class='ident'>ident</span>, $(<span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>I</span>:<span class='ident'>ident</span>),<span class='op'>*</span> ; $(<span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>X</span>:<span class='ident'>ident</span>)<span class='op'>*</span>) <span class='op'>=&gt;</span> (
+        <span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Debug</span>)]</span>
         <span class='kw'>pub</span> <span class='kw'>struct</span> <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>C</span><span class='op'>&lt;</span><span class='ident'>I</span>: <span class='ident'>Iterator</span><span class='op'>&gt;</span> {
             <span class='ident'>item</span>: <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>I</span>::<span class='ident'>Item</span><span class='op'>&gt;</span>,
             <span class='ident'>iter</span>: <span class='ident'>I</span>,
@@ -2550,6 +2682,7 @@
 <span class='macro'>impl_tuple_combination</span><span class='macro'>!</span>(<span class='ident'>Tuple3Combination</span> <span class='ident'>Tuple2Combination</span> ; <span class='ident'>A</span>, <span class='ident'>A</span>, <span class='ident'>A</span>, <span class='ident'>A</span> ; <span class='ident'>a</span> <span class='ident'>b</span>);
 <span class='macro'>impl_tuple_combination</span><span class='macro'>!</span>(<span class='ident'>Tuple4Combination</span> <span class='ident'>Tuple3Combination</span> ; <span class='ident'>A</span>, <span class='ident'>A</span>, <span class='ident'>A</span>, <span class='ident'>A</span>, <span class='ident'>A</span>; <span class='ident'>a</span> <span class='ident'>b</span> <span class='ident'>c</span>);
 
+<span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Debug</span>)]</span>
 <span class='kw'>struct</span> <span class='ident'>LazyBuffer</span><span class='op'>&lt;</span><span class='ident'>I</span>: <span class='ident'>Iterator</span><span class='op'>&gt;</span> {
     <span class='ident'>it</span>: <span class='ident'>I</span>,
     <span class='ident'>done</span>: <span class='ident'>bool</span>,
@@ -2621,6 +2754,13 @@
     <span class='ident'>indices</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>usize</span><span class='op'>&gt;</span>,
     <span class='ident'>pool</span>: <span class='ident'>LazyBuffer</span><span class='op'>&lt;</span><span class='ident'>I</span><span class='op'>&gt;</span>,
     <span class='ident'>first</span>: <span class='ident'>bool</span>,
+}
+
+<span class='kw'>impl</span><span class='op'>&lt;</span><span class='ident'>I</span><span class='op'>&gt;</span> <span class='ident'>fmt</span>::<span class='ident'>Debug</span> <span class='kw'>for</span> <span class='ident'>Combinations</span><span class='op'>&lt;</span><span class='ident'>I</span><span class='op'>&gt;</span>
+    <span class='kw'>where</span> <span class='ident'>I</span>: <span class='ident'>Iterator</span> <span class='op'>+</span> <span class='ident'>fmt</span>::<span class='ident'>Debug</span>,
+          <span class='ident'>I</span>::<span class='ident'>Item</span>: <span class='ident'>fmt</span>::<span class='ident'>Debug</span>,
+{
+    <span class='macro'>debug_fmt_fields</span><span class='macro'>!</span>(<span class='ident'>Combinations</span>, <span class='ident'>n</span>, <span class='ident'>indices</span>, <span class='ident'>pool</span>, <span class='ident'>first</span>);
 }
 
 <span class='doccomment'>/// Create a new `Combinations` from a clonable iterator.</span>
@@ -2713,6 +2853,13 @@
     <span class='ident'>f</span>: <span class='ident'>F</span>,
 }
 
+<span class='kw'>impl</span><span class='op'>&lt;</span><span class='ident'>I</span>, <span class='ident'>V</span>, <span class='ident'>F</span><span class='op'>&gt;</span> <span class='ident'>fmt</span>::<span class='ident'>Debug</span> <span class='kw'>for</span> <span class='ident'>UniqueBy</span><span class='op'>&lt;</span><span class='ident'>I</span>, <span class='ident'>V</span>, <span class='ident'>F</span><span class='op'>&gt;</span>
+    <span class='kw'>where</span> <span class='ident'>I</span>: <span class='ident'>Iterator</span> <span class='op'>+</span> <span class='ident'>fmt</span>::<span class='ident'>Debug</span>,
+          <span class='ident'>V</span>: <span class='ident'>fmt</span>::<span class='ident'>Debug</span> <span class='op'>+</span> <span class='ident'>Hash</span> <span class='op'>+</span> <span class='ident'>Eq</span>,
+{
+    <span class='macro'>debug_fmt_fields</span><span class='macro'>!</span>(<span class='ident'>UniqueBy</span>, <span class='ident'>iter</span>, <span class='ident'>used</span>);
+}
+
 <span class='doccomment'>/// Create a new `UniqueBy` iterator.</span>
 <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>unique_by</span><span class='op'>&lt;</span><span class='ident'>I</span>, <span class='ident'>V</span>, <span class='ident'>F</span><span class='op'>&gt;</span>(<span class='ident'>iter</span>: <span class='ident'>I</span>, <span class='ident'>f</span>: <span class='ident'>F</span>) <span class='op'>-&gt;</span> <span class='ident'>UniqueBy</span><span class='op'>&lt;</span><span class='ident'>I</span>, <span class='ident'>V</span>, <span class='ident'>F</span><span class='op'>&gt;</span>
     <span class='kw'>where</span> <span class='ident'>V</span>: <span class='ident'>Eq</span> <span class='op'>+</span> <span class='ident'>Hash</span>,
@@ -2790,6 +2937,13 @@
     <span class='ident'>iter</span>: <span class='ident'>UniqueBy</span><span class='op'>&lt;</span><span class='ident'>I</span>, <span class='ident'>I</span>::<span class='ident'>Item</span>, ()<span class='op'>&gt;</span>,
 }
 
+<span class='kw'>impl</span><span class='op'>&lt;</span><span class='ident'>I</span><span class='op'>&gt;</span> <span class='ident'>fmt</span>::<span class='ident'>Debug</span> <span class='kw'>for</span> <span class='ident'>Unique</span><span class='op'>&lt;</span><span class='ident'>I</span><span class='op'>&gt;</span>
+    <span class='kw'>where</span> <span class='ident'>I</span>: <span class='ident'>Iterator</span> <span class='op'>+</span> <span class='ident'>fmt</span>::<span class='ident'>Debug</span>,
+          <span class='ident'>I</span>::<span class='ident'>Item</span>: <span class='ident'>Hash</span> <span class='op'>+</span> <span class='ident'>Eq</span> <span class='op'>+</span> <span class='ident'>fmt</span>::<span class='ident'>Debug</span>,
+{
+    <span class='macro'>debug_fmt_fields</span><span class='macro'>!</span>(<span class='ident'>Unique</span>, <span class='ident'>iter</span>);
+}
+
 <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>unique</span><span class='op'>&lt;</span><span class='ident'>I</span><span class='op'>&gt;</span>(<span class='ident'>iter</span>: <span class='ident'>I</span>) <span class='op'>-&gt;</span> <span class='ident'>Unique</span><span class='op'>&lt;</span><span class='ident'>I</span><span class='op'>&gt;</span>
     <span class='kw'>where</span> <span class='ident'>I</span>: <span class='ident'>Iterator</span>,
           <span class='ident'>I</span>::<span class='ident'>Item</span>: <span class='ident'>Eq</span> <span class='op'>+</span> <span class='ident'>Hash</span>,
@@ -2806,7 +2960,7 @@
 <span class='doccomment'>/// An iterator adapter to simply flatten a structure.</span>
 <span class='doccomment'>///</span>
 <span class='doccomment'>/// See [`.flatten()`](../trait.Itertools.html#method.flatten) for more information.</span>
-<span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Clone</span>)]</span>
+<span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Clone</span>, <span class='ident'>Debug</span>)]</span>
 <span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>Flatten</span><span class='op'>&lt;</span><span class='ident'>I</span>, <span class='ident'>J</span><span class='op'>&gt;</span> {
     <span class='ident'>iter</span>: <span class='ident'>I</span>,
     <span class='ident'>front</span>: <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>J</span><span class='op'>&gt;</span>,
@@ -2857,13 +3011,13 @@
     {
         <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>accum</span> <span class='op'>=</span> <span class='ident'>init</span>;
         <span class='kw'>if</span> <span class='kw'>let</span> <span class='prelude-val'>Some</span>(<span class='ident'>iter</span>) <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>front</span> {
-            <span class='ident'>accum</span> <span class='op'>=</span> <span class='ident'>iter</span>.<span class='ident'>fold</span>(<span class='ident'>accum</span>, <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>f</span>);
+            <span class='ident'>accum</span> <span class='op'>=</span> <span class='ident'>fold</span>(<span class='ident'>iter</span>, <span class='ident'>accum</span>, <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>f</span>);
         }
         <span class='kw'>for</span> <span class='ident'>iter</span> <span class='kw'>in</span> <span class='self'>self</span>.<span class='ident'>iter</span> {
-            <span class='ident'>accum</span> <span class='op'>=</span> <span class='ident'>iter</span>.<span class='ident'>into_iter</span>().<span class='ident'>fold</span>(<span class='ident'>accum</span>, <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>f</span>);
+            <span class='ident'>accum</span> <span class='op'>=</span> <span class='ident'>fold</span>(<span class='ident'>iter</span>, <span class='ident'>accum</span>, <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>f</span>);
         }
         <span class='kw'>if</span> <span class='kw'>let</span> <span class='prelude-val'>Some</span>(<span class='ident'>iter</span>) <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>back</span> {
-            <span class='ident'>accum</span> <span class='op'>=</span> <span class='ident'>iter</span>.<span class='ident'>fold</span>(<span class='ident'>accum</span>, <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>f</span>);
+            <span class='ident'>accum</span> <span class='op'>=</span> <span class='ident'>fold</span>(<span class='ident'>iter</span>, <span class='ident'>accum</span>, <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>f</span>);
         }
         <span class='ident'>accum</span>
     }

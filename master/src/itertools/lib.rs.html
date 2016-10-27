@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="rustdoc">
-    <meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/itertools-0.5.4/src/lib.rs`.">
+    <meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/itertools-0.5.5/src/lib.rs`.">
     <meta name="keywords" content="rust, rustlang, rust-lang">
 
     <title>lib.rs.html -- source</title>
@@ -1618,6 +1618,10 @@
 <span id="1574">1574</span>
 <span id="1575">1575</span>
 <span id="1576">1576</span>
+<span id="1577">1577</span>
+<span id="1578">1578</span>
+<span id="1579">1579</span>
+<span id="1580">1580</span>
 </pre><pre class='rust '>
 <span class='attribute'>#<span class='op'>!</span>[<span class='ident'>warn</span>(<span class='ident'>missing_docs</span>)]</span>
 <span class='attribute'>#<span class='op'>!</span>[<span class='ident'>crate_name</span><span class='op'>=</span><span class='string'>&quot;itertools&quot;</span>]</span>
@@ -1657,6 +1661,9 @@
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>cmp</span>::<span class='ident'>Ordering</span>;
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>fmt</span>;
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>hash</span>::<span class='ident'>Hash</span>;
+
+<span class='attribute'>#[<span class='ident'>macro_use</span>]</span>
+<span class='kw'>mod</span> <span class='ident'>impl_macros</span>;
 
 <span class='doccomment'>/// The concrete iterator types.</span>
 <span class='kw'>pub</span> <span class='kw'>mod</span> <span class='ident'>structs</span> {
@@ -1701,6 +1708,7 @@
 <span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>diff</span>::<span class='ident'>diff_with</span>;
 <span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>diff</span>::<span class='ident'>Diff</span>;
 <span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>minmax</span>::<span class='ident'>MinMaxResult</span>;
+<span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>repeatn</span>::<span class='ident'>repeat_n</span>;
 <span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>sources</span>::{<span class='ident'>repeat_call</span>, <span class='ident'>unfold</span>, <span class='ident'>iterate</span>};
 <span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>zip_longest</span>::<span class='ident'>EitherOrBoth</span>;
 <span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>ziptuple</span>::<span class='ident'>multizip</span>;
@@ -2859,7 +2867,7 @@
         }
     }
 
-    <span class='doccomment'>/// An iterator adaptor that applies a function, producing a single, final value.</span>
+    <span class='doccomment'>/// An iterator method that applies a function, producing a single, final value.</span>
     <span class='doccomment'>///</span>
     <span class='doccomment'>/// `fold_while()` is basically equivalent to `fold()` but with additional support for</span>
     <span class='doccomment'>/// early exit via short-circuiting.</span>

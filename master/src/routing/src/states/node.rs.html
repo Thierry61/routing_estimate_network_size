@@ -2025,6 +2025,15 @@
 <span id="1981">1981</span>
 <span id="1982">1982</span>
 <span id="1983">1983</span>
+<span id="1984">1984</span>
+<span id="1985">1985</span>
+<span id="1986">1986</span>
+<span id="1987">1987</span>
+<span id="1988">1988</span>
+<span id="1989">1989</span>
+<span id="1990">1990</span>
+<span id="1991">1991</span>
+<span id="1992">1992</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2015 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -2402,7 +2411,10 @@
 
     <span class='kw'>fn</span> <span class='ident'>find_tunnel_for_peer</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>peer_id</span>: <span class='ident'>PeerId</span>, <span class='ident'>pub_id</span>: <span class='kw-2'>&amp;</span><span class='ident'>PublicId</span>) {
         <span class='kw'>for</span> (<span class='ident'>name</span>, <span class='ident'>dst_peer_id</span>) <span class='kw'>in</span> <span class='self'>self</span>.<span class='ident'>peer_mgr</span>.<span class='ident'>set_searching_for_tunnel</span>(<span class='ident'>peer_id</span>, <span class='op'>*</span><span class='ident'>pub_id</span>) {
-            <span class='macro'>trace</span><span class='macro'>!</span>(<span class='string'>&quot;{:?} Asking {:?} to serve as a tunnel.&quot;</span>, <span class='self'>self</span>, <span class='ident'>name</span>);
+            <span class='macro'>trace</span><span class='macro'>!</span>(<span class='string'>&quot;{:?} Asking {:?} to serve as a tunnel for {:?}.&quot;</span>,
+                   <span class='self'>self</span>,
+                   <span class='ident'>name</span>,
+                   <span class='ident'>peer_id</span>);
             <span class='kw'>let</span> <span class='ident'>tunnel_request</span> <span class='op'>=</span> <span class='ident'>DirectMessage</span>::<span class='ident'>TunnelRequest</span>(<span class='ident'>peer_id</span>);
             <span class='kw'>let</span> _ <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>send_direct_message</span>(<span class='kw-2'>&amp;</span><span class='ident'>dst_peer_id</span>, <span class='ident'>tunnel_request</span>);
         }
@@ -2933,6 +2945,10 @@
         }
 
         <span class='kw'>for</span> <span class='ident'>dst_id</span> <span class='kw'>in</span> <span class='self'>self</span>.<span class='ident'>peer_mgr</span>.<span class='ident'>peers_needing_tunnel</span>() {
+            <span class='macro'>trace</span><span class='macro'>!</span>(<span class='string'>&quot;{:?} Asking {:?} to serve as a tunnel for {:?}&quot;</span>,
+                   <span class='self'>self</span>,
+                   <span class='ident'>peer_id</span>,
+                   <span class='ident'>dst_id</span>);
             <span class='kw'>let</span> <span class='ident'>tunnel_request</span> <span class='op'>=</span> <span class='ident'>DirectMessage</span>::<span class='ident'>TunnelRequest</span>(<span class='ident'>dst_id</span>);
             <span class='kw'>let</span> _ <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>send_direct_message</span>(<span class='kw-2'>&amp;</span><span class='ident'>peer_id</span>, <span class='ident'>tunnel_request</span>);
         }
@@ -3069,7 +3085,8 @@
                              <span class='ident'>peer_id</span>: <span class='ident'>PeerId</span>,
                              <span class='ident'>dst_id</span>: <span class='ident'>PeerId</span>)
                              <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span>(), <span class='ident'>RoutingError</span><span class='op'>&gt;</span> {
-        <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>peer_mgr</span>.<span class='ident'>tunnelling_to</span>(<span class='kw-2'>&amp;</span><span class='ident'>dst_id</span>) <span class='op'>&amp;&amp;</span> <span class='self'>self</span>.<span class='ident'>tunnels</span>.<span class='ident'>add</span>(<span class='ident'>dst_id</span>, <span class='ident'>peer_id</span>) {
+        <span class='self'>self</span>.<span class='ident'>peer_mgr</span>.<span class='ident'>tunnelling_to</span>(<span class='kw-2'>&amp;</span><span class='ident'>dst_id</span>);
+        <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>tunnels</span>.<span class='ident'>add</span>(<span class='ident'>dst_id</span>, <span class='ident'>peer_id</span>) {
             <span class='macro'>debug</span><span class='macro'>!</span>(<span class='string'>&quot;{:?} Adding {:?} as a tunnel node for {:?}.&quot;</span>,
                    <span class='self'>self</span>,
                    <span class='ident'>peer_id</span>,
@@ -3760,7 +3777,8 @@
         <span class='kw'>if</span> <span class='kw'>let</span> <span class='ident'>RemovalDetails</span> { <span class='ident'>targets_and_merge_details</span>: <span class='prelude-val'>Some</span>((<span class='ident'>targets</span>, <span class='ident'>merge_details</span>)), .. } <span class='op'>=</span>
                <span class='ident'>details</span> {
             <span class='kw'>let</span> <span class='ident'>our_new_prefix</span> <span class='op'>=</span> <span class='ident'>merge_details</span>.<span class='ident'>merge_prefix</span>;
-            <span class='self'>self</span>.<span class='ident'>send_own_group_merge</span>(<span class='ident'>targets</span>, <span class='ident'>merge_details</span>, <span class='ident'>Authority</span>::<span class='ident'>NodeManager</span>(<span class='ident'>details</span>.<span class='ident'>name</span>));
+            <span class='kw'>let</span> <span class='ident'>src_name</span> <span class='op'>=</span> <span class='ident'>our_new_prefix</span>.<span class='ident'>lower_bound</span>();
+            <span class='self'>self</span>.<span class='ident'>send_own_group_merge</span>(<span class='ident'>targets</span>, <span class='ident'>merge_details</span>, <span class='ident'>Authority</span>::<span class='ident'>NaeManager</span>(<span class='ident'>src_name</span>));
             <span class='comment'>// TODO - the event should maybe only fire once all new connections have been made?</span>
             <span class='kw'>if</span> <span class='kw'>let</span> <span class='prelude-val'>Err</span>(<span class='ident'>err</span>) <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>event_sender</span>.<span class='ident'>send</span>(<span class='ident'>Event</span>::<span class='ident'>GroupMerge</span>(<span class='ident'>our_new_prefix</span>)) {
                 <span class='macro'>error</span><span class='macro'>!</span>(<span class='string'>&quot;{:?} Error sending event to routing user - {:?}&quot;</span>, <span class='self'>self</span>, <span class='ident'>err</span>);
