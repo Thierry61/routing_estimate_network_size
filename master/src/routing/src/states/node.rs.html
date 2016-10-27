@@ -2034,6 +2034,17 @@
 <span id="1990">1990</span>
 <span id="1991">1991</span>
 <span id="1992">1992</span>
+<span id="1993">1993</span>
+<span id="1994">1994</span>
+<span id="1995">1995</span>
+<span id="1996">1996</span>
+<span id="1997">1997</span>
+<span id="1998">1998</span>
+<span id="1999">1999</span>
+<span id="2000">2000</span>
+<span id="2001">2001</span>
+<span id="2002">2002</span>
+<span id="2003">2003</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2015 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -2545,7 +2556,7 @@
         <span class='comment'>// FIXME: This is currently only in place so acks can get delivered if the</span>
         <span class='comment'>// original ack was lost in transit</span>
         <span class='kw'>if</span> (<span class='self'>self</span>.<span class='ident'>msg_accumulator</span>.<span class='ident'>contains</span>(<span class='ident'>routing_msg</span>) <span class='op'>||</span> <span class='op'>!</span><span class='ident'>routing_msg</span>.<span class='ident'>src</span>.<span class='ident'>is_group</span>()) <span class='op'>&amp;&amp;</span>
-           <span class='self'>self</span>.<span class='ident'>is_recipient</span>(<span class='kw-2'>&amp;</span><span class='ident'>routing_msg</span>.<span class='ident'>dst</span>) {
+           <span class='self'>self</span>.<span class='ident'>in_authority</span>(<span class='kw-2'>&amp;</span><span class='ident'>routing_msg</span>.<span class='ident'>dst</span>) {
             <span class='self'>self</span>.<span class='ident'>send_ack</span>(<span class='ident'>routing_msg</span>, <span class='ident'>route</span>);
         }
 
@@ -2558,7 +2569,7 @@
             <span class='kw'>return</span> <span class='prelude-val'>Err</span>(<span class='ident'>RoutingError</span>::<span class='ident'>FilterCheckFailed</span>);
         }
 
-        <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>is_recipient</span>(<span class='kw-2'>&amp;</span><span class='ident'>routing_msg</span>.<span class='ident'>dst</span>) {
+        <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>in_authority</span>(<span class='kw-2'>&amp;</span><span class='ident'>routing_msg</span>.<span class='ident'>dst</span>) {
             <span class='comment'>// TODO: If group, verify the sender&#39;s membership.</span>
             <span class='kw'>if</span> <span class='kw'>let</span> <span class='ident'>Authority</span>::<span class='ident'>Client</span> { <span class='kw-2'>ref</span> <span class='ident'>client_key</span>, .. } <span class='op'>=</span> <span class='ident'>signed_msg</span>.<span class='ident'>routing_message</span>().<span class='ident'>src</span> {
                 <span class='kw'>if</span> <span class='ident'>client_key</span> <span class='op'>!=</span> <span class='ident'>signed_msg</span>.<span class='ident'>public_id</span>().<span class='ident'>signing_public_key</span>() {
@@ -2573,7 +2584,7 @@
             <span class='macro'>debug</span><span class='macro'>!</span>(<span class='string'>&quot;{:?} Failed to send {:?}: {:?}&quot;</span>, <span class='self'>self</span>, <span class='ident'>signed_msg</span>, <span class='ident'>error</span>);
         }
 
-        <span class='kw'>if</span> <span class='ident'>count</span> <span class='op'>==</span> <span class='number'>1</span> <span class='op'>&amp;&amp;</span> <span class='self'>self</span>.<span class='ident'>is_recipient</span>(<span class='kw-2'>&amp;</span><span class='ident'>routing_msg</span>.<span class='ident'>dst</span>) {
+        <span class='kw'>if</span> <span class='ident'>count</span> <span class='op'>==</span> <span class='number'>1</span> <span class='op'>&amp;&amp;</span> <span class='self'>self</span>.<span class='ident'>in_authority</span>(<span class='kw-2'>&amp;</span><span class='ident'>routing_msg</span>.<span class='ident'>dst</span>) {
             <span class='self'>self</span>.<span class='ident'>handle_routing_message</span>(<span class='ident'>routing_msg</span>, <span class='ident'>signed_msg</span>.<span class='ident'>public_id</span>())
         } <span class='kw'>else</span> {
             <span class='prelude-val'>Ok</span>(())
@@ -2919,6 +2930,7 @@
                     .<span class='ident'>iter</span>()
                     .<span class='ident'>filter</span>(<span class='op'>|</span><span class='ident'>name</span><span class='op'>|</span> <span class='op'>*</span><span class='ident'>name</span> <span class='op'>!=</span> <span class='ident'>public_id</span>.<span class='ident'>name</span>())
                     .<span class='ident'>cloned</span>()
+                    .<span class='ident'>chain</span>(<span class='ident'>iter</span>::<span class='ident'>once</span>(<span class='op'>*</span><span class='self'>self</span>.<span class='ident'>name</span>()))
                     .<span class='ident'>collect</span>();
                 <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>peer_mgr</span>.<span class='ident'>routing_table</span>().<span class='ident'>is_in_our_group</span>(<span class='ident'>public_id</span>.<span class='ident'>name</span>()) {
                     <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>public_ids</span> <span class='op'>=</span>
@@ -3208,6 +3220,10 @@
                                      <span class='ident'>relocated_id</span>: <span class='ident'>PublicId</span>,
                                      <span class='ident'>close_group_ids</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>PublicId</span><span class='op'>&gt;</span>,
                                      <span class='ident'>dst</span>: <span class='ident'>Authority</span>) {
+        <span class='kw'>if</span> <span class='op'>!</span><span class='self'>self</span>.<span class='ident'>peer_mgr</span>.<span class='ident'>routing_table</span>().<span class='ident'>is_empty</span>() {
+            <span class='macro'>warn</span><span class='macro'>!</span>(<span class='string'>&quot;{:?} Received duplicate GetNodeName response.&quot;</span>, <span class='self'>self</span>);
+            <span class='kw'>return</span>;
+        }
         <span class='self'>self</span>.<span class='ident'>get_node_name_timer_token</span> <span class='op'>=</span> <span class='prelude-val'>None</span>;
 
         <span class='self'>self</span>.<span class='ident'>full_id</span>.<span class='ident'>public_id_mut</span>().<span class='ident'>set_name</span>(<span class='op'>*</span><span class='ident'>relocated_id</span>.<span class='ident'>name</span>());
@@ -3522,7 +3538,7 @@
             <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>name</span>() <span class='op'>==</span> <span class='ident'>routing_msg</span>.<span class='ident'>dst</span>.<span class='ident'>name</span>() {
                 <span class='comment'>// This is a message for a client we are the proxy of. Relay it.</span>
                 <span class='kw'>return</span> <span class='self'>self</span>.<span class='ident'>relay_to_client</span>(<span class='ident'>signed_msg</span>.<span class='ident'>clone</span>(), <span class='ident'>peer_id</span>);
-            } <span class='kw'>else</span> <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>is_recipient</span>(<span class='kw-2'>&amp;</span><span class='ident'>routing_msg</span>.<span class='ident'>dst</span>) {
+            } <span class='kw'>else</span> <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>in_authority</span>(<span class='kw-2'>&amp;</span><span class='ident'>routing_msg</span>.<span class='ident'>dst</span>) {
                 <span class='kw'>return</span> <span class='prelude-val'>Ok</span>(()); <span class='comment'>// Message is for us as a client.</span>
             }
         }
@@ -3616,12 +3632,12 @@
                            <span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='ident'>full_id</span>)
     }
 
-    <span class='doccomment'>/// Returns whether we are the recipient of a message for the given authority.</span>
-    <span class='kw'>fn</span> <span class='ident'>is_recipient</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>dst</span>: <span class='kw-2'>&amp;</span><span class='ident'>Authority</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> {
-        <span class='kw'>if</span> <span class='kw'>let</span> <span class='ident'>Authority</span>::<span class='ident'>Client</span> { <span class='kw-2'>ref</span> <span class='ident'>client_key</span>, .. } <span class='op'>=</span> <span class='op'>*</span><span class='ident'>dst</span> {
+    <span class='doccomment'>/// Returns whether we are a part of the given authority.</span>
+    <span class='kw'>fn</span> <span class='ident'>in_authority</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>auth</span>: <span class='kw-2'>&amp;</span><span class='ident'>Authority</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> {
+        <span class='kw'>if</span> <span class='kw'>let</span> <span class='ident'>Authority</span>::<span class='ident'>Client</span> { <span class='kw-2'>ref</span> <span class='ident'>client_key</span>, .. } <span class='op'>=</span> <span class='op'>*</span><span class='ident'>auth</span> {
             <span class='ident'>client_key</span> <span class='op'>==</span> <span class='self'>self</span>.<span class='ident'>full_id</span>.<span class='ident'>public_id</span>().<span class='ident'>signing_public_key</span>()
         } <span class='kw'>else</span> {
-            <span class='self'>self</span>.<span class='ident'>is_proper</span>() <span class='op'>&amp;&amp;</span> <span class='self'>self</span>.<span class='ident'>peer_mgr</span>.<span class='ident'>routing_table</span>().<span class='ident'>is_recipient</span>(<span class='kw-2'>&amp;</span><span class='ident'>dst</span>.<span class='ident'>to_destination</span>())
+            <span class='self'>self</span>.<span class='ident'>is_proper</span>() <span class='op'>&amp;&amp;</span> <span class='self'>self</span>.<span class='ident'>peer_mgr</span>.<span class='ident'>routing_table</span>().<span class='ident'>is_recipient</span>(<span class='kw-2'>&amp;</span><span class='ident'>auth</span>.<span class='ident'>to_destination</span>())
         }
     }
 
@@ -3986,13 +4002,19 @@
                                       <span class='ident'>routing_msg</span>: <span class='ident'>RoutingMessage</span>,
                                       <span class='ident'>route</span>: <span class='ident'>u8</span>)
                                       <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span>(), <span class='ident'>RoutingError</span><span class='op'>&gt;</span> {
+        <span class='kw'>if</span> <span class='op'>!</span><span class='self'>self</span>.<span class='ident'>in_authority</span>(<span class='kw-2'>&amp;</span><span class='ident'>routing_msg</span>.<span class='ident'>src</span>) {
+            <span class='macro'>trace</span><span class='macro'>!</span>(<span class='string'>&quot;{:?} Not part of the source authority. Not sending message {:?}.&quot;</span>,
+                   <span class='self'>self</span>,
+                   <span class='ident'>routing_msg</span>);
+            <span class='kw'>return</span> <span class='prelude-val'>Ok</span>(());
+        }
         <span class='kw'>let</span> <span class='ident'>signed_msg</span> <span class='op'>=</span> <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>SignedMessage</span>::<span class='ident'>new</span>(<span class='ident'>routing_msg</span>, <span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='ident'>full_id</span>));
         <span class='kw'>let</span> <span class='ident'>hop</span> <span class='op'>=</span> <span class='op'>*</span><span class='self'>self</span>.<span class='ident'>name</span>();
         <span class='macro'>try</span><span class='macro'>!</span>(<span class='self'>self</span>.<span class='ident'>send_signed_message</span>(<span class='kw-2'>&amp;</span><span class='ident'>signed_msg</span>, <span class='ident'>route</span>, <span class='kw-2'>&amp;</span><span class='ident'>hop</span>, <span class='kw-2'>&amp;</span>[<span class='ident'>hop</span>]));
 
         <span class='comment'>// If we need to handle this message, handle it.</span>
         <span class='kw'>let</span> <span class='ident'>sent_msg</span> <span class='op'>=</span> <span class='macro'>try</span><span class='macro'>!</span>(<span class='self'>self</span>.<span class='ident'>message_to_send</span>(<span class='kw-2'>&amp;</span><span class='ident'>signed_msg</span>, <span class='ident'>route</span>, <span class='kw-2'>&amp;</span><span class='ident'>hop</span>));
-        <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>is_recipient</span>(<span class='kw-2'>&amp;</span><span class='ident'>sent_msg</span>.<span class='ident'>routing_message</span>().<span class='ident'>dst</span>) <span class='op'>&amp;&amp;</span>
+        <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>in_authority</span>(<span class='kw-2'>&amp;</span><span class='ident'>sent_msg</span>.<span class='ident'>routing_message</span>().<span class='ident'>dst</span>) <span class='op'>&amp;&amp;</span>
            <span class='self'>self</span>.<span class='ident'>signed_msg_filter</span>.<span class='ident'>filter_incoming</span>(<span class='kw-2'>&amp;</span><span class='ident'>sent_msg</span>) <span class='op'>==</span> <span class='number'>1</span> {
             <span class='self'>self</span>.<span class='ident'>handle_routing_message</span>(<span class='ident'>sent_msg</span>.<span class='ident'>routing_message</span>(), <span class='ident'>sent_msg</span>.<span class='ident'>public_id</span>())
         } <span class='kw'>else</span> {
