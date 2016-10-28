@@ -1060,11 +1060,6 @@
 <span id="1016">1016</span>
 <span id="1017">1017</span>
 <span id="1018">1018</span>
-<span id="1019">1019</span>
-<span id="1020">1020</span>
-<span id="1021">1021</span>
-<span id="1022">1022</span>
-<span id="1023">1023</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2015 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -1415,8 +1410,8 @@
     <span class='ident'>GetNodeNameResponse</span> {
         <span class='doccomment'>/// Supplied `PublicId`, but with the new name</span>
         <span class='ident'>relocated_id</span>: <span class='ident'>PublicId</span>,
-        <span class='doccomment'>/// Our close group `PublicId`s.</span>
-        <span class='ident'>close_group_ids</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>PublicId</span><span class='op'>&gt;</span>,
+        <span class='doccomment'>/// The routing table structure of our group, including the `PublicId`s of our contacts.</span>
+        <span class='ident'>groups</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span>(<span class='ident'>Prefix</span><span class='op'>&lt;</span><span class='ident'>XorName</span><span class='op'>&gt;</span>, <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>PublicId</span><span class='op'>&gt;</span>)<span class='op'>&gt;</span>,
         <span class='doccomment'>/// The message&#39;s unique identifier.</span>
         <span class='ident'>message_id</span>: <span class='ident'>MessageId</span>,
     },
@@ -1429,8 +1424,6 @@
         <span class='doccomment'>/// The message ID.</span>
         <span class='ident'>message_id</span>: <span class='ident'>MessageId</span>,
     },
-    <span class='doccomment'>/// Sent to a joining node to allow it to establish connections to the included contacts.</span>
-    <span class='ident'>RoutingTable</span>(<span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>PublicId</span><span class='op'>&gt;</span>),
     <span class='doccomment'>/// Sent to all connected peers when our own group splits</span>
     <span class='ident'>GroupSplit</span>(<span class='ident'>Prefix</span><span class='op'>&lt;</span><span class='ident'>XorName</span><span class='op'>&gt;</span>),
     <span class='doccomment'>/// Sent amongst members of a newly-merged group to allow synchronisation of their routing</span>
@@ -1553,12 +1546,12 @@
             <span class='ident'>MessageContent</span>::<span class='ident'>GetCloseGroup</span>(<span class='ident'>id</span>) <span class='op'>=&gt;</span> <span class='macro'>write</span><span class='macro'>!</span>(<span class='ident'>formatter</span>, <span class='string'>&quot;GetCloseGroup({:?})&quot;</span>, <span class='ident'>id</span>),
             <span class='ident'>MessageContent</span>::<span class='ident'>ConnectionInfo</span> { .. } <span class='op'>=&gt;</span> <span class='macro'>write</span><span class='macro'>!</span>(<span class='ident'>formatter</span>, <span class='string'>&quot;ConnectionInfo {{ .. }}&quot;</span>),
             <span class='ident'>MessageContent</span>::<span class='ident'>GetNodeNameResponse</span> { <span class='kw-2'>ref</span> <span class='ident'>relocated_id</span>,
-                                                  <span class='kw-2'>ref</span> <span class='ident'>close_group_ids</span>,
+                                                  <span class='kw-2'>ref</span> <span class='ident'>groups</span>,
                                                   <span class='kw-2'>ref</span> <span class='ident'>message_id</span> } <span class='op'>=&gt;</span> {
                 <span class='macro'>write</span><span class='macro'>!</span>(<span class='ident'>formatter</span>,
                        <span class='string'>&quot;GetNodeNameResponse {{ {:?}, {:?}, {:?} }}&quot;</span>,
-                       <span class='ident'>close_group_ids</span>,
                        <span class='ident'>relocated_id</span>,
+                       <span class='ident'>groups</span>,
                        <span class='ident'>message_id</span>)
             }
             <span class='ident'>MessageContent</span>::<span class='ident'>GetCloseGroupResponse</span> { <span class='kw-2'>ref</span> <span class='ident'>close_group_ids</span>, <span class='ident'>message_id</span> } <span class='op'>=&gt;</span> {
@@ -1566,9 +1559,6 @@
                        <span class='string'>&quot;GetCloseGroupResponse {{ {:?}, {:?} }}&quot;</span>,
                        <span class='ident'>close_group_ids</span>,
                        <span class='ident'>message_id</span>)
-            }
-            <span class='ident'>MessageContent</span>::<span class='ident'>RoutingTable</span>(<span class='kw-2'>ref</span> <span class='ident'>public_ids</span>) <span class='op'>=&gt;</span> {
-                <span class='macro'>write</span><span class='macro'>!</span>(<span class='ident'>formatter</span>, <span class='string'>&quot;RoutingTable({:?})&quot;</span>, <span class='ident'>public_ids</span>)
             }
             <span class='ident'>MessageContent</span>::<span class='ident'>GroupSplit</span>(<span class='kw-2'>ref</span> <span class='ident'>prefix</span>) <span class='op'>=&gt;</span> <span class='macro'>write</span><span class='macro'>!</span>(<span class='ident'>formatter</span>, <span class='string'>&quot;GroupSplit({:?})&quot;</span>, <span class='ident'>prefix</span>),
             <span class='ident'>MessageContent</span>::<span class='ident'>OwnGroupMerge</span> { <span class='kw-2'>ref</span> <span class='ident'>sender_prefix</span>, <span class='kw-2'>ref</span> <span class='ident'>merge_prefix</span>, <span class='kw-2'>ref</span> <span class='ident'>groups</span> } <span class='op'>=&gt;</span> {

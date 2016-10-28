@@ -1116,6 +1116,46 @@
 <span id="1072">1072</span>
 <span id="1073">1073</span>
 <span id="1074">1074</span>
+<span id="1075">1075</span>
+<span id="1076">1076</span>
+<span id="1077">1077</span>
+<span id="1078">1078</span>
+<span id="1079">1079</span>
+<span id="1080">1080</span>
+<span id="1081">1081</span>
+<span id="1082">1082</span>
+<span id="1083">1083</span>
+<span id="1084">1084</span>
+<span id="1085">1085</span>
+<span id="1086">1086</span>
+<span id="1087">1087</span>
+<span id="1088">1088</span>
+<span id="1089">1089</span>
+<span id="1090">1090</span>
+<span id="1091">1091</span>
+<span id="1092">1092</span>
+<span id="1093">1093</span>
+<span id="1094">1094</span>
+<span id="1095">1095</span>
+<span id="1096">1096</span>
+<span id="1097">1097</span>
+<span id="1098">1098</span>
+<span id="1099">1099</span>
+<span id="1100">1100</span>
+<span id="1101">1101</span>
+<span id="1102">1102</span>
+<span id="1103">1103</span>
+<span id="1104">1104</span>
+<span id="1105">1105</span>
+<span id="1106">1106</span>
+<span id="1107">1107</span>
+<span id="1108">1108</span>
+<span id="1109">1109</span>
+<span id="1110">1110</span>
+<span id="1111">1111</span>
+<span id="1112">1112</span>
+<span id="1113">1113</span>
+<span id="1114">1114</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2016 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -1412,9 +1452,37 @@
         }
     }
 
-    <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>any</span>(<span class='ident'>test</span>, <span class='ident'>feature</span> <span class='op'>=</span> <span class='string'>&quot;use-mock-crust&quot;</span>))]</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>our_name</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='kw-2'>&amp;</span><span class='ident'>T</span> {
-        <span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='ident'>our_name</span>
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new_with_groups</span><span class='op'>&lt;</span><span class='ident'>U</span>, <span class='ident'>V</span><span class='op'>&gt;</span>(<span class='ident'>our_name</span>: <span class='ident'>T</span>,
+                                 <span class='ident'>min_group_size</span>: <span class='ident'>usize</span>,
+                                 <span class='ident'>new_groups</span>: <span class='ident'>U</span>)
+                                 <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='self'>Self</span>, <span class='ident'>Error</span><span class='op'>&gt;</span>
+        <span class='kw'>where</span> <span class='ident'>U</span>: <span class='ident'>IntoIterator</span><span class='op'>&lt;</span><span class='ident'>Item</span> <span class='op'>=</span> (<span class='ident'>Prefix</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>, <span class='ident'>V</span>)<span class='op'>&gt;</span>,
+              <span class='ident'>V</span>: <span class='ident'>IntoIterator</span><span class='op'>&lt;</span><span class='ident'>Item</span> <span class='op'>=</span> <span class='ident'>T</span><span class='op'>&gt;</span>
+    {
+        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>needed</span> <span class='op'>=</span> <span class='ident'>HashMap</span>::<span class='ident'>new</span>();
+        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>our_group_prefix</span> <span class='op'>=</span> <span class='ident'>Prefix</span>::<span class='ident'>new</span>(<span class='number'>0</span>, <span class='ident'>our_name</span>);
+        <span class='kw'>let</span> <span class='ident'>groups</span> <span class='op'>=</span> <span class='ident'>new_groups</span>.<span class='ident'>into_iter</span>()
+            .<span class='ident'>map</span>(<span class='op'>|</span>(<span class='ident'>prefix</span>, <span class='ident'>members</span>)<span class='op'>|</span> {
+                <span class='kw'>if</span> <span class='ident'>prefix</span>.<span class='ident'>matches</span>(<span class='kw-2'>&amp;</span><span class='ident'>our_name</span>) {
+                    <span class='ident'>our_group_prefix</span> <span class='op'>=</span> <span class='ident'>prefix</span>;
+                }
+                <span class='kw'>let</span> <span class='ident'>group</span>: <span class='ident'>HashSet</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> <span class='op'>=</span> <span class='ident'>members</span>.<span class='ident'>into_iter</span>().<span class='ident'>collect</span>();
+                <span class='kw'>if</span> <span class='op'>!</span><span class='ident'>group</span>.<span class='ident'>is_empty</span>() {
+                    <span class='kw'>let</span> _ <span class='op'>=</span> <span class='ident'>needed</span>.<span class='ident'>insert</span>(<span class='ident'>prefix</span>, <span class='ident'>group</span>);
+                }
+                (<span class='ident'>prefix</span>, <span class='ident'>HashSet</span>::<span class='ident'>new</span>())
+            })
+            .<span class='ident'>collect</span>();
+        <span class='kw'>let</span> <span class='ident'>result</span> <span class='op'>=</span> <span class='ident'>RoutingTable</span> {
+            <span class='ident'>our_name</span>: <span class='ident'>our_name</span>,
+            <span class='ident'>min_group_size</span>: <span class='ident'>min_group_size</span>,
+            <span class='ident'>our_group_prefix</span>: <span class='ident'>our_group_prefix</span>,
+            <span class='ident'>groups</span>: <span class='ident'>groups</span>,
+            <span class='ident'>needed</span>: <span class='ident'>needed</span>,
+            <span class='ident'>merging</span>: <span class='ident'>HashMap</span>::<span class='ident'>new</span>(),
+        };
+        <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>result</span>.<span class='ident'>check_invariant</span>());
+        <span class='prelude-val'>Ok</span>(<span class='ident'>result</span>)
     }
 
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>our_group_prefix</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='kw-2'>&amp;</span><span class='ident'>Prefix</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
@@ -1470,13 +1538,6 @@
         }
     }
 
-    <span class='doccomment'>/// Returns the list of contacts as a result of a merge to which we aren&#39;t currently connected,</span>
-    <span class='doccomment'>/// but should be.</span>
-    <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>any</span>(<span class='ident'>test</span>, <span class='ident'>feature</span> <span class='op'>=</span> <span class='string'>&quot;use-mock-crust&quot;</span>))]</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>needed</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='kw-2'>&amp;</span><span class='ident'>Groups</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
-        <span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='ident'>needed</span>
-    }
-
     <span class='comment'>// Returns `Ok(())` if the given contact should be added to the routing table.</span>
     <span class='comment'>//</span>
     <span class='comment'>// Returns `Err` if `name` already exists in the routing table, or it doesn&#39;t fall within any</span>
@@ -1494,6 +1555,37 @@
         } <span class='kw'>else</span> {
             <span class='prelude-val'>Err</span>(<span class='ident'>Error</span>::<span class='ident'>PeerNameUnsuitable</span>)
         }
+    }
+
+    <span class='comment'>// Returns the collection of groups to which a peer joining our group should connect.</span>
+    <span class='comment'>//</span>
+    <span class='comment'>// This will generally be all the groups in our routing table.  However, if the addition of the</span>
+    <span class='comment'>// new node will cause our group to split, only the groups which will remain neighbours after</span>
+    <span class='comment'>// the split are returned.  Returns `Err(Error::PeerNameUnsuitable)` if `name` is not within our</span>
+    <span class='comment'>// group, or `Err(Error::AlreadyExists)` if `name` is already in our table.</span>
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>expect_add_to_our_group</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>name</span>: <span class='kw-2'>&amp;</span><span class='ident'>T</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>Groups</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>, <span class='ident'>Error</span><span class='op'>&gt;</span> {
+        <span class='kw'>if</span> <span class='op'>!</span><span class='self'>self</span>.<span class='ident'>our_group_prefix</span>.<span class='ident'>matches</span>(<span class='ident'>name</span>) {
+            <span class='kw'>return</span> <span class='prelude-val'>Err</span>(<span class='ident'>Error</span>::<span class='ident'>PeerNameUnsuitable</span>);
+        }
+        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>groups</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>groups</span>.<span class='ident'>clone</span>();
+        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>our_group</span> <span class='op'>=</span> <span class='macro'>unwrap</span><span class='macro'>!</span>(<span class='ident'>groups</span>.<span class='ident'>remove</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='ident'>our_group_prefix</span>));
+        <span class='kw'>if</span> <span class='op'>!</span><span class='ident'>our_group</span>.<span class='ident'>insert</span>(<span class='op'>*</span><span class='ident'>name</span>) {
+            <span class='kw'>return</span> <span class='prelude-val'>Err</span>(<span class='ident'>Error</span>::<span class='ident'>AlreadyExists</span>);
+        }
+        <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>should_split_our_group</span>(<span class='kw-2'>&amp;</span><span class='ident'>our_group</span>) {
+            <span class='kw'>let</span> <span class='ident'>our_prefix_after_split</span> <span class='op'>=</span> <span class='ident'>Prefix</span>::<span class='ident'>new</span>(<span class='self'>self</span>.<span class='ident'>our_group_prefix</span>.<span class='ident'>bit_count</span>() <span class='op'>+</span> <span class='number'>1</span>,
+                                                     <span class='self'>self</span>.<span class='ident'>our_name</span>);
+            <span class='ident'>groups</span>.<span class='ident'>iter_mut</span>().<span class='ident'>foreach</span>(<span class='op'>|</span>(<span class='ident'>prefix</span>, <span class='kw-2'>mut</span> <span class='ident'>members</span>)<span class='op'>|</span> {
+                <span class='kw'>if</span> <span class='op'>*</span><span class='ident'>prefix</span> <span class='op'>!=</span> <span class='ident'>our_prefix_after_split</span> <span class='op'>&amp;&amp;</span>
+                   <span class='op'>!</span><span class='ident'>prefix</span>.<span class='ident'>is_neighbour</span>(<span class='kw-2'>&amp;</span><span class='ident'>our_prefix_after_split</span>) {
+                    <span class='ident'>members</span>.<span class='ident'>clear</span>()
+                }
+            });
+        }
+        <span class='kw'>let</span> _ <span class='op'>=</span> <span class='ident'>our_group</span>.<span class='ident'>remove</span>(<span class='ident'>name</span>);
+        <span class='kw'>let</span> _ <span class='op'>=</span> <span class='ident'>our_group</span>.<span class='ident'>insert</span>(<span class='self'>self</span>.<span class='ident'>our_name</span>);
+        <span class='kw'>let</span> _ <span class='op'>=</span> <span class='ident'>groups</span>.<span class='ident'>insert</span>(<span class='self'>self</span>.<span class='ident'>our_group_prefix</span>, <span class='ident'>our_group</span>);
+        <span class='prelude-val'>Ok</span>(<span class='ident'>groups</span>)
     }
 
     <span class='comment'>// Adds a contact to the routing table.</span>
@@ -1528,15 +1620,7 @@
         }
 
         <span class='kw'>let</span> <span class='ident'>our_group</span> <span class='op'>=</span> <span class='macro'>unwrap</span><span class='macro'>!</span>(<span class='self'>self</span>.<span class='ident'>groups</span>.<span class='ident'>get</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='ident'>our_group_prefix</span>));
-        <span class='comment'>// Count the number of names which will end up in our group if it is split (this</span>
-        <span class='comment'>// implies common prefix is 1 longer than existing prefix).</span>
-        <span class='kw'>let</span> <span class='ident'>new_group_size</span> <span class='op'>=</span> <span class='ident'>our_group</span>.<span class='ident'>iter</span>()
-            .<span class='ident'>filter</span>(<span class='op'>|</span><span class='ident'>name</span><span class='op'>|</span> <span class='self'>self</span>.<span class='ident'>our_name</span>.<span class='ident'>common_prefix</span>(<span class='ident'>name</span>) <span class='op'>&gt;</span> <span class='self'>self</span>.<span class='ident'>our_group_prefix</span>.<span class='ident'>bit_count</span>())
-            .<span class='ident'>count</span>();
-        <span class='comment'>// If either of the two new groups will not contain enough entries, return `None` (add 1</span>
-        <span class='comment'>// when considering our own group to also count ourself as a member of this group).</span>
-        <span class='kw'>let</span> <span class='ident'>min_size</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>min_split_size</span>();
-        <span class='prelude-val'>Ok</span>(<span class='ident'>our_group</span>.<span class='ident'>len</span>() <span class='op'>-</span> <span class='ident'>new_group_size</span> <span class='op'>&gt;=</span> <span class='ident'>min_size</span> <span class='op'>&amp;&amp;</span> <span class='ident'>new_group_size</span> <span class='op'>+</span> <span class='number'>1</span> <span class='op'>&gt;=</span> <span class='ident'>min_size</span>)
+        <span class='prelude-val'>Ok</span>(<span class='self'>self</span>.<span class='ident'>should_split_our_group</span>(<span class='ident'>our_group</span>))
     }
 
     <span class='comment'>// Splits a group.</span>
@@ -1766,6 +1850,18 @@
         }
     }
 
+    <span class='kw'>fn</span> <span class='ident'>should_split_our_group</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>our_group</span>: <span class='kw-2'>&amp;</span><span class='ident'>HashSet</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> {
+        <span class='comment'>// Count the number of names which will end up in our group if it is split (this</span>
+        <span class='comment'>// implies common prefix is 1 longer than existing prefix).</span>
+        <span class='kw'>let</span> <span class='ident'>new_group_size</span> <span class='op'>=</span> <span class='ident'>our_group</span>.<span class='ident'>iter</span>()
+            .<span class='ident'>filter</span>(<span class='op'>|</span><span class='ident'>name</span><span class='op'>|</span> <span class='self'>self</span>.<span class='ident'>our_name</span>.<span class='ident'>common_prefix</span>(<span class='ident'>name</span>) <span class='op'>&gt;</span> <span class='self'>self</span>.<span class='ident'>our_group_prefix</span>.<span class='ident'>bit_count</span>())
+            .<span class='ident'>count</span>();
+        <span class='comment'>// If either of the two new groups will not contain enough entries, return `false` (add 1</span>
+        <span class='comment'>// when considering our own group to also count ourself as a member of this group).</span>
+        <span class='kw'>let</span> <span class='ident'>min_size</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>min_split_size</span>();
+        <span class='ident'>our_group</span>.<span class='ident'>len</span>() <span class='op'>-</span> <span class='ident'>new_group_size</span> <span class='op'>&gt;=</span> <span class='ident'>min_size</span> <span class='op'>&amp;&amp;</span> <span class='ident'>new_group_size</span> <span class='op'>+</span> <span class='number'>1</span> <span class='op'>&gt;=</span> <span class='ident'>min_size</span>
+    }
+
     <span class='kw'>fn</span> <span class='ident'>split_our_group</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
         <span class='kw'>let</span> <span class='ident'>our_group</span> <span class='op'>=</span> <span class='macro'>unwrap</span><span class='macro'>!</span>(<span class='self'>self</span>.<span class='ident'>groups</span>.<span class='ident'>remove</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='ident'>our_group_prefix</span>));
         <span class='kw'>let</span> <span class='ident'>prefix0</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>our_group_prefix</span>.<span class='ident'>pushed</span>(<span class='bool-val'>false</span>);
@@ -1898,40 +1994,6 @@
             .<span class='ident'>collect</span>()
     }
 
-    <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>test</span>)]</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new_with_prefixes</span><span class='op'>&lt;</span><span class='ident'>U</span>: <span class='ident'>IntoIterator</span><span class='op'>&lt;</span><span class='ident'>Item</span> <span class='op'>=</span> <span class='ident'>Prefix</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;&gt;</span><span class='op'>&gt;</span>(<span class='ident'>our_name</span>: <span class='ident'>T</span>,
-                                                                <span class='ident'>min_group_size</span>: <span class='ident'>usize</span>,
-                                                                <span class='ident'>prefixes</span>: <span class='ident'>U</span>)
-                                                                <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='self'>Self</span>, <span class='ident'>Error</span><span class='op'>&gt;</span> {
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>groups</span> <span class='op'>=</span> <span class='ident'>HashMap</span>::<span class='ident'>new</span>();
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>our_group_prefix</span> <span class='op'>=</span> <span class='ident'>Prefix</span>::<span class='ident'>new</span>(<span class='number'>0</span>, <span class='ident'>our_name</span>);
-        <span class='kw'>for</span> <span class='ident'>prefix</span> <span class='kw'>in</span> <span class='ident'>prefixes</span> {
-            <span class='kw'>if</span> <span class='ident'>prefix</span>.<span class='ident'>matches</span>(<span class='kw-2'>&amp;</span><span class='ident'>our_name</span>) <span class='op'>&amp;&amp;</span> <span class='ident'>prefix</span>.<span class='ident'>bit_count</span>() <span class='op'>&gt;</span> <span class='ident'>our_group_prefix</span>.<span class='ident'>bit_count</span>() {
-                <span class='ident'>our_group_prefix</span> <span class='op'>=</span> <span class='ident'>prefix</span>;
-            }
-            <span class='kw'>let</span> _ <span class='op'>=</span> <span class='ident'>groups</span>.<span class='ident'>insert</span>(<span class='ident'>prefix</span>, <span class='ident'>HashSet</span>::<span class='ident'>new</span>());
-        }
-        <span class='kw'>let</span> <span class='ident'>result</span> <span class='op'>=</span> <span class='ident'>RoutingTable</span> {
-            <span class='ident'>our_name</span>: <span class='ident'>our_name</span>,
-            <span class='ident'>min_group_size</span>: <span class='ident'>min_group_size</span>,
-            <span class='ident'>our_group_prefix</span>: <span class='ident'>our_group_prefix</span>,
-            <span class='ident'>groups</span>: <span class='ident'>groups</span>,
-            <span class='ident'>needed</span>: <span class='ident'>HashMap</span>::<span class='ident'>new</span>(),
-            <span class='ident'>merging</span>: <span class='ident'>HashMap</span>::<span class='ident'>new</span>(),
-        };
-        <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>result</span>.<span class='ident'>check_invariant</span>());
-        <span class='prelude-val'>Ok</span>(<span class='ident'>result</span>)
-    }
-
-    <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>test</span>)]</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>verify_invariant</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) {
-        <span class='kw'>if</span> <span class='kw'>let</span> <span class='prelude-val'>Err</span>(_) <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>check_invariant</span>() {
-            <span class='kw'>let</span> <span class='ident'>message</span> <span class='op'>=</span> <span class='macro'>format</span><span class='macro'>!</span>(<span class='string'>&quot;Invariant not satisfied for RT: {:?}&quot;</span>, <span class='self'>self</span>);
-            <span class='macro'>panic</span><span class='macro'>!</span>(<span class='ident'>message</span>);
-        }
-    }
-
-    <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>test</span>)]</span>
     <span class='kw'>fn</span> <span class='ident'>check_invariant</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span>(), <span class='ident'>Error</span><span class='op'>&gt;</span> {
         <span class='kw'>if</span> <span class='op'>!</span><span class='self'>self</span>.<span class='ident'>our_group_prefix</span>.<span class='ident'>matches</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='ident'>our_name</span>) {
             <span class='macro'>warn</span><span class='macro'>!</span>(<span class='string'>&quot;Our prefix does not match our name: {:?}&quot;</span>, <span class='self'>self</span>);
@@ -1943,10 +2005,9 @@
         }
         <span class='kw'>let</span> <span class='ident'>has_enough_nodes</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>len</span>() <span class='op'>&gt;=</span> <span class='self'>self</span>.<span class='ident'>min_group_size</span>;
         <span class='kw'>for</span> (<span class='ident'>prefix</span>, <span class='ident'>group</span>) <span class='kw'>in</span> <span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='ident'>groups</span> {
-            <span class='kw'>let</span> <span class='ident'>len</span> <span class='op'>=</span> <span class='kw'>if</span> <span class='op'>*</span><span class='ident'>prefix</span> <span class='op'>==</span> <span class='self'>self</span>.<span class='ident'>our_group_prefix</span> {
-                <span class='ident'>group</span>.<span class='ident'>len</span>() <span class='op'>+</span> <span class='number'>1</span>
-            } <span class='kw'>else</span> {
-                <span class='ident'>group</span>.<span class='ident'>len</span>()
+            <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>len</span> <span class='op'>=</span> <span class='ident'>group</span>.<span class='ident'>len</span>() <span class='op'>+</span> <span class='self'>self</span>.<span class='ident'>needed</span>.<span class='ident'>get</span>(<span class='ident'>prefix</span>).<span class='ident'>map</span>(<span class='ident'>HashSet</span>::<span class='ident'>len</span>).<span class='ident'>unwrap_or</span>(<span class='number'>0</span>);
+            <span class='kw'>if</span> <span class='op'>*</span><span class='ident'>prefix</span> <span class='op'>==</span> <span class='self'>self</span>.<span class='ident'>our_group_prefix</span> {
+                <span class='ident'>len</span> <span class='op'>+=</span> <span class='number'>1</span>;
             };
             <span class='comment'>// Only enforce group size when there are actually enough nodes!</span>
             <span class='kw'>if</span> <span class='ident'>has_enough_nodes</span> <span class='op'>&amp;&amp;</span> <span class='ident'>len</span> <span class='op'>&lt;</span> <span class='self'>self</span>.<span class='ident'>min_group_size</span> {
@@ -1986,6 +2047,25 @@
 
         <span class='comment'>// TODO: any other invariants to check? What about `self.needed`?</span>
         <span class='prelude-val'>Ok</span>(())
+    }
+
+    <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>any</span>(<span class='ident'>test</span>, <span class='ident'>feature</span> <span class='op'>=</span> <span class='string'>&quot;use-mock-crust&quot;</span>))]</span>
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>our_name</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='kw-2'>&amp;</span><span class='ident'>T</span> {
+        <span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='ident'>our_name</span>
+    }
+
+    <span class='doccomment'>/// Returns the list of contacts as a result of a merge to which we aren&#39;t currently connected,</span>
+    <span class='doccomment'>/// but should be.</span>
+    <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>any</span>(<span class='ident'>test</span>, <span class='ident'>feature</span> <span class='op'>=</span> <span class='string'>&quot;use-mock-crust&quot;</span>))]</span>
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>needed</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='kw-2'>&amp;</span><span class='ident'>Groups</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
+        <span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='ident'>needed</span>
+    }
+
+    <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>test</span>)]</span>
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>verify_invariant</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) {
+        <span class='macro'>unwrap</span><span class='macro'>!</span>(<span class='self'>self</span>.<span class='ident'>check_invariant</span>(),
+                <span class='string'>&quot;Invariant not satisfied for RT: {:?}&quot;</span>,
+                <span class='self'>self</span>);
     }
 
     <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>test</span>)]</span>
