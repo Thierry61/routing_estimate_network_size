@@ -2003,6 +2003,15 @@
 <span id="1959">1959</span>
 <span id="1960">1960</span>
 <span id="1961">1961</span>
+<span id="1962">1962</span>
+<span id="1963">1963</span>
+<span id="1964">1964</span>
+<span id="1965">1965</span>
+<span id="1966">1966</span>
+<span id="1967">1967</span>
+<span id="1968">1968</span>
+<span id="1969">1969</span>
+<span id="1970">1970</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2015 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -2633,8 +2642,8 @@
              <span class='ident'>Authority</span>::<span class='ident'>ManagedNode</span>(_),
              <span class='ident'>dst</span>) <span class='op'>=&gt;</span> <span class='self'>self</span>.<span class='ident'>handle_get_close_group_response</span>(<span class='ident'>close_group_ids</span>, <span class='ident'>dst</span>),
             (<span class='ident'>MessageContent</span>::<span class='ident'>GroupSplit</span>(<span class='ident'>prefix</span>), _, _) <span class='op'>=&gt;</span> <span class='self'>self</span>.<span class='ident'>handle_group_split</span>(<span class='ident'>prefix</span>),
-            (<span class='ident'>MessageContent</span>::<span class='ident'>OwnGroupMerge</span> { <span class='ident'>sender_prefix</span>, <span class='ident'>merge_prefix</span>, <span class='ident'>groups</span> }, <span class='ident'>src</span>, _) <span class='op'>=&gt;</span> {
-                <span class='self'>self</span>.<span class='ident'>handle_own_group_merge</span>(<span class='ident'>src</span>, <span class='ident'>sender_prefix</span>, <span class='ident'>merge_prefix</span>, <span class='ident'>groups</span>)
+            (<span class='ident'>MessageContent</span>::<span class='ident'>OwnGroupMerge</span> { <span class='ident'>sender_prefix</span>, <span class='ident'>merge_prefix</span>, <span class='ident'>groups</span> }, _, _) <span class='op'>=&gt;</span> {
+                <span class='self'>self</span>.<span class='ident'>handle_own_group_merge</span>(<span class='ident'>sender_prefix</span>, <span class='ident'>merge_prefix</span>, <span class='ident'>groups</span>)
             }
             (<span class='ident'>MessageContent</span>::<span class='ident'>OtherGroupMerge</span> { <span class='ident'>prefix</span>, <span class='ident'>group</span> }, _, _) <span class='op'>=&gt;</span> {
                 <span class='self'>self</span>.<span class='ident'>handle_other_group_merge</span>(<span class='ident'>prefix</span>, <span class='ident'>group</span>)
@@ -2868,9 +2877,16 @@
 
                 <span class='kw'>if</span> <span class='ident'>should_split</span> {
                     <span class='kw'>let</span> <span class='ident'>our_group_prefix</span> <span class='op'>=</span> <span class='op'>*</span><span class='self'>self</span>.<span class='ident'>peer_mgr</span>.<span class='ident'>routing_table</span>().<span class='ident'>our_group_prefix</span>();
-                    <span class='kw'>for</span> <span class='ident'>prefix</span> <span class='kw'>in</span> <span class='self'>self</span>.<span class='ident'>peer_mgr</span>.<span class='ident'>routing_table</span>().<span class='ident'>prefixes</span>() {
+                    <span class='comment'>// TODO: Find a better way to handle the split only _after_ having sent the</span>
+                    <span class='comment'>// messages. For now, send to own prefix last.</span>
+                    <span class='kw'>for</span> <span class='ident'>prefix</span> <span class='kw'>in</span> <span class='self'>self</span>.<span class='ident'>peer_mgr</span>
+                        .<span class='ident'>routing_table</span>()
+                        .<span class='ident'>prefixes</span>()
+                        .<span class='ident'>into_iter</span>()
+                        .<span class='ident'>filter</span>(<span class='op'>|</span><span class='ident'>prefix</span><span class='op'>|</span> <span class='op'>*</span><span class='ident'>prefix</span> <span class='op'>!=</span> <span class='ident'>our_group_prefix</span>)
+                        .<span class='ident'>chain</span>(<span class='ident'>iter</span>::<span class='ident'>once</span>(<span class='ident'>our_group_prefix</span>)) {
                         <span class='kw'>let</span> <span class='ident'>request_msg</span> <span class='op'>=</span> <span class='ident'>RoutingMessage</span> {
-                            <span class='ident'>src</span>: <span class='ident'>Authority</span>::<span class='ident'>NaeManager</span>(<span class='ident'>our_group_prefix</span>.<span class='ident'>lower_bound</span>()),
+                            <span class='ident'>src</span>: <span class='ident'>Authority</span>::<span class='ident'>NaeManager</span>(<span class='op'>*</span><span class='ident'>public_id</span>.<span class='ident'>name</span>()),
                             <span class='ident'>dst</span>: <span class='ident'>Authority</span>::<span class='ident'>NaeManager</span>(<span class='ident'>prefix</span>.<span class='ident'>lower_bound</span>()),
                             <span class='ident'>content</span>: <span class='ident'>MessageContent</span>::<span class='ident'>GroupSplit</span>(<span class='ident'>our_group_prefix</span>),
                         };
@@ -3287,18 +3303,20 @@
     }
 
     <span class='kw'>fn</span> <span class='ident'>handle_own_group_merge</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>,
-                              <span class='ident'>src</span>: <span class='ident'>Authority</span>,
                               <span class='ident'>sender_prefix</span>: <span class='ident'>Prefix</span><span class='op'>&lt;</span><span class='ident'>XorName</span><span class='op'>&gt;</span>,
                               <span class='ident'>merge_prefix</span>: <span class='ident'>Prefix</span><span class='op'>&lt;</span><span class='ident'>XorName</span><span class='op'>&gt;</span>,
                               <span class='ident'>groups</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span>(<span class='ident'>Prefix</span><span class='op'>&lt;</span><span class='ident'>XorName</span><span class='op'>&gt;</span>, <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>PublicId</span><span class='op'>&gt;</span>)<span class='op'>&gt;</span>)
                               <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span>(), <span class='ident'>RoutingError</span><span class='op'>&gt;</span> {
         <span class='kw'>let</span> (<span class='ident'>merge_state</span>, <span class='ident'>needed_peers</span>) <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>peer_mgr</span>
             .<span class='ident'>merge_own_group</span>(<span class='ident'>sender_prefix</span>, <span class='ident'>merge_prefix</span>, <span class='ident'>groups</span>);
+        <span class='kw'>let</span> <span class='ident'>src</span> <span class='op'>=</span>
+            <span class='ident'>Authority</span>::<span class='ident'>NaeManager</span>(<span class='self'>self</span>.<span class='ident'>peer_mgr</span>.<span class='ident'>routing_table</span>().<span class='ident'>our_group_prefix</span>().<span class='ident'>lower_bound</span>());
         <span class='kw'>match</span> <span class='ident'>merge_state</span> {
             <span class='ident'>OwnMergeState</span>::<span class='ident'>Initialised</span> { <span class='ident'>targets</span>, <span class='ident'>merge_details</span> } <span class='op'>=&gt;</span> {
                 <span class='self'>self</span>.<span class='ident'>send_own_group_merge</span>(<span class='ident'>targets</span>, <span class='ident'>merge_details</span>, <span class='ident'>src</span>)
             }
-            <span class='ident'>OwnMergeState</span>::<span class='ident'>Ongoing</span> <span class='op'>=&gt;</span> (),
+            <span class='ident'>OwnMergeState</span>::<span class='ident'>Ongoing</span> <span class='op'>|</span>
+            <span class='ident'>OwnMergeState</span>::<span class='ident'>AlreadyMerged</span> <span class='op'>=&gt;</span> (),
             <span class='ident'>OwnMergeState</span>::<span class='ident'>Completed</span> { <span class='ident'>targets</span>, <span class='ident'>merge_details</span> } <span class='op'>=&gt;</span> {
                 <span class='self'>self</span>.<span class='ident'>send_other_group_merge</span>(<span class='ident'>targets</span>, <span class='ident'>merge_details</span>, <span class='ident'>src</span>)
             }
@@ -3709,7 +3727,7 @@
         <span class='kw'>if</span> <span class='kw'>let</span> <span class='ident'>RemovalDetails</span> { <span class='ident'>targets_and_merge_details</span>: <span class='prelude-val'>Some</span>((<span class='ident'>targets</span>, <span class='ident'>merge_details</span>)), .. } <span class='op'>=</span>
                <span class='ident'>details</span> {
             <span class='kw'>let</span> <span class='ident'>our_new_prefix</span> <span class='op'>=</span> <span class='ident'>merge_details</span>.<span class='ident'>merge_prefix</span>;
-            <span class='kw'>let</span> <span class='ident'>src_name</span> <span class='op'>=</span> <span class='ident'>our_new_prefix</span>.<span class='ident'>lower_bound</span>();
+            <span class='kw'>let</span> <span class='ident'>src_name</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>peer_mgr</span>.<span class='ident'>routing_table</span>().<span class='ident'>our_group_prefix</span>().<span class='ident'>lower_bound</span>();
             <span class='self'>self</span>.<span class='ident'>send_own_group_merge</span>(<span class='ident'>targets</span>, <span class='ident'>merge_details</span>, <span class='ident'>Authority</span>::<span class='ident'>NaeManager</span>(<span class='ident'>src_name</span>));
             <span class='comment'>// TODO - the event should maybe only fire once all new connections have been made?</span>
             <span class='kw'>if</span> <span class='kw'>let</span> <span class='prelude-val'>Err</span>(<span class='ident'>err</span>) <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>event_sender</span>.<span class='ident'>send</span>(<span class='ident'>Event</span>::<span class='ident'>GroupMerge</span>(<span class='ident'>our_new_prefix</span>)) {

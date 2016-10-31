@@ -1060,6 +1060,7 @@
 <span id="1016">1016</span>
 <span id="1017">1017</span>
 <span id="1018">1018</span>
+<span id="1019">1019</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2015 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -1410,7 +1411,8 @@
     <span class='ident'>GetNodeNameResponse</span> {
         <span class='doccomment'>/// Supplied `PublicId`, but with the new name</span>
         <span class='ident'>relocated_id</span>: <span class='ident'>PublicId</span>,
-        <span class='doccomment'>/// The routing table structure of our group, including the `PublicId`s of our contacts.</span>
+        <span class='doccomment'>/// The routing table shared by the nodes in our group, including the `PublicId`s of our</span>
+        <span class='doccomment'>/// contacts.</span>
         <span class='ident'>groups</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span>(<span class='ident'>Prefix</span><span class='op'>&lt;</span><span class='ident'>XorName</span><span class='op'>&gt;</span>, <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>PublicId</span><span class='op'>&gt;</span>)<span class='op'>&gt;</span>,
         <span class='doccomment'>/// The message&#39;s unique identifier.</span>
         <span class='ident'>message_id</span>: <span class='ident'>MessageId</span>,

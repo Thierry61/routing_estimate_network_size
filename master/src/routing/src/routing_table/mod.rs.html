@@ -1156,6 +1156,9 @@
 <span id="1112">1112</span>
 <span id="1113">1113</span>
 <span id="1114">1114</span>
+<span id="1115">1115</span>
+<span id="1116">1116</span>
+<span id="1117">1117</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2016 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -1412,6 +1415,8 @@
         <span class='ident'>targets</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>Prefix</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;&gt;</span>,
         <span class='ident'>merge_details</span>: <span class='ident'>OtherMergeDetails</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>,
     },
+    <span class='comment'>// The merge has already completed, implying that no further action by the caller is required.</span>
+    <span class='ident'>AlreadyMerged</span>,
 }
 
 
@@ -1708,6 +1713,7 @@
             <span class='macro'>warn</span><span class='macro'>!</span>(<span class='string'>&quot;{:?}: Attempt to call merge_own_group() for an already merged prefix {:?}&quot;</span>,
                   <span class='self'>self</span>.<span class='ident'>our_name</span>,
                   <span class='ident'>merge_details</span>.<span class='ident'>merge_prefix</span>);
+            <span class='kw'>return</span> <span class='ident'>OwnMergeState</span>::<span class='ident'>AlreadyMerged</span>;
         }
         <span class='kw'>for</span> (<span class='ident'>prefix</span>, <span class='ident'>contacts</span>) <span class='kw'>in</span> <span class='kw-2'>&amp;</span><span class='ident'>merge_details</span>.<span class='ident'>groups</span> {
             <span class='comment'>// Cache the prefix if it&#39;s a merging group, flagging the sender&#39;s prefix `true`.</span>
