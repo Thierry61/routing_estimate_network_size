@@ -118,8 +118,6 @@
 <span id="74">74</span>
 <span id="75">75</span>
 <span id="76">76</span>
-<span id="77">77</span>
-<span id="78">78</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2015 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -172,7 +170,6 @@
         <span class='ident'>result_tx</span>: <span class='ident'>Sender</span><span class='op'>&lt;</span><span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>HashSet</span><span class='op'>&lt;</span><span class='ident'>XorName</span><span class='op'>&gt;&gt;</span><span class='op'>&gt;</span>,
     },
     <span class='ident'>Name</span> { <span class='ident'>result_tx</span>: <span class='ident'>Sender</span><span class='op'>&lt;</span><span class='ident'>XorName</span><span class='op'>&gt;</span> },
-    <span class='ident'>QuorumSize</span> { <span class='ident'>result_tx</span>: <span class='ident'>Sender</span><span class='op'>&lt;</span><span class='ident'>usize</span><span class='op'>&gt;</span> },
     <span class='ident'>Timeout</span>(<span class='ident'>u64</span>),
     <span class='ident'>Terminate</span>,
 }
@@ -193,7 +190,6 @@
             }
             <span class='ident'>Action</span>::<span class='ident'>CloseGroup</span> { .. } <span class='op'>=&gt;</span> <span class='macro'>write</span><span class='macro'>!</span>(<span class='ident'>formatter</span>, <span class='string'>&quot;Action::CloseGroup&quot;</span>),
             <span class='ident'>Action</span>::<span class='ident'>Name</span> { .. } <span class='op'>=&gt;</span> <span class='macro'>write</span><span class='macro'>!</span>(<span class='ident'>formatter</span>, <span class='string'>&quot;Action::Name&quot;</span>),
-            <span class='ident'>Action</span>::<span class='ident'>QuorumSize</span> { .. } <span class='op'>=&gt;</span> <span class='macro'>write</span><span class='macro'>!</span>(<span class='ident'>formatter</span>, <span class='string'>&quot;Action::QuorumSize&quot;</span>),
             <span class='ident'>Action</span>::<span class='ident'>Timeout</span>(<span class='ident'>token</span>) <span class='op'>=&gt;</span> <span class='macro'>write</span><span class='macro'>!</span>(<span class='ident'>formatter</span>, <span class='string'>&quot;Action::Timeout({})&quot;</span>, <span class='ident'>token</span>),
             <span class='ident'>Action</span>::<span class='ident'>Terminate</span> <span class='op'>=&gt;</span> <span class='macro'>write</span><span class='macro'>!</span>(<span class='ident'>formatter</span>, <span class='string'>&quot;Action::Terminate&quot;</span>),
         }

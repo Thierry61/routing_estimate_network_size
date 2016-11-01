@@ -340,16 +340,6 @@
 <span id="296">296</span>
 <span id="297">297</span>
 <span id="298">298</span>
-<span id="299">299</span>
-<span id="300">300</span>
-<span id="301">301</span>
-<span id="302">302</span>
-<span id="303">303</span>
-<span id="304">304</span>
-<span id="305">305</span>
-<span id="306">306</span>
-<span id="307">307</span>
-<span id="308">308</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2016 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -395,9 +385,8 @@
 <span class='doccomment'>/// it moves to the `Bootstrapping` state.</span>
 <span class='doccomment'>///</span>
 <span class='doccomment'>/// A now sends a `ClientIdentify` message to B, containing A&#39;s signed public ID. B verifies the</span>
-<span class='doccomment'>/// signature and responds with a `BootstrapIdentify`, containing B&#39;s public ID and the current</span>
-<span class='doccomment'>/// quorum size. Once it receives that, A goes into the `Client` state and uses B as its proxy to</span>
-<span class='doccomment'>/// the network.</span>
+<span class='doccomment'>/// signature and responds with a `BootstrapIdentify`, containing B&#39;s public ID. Once it receives</span>
+<span class='doccomment'>/// that, A goes into the `Client` state and uses B as its proxy to the network.</span>
 <span class='doccomment'>///</span>
 <span class='doccomment'>/// A can now exchange messages with any `Authority`. This completes the bootstrap process for</span>
 <span class='doccomment'>/// clients.</span>
@@ -465,17 +454,12 @@
         }
     }
 
-    <span class='kw'>fn</span> <span class='ident'>into_bootstrapped</span>(<span class='self'>self</span>,
-                         <span class='ident'>proxy_peer_id</span>: <span class='ident'>PeerId</span>,
-                         <span class='ident'>proxy_public_id</span>: <span class='ident'>PublicId</span>,
-                         <span class='ident'>quorum_size</span>: <span class='ident'>usize</span>)
-                         <span class='op'>-&gt;</span> <span class='self'>Self</span> {
+    <span class='kw'>fn</span> <span class='ident'>into_bootstrapped</span>(<span class='self'>self</span>, <span class='ident'>proxy_peer_id</span>: <span class='ident'>PeerId</span>, <span class='ident'>proxy_public_id</span>: <span class='ident'>PublicId</span>) <span class='op'>-&gt;</span> <span class='self'>Self</span> {
         <span class='kw'>match</span> <span class='self'>self</span> {
             <span class='ident'>State</span>::<span class='ident'>Bootstrapping</span>(<span class='ident'>state</span>) <span class='op'>=&gt;</span> {
                 <span class='kw'>if</span> <span class='ident'>state</span>.<span class='ident'>client_restriction</span>() {
-                    <span class='ident'>State</span>::<span class='ident'>Client</span>(<span class='ident'>state</span>.<span class='ident'>into_client</span>(<span class='ident'>proxy_peer_id</span>, <span class='ident'>proxy_public_id</span>, <span class='ident'>quorum_size</span>))
-                } <span class='kw'>else</span> <span class='kw'>if</span> <span class='kw'>let</span> <span class='prelude-val'>Some</span>(<span class='ident'>state</span>) <span class='op'>=</span>
-                              <span class='ident'>state</span>.<span class='ident'>into_node</span>(<span class='ident'>proxy_peer_id</span>, <span class='ident'>proxy_public_id</span>, <span class='ident'>quorum_size</span>) {
+                    <span class='ident'>State</span>::<span class='ident'>Client</span>(<span class='ident'>state</span>.<span class='ident'>into_client</span>(<span class='ident'>proxy_peer_id</span>, <span class='ident'>proxy_public_id</span>))
+                } <span class='kw'>else</span> <span class='kw'>if</span> <span class='kw'>let</span> <span class='prelude-val'>Some</span>(<span class='ident'>state</span>) <span class='op'>=</span> <span class='ident'>state</span>.<span class='ident'>into_node</span>(<span class='ident'>proxy_peer_id</span>, <span class='ident'>proxy_public_id</span>) {
                     <span class='ident'>State</span>::<span class='ident'>Node</span>(<span class='ident'>state</span>)
                 } <span class='kw'>else</span> {
                     <span class='ident'>State</span>::<span class='ident'>Terminated</span>
@@ -530,7 +514,6 @@
     <span class='ident'>IntoBootstrapped</span> {
         <span class='ident'>proxy_peer_id</span>: <span class='ident'>PeerId</span>,
         <span class='ident'>proxy_public_id</span>: <span class='ident'>PublicId</span>,
-        <span class='ident'>quorum_size</span>: <span class='ident'>usize</span>,
     },
     <span class='comment'>// Terminate</span>
     <span class='ident'>Terminate</span>,
@@ -598,21 +581,18 @@
 
         <span class='kw'>match</span> <span class='ident'>transition</span> {
             <span class='ident'>Transition</span>::<span class='ident'>Stay</span> <span class='op'>=&gt;</span> (),
-            <span class='ident'>Transition</span>::<span class='ident'>IntoBootstrapped</span> { <span class='ident'>proxy_peer_id</span>, <span class='ident'>proxy_public_id</span>, <span class='ident'>quorum_size</span> } <span class='op'>=&gt;</span> {
-                <span class='self'>self</span>.<span class='ident'>transition_to_bootstrapped</span>(<span class='ident'>proxy_peer_id</span>, <span class='ident'>proxy_public_id</span>, <span class='ident'>quorum_size</span>)
+            <span class='ident'>Transition</span>::<span class='ident'>IntoBootstrapped</span> { <span class='ident'>proxy_peer_id</span>, <span class='ident'>proxy_public_id</span> } <span class='op'>=&gt;</span> {
+                <span class='self'>self</span>.<span class='ident'>transition_to_bootstrapped</span>(<span class='ident'>proxy_peer_id</span>, <span class='ident'>proxy_public_id</span>)
             }
             <span class='ident'>Transition</span>::<span class='ident'>Terminate</span> <span class='op'>=&gt;</span> <span class='self'>self</span>.<span class='ident'>terminate</span>(),
         }
     }
 
-    <span class='kw'>fn</span> <span class='ident'>transition_to_bootstrapped</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>,
-                                  <span class='ident'>proxy_peer_id</span>: <span class='ident'>PeerId</span>,
-                                  <span class='ident'>proxy_public_id</span>: <span class='ident'>PublicId</span>,
-                                  <span class='ident'>quorum_size</span>: <span class='ident'>usize</span>) {
+    <span class='kw'>fn</span> <span class='ident'>transition_to_bootstrapped</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>proxy_peer_id</span>: <span class='ident'>PeerId</span>, <span class='ident'>proxy_public_id</span>: <span class='ident'>PublicId</span>) {
         <span class='comment'>// Temporarily switch to `Terminated` to allow moving out of the current</span>
         <span class='comment'>// state without moving `self`.</span>
         <span class='kw'>let</span> <span class='ident'>prev_state</span> <span class='op'>=</span> <span class='ident'>mem</span>::<span class='ident'>replace</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>.<span class='ident'>state</span>, <span class='ident'>State</span>::<span class='ident'>Terminated</span>);
-        <span class='self'>self</span>.<span class='ident'>state</span> <span class='op'>=</span> <span class='ident'>prev_state</span>.<span class='ident'>into_bootstrapped</span>(<span class='ident'>proxy_peer_id</span>, <span class='ident'>proxy_public_id</span>, <span class='ident'>quorum_size</span>);
+        <span class='self'>self</span>.<span class='ident'>state</span> <span class='op'>=</span> <span class='ident'>prev_state</span>.<span class='ident'>into_bootstrapped</span>(<span class='ident'>proxy_peer_id</span>, <span class='ident'>proxy_public_id</span>);
     }
 
     <span class='kw'>fn</span> <span class='ident'>terminate</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) {

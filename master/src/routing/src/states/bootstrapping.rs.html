@@ -349,24 +349,6 @@
 <span id="305">305</span>
 <span id="306">306</span>
 <span id="307">307</span>
-<span id="308">308</span>
-<span id="309">309</span>
-<span id="310">310</span>
-<span id="311">311</span>
-<span id="312">312</span>
-<span id="313">313</span>
-<span id="314">314</span>
-<span id="315">315</span>
-<span id="316">316</span>
-<span id="317">317</span>
-<span id="318">318</span>
-<span id="319">319</span>
-<span id="320">320</span>
-<span id="321">321</span>
-<span id="322">322</span>
-<span id="323">323</span>
-<span id="324">324</span>
-<span id="325">325</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2016 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -469,9 +451,6 @@
             <span class='ident'>Action</span>::<span class='ident'>CloseGroup</span> { <span class='ident'>result_tx</span>, .. } <span class='op'>=&gt;</span> {
                 <span class='kw'>let</span> _ <span class='op'>=</span> <span class='ident'>result_tx</span>.<span class='ident'>send</span>(<span class='prelude-val'>None</span>);
             }
-            <span class='ident'>Action</span>::<span class='ident'>QuorumSize</span> { <span class='ident'>result_tx</span> } <span class='op'>=&gt;</span> {
-                <span class='kw'>let</span> _ <span class='op'>=</span> <span class='ident'>result_tx</span>.<span class='ident'>send</span>(<span class='number'>0</span>);
-            }
         }
 
         <span class='ident'>Transition</span>::<span class='ident'>Stay</span>
@@ -499,33 +478,23 @@
         }
     }
 
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>into_client</span>(<span class='self'>self</span>,
-                       <span class='ident'>proxy_peer_id</span>: <span class='ident'>PeerId</span>,
-                       <span class='ident'>proxy_public_id</span>: <span class='ident'>PublicId</span>,
-                       <span class='ident'>quorum_size</span>: <span class='ident'>usize</span>)
-                       <span class='op'>-&gt;</span> <span class='ident'>Client</span> {
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>into_client</span>(<span class='self'>self</span>, <span class='ident'>proxy_peer_id</span>: <span class='ident'>PeerId</span>, <span class='ident'>proxy_public_id</span>: <span class='ident'>PublicId</span>) <span class='op'>-&gt;</span> <span class='ident'>Client</span> {
         <span class='ident'>Client</span>::<span class='ident'>from_bootstrapping</span>(<span class='self'>self</span>.<span class='ident'>crust_service</span>,
                                    <span class='self'>self</span>.<span class='ident'>event_sender</span>,
                                    <span class='self'>self</span>.<span class='ident'>full_id</span>,
                                    <span class='ident'>proxy_peer_id</span>,
                                    <span class='ident'>proxy_public_id</span>,
-                                   <span class='ident'>quorum_size</span>,
                                    <span class='self'>self</span>.<span class='ident'>stats</span>,
                                    <span class='self'>self</span>.<span class='ident'>timer</span>)
     }
 
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>into_node</span>(<span class='self'>self</span>,
-                     <span class='ident'>proxy_peer_id</span>: <span class='ident'>PeerId</span>,
-                     <span class='ident'>proxy_public_id</span>: <span class='ident'>PublicId</span>,
-                     <span class='ident'>quorum_size</span>: <span class='ident'>usize</span>)
-                     <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>Node</span><span class='op'>&gt;</span> {
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>into_node</span>(<span class='self'>self</span>, <span class='ident'>proxy_peer_id</span>: <span class='ident'>PeerId</span>, <span class='ident'>proxy_public_id</span>: <span class='ident'>PublicId</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>Node</span><span class='op'>&gt;</span> {
         <span class='ident'>Node</span>::<span class='ident'>from_bootstrapping</span>(<span class='self'>self</span>.<span class='ident'>cache</span>,
                                  <span class='self'>self</span>.<span class='ident'>crust_service</span>,
                                  <span class='self'>self</span>.<span class='ident'>event_sender</span>,
                                  <span class='self'>self</span>.<span class='ident'>full_id</span>,
                                  <span class='ident'>proxy_peer_id</span>,
                                  <span class='ident'>proxy_public_id</span>,
-                                 <span class='ident'>quorum_size</span>,
                                  <span class='self'>self</span>.<span class='ident'>stats</span>,
                                  <span class='self'>self</span>.<span class='ident'>timer</span>)
     }
@@ -592,8 +561,8 @@
                              <span class='ident'>peer_id</span>: <span class='ident'>PeerId</span>)
                              <span class='op'>-&gt;</span> <span class='ident'>Transition</span> {
         <span class='kw'>match</span> <span class='ident'>direct_message</span> {
-            <span class='ident'>DirectMessage</span>::<span class='ident'>BootstrapIdentify</span> { <span class='ident'>public_id</span>, <span class='ident'>current_quorum_size</span> } <span class='op'>=&gt;</span> {
-                <span class='self'>self</span>.<span class='ident'>handle_bootstrap_identify</span>(<span class='ident'>public_id</span>, <span class='ident'>peer_id</span>, <span class='ident'>current_quorum_size</span>)
+            <span class='ident'>DirectMessage</span>::<span class='ident'>BootstrapIdentify</span> { <span class='ident'>public_id</span> } <span class='op'>=&gt;</span> {
+                <span class='self'>self</span>.<span class='ident'>handle_bootstrap_identify</span>(<span class='ident'>public_id</span>, <span class='ident'>peer_id</span>)
             }
             <span class='ident'>DirectMessage</span>::<span class='ident'>BootstrapDeny</span> <span class='op'>=&gt;</span> <span class='self'>self</span>.<span class='ident'>handle_bootstrap_deny</span>(),
             _ <span class='op'>=&gt;</span> {
@@ -605,11 +574,7 @@
         }
     }
 
-    <span class='kw'>fn</span> <span class='ident'>handle_bootstrap_identify</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>,
-                                 <span class='ident'>public_id</span>: <span class='ident'>PublicId</span>,
-                                 <span class='ident'>peer_id</span>: <span class='ident'>PeerId</span>,
-                                 <span class='ident'>current_quorum_size</span>: <span class='ident'>usize</span>)
-                                 <span class='op'>-&gt;</span> <span class='ident'>Transition</span> {
+    <span class='kw'>fn</span> <span class='ident'>handle_bootstrap_identify</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>public_id</span>: <span class='ident'>PublicId</span>, <span class='ident'>peer_id</span>: <span class='ident'>PeerId</span>) <span class='op'>-&gt;</span> <span class='ident'>Transition</span> {
         <span class='kw'>if</span> <span class='op'>*</span><span class='ident'>public_id</span>.<span class='ident'>name</span>() <span class='op'>==</span> <span class='ident'>XorName</span>(<span class='ident'>sha256</span>::<span class='ident'>hash</span>(<span class='kw-2'>&amp;</span><span class='ident'>public_id</span>.<span class='ident'>signing_public_key</span>().<span class='number'>0</span>).<span class='number'>0</span>) {
             <span class='macro'>warn</span><span class='macro'>!</span>(<span class='string'>&quot;{:?} Incoming Connection not validated as a proper node - dropping&quot;</span>,
                   <span class='self'>self</span>);
@@ -620,7 +585,6 @@
         <span class='ident'>Transition</span>::<span class='ident'>IntoBootstrapped</span> {
             <span class='ident'>proxy_peer_id</span>: <span class='ident'>peer_id</span>,
             <span class='ident'>proxy_public_id</span>: <span class='ident'>public_id</span>,
-            <span class='ident'>quorum_size</span>: <span class='ident'>current_quorum_size</span>,
         }
     }
 

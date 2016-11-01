@@ -1164,8 +1164,6 @@
     <span class='ident'>BootstrapIdentify</span> {
         <span class='doccomment'>/// The bootstrap node&#39;s keys and name.</span>
         <span class='ident'>public_id</span>: ::<span class='ident'>id</span>::<span class='ident'>PublicId</span>,
-        <span class='doccomment'>/// The dynamically calculated quorum size the client&#39;s accumulator should use.</span>
-        <span class='ident'>current_quorum_size</span>: <span class='ident'>usize</span>,
     },
     <span class='doccomment'>/// Sent to the client to indicate that this node is not available as a bootstrap node.</span>
     <span class='ident'>BootstrapDeny</span>,
@@ -1304,6 +1302,11 @@
         } <span class='kw'>else</span> {
             <span class='prelude-val'>Err</span>(<span class='ident'>RoutingError</span>::<span class='ident'>FailedSignature</span>)
         }
+    }
+
+    <span class='doccomment'>/// Returns the routing message without cloning it.</span>
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>into_routing_message</span>(<span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>RoutingMessage</span> {
+        <span class='self'>self</span>.<span class='ident'>content</span>
     }
 
     <span class='doccomment'>/// The routing message that was signed.</span>
@@ -1480,11 +1483,8 @@
 <span class='kw'>impl</span> <span class='ident'>Debug</span> <span class='kw'>for</span> <span class='ident'>DirectMessage</span> {
     <span class='kw'>fn</span> <span class='ident'>fmt</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>formatter</span>: <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>Formatter</span>) <span class='op'>-&gt;</span> <span class='ident'>fmt</span>::<span class='prelude-ty'>Result</span> {
         <span class='kw'>match</span> <span class='op'>*</span><span class='self'>self</span> {
-            <span class='ident'>DirectMessage</span>::<span class='ident'>BootstrapIdentify</span> { <span class='kw-2'>ref</span> <span class='ident'>public_id</span>, <span class='kw-2'>ref</span> <span class='ident'>current_quorum_size</span> } <span class='op'>=&gt;</span> {
-                <span class='macro'>write</span><span class='macro'>!</span>(<span class='ident'>formatter</span>,
-                       <span class='string'>&quot;BootstrapIdentify {{ {:?}, {:?} }}&quot;</span>,
-                       <span class='ident'>public_id</span>,
-                       <span class='ident'>current_quorum_size</span>)
+            <span class='ident'>DirectMessage</span>::<span class='ident'>BootstrapIdentify</span> { <span class='kw-2'>ref</span> <span class='ident'>public_id</span> } <span class='op'>=&gt;</span> {
+                <span class='macro'>write</span><span class='macro'>!</span>(<span class='ident'>formatter</span>, <span class='string'>&quot;BootstrapIdentify {{ {:?} }}&quot;</span>, <span class='ident'>public_id</span>)
             }
             <span class='ident'>DirectMessage</span>::<span class='ident'>BootstrapDeny</span> <span class='op'>=&gt;</span> <span class='macro'>write</span><span class='macro'>!</span>(<span class='ident'>formatter</span>, <span class='string'>&quot;BootstrapDeny&quot;</span>),
             <span class='ident'>DirectMessage</span>::<span class='ident'>ClientIdentify</span> { <span class='ident'>client_restriction</span>: <span class='bool-val'>true</span>, .. } <span class='op'>=&gt;</span> {
