@@ -340,6 +340,21 @@
 <span id="296">296</span>
 <span id="297">297</span>
 <span id="298">298</span>
+<span id="299">299</span>
+<span id="300">300</span>
+<span id="301">301</span>
+<span id="302">302</span>
+<span id="303">303</span>
+<span id="304">304</span>
+<span id="305">305</span>
+<span id="306">306</span>
+<span id="307">307</span>
+<span id="308">308</span>
+<span id="309">309</span>
+<span id="310">310</span>
+<span id="311">311</span>
+<span id="312">312</span>
+<span id="313">313</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2016 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -368,6 +383,7 @@
 <span class='kw'>use</span> <span class='ident'>states</span>::{<span class='ident'>Bootstrapping</span>, <span class='ident'>Client</span>, <span class='ident'>Node</span>};
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>mem</span>;
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>sync</span>::<span class='ident'>mpsc</span>::{<span class='self'>self</span>, <span class='ident'>Receiver</span>};
+<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>fmt</span>::{<span class='self'>self</span>, <span class='ident'>Debug</span>, <span class='ident'>Formatter</span>};
 <span class='kw'>use</span> <span class='ident'>timer</span>::<span class='ident'>Timer</span>;
 <span class='kw'>use</span> <span class='ident'>types</span>::<span class='ident'>RoutingActionSender</span>;
 <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>feature</span> <span class='op'>=</span> <span class='string'>&quot;use-mock-crust&quot;</span>)]</span>
@@ -470,6 +486,17 @@
     }
 }
 
+<span class='kw'>impl</span> <span class='ident'>Debug</span> <span class='kw'>for</span> <span class='ident'>State</span> {
+    <span class='kw'>fn</span> <span class='ident'>fmt</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>formatter</span>: <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>Formatter</span>) <span class='op'>-&gt;</span> <span class='ident'>fmt</span>::<span class='prelude-ty'>Result</span> {
+        <span class='kw'>match</span> <span class='op'>*</span><span class='self'>self</span> {
+            <span class='ident'>State</span>::<span class='ident'>Bootstrapping</span>(<span class='kw-2'>ref</span> <span class='ident'>inner</span>) <span class='op'>=&gt;</span> <span class='macro'>write</span><span class='macro'>!</span>(<span class='ident'>formatter</span>, <span class='string'>&quot;State::{:?}&quot;</span>, <span class='ident'>inner</span>),
+            <span class='ident'>State</span>::<span class='ident'>Client</span>(<span class='kw-2'>ref</span> <span class='ident'>inner</span>) <span class='op'>=&gt;</span> <span class='macro'>write</span><span class='macro'>!</span>(<span class='ident'>formatter</span>, <span class='string'>&quot;State::{:?}&quot;</span>, <span class='ident'>inner</span>),
+            <span class='ident'>State</span>::<span class='ident'>Node</span>(<span class='kw-2'>ref</span> <span class='ident'>inner</span>) <span class='op'>=&gt;</span> <span class='macro'>write</span><span class='macro'>!</span>(<span class='ident'>formatter</span>, <span class='string'>&quot;State::{:?}&quot;</span>, <span class='ident'>inner</span>),
+            <span class='ident'>State</span>::<span class='ident'>Terminated</span> <span class='op'>=&gt;</span> <span class='macro'>write</span><span class='macro'>!</span>(<span class='ident'>formatter</span>, <span class='string'>&quot;State::Terminated&quot;</span>),
+        }
+    }
+}
+
 <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>feature</span> <span class='op'>=</span> <span class='string'>&quot;use-mock-crust&quot;</span>)]</span>
 <span class='kw'>impl</span> <span class='ident'>State</span> {
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>resend_unacknowledged</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> {
@@ -507,6 +534,7 @@
     }
 }
 
+<span class='doccomment'>/// Enum returned from many message handlers</span>
 <span class='kw'>pub</span> <span class='kw'>enum</span> <span class='ident'>Transition</span> {
     <span class='comment'>// Stay in the current state.</span>
     <span class='ident'>Stay</span>,
@@ -582,21 +610,23 @@
         <span class='kw'>match</span> <span class='ident'>transition</span> {
             <span class='ident'>Transition</span>::<span class='ident'>Stay</span> <span class='op'>=&gt;</span> (),
             <span class='ident'>Transition</span>::<span class='ident'>IntoBootstrapped</span> { <span class='ident'>proxy_peer_id</span>, <span class='ident'>proxy_public_id</span> } <span class='op'>=&gt;</span> {
-                <span class='self'>self</span>.<span class='ident'>transition_to_bootstrapped</span>(<span class='ident'>proxy_peer_id</span>, <span class='ident'>proxy_public_id</span>)
+                <span class='comment'>// Temporarily switch to `Terminated` to allow moving out of the current</span>
+                <span class='comment'>// state without moving `self`.</span>
+                <span class='kw'>let</span> <span class='ident'>prev_state</span> <span class='op'>=</span> <span class='ident'>mem</span>::<span class='ident'>replace</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>.<span class='ident'>state</span>, <span class='ident'>State</span>::<span class='ident'>Terminated</span>);
+                <span class='self'>self</span>.<span class='ident'>state</span> <span class='op'>=</span> <span class='ident'>prev_state</span>.<span class='ident'>into_bootstrapped</span>(<span class='ident'>proxy_peer_id</span>, <span class='ident'>proxy_public_id</span>);
             }
             <span class='ident'>Transition</span>::<span class='ident'>Terminate</span> <span class='op'>=&gt;</span> <span class='self'>self</span>.<span class='ident'>terminate</span>(),
         }
     }
 
-    <span class='kw'>fn</span> <span class='ident'>transition_to_bootstrapped</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>proxy_peer_id</span>: <span class='ident'>PeerId</span>, <span class='ident'>proxy_public_id</span>: <span class='ident'>PublicId</span>) {
-        <span class='comment'>// Temporarily switch to `Terminated` to allow moving out of the current</span>
-        <span class='comment'>// state without moving `self`.</span>
-        <span class='kw'>let</span> <span class='ident'>prev_state</span> <span class='op'>=</span> <span class='ident'>mem</span>::<span class='ident'>replace</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>.<span class='ident'>state</span>, <span class='ident'>State</span>::<span class='ident'>Terminated</span>);
-        <span class='self'>self</span>.<span class='ident'>state</span> <span class='op'>=</span> <span class='ident'>prev_state</span>.<span class='ident'>into_bootstrapped</span>(<span class='ident'>proxy_peer_id</span>, <span class='ident'>proxy_public_id</span>);
-    }
-
     <span class='kw'>fn</span> <span class='ident'>terminate</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) {
         <span class='self'>self</span>.<span class='ident'>is_running</span> <span class='op'>=</span> <span class='bool-val'>false</span>;
+    }
+}
+
+<span class='kw'>impl</span> <span class='ident'>Debug</span> <span class='kw'>for</span> <span class='ident'>StateMachine</span> {
+    <span class='kw'>fn</span> <span class='ident'>fmt</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>formatter</span>: <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>Formatter</span>) <span class='op'>-&gt;</span> <span class='ident'>fmt</span>::<span class='prelude-ty'>Result</span> {
+        <span class='self'>self</span>.<span class='ident'>state</span>.<span class='ident'>fmt</span>(<span class='ident'>formatter</span>)
     }
 }
 

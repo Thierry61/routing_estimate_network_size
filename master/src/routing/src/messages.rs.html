@@ -1055,12 +1055,6 @@
 <span id="1011">1011</span>
 <span id="1012">1012</span>
 <span id="1013">1013</span>
-<span id="1014">1014</span>
-<span id="1015">1015</span>
-<span id="1016">1016</span>
-<span id="1017">1017</span>
-<span id="1018">1018</span>
-<span id="1019">1019</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2015 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -1218,7 +1212,7 @@
     <span class='ident'>route</span>: <span class='ident'>u8</span>,
     <span class='doccomment'>/// Every node this has already been sent to.</span>
     <span class='ident'>sent_to</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>XorName</span><span class='op'>&gt;</span>,
-    <span class='doccomment'>/// Signature to be validated against `name`&#39;s public key.</span>
+    <span class='doccomment'>/// Signature to be validated against the neighbouring sender&#39;s public key.</span>
     <span class='ident'>signature</span>: <span class='ident'>sign</span>::<span class='ident'>Signature</span>,
 }
 
@@ -2034,20 +2028,14 @@
         <span class='kw'>let</span> <span class='ident'>hop_message_result</span> <span class='op'>=</span>
             <span class='ident'>HopMessage</span>::<span class='ident'>new</span>(<span class='ident'>signed_message</span>.<span class='ident'>clone</span>(), <span class='number'>0</span>, <span class='macro'>vec</span><span class='macro'>!</span>[], <span class='kw-2'>&amp;</span><span class='ident'>secret_signing_key</span>);
 
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>hop_message_result</span>.<span class='ident'>is_ok</span>());
-
         <span class='kw'>let</span> <span class='ident'>hop_message</span> <span class='op'>=</span> <span class='macro'>unwrap</span><span class='macro'>!</span>(<span class='ident'>hop_message_result</span>);
 
         <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>signed_message</span>, <span class='op'>*</span><span class='ident'>hop_message</span>.<span class='ident'>content</span>());
 
-        <span class='kw'>let</span> <span class='ident'>verify_result</span> <span class='op'>=</span> <span class='ident'>hop_message</span>.<span class='ident'>verify</span>(<span class='kw-2'>&amp;</span><span class='ident'>public_signing_key</span>);
-
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>verify_result</span>.<span class='ident'>is_ok</span>());
+        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>hop_message</span>.<span class='ident'>verify</span>(<span class='kw-2'>&amp;</span><span class='ident'>public_signing_key</span>).<span class='ident'>is_ok</span>());
 
         <span class='kw'>let</span> (<span class='ident'>public_signing_key</span>, _) <span class='op'>=</span> <span class='ident'>sign</span>::<span class='ident'>gen_keypair</span>();
-        <span class='kw'>let</span> <span class='ident'>verify_result</span> <span class='op'>=</span> <span class='ident'>hop_message</span>.<span class='ident'>verify</span>(<span class='kw-2'>&amp;</span><span class='ident'>public_signing_key</span>);
-
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>verify_result</span>.<span class='ident'>is_err</span>());
+        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>hop_message</span>.<span class='ident'>verify</span>(<span class='kw-2'>&amp;</span><span class='ident'>public_signing_key</span>).<span class='ident'>is_err</span>());
     }
 
     <span class='attribute'>#[<span class='ident'>test</span>]</span>

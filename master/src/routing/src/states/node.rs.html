@@ -1946,6 +1946,8 @@
 <span id="1902">1902</span>
 <span id="1903">1903</span>
 <span id="1904">1904</span>
+<span id="1905">1905</span>
+<span id="1906">1906</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2015 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -1975,6 +1977,7 @@
 <span class='kw'>use</span> <span class='ident'>event</span>::<span class='ident'>Event</span>;
 <span class='kw'>use</span> <span class='ident'>id</span>::{<span class='ident'>FullId</span>, <span class='ident'>PublicId</span>};
 <span class='kw'>use</span> <span class='ident'>itertools</span>::<span class='ident'>Itertools</span>;
+<span class='kw'>use</span> <span class='ident'>log</span>::<span class='ident'>LogLevel</span>;
 <span class='kw'>use</span> <span class='ident'>maidsafe_utilities</span>::<span class='ident'>serialisation</span>;
 <span class='kw'>use</span> <span class='ident'>messages</span>::{<span class='ident'>DEFAULT_PRIORITY</span>, <span class='ident'>DirectMessage</span>, <span class='ident'>HopMessage</span>, <span class='ident'>Message</span>, <span class='ident'>MessageContent</span>,
                <span class='ident'>RoutingMessage</span>, <span class='ident'>SignedMessage</span>, <span class='ident'>UserMessage</span>, <span class='ident'>UserMessageCache</span>};
@@ -2143,15 +2146,17 @@
         <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>stats</span>.<span class='ident'>cur_routing_table_size</span> <span class='op'>!=</span> <span class='self'>self</span>.<span class='ident'>peer_mgr</span>.<span class='ident'>routing_table</span>().<span class='ident'>len</span>() {
             <span class='self'>self</span>.<span class='ident'>stats</span>.<span class='ident'>cur_routing_table_size</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>peer_mgr</span>.<span class='ident'>routing_table</span>().<span class='ident'>len</span>();
 
-            <span class='kw'>let</span> <span class='ident'>status_str</span> <span class='op'>=</span> <span class='macro'>format</span><span class='macro'>!</span>(<span class='string'>&quot;{:?} {:?} - Routing Table size: {:3}&quot;</span>,
-                                     <span class='self'>self</span>,
-                                     <span class='self'>self</span>.<span class='ident'>crust_service</span>.<span class='ident'>id</span>(),
-                                     <span class='self'>self</span>.<span class='ident'>stats</span>.<span class='ident'>cur_routing_table_size</span>);
-            <span class='macro'>info</span><span class='macro'>!</span>(<span class='string'>&quot; -{}- &quot;</span>,
-                  <span class='ident'>iter</span>::<span class='ident'>repeat</span>(<span class='string'>&#39;-&#39;</span>).<span class='ident'>take</span>(<span class='ident'>status_str</span>.<span class='ident'>len</span>()).<span class='ident'>collect</span>::<span class='op'>&lt;</span><span class='ident'>String</span><span class='op'>&gt;</span>());
-            <span class='macro'>info</span><span class='macro'>!</span>(<span class='string'>&quot;| {} |&quot;</span>, <span class='ident'>status_str</span>); <span class='comment'>// Temporarily error for ci_test.</span>
-            <span class='macro'>info</span><span class='macro'>!</span>(<span class='string'>&quot; -{}- &quot;</span>,
-                  <span class='ident'>iter</span>::<span class='ident'>repeat</span>(<span class='string'>&#39;-&#39;</span>).<span class='ident'>take</span>(<span class='ident'>status_str</span>.<span class='ident'>len</span>()).<span class='ident'>collect</span>::<span class='op'>&lt;</span><span class='ident'>String</span><span class='op'>&gt;</span>());
+            <span class='kw'>const</span> <span class='ident'>TABLE_LVL</span>: <span class='ident'>LogLevel</span> <span class='op'>=</span> <span class='ident'>LogLevel</span>::<span class='ident'>Info</span>;
+            <span class='kw'>if</span> <span class='macro'>log_enabled</span><span class='macro'>!</span>(<span class='ident'>TABLE_LVL</span>) {
+                <span class='kw'>let</span> <span class='ident'>status_str</span> <span class='op'>=</span> <span class='macro'>format</span><span class='macro'>!</span>(<span class='string'>&quot;{:?} {:?} - Routing Table size: {:3}&quot;</span>,
+                                         <span class='self'>self</span>,
+                                         <span class='self'>self</span>.<span class='ident'>crust_service</span>.<span class='ident'>id</span>(),
+                                         <span class='self'>self</span>.<span class='ident'>stats</span>.<span class='ident'>cur_routing_table_size</span>);
+                <span class='kw'>let</span> <span class='ident'>sep_str</span> <span class='op'>=</span> <span class='ident'>iter</span>::<span class='ident'>repeat</span>(<span class='string'>&#39;-&#39;</span>).<span class='ident'>take</span>(<span class='ident'>status_str</span>.<span class='ident'>len</span>()).<span class='ident'>collect</span>::<span class='op'>&lt;</span><span class='ident'>String</span><span class='op'>&gt;</span>();
+                <span class='macro'>log</span><span class='macro'>!</span>(<span class='ident'>TABLE_LVL</span>, <span class='string'>&quot; -{}- &quot;</span>, <span class='ident'>sep_str</span>);
+                <span class='macro'>log</span><span class='macro'>!</span>(<span class='ident'>TABLE_LVL</span>, <span class='string'>&quot;| {} |&quot;</span>, <span class='ident'>status_str</span>);
+                <span class='macro'>log</span><span class='macro'>!</span>(<span class='ident'>TABLE_LVL</span>, <span class='string'>&quot; -{}- &quot;</span>, <span class='ident'>sep_str</span>);
+            }
         }
     }
 
@@ -2654,7 +2659,6 @@
             <span class='macro'>error</span><span class='macro'>!</span>(<span class='string'>&quot;{:?} Failed to start listening: {:?}&quot;</span>, <span class='self'>self</span>, <span class='ident'>error</span>);
             <span class='bool-val'>false</span>
         } <span class='kw'>else</span> {
-            <span class='macro'>info</span><span class='macro'>!</span>(<span class='string'>&quot;{:?} Attempting to start listener.&quot;</span>, <span class='self'>self</span>);
             <span class='bool-val'>true</span>
         }
     }
