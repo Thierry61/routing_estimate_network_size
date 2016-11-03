@@ -199,10 +199,6 @@
 <span id="155">155</span>
 <span id="156">156</span>
 <span id="157">157</span>
-<span id="158">158</span>
-<span id="159">159</span>
-<span id="160">160</span>
-<span id="161">161</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2016 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -278,11 +274,7 @@
         };
 
         <span class='kw'>if</span> <span class='kw'>let</span> <span class='prelude-val'>Some</span>(<span class='ident'>ejected</span>) <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>ack_mgr_mut</span>().<span class='ident'>add_to_pending</span>(<span class='ident'>ack</span>, <span class='ident'>unacked_msg</span>) {
-            <span class='comment'>// FIXME: This currently occurs for Connect request and</span>
-            <span class='comment'>// GetNodeName response. Connect requests arent filtered which</span>
-            <span class='comment'>// should get resolved with peer_mgr completion.</span>
-            <span class='comment'>// GetNodeName response resends from a node needs to get looked into.</span>
-            <span class='macro'>trace</span><span class='macro'>!</span>(<span class='string'>&quot;{:?} - Ejected pending ack: {:?} - {:?}&quot;</span>,
+            <span class='macro'>debug</span><span class='macro'>!</span>(<span class='string'>&quot;{:?} - Ejected pending ack: {:?} - {:?}&quot;</span>,
                    <span class='self'>self</span>,
                    <span class='ident'>ack</span>,
                    <span class='ident'>ejected</span>);
