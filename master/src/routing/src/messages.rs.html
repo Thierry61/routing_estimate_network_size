@@ -1055,6 +1055,12 @@
 <span id="1011">1011</span>
 <span id="1012">1012</span>
 <span id="1013">1013</span>
+<span id="1014">1014</span>
+<span id="1015">1015</span>
+<span id="1016">1016</span>
+<span id="1017">1017</span>
+<span id="1018">1018</span>
+<span id="1019">1019</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2015 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -1574,12 +1580,18 @@
                        <span class='ident'>utils</span>::<span class='ident'>format_binary_array</span>(<span class='kw-2'>&amp;</span><span class='ident'>hash</span>.<span class='number'>0</span>),
                        <span class='ident'>priority</span>)
             }
-            <span class='ident'>MessageContent</span>::<span class='ident'>UserMessagePart</span> { <span class='ident'>hash</span>, <span class='ident'>part_count</span>, <span class='ident'>part_index</span>, <span class='ident'>priority</span>, .. } <span class='op'>=&gt;</span> {
+            <span class='ident'>MessageContent</span>::<span class='ident'>UserMessagePart</span> { <span class='ident'>hash</span>,
+                                              <span class='ident'>part_count</span>,
+                                              <span class='ident'>part_index</span>,
+                                              <span class='ident'>priority</span>,
+                                              <span class='ident'>cacheable</span>,
+                                              .. } <span class='op'>=&gt;</span> {
                 <span class='macro'>write</span><span class='macro'>!</span>(<span class='ident'>formatter</span>,
-                       <span class='string'>&quot;UserMessagePart {{ {}/{}, priority: {}  {:x}}}&quot;</span>,
+                       <span class='string'>&quot;UserMessagePart {{ {}/{}, priority: {}, cacheable: {}, {:x} }}&quot;</span>,
                        <span class='ident'>part_index</span> <span class='op'>+</span> <span class='number'>1</span>,
                        <span class='ident'>part_count</span>,
                        <span class='ident'>priority</span>,
+                       <span class='ident'>cacheable</span>,
                        <span class='ident'>hash</span>)
             }
         }
