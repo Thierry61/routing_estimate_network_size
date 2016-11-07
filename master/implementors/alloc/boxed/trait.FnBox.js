@@ -1,5 +1,5 @@
 (function() {var implementors = {};
-implementors["antidote"] = [];implementors["serde"] = [];implementors["humantime"] = [];implementors["regex_syntax"] = [];implementors["tmp_mio"] = [];implementors["rust_sodium_sys"] = [];implementors["openssl"] = [];implementors["mio"] = [];implementors["serde"] = [];implementors["igd"] = [];implementors["maidsafe_utilities"] = [];implementors["crust"] = [];
+implementors["antidote"] = [];implementors["humantime"] = [];implementors["regex_syntax"] = [];implementors["openssl"] = [];implementors["serde"] = [];implementors["rust_sodium_sys"] = [];implementors["mio"] = [];implementors["tmp_mio"] = [];implementors["serde"] = [];implementors["igd"] = [];implementors["maidsafe_utilities"] = [];implementors["crust"] = [];
 
             if (window.register_implementors) {
                 window.register_implementors(implementors);

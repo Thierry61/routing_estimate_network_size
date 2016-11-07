@@ -246,13 +246,6 @@
 <span id="202">202</span>
 <span id="203">203</span>
 <span id="204">204</span>
-<span id="205">205</span>
-<span id="206">206</span>
-<span id="207">207</span>
-<span id="208">208</span>
-<span id="209">209</span>
-<span id="210">210</span>
-<span id="211">211</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2015 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -406,20 +399,15 @@
 <span class='kw'>mod</span> <span class='ident'>error</span>;
 <span class='kw'>mod</span> <span class='ident'>event</span>;
 <span class='kw'>mod</span> <span class='ident'>id</span>;
-<span class='kw'>mod</span> <span class='ident'>immutable_data</span>;
 <span class='kw'>mod</span> <span class='ident'>message_filter</span>;
 <span class='kw'>mod</span> <span class='ident'>messages</span>;
 <span class='kw'>mod</span> <span class='ident'>node</span>;
-<span class='kw'>mod</span> <span class='ident'>append_types</span>;
-<span class='kw'>mod</span> <span class='ident'>priv_appendable_data</span>;
-<span class='kw'>mod</span> <span class='ident'>pub_appendable_data</span>;
 <span class='kw'>mod</span> <span class='ident'>peer_manager</span>;
 <span class='kw'>mod</span> <span class='ident'>routing_message_filter</span>;
 <span class='kw'>mod</span> <span class='ident'>routing_table</span>;
 <span class='kw'>mod</span> <span class='ident'>state_machine</span>;
 <span class='kw'>mod</span> <span class='ident'>states</span>;
 <span class='kw'>mod</span> <span class='ident'>stats</span>;
-<span class='kw'>mod</span> <span class='ident'>structured_data</span>;
 <span class='kw'>mod</span> <span class='ident'>timer</span>;
 <span class='kw'>mod</span> <span class='ident'>tunnels</span>;
 <span class='kw'>mod</span> <span class='ident'>types</span>;
@@ -447,22 +435,20 @@
 <span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>authority</span>::<span class='ident'>Authority</span>;
 <span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>cache</span>::<span class='ident'>Cache</span>;
 <span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>client</span>::<span class='ident'>Client</span>;
-<span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>data</span>::{<span class='ident'>Data</span>, <span class='ident'>DataIdentifier</span>, <span class='ident'>NO_OWNER_PUB_KEY</span>};
+<span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>data</span>::{<span class='ident'>AppendWrapper</span>, <span class='ident'>AppendedData</span>, <span class='ident'>Data</span>, <span class='ident'>DataIdentifier</span>, <span class='ident'>Filter</span>, <span class='ident'>ImmutableData</span>,
+               <span class='ident'>MAX_IMMUTABLE_DATA_SIZE_IN_BYTES</span>, <span class='ident'>MAX_PUB_APPENDABLE_DATA_SIZE_IN_BYTES</span>,
+               <span class='ident'>MAX_PRIV_APPENDABLE_DATA_SIZE_IN_BYTES</span>, <span class='ident'>MAX_STRUCTURED_DATA_SIZE_IN_BYTES</span>,
+               <span class='ident'>NO_OWNER_PUB_KEY</span>, <span class='ident'>PrivAppendableData</span>, <span class='ident'>PrivAppendedData</span>, <span class='ident'>PubAppendableData</span>,
+               <span class='ident'>StructuredData</span>};
 <span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>error</span>::{<span class='ident'>InterfaceError</span>, <span class='ident'>RoutingError</span>};
 <span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>event</span>::<span class='ident'>Event</span>;
 <span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>id</span>::{<span class='ident'>FullId</span>, <span class='ident'>PublicId</span>};
-<span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>immutable_data</span>::{<span class='ident'>ImmutableData</span>, <span class='ident'>MAX_IMMUTABLE_DATA_SIZE_IN_BYTES</span>};
 <span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>messages</span>::{<span class='ident'>Request</span>, <span class='ident'>Response</span>};
 <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>feature</span> <span class='op'>=</span> <span class='string'>&quot;use-mock-crust&quot;</span>)]</span>
 <span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>mock_crust</span>::<span class='ident'>crust</span>;
 <span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>node</span>::{<span class='ident'>Node</span>, <span class='ident'>NodeBuilder</span>};
 <span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>peer_manager</span>::<span class='ident'>MIN_GROUP_SIZE</span>;
 <span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>routing_table</span>::{<span class='ident'>Prefix</span>, <span class='ident'>Xorable</span>};
-<span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>append_types</span>::{<span class='ident'>AppendWrapper</span>, <span class='ident'>AppendedData</span>, <span class='ident'>Filter</span>};
-<span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>pub_appendable_data</span>::{<span class='ident'>MAX_PUB_APPENDABLE_DATA_SIZE_IN_BYTES</span>, <span class='ident'>PubAppendableData</span>};
-<span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>priv_appendable_data</span>::{<span class='ident'>MAX_PRIV_APPENDABLE_DATA_SIZE_IN_BYTES</span>, <span class='ident'>PrivAppendableData</span>,
-                               <span class='ident'>PrivAppendedData</span>};
-<span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>structured_data</span>::{<span class='ident'>MAX_STRUCTURED_DATA_SIZE_IN_BYTES</span>, <span class='ident'>StructuredData</span>};
 <span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>types</span>::<span class='ident'>MessageId</span>;
 <span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>xor_name</span>::{<span class='ident'>XOR_NAME_BITS</span>, <span class='ident'>XOR_NAME_LEN</span>, <span class='ident'>XorName</span>, <span class='ident'>XorNameFromHexError</span>};
 </pre>
