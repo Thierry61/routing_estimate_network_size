@@ -544,6 +544,17 @@
 <span id="500">500</span>
 <span id="501">501</span>
 <span id="502">502</span>
+<span id="503">503</span>
+<span id="504">504</span>
+<span id="505">505</span>
+<span id="506">506</span>
+<span id="507">507</span>
+<span id="508">508</span>
+<span id="509">509</span>
+<span id="510">510</span>
+<span id="511">511</span>
+<span id="512">512</span>
+<span id="513">513</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2015 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -597,6 +608,9 @@
                <span class='ident'>previous_owner_keys</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>PublicKey</span><span class='op'>&gt;</span>,
                <span class='ident'>signing_key</span>: <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='kw-2'>&amp;</span><span class='ident'>SecretKey</span><span class='op'>&gt;</span>)
                <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>StructuredData</span>, <span class='ident'>RoutingError</span><span class='op'>&gt;</span> {
+        <span class='kw'>if</span> <span class='ident'>current_owner_keys</span>.<span class='ident'>len</span>() <span class='op'>&gt;</span> <span class='number'>1</span> <span class='op'>||</span> <span class='ident'>previous_owner_keys</span>.<span class='ident'>len</span>() <span class='op'>&gt;</span> <span class='number'>1</span> {
+            <span class='kw'>return</span> <span class='prelude-val'>Err</span>(<span class='ident'>RoutingError</span>::<span class='ident'>InvalidOwners</span>);
+        }
 
         <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>structured_data</span> <span class='op'>=</span> <span class='ident'>StructuredData</span> {
             <span class='ident'>type_tag</span>: <span class='ident'>type_tag</span>,
@@ -673,10 +687,12 @@
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>validate_self_against_successor</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>,
                                            <span class='ident'>other</span>: <span class='kw-2'>&amp;</span><span class='ident'>StructuredData</span>)
                                            <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span>(), <span class='ident'>RoutingError</span><span class='op'>&gt;</span> {
-        <span class='kw'>if</span> <span class='ident'>other</span>.<span class='ident'>current_owner_keys</span>.<span class='ident'>len</span>() <span class='op'>&gt;</span> <span class='number'>1</span> <span class='op'>&amp;&amp;</span>
+        <span class='kw'>if</span> <span class='ident'>other</span>.<span class='ident'>current_owner_keys</span>.<span class='ident'>len</span>() <span class='op'>&gt;</span> <span class='number'>1</span> <span class='op'>||</span>
+           <span class='ident'>other</span>.<span class='ident'>previous_owner_keys</span>.<span class='ident'>len</span>() <span class='op'>&gt;</span> <span class='number'>1</span> <span class='op'>||</span>
            <span class='ident'>other</span>.<span class='ident'>current_owner_keys</span>.<span class='ident'>contains</span>(<span class='kw-2'>&amp;</span><span class='ident'>NO_OWNER_PUB_KEY</span>) {
             <span class='kw'>return</span> <span class='prelude-val'>Err</span>(<span class='ident'>RoutingError</span>::<span class='ident'>InvalidOwners</span>);
         }
+
         <span class='kw'>let</span> <span class='ident'>owner_keys_to_match</span> <span class='op'>=</span> <span class='kw'>if</span> <span class='ident'>other</span>.<span class='ident'>previous_owner_keys</span>.<span class='ident'>is_empty</span>() {
             <span class='kw-2'>&amp;</span><span class='ident'>other</span>.<span class='ident'>current_owner_keys</span>
         } <span class='kw'>else</span> {
@@ -928,6 +944,8 @@
         }
     }
 
+    <span class='comment'>// TODO: this test is disabled as the feature of multi-sig is disabled</span>
+    <span class='attribute'>#[<span class='ident'>ignore</span>]</span>
     <span class='attribute'>#[<span class='ident'>test</span>]</span>
     <span class='kw'>fn</span> <span class='ident'>three_owners</span>() {
         <span class='kw'>let</span> <span class='ident'>keys1</span> <span class='op'>=</span> <span class='ident'>sign</span>::<span class='ident'>gen_keypair</span>();
@@ -958,6 +976,8 @@
         }
     }
 
+    <span class='comment'>// TODO: this test is disabled as the feature of multi-sig is disabled</span>
+    <span class='attribute'>#[<span class='ident'>ignore</span>]</span>
     <span class='attribute'>#[<span class='ident'>test</span>]</span>
     <span class='kw'>fn</span> <span class='ident'>four_owners</span>() {
         <span class='kw'>let</span> <span class='ident'>keys1</span> <span class='op'>=</span> <span class='ident'>sign</span>::<span class='ident'>gen_keypair</span>();
@@ -989,6 +1009,8 @@
         }
     }
 
+    <span class='comment'>// TODO: this test is disabled as the feature of multi-sig is disabled</span>
+    <span class='attribute'>#[<span class='ident'>ignore</span>]</span>
     <span class='attribute'>#[<span class='ident'>test</span>]</span>
     <span class='kw'>fn</span> <span class='ident'>transfer_owners</span>() {
         <span class='kw'>let</span> <span class='ident'>keys1</span> <span class='op'>=</span> <span class='ident'>sign</span>::<span class='ident'>gen_keypair</span>();
