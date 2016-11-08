@@ -2667,7 +2667,7 @@
                 }
 
                 <span class='prelude-val'>Some</span>(<span class='ident'>UserMessage</span>::<span class='ident'>Response</span>(<span class='ident'>response</span>)) <span class='op'>=&gt;</span> {
-                    <span class='macro'>debug</span><span class='macro'>!</span>(<span class='string'>&quot;{:?} putting {:?} to cache&quot;</span>, <span class='self'>self</span>, <span class='ident'>response</span>);
+                    <span class='macro'>debug</span><span class='macro'>!</span>(<span class='string'>&quot;{:?} Putting {:?} in cache&quot;</span>, <span class='self'>self</span>, <span class='ident'>response</span>);
                     <span class='self'>self</span>.<span class='ident'>response_cache</span>.<span class='ident'>put</span>(<span class='ident'>response</span>);
                 }
 
@@ -2816,8 +2816,8 @@
                             <span class='ident'>dst</span>: <span class='ident'>Authority</span>::<span class='ident'>NaeManager</span>(<span class='ident'>prefix</span>.<span class='ident'>lower_bound</span>()),
                             <span class='ident'>content</span>: <span class='ident'>MessageContent</span>::<span class='ident'>GroupSplit</span>(<span class='ident'>our_group_prefix</span>),
                         };
-                        <span class='comment'>// We send on route 1 by default to avoid trying to send via the newly joined</span>
-                        <span class='comment'>// node</span>
+                        <span class='comment'>// We send on route 1 by default to avoid trying to</span>
+                        <span class='comment'>// send via the newly joined node</span>
                         <span class='kw'>if</span> <span class='kw'>let</span> <span class='prelude-val'>Err</span>(<span class='ident'>err</span>) <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>send_routing_message_via_route</span>(<span class='ident'>request_msg</span>, <span class='number'>1</span>) {
                             <span class='macro'>debug</span><span class='macro'>!</span>(<span class='string'>&quot;{:?} Failed to send GroupSplit: {:?}.&quot;</span>, <span class='self'>self</span>, <span class='ident'>err</span>);
                         }
