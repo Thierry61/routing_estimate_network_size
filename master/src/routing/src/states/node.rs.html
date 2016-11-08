@@ -2151,7 +2151,7 @@
             <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>stats</span>.<span class='ident'>cur_client_num</span> <span class='op'>&gt;</span> <span class='ident'>old_client_num</span> {
                 <span class='self'>self</span>.<span class='ident'>stats</span>.<span class='ident'>cumulative_client_num</span> <span class='op'>+=</span> <span class='self'>self</span>.<span class='ident'>stats</span>.<span class='ident'>cur_client_num</span> <span class='op'>-</span> <span class='ident'>old_client_num</span>;
             }
-            <span class='macro'>info</span><span class='macro'>!</span>(<span class='string'>&quot;{:?} - Connected clients: {}, cumulative: {}&quot;</span>,
+            <span class='macro'>info</span><span class='macro'>!</span>(<span class='ident'>target</span>: <span class='string'>&quot;stats&quot;</span>, <span class='string'>&quot;{:?} - Connected clients: {}, cumulative: {}&quot;</span>,
                   <span class='self'>self</span>,
                   <span class='self'>self</span>.<span class='ident'>stats</span>.<span class='ident'>cur_client_num</span>,
                   <span class='self'>self</span>.<span class='ident'>stats</span>.<span class='ident'>cumulative_client_num</span>);
@@ -2160,7 +2160,7 @@
            <span class='self'>self</span>.<span class='ident'>stats</span>.<span class='ident'>tunnel_client_pairs</span> <span class='op'>!=</span> <span class='self'>self</span>.<span class='ident'>tunnels</span>.<span class='ident'>client_count</span>() {
             <span class='self'>self</span>.<span class='ident'>stats</span>.<span class='ident'>tunnel_connections</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>tunnels</span>.<span class='ident'>tunnel_count</span>();
             <span class='self'>self</span>.<span class='ident'>stats</span>.<span class='ident'>tunnel_client_pairs</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>tunnels</span>.<span class='ident'>client_count</span>();
-            <span class='macro'>info</span><span class='macro'>!</span>(<span class='string'>&quot;{:?} - Indirect connections: {}, tunneling for: {}&quot;</span>,
+            <span class='macro'>info</span><span class='macro'>!</span>(<span class='ident'>target</span>: <span class='string'>&quot;stats&quot;</span>, <span class='string'>&quot;{:?} - Indirect connections: {}, tunneling for: {}&quot;</span>,
                   <span class='self'>self</span>,
                   <span class='self'>self</span>.<span class='ident'>stats</span>.<span class='ident'>tunnel_connections</span>,
                   <span class='self'>self</span>.<span class='ident'>stats</span>.<span class='ident'>tunnel_client_pairs</span>);
@@ -2176,9 +2176,9 @@
                                          <span class='self'>self</span>.<span class='ident'>crust_service</span>.<span class='ident'>id</span>(),
                                          <span class='self'>self</span>.<span class='ident'>stats</span>.<span class='ident'>cur_routing_table_size</span>);
                 <span class='kw'>let</span> <span class='ident'>sep_str</span> <span class='op'>=</span> <span class='ident'>iter</span>::<span class='ident'>repeat</span>(<span class='string'>&#39;-&#39;</span>).<span class='ident'>take</span>(<span class='ident'>status_str</span>.<span class='ident'>len</span>()).<span class='ident'>collect</span>::<span class='op'>&lt;</span><span class='ident'>String</span><span class='op'>&gt;</span>();
-                <span class='macro'>log</span><span class='macro'>!</span>(<span class='ident'>TABLE_LVL</span>, <span class='string'>&quot; -{}- &quot;</span>, <span class='ident'>sep_str</span>);
-                <span class='macro'>log</span><span class='macro'>!</span>(<span class='ident'>TABLE_LVL</span>, <span class='string'>&quot;| {} |&quot;</span>, <span class='ident'>status_str</span>);
-                <span class='macro'>log</span><span class='macro'>!</span>(<span class='ident'>TABLE_LVL</span>, <span class='string'>&quot; -{}- &quot;</span>, <span class='ident'>sep_str</span>);
+                <span class='macro'>log</span><span class='macro'>!</span>(<span class='ident'>target</span>: <span class='string'>&quot;stats&quot;</span>, <span class='ident'>TABLE_LVL</span>, <span class='string'>&quot; -{}- &quot;</span>, <span class='ident'>sep_str</span>);
+                <span class='macro'>log</span><span class='macro'>!</span>(<span class='ident'>target</span>: <span class='string'>&quot;stats&quot;</span>, <span class='ident'>TABLE_LVL</span>, <span class='string'>&quot;| {} |&quot;</span>, <span class='ident'>status_str</span>);
+                <span class='macro'>log</span><span class='macro'>!</span>(<span class='ident'>target</span>: <span class='string'>&quot;stats&quot;</span>, <span class='ident'>TABLE_LVL</span>, <span class='string'>&quot; -{}- &quot;</span>, <span class='ident'>sep_str</span>);
             }
         }
     }
