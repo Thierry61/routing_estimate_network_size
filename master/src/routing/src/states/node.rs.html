@@ -2018,7 +2018,7 @@
 <span class='kw'>use</span> <span class='ident'>state_machine</span>::<span class='ident'>Transition</span>;
 <span class='kw'>use</span> <span class='ident'>stats</span>::<span class='ident'>Stats</span>;
 <span class='kw'>use</span> <span class='ident'>std</span>::{<span class='ident'>fmt</span>, <span class='ident'>iter</span>};
-<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>collections</span>::<span class='ident'>VecDeque</span>;
+<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>collections</span>::{<span class='ident'>BTreeSet</span>, <span class='ident'>VecDeque</span>};
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>fmt</span>::{<span class='ident'>Debug</span>, <span class='ident'>Formatter</span>};
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>sync</span>::<span class='ident'>mpsc</span>::<span class='ident'>Sender</span>;
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>time</span>::{<span class='ident'>Duration</span>, <span class='ident'>Instant</span>};
@@ -3672,7 +3672,7 @@
     }
 
     <span class='kw'>fn</span> <span class='ident'>send_own_group_merge</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>,
-                            <span class='ident'>targets</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>Prefix</span><span class='op'>&lt;</span><span class='ident'>XorName</span><span class='op'>&gt;&gt;</span>,
+                            <span class='ident'>targets</span>: <span class='ident'>BTreeSet</span><span class='op'>&lt;</span><span class='ident'>Prefix</span><span class='op'>&lt;</span><span class='ident'>XorName</span><span class='op'>&gt;&gt;</span>,
                             <span class='ident'>merge_details</span>: <span class='ident'>OwnMergeDetails</span><span class='op'>&lt;</span><span class='ident'>XorName</span><span class='op'>&gt;</span>,
                             <span class='ident'>src</span>: <span class='ident'>Authority</span>) {
         <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>groups</span> <span class='op'>=</span> <span class='ident'>merge_details</span>.<span class='ident'>groups</span>
@@ -3702,7 +3702,7 @@
     }
 
     <span class='kw'>fn</span> <span class='ident'>send_other_group_merge</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>,
-                              <span class='ident'>targets</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>Prefix</span><span class='op'>&lt;</span><span class='ident'>XorName</span><span class='op'>&gt;&gt;</span>,
+                              <span class='ident'>targets</span>: <span class='ident'>BTreeSet</span><span class='op'>&lt;</span><span class='ident'>Prefix</span><span class='op'>&lt;</span><span class='ident'>XorName</span><span class='op'>&gt;&gt;</span>,
                               <span class='ident'>merge_details</span>: <span class='ident'>OtherMergeDetails</span><span class='op'>&lt;</span><span class='ident'>XorName</span><span class='op'>&gt;</span>,
                               <span class='ident'>src</span>: <span class='ident'>Authority</span>) {
         <span class='kw'>let</span> <span class='ident'>group</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>peer_mgr</span>.<span class='ident'>get_pub_ids</span>(<span class='kw-2'>&amp;</span><span class='ident'>merge_details</span>.<span class='ident'>group</span>).<span class='ident'>into_iter</span>().<span class='ident'>collect_vec</span>();
