@@ -145,6 +145,15 @@
 <span id="101">101</span>
 <span id="102">102</span>
 <span id="103">103</span>
+<span id="104">104</span>
+<span id="105">105</span>
+<span id="106">106</span>
+<span id="107">107</span>
+<span id="108">108</span>
+<span id="109">109</span>
+<span id="110">110</span>
+<span id="111">111</span>
+<span id="112">112</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2015 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -206,6 +215,15 @@
             <span class='ident'>Authority</span>::<span class='ident'>NodeManager</span>(_) <span class='op'>=&gt;</span> <span class='bool-val'>true</span>,
             <span class='ident'>Authority</span>::<span class='ident'>ManagedNode</span>(_) <span class='op'>|</span>
             <span class='ident'>Authority</span>::<span class='ident'>Client</span> { .. } <span class='op'>=&gt;</span> <span class='bool-val'>false</span>,
+        }
+    }
+
+    <span class='doccomment'>/// Returns true if a client, false if a node or group.</span>
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>is_client</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> {
+        <span class='kw'>if</span> <span class='kw'>let</span> <span class='ident'>Authority</span>::<span class='ident'>Client</span> { .. } <span class='op'>=</span> <span class='op'>*</span><span class='self'>self</span> {
+            <span class='bool-val'>true</span>
+        } <span class='kw'>else</span> {
+            <span class='bool-val'>false</span>
         }
     }
 

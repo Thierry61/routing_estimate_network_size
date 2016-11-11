@@ -91,7 +91,7 @@ without having to store the actual password.</li>
     <span class='ident'>pwhash</span>::<span class='ident'>derive_key</span>(<span class='ident'>kb</span>, <span class='ident'>passwd</span>, <span class='kw-2'>&amp;</span><span class='ident'>salt</span>,
                        <span class='ident'>pwhash</span>::<span class='ident'>OPSLIMIT_INTERACTIVE</span>,
                        <span class='ident'>pwhash</span>::<span class='ident'>MEMLIMIT_INTERACTIVE</span>).<span class='ident'>unwrap</span>();
-}</pre>
+}<a class='test-arrow' target='_blank' href=''>Run</a></pre>
 
 <h1 id='example-password-hashing' class='section-header'><a href='#example-password-hashing'>Example (password hashing)</a></h1>
 <pre class='rust rust-example-rendered'>
@@ -101,7 +101,7 @@ without having to store the actual password.</li>
                          <span class='ident'>pwhash</span>::<span class='ident'>OPSLIMIT_INTERACTIVE</span>,
                          <span class='ident'>pwhash</span>::<span class='ident'>MEMLIMIT_INTERACTIVE</span>).<span class='ident'>unwrap</span>();
 <span class='kw'>let</span> <span class='ident'>pwh_bytes</span> <span class='op'>=</span> <span class='kw-2'>&amp;</span><span class='ident'>pwh</span>[..];
-<span class='comment'>//store pwh_bytes somewhere</span></pre>
+<span class='comment'>//store pwh_bytes somewhere</span><a class='test-arrow' target='_blank' href=''>Run</a></pre>
 
 <h1 id='example-password-verification' class='section-header'><a href='#example-password-verification'>Example (password verification)</a></h1>
 <pre class='rust rust-example-rendered'>
@@ -114,14 +114,14 @@ without having to store the actual password.</li>
 <span class='kw'>let</span> <span class='ident'>pwh</span> <span class='op'>=</span> <span class='ident'>pwhash</span>::<span class='ident'>pwhash</span>(<span class='ident'>passwd</span>,
                          <span class='ident'>pwhash</span>::<span class='ident'>OPSLIMIT_INTERACTIVE</span>,
                          <span class='ident'>pwhash</span>::<span class='ident'>MEMLIMIT_INTERACTIVE</span>).<span class='ident'>unwrap</span>();
-<span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>pwhash</span>::<span class='ident'>pwhash_verify</span>(<span class='kw-2'>&amp;</span><span class='ident'>pwh</span>, <span class='ident'>passwd</span>));</pre>
+<span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>pwhash</span>::<span class='ident'>pwhash_verify</span>(<span class='kw-2'>&amp;</span><span class='ident'>pwh</span>, <span class='ident'>passwd</span>));<a class='test-arrow' target='_blank' href=''>Run</a></pre>
 </div><h2 id='reexports' class='section-header'><a href="#reexports">Reexports</a></h2>
 <table><tr><td><code>pub use self::<a class='mod' href='../../../rust_sodium/crypto/pwhash/scryptsalsa208sha256/index.html' title='rust_sodium::crypto::pwhash::scryptsalsa208sha256'>scryptsalsa208sha256</a>::*;</code></td></tr></table><h2 id='modules' class='section-header'><a href="#modules">Modules</a></h2>
 <table>
                        <tr class=' module-item'>
                            <td><a class='mod' href='scryptsalsa208sha256/index.html'
                                   title='rust_sodium::crypto::pwhash::scryptsalsa208sha256'>scryptsalsa208sha256</a></td>
-                           <td class='docblock short'>
+                           <td class='docblock-short'>
                                 <p><code>crypto_pwhash_scryptsalsa208sha256</code>, a particular combination of Scrypt, Salsa20/8
 and SHA-256</p>
                            </td>

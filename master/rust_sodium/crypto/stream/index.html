@@ -47,7 +47,7 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a id='src-3000' class='srclink' href='../../../src/rust_sodium/crypto/stream/mod.rs.html#1-97' title='goto source code'>[src]</a></span></h1>
+               </span><a id='src-2998' class='srclink' href='../../../src/rust_sodium/crypto/stream/mod.rs.html#1-97' title='goto source code'>[src]</a></span></h1>
 <div class='docblock'><p>Secret-key encryption</p>
 
 <h1 id='security-model' class='section-header'><a href='#security-model'>Security Model</a></h1>
@@ -150,7 +150,7 @@ message.</p>
 
 <span class='kw'>let</span> <span class='ident'>key</span> <span class='op'>=</span> <span class='ident'>stream</span>::<span class='ident'>gen_key</span>();
 <span class='kw'>let</span> <span class='ident'>nonce</span> <span class='op'>=</span> <span class='ident'>stream</span>::<span class='ident'>gen_nonce</span>();
-<span class='kw'>let</span> <span class='ident'>keystream</span> <span class='op'>=</span> <span class='ident'>stream</span>::<span class='ident'>stream</span>(<span class='number'>128</span>, <span class='kw-2'>&amp;</span><span class='ident'>nonce</span>, <span class='kw-2'>&amp;</span><span class='ident'>key</span>); <span class='comment'>// generate 128 bytes of keystream</span></pre>
+<span class='kw'>let</span> <span class='ident'>keystream</span> <span class='op'>=</span> <span class='ident'>stream</span>::<span class='ident'>stream</span>(<span class='number'>128</span>, <span class='kw-2'>&amp;</span><span class='ident'>nonce</span>, <span class='kw-2'>&amp;</span><span class='ident'>key</span>); <span class='comment'>// generate 128 bytes of keystream</span><a class='test-arrow' target='_blank' href=''>Run</a></pre>
 
 <h1 id='example-encryption' class='section-header'><a href='#example-encryption'>Example (encryption)</a></h1>
 <pre class='rust rust-example-rendered'>
@@ -161,7 +161,7 @@ message.</p>
 <span class='kw'>let</span> <span class='ident'>plaintext</span> <span class='op'>=</span> <span class='string'>b&quot;some data&quot;</span>;
 <span class='kw'>let</span> <span class='ident'>ciphertext</span> <span class='op'>=</span> <span class='ident'>stream</span>::<span class='ident'>stream_xor</span>(<span class='ident'>plaintext</span>, <span class='kw-2'>&amp;</span><span class='ident'>nonce</span>, <span class='kw-2'>&amp;</span><span class='ident'>key</span>);
 <span class='kw'>let</span> <span class='ident'>their_plaintext</span> <span class='op'>=</span> <span class='ident'>stream</span>::<span class='ident'>stream_xor</span>(<span class='kw-2'>&amp;</span><span class='ident'>ciphertext</span>, <span class='kw-2'>&amp;</span><span class='ident'>nonce</span>, <span class='kw-2'>&amp;</span><span class='ident'>key</span>);
-<span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>plaintext</span>, <span class='kw-2'>&amp;</span><span class='ident'>their_plaintext</span>[..]);</pre>
+<span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>plaintext</span>, <span class='kw-2'>&amp;</span><span class='ident'>their_plaintext</span>[..]);<a class='test-arrow' target='_blank' href=''>Run</a></pre>
 
 <h1 id='example-in-place-encryption' class='section-header'><a href='#example-in-place-encryption'>Example (in place encryption)</a></h1>
 <pre class='rust rust-example-rendered'>
@@ -174,14 +174,14 @@ message.</p>
 <span class='ident'>stream</span>::<span class='ident'>stream_xor_inplace</span>(<span class='ident'>plaintext</span>, <span class='kw-2'>&amp;</span><span class='ident'>nonce</span>, <span class='kw-2'>&amp;</span><span class='ident'>key</span>);
 <span class='comment'>// decrypt the plaintext</span>
 <span class='ident'>stream</span>::<span class='ident'>stream_xor_inplace</span>(<span class='ident'>plaintext</span>, <span class='kw-2'>&amp;</span><span class='ident'>nonce</span>, <span class='kw-2'>&amp;</span><span class='ident'>key</span>);
-<span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>plaintext</span>, <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> [<span class='number'>0</span>, <span class='number'>1</span>, <span class='number'>2</span>, <span class='number'>3</span>]);</pre>
+<span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>plaintext</span>, <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> [<span class='number'>0</span>, <span class='number'>1</span>, <span class='number'>2</span>, <span class='number'>3</span>]);<a class='test-arrow' target='_blank' href=''>Run</a></pre>
 </div><h2 id='reexports' class='section-header'><a href="#reexports">Reexports</a></h2>
 <table><tr><td><code>pub use self::<a class='mod' href='../../../rust_sodium/crypto/stream/xsalsa20/index.html' title='rust_sodium::crypto::stream::xsalsa20'>xsalsa20</a>::*;</code></td></tr></table><h2 id='modules' class='section-header'><a href="#modules">Modules</a></h2>
 <table>
                        <tr class=' module-item'>
                            <td><a class='mod' href='aes128ctr/index.html'
                                   title='rust_sodium::crypto::stream::aes128ctr'>aes128ctr</a></td>
-                           <td class='docblock short'>
+                           <td class='docblock-short'>
                                 <p><code>AES 128</code> in <code>CTR</code>-mode
 This cipher is conjectured to meet the standard notion of
 unpredictability.</p>
@@ -190,14 +190,14 @@ unpredictability.</p>
                        <tr class=' module-item'>
                            <td><a class='mod' href='chacha20/index.html'
                                   title='rust_sodium::crypto::stream::chacha20'>chacha20</a></td>
-                           <td class='docblock short'>
+                           <td class='docblock-short'>
                                 <p><code>crypto_stream_chacha20</code> (Chacha20)</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
                            <td><a class='mod' href='salsa20/index.html'
                                   title='rust_sodium::crypto::stream::salsa20'>salsa20</a></td>
-                           <td class='docblock short'>
+                           <td class='docblock-short'>
                                 <p><code>crypto_stream_salsa20</code> (Salsa20/20), a particular cipher specified in
 <a href="http://nacl.cr.yp.to/valid.html">Cryptography in <code>NaCl</code></a>, Section 7.  This
 cipher is conjectured to meet the standard notion of unpredictability.</p>
@@ -206,7 +206,7 @@ cipher is conjectured to meet the standard notion of unpredictability.</p>
                        <tr class=' module-item'>
                            <td><a class='mod' href='salsa2012/index.html'
                                   title='rust_sodium::crypto::stream::salsa2012'>salsa2012</a></td>
-                           <td class='docblock short'>
+                           <td class='docblock-short'>
                                 <p><code>crypto_stream_salsa2012</code> (Salsa20/12), a particular cipher specified in
 <a href="http://nacl.cr.yp.to/valid.html">Cryptography in <code>NaCl</code></a>, Section 7.  This
 cipher is conjectured to meet the standard notion of unpredictability.</p>
@@ -215,7 +215,7 @@ cipher is conjectured to meet the standard notion of unpredictability.</p>
                        <tr class=' module-item'>
                            <td><a class='mod' href='salsa208/index.html'
                                   title='rust_sodium::crypto::stream::salsa208'>salsa208</a></td>
-                           <td class='docblock short'>
+                           <td class='docblock-short'>
                                 <p><code>crypto_stream_salsa208</code> (Salsa20/8), a particular cipher specified in
 <a href="http://nacl.cr.yp.to/valid.html">Cryptography in <code>NaCl</code></a>, Section 7.  This
 cipher is conjectured to meet the standard notion of unpredictability.</p>
@@ -224,7 +224,7 @@ cipher is conjectured to meet the standard notion of unpredictability.</p>
                        <tr class=' module-item'>
                            <td><a class='mod' href='xsalsa20/index.html'
                                   title='rust_sodium::crypto::stream::xsalsa20'>xsalsa20</a></td>
-                           <td class='docblock short'>
+                           <td class='docblock-short'>
                                 <p><code>crypto_stream_xsalsa20</code>, a particular cipher specified in
 <a href="http://nacl.cr.yp.to/valid.html">Cryptography in <code>NaCl</code></a>, Section 7.
 This cipher is conjectured to meet the standard notion of

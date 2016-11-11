@@ -188,15 +188,6 @@
 <span id="144">144</span>
 <span id="145">145</span>
 <span id="146">146</span>
-<span id="147">147</span>
-<span id="148">148</span>
-<span id="149">149</span>
-<span id="150">150</span>
-<span id="151">151</span>
-<span id="152">152</span>
-<span id="153">153</span>
-<span id="154">154</span>
-<span id="155">155</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2015 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -218,6 +209,7 @@
 <span class='kw'>use</span> <span class='ident'>routing_table</span>::<span class='ident'>Xorable</span>;
 <span class='kw'>use</span> <span class='ident'>rust_sodium</span>::<span class='ident'>crypto</span>::<span class='ident'>hash</span>::<span class='ident'>sha256</span>;
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>fmt</span>::<span class='ident'>Write</span>;
+<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>iter</span>;
 <span class='kw'>use</span> <span class='ident'>xor_name</span>::<span class='ident'>XorName</span>;
 
 <span class='doccomment'>/// Format a vector of bytes as a hexadecimal number, ellipsising all but the first and last three.</span>
@@ -244,33 +236,27 @@
 
 <span class='doccomment'>/// Compute the relocated name of a client with the given original name.</span>
 <span class='doccomment'>///</span>
-<span class='doccomment'>/// This is used by each member of the client&#39;s `ClientManager` group to choose a new name for the</span>
-<span class='doccomment'>/// client. On the one hand, sufficiently many of them need to agree on the new name to reach quorum</span>
-<span class='doccomment'>/// size, on the other hand, the client shall not be able to predict it so that it cannot choose</span>
-<span class='doccomment'>/// who will be its new `NodeManager` after relocation.</span>
+<span class='doccomment'>/// This is used by each member of a joining node&#39;s group to choose a new name for the node. On the</span>
+<span class='doccomment'>/// one hand, sufficiently many of them need to agree on the new name to reach quorum size, on the</span>
+<span class='doccomment'>/// other hand, the joining node shall not be able to predict it so that it cannot choose where to</span>
+<span class='doccomment'>/// be relocated to.</span>
 <span class='doccomment'>///</span>
 <span class='doccomment'>/// To meet these requirements, the relocated name is computed from the two closest nodes and the</span>
-<span class='doccomment'>/// client&#39;s original name: It is the SHA512 hash of:</span>
+<span class='doccomment'>/// joining node&#39;s original name: It is the SHA256 hash of:</span>
 <span class='doccomment'>///</span>
 <span class='doccomment'>/// [`original_name`, 1st closest node id, 2nd closest node id]</span>
 <span class='doccomment'>///</span>
 <span class='doccomment'>/// In case of only one close node provided (in initial network setup scenario):</span>
 <span class='doccomment'>///</span>
 <span class='doccomment'>/// [`original_name`, 1st closest node id]</span>
-<span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>calculate_relocated_name</span>(<span class='kw-2'>mut</span> <span class='ident'>close_nodes</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>XorName</span><span class='op'>&gt;</span>,
-                                <span class='ident'>original_name</span>: <span class='kw-2'>&amp;</span><span class='ident'>XorName</span>)
-                                <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>XorName</span>, ::<span class='ident'>error</span>::<span class='ident'>RoutingError</span><span class='op'>&gt;</span> {
+<span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>calculate_relocated_name</span>(<span class='kw-2'>mut</span> <span class='ident'>close_nodes</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>XorName</span><span class='op'>&gt;</span>, <span class='ident'>original_name</span>: <span class='kw-2'>&amp;</span><span class='ident'>XorName</span>) <span class='op'>-&gt;</span> <span class='ident'>XorName</span> {
     <span class='ident'>close_nodes</span>.<span class='ident'>sort_by</span>(<span class='op'>|</span><span class='ident'>a</span>, <span class='ident'>b</span><span class='op'>|</span> <span class='ident'>original_name</span>.<span class='ident'>cmp_distance</span>(<span class='ident'>a</span>, <span class='ident'>b</span>));
-    <span class='ident'>close_nodes</span>.<span class='ident'>truncate</span>(<span class='number'>2</span>);
-    <span class='ident'>close_nodes</span>.<span class='ident'>insert</span>(<span class='number'>0</span>, <span class='op'>*</span><span class='ident'>original_name</span>);
-
-    <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>combined</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>u8</span><span class='op'>&gt;</span> <span class='op'>=</span> <span class='ident'>Vec</span>::<span class='ident'>new</span>();
-    <span class='kw'>for</span> <span class='ident'>node_id</span> <span class='kw'>in</span> <span class='ident'>close_nodes</span> {
-        <span class='kw'>for</span> <span class='ident'>i</span> <span class='kw'>in</span> <span class='kw-2'>&amp;</span><span class='ident'>node_id</span>.<span class='number'>0</span> {
-            <span class='ident'>combined</span>.<span class='ident'>push</span>(<span class='op'>*</span><span class='ident'>i</span>);
-        }
-    }
-    <span class='prelude-val'>Ok</span>(<span class='ident'>XorName</span>(<span class='ident'>sha256</span>::<span class='ident'>hash</span>(<span class='kw-2'>&amp;</span><span class='ident'>combined</span>).<span class='number'>0</span>))
+    <span class='kw'>let</span> <span class='ident'>combined</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>u8</span><span class='op'>&gt;</span> <span class='op'>=</span> <span class='ident'>iter</span>::<span class='ident'>once</span>(<span class='ident'>original_name</span>)
+        .<span class='ident'>chain</span>(<span class='ident'>close_nodes</span>.<span class='ident'>iter</span>().<span class='ident'>take</span>(<span class='number'>2</span>))
+        .<span class='ident'>flat_map</span>(<span class='op'>|</span><span class='ident'>close_node</span><span class='op'>|</span> <span class='ident'>close_node</span>.<span class='number'>0</span>.<span class='ident'>into_iter</span>())
+        .<span class='ident'>cloned</span>()
+        .<span class='ident'>collect</span>();
+    <span class='ident'>XorName</span>(<span class='ident'>sha256</span>::<span class='ident'>hash</span>(<span class='kw-2'>&amp;</span><span class='ident'>combined</span>).<span class='number'>0</span>)
 }
 
 <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>test</span>)]</span>
@@ -283,18 +269,14 @@
     <span class='kw'>use</span> <span class='ident'>xor_name</span>::<span class='ident'>XorName</span>;
 
     <span class='attribute'>#[<span class='ident'>test</span>]</span>
-    <span class='attribute'>#[<span class='ident'>ignore</span>]</span>
     <span class='kw'>fn</span> <span class='ident'>calculate_relocated_name</span>() {
         <span class='kw'>let</span> <span class='ident'>original_name</span>: <span class='ident'>XorName</span> <span class='op'>=</span> <span class='ident'>rand</span>::<span class='ident'>random</span>();
-
-        <span class='comment'>// empty close nodes</span>
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='kw'>super</span>::<span class='ident'>calculate_relocated_name</span>(<span class='ident'>Vec</span>::<span class='ident'>new</span>(), <span class='kw-2'>&amp;</span><span class='ident'>original_name</span>).<span class='ident'>is_err</span>());
 
         <span class='comment'>// one entry</span>
         <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>close_nodes_one_entry</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>XorName</span><span class='op'>&gt;</span> <span class='op'>=</span> <span class='ident'>Vec</span>::<span class='ident'>new</span>();
         <span class='ident'>close_nodes_one_entry</span>.<span class='ident'>push</span>(<span class='ident'>rand</span>::<span class='ident'>random</span>());
         <span class='kw'>let</span> <span class='ident'>actual_relocated_name_one_entry</span> <span class='op'>=</span>
-            <span class='macro'>unwrap</span><span class='macro'>!</span>(<span class='kw'>super</span>::<span class='ident'>calculate_relocated_name</span>(<span class='ident'>close_nodes_one_entry</span>.<span class='ident'>clone</span>(), <span class='kw-2'>&amp;</span><span class='ident'>original_name</span>));
+            <span class='kw'>super</span>::<span class='ident'>calculate_relocated_name</span>(<span class='ident'>close_nodes_one_entry</span>.<span class='ident'>clone</span>(), <span class='kw-2'>&amp;</span><span class='ident'>original_name</span>);
         <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>original_name</span> <span class='op'>!=</span> <span class='ident'>actual_relocated_name_one_entry</span>);
 
         <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>combined_one_node_vec</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>XorName</span><span class='op'>&gt;</span> <span class='op'>=</span> <span class='ident'>Vec</span>::<span class='ident'>new</span>();
@@ -318,8 +300,8 @@
         <span class='kw'>for</span> _ <span class='kw'>in</span> <span class='number'>0</span>..<span class='ident'>MIN_GROUP_SIZE</span> {
             <span class='ident'>close_nodes</span>.<span class='ident'>push</span>(<span class='ident'>rand</span>::<span class='ident'>random</span>());
         }
-        <span class='kw'>let</span> <span class='ident'>actual_relocated_name</span> <span class='op'>=</span> <span class='macro'>unwrap</span><span class='macro'>!</span>(<span class='kw'>super</span>::<span class='ident'>calculate_relocated_name</span>(<span class='ident'>close_nodes</span>.<span class='ident'>clone</span>(),
-                                                                            <span class='kw-2'>&amp;</span><span class='ident'>original_name</span>));
+        <span class='kw'>let</span> <span class='ident'>actual_relocated_name</span> <span class='op'>=</span> <span class='kw'>super</span>::<span class='ident'>calculate_relocated_name</span>(<span class='ident'>close_nodes</span>.<span class='ident'>clone</span>(),
+                                                                    <span class='kw-2'>&amp;</span><span class='ident'>original_name</span>);
         <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>original_name</span> <span class='op'>!=</span> <span class='ident'>actual_relocated_name</span>);
         <span class='ident'>close_nodes</span>.<span class='ident'>sort_by</span>(<span class='op'>|</span><span class='ident'>a</span>, <span class='ident'>b</span><span class='op'>|</span> <span class='ident'>original_name</span>.<span class='ident'>cmp_distance</span>(<span class='ident'>a</span>, <span class='ident'>b</span>));
         <span class='kw'>let</span> <span class='ident'>first_closest</span> <span class='op'>=</span> <span class='ident'>close_nodes</span>[<span class='number'>0</span>];

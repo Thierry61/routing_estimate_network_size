@@ -66,41 +66,41 @@ operations such as iteration to be performed on it.</p>
 <span class='kw'>let</span> <span class='ident'>rust_linked_list</span> <span class='op'>=</span> <span class='kw'>unsafe</span> { <span class='ident'>CLinkedListMut</span>::<span class='ident'>from_ptr</span>(<span class='ident'>some_c_linked_list</span>, <span class='op'>|</span><span class='ident'>n</span><span class='op'>|</span> <span class='ident'>n</span>.<span class='ident'>next</span>) };
 <span class='kw'>for</span> (<span class='ident'>i</span>, <span class='ident'>node</span>) <span class='kw'>in</span> <span class='ident'>rust_linked_list</span>.<span class='ident'>iter</span>().<span class='ident'>enumerate</span>() {
     <span class='macro'>println</span><span class='macro'>!</span>(<span class='string'>&quot;some_c_linked_list[{}] == {}&quot;</span>, <span class='ident'>i</span>, <span class='ident'>node</span>.<span class='ident'>value</span>);
-}</pre>
+}<a class='test-arrow' target='_blank' href=''>Run</a></pre>
 </div><h2 id='structs' class='section-header'><a href="#structs">Structs</a></h2>
 <table>
                        <tr class=' module-item'>
                            <td><a class='struct' href='struct.CLinkedListConst.html'
                                   title='c_linked_list::CLinkedListConst'>CLinkedListConst</a></td>
-                           <td class='docblock short'>
+                           <td class='docblock-short'>
                                 <p>Wraps a C linked list comprised of const pointers between nodes.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
                            <td><a class='struct' href='struct.CLinkedListConstIter.html'
                                   title='c_linked_list::CLinkedListConstIter'>CLinkedListConstIter</a></td>
-                           <td class='docblock short'>
+                           <td class='docblock-short'>
                                 <p>Iterator over a <code>CLinkedListConst</code>. Returns immutable references to the nodes of the list.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
                            <td><a class='struct' href='struct.CLinkedListMut.html'
                                   title='c_linked_list::CLinkedListMut'>CLinkedListMut</a></td>
-                           <td class='docblock short'>
+                           <td class='docblock-short'>
                                 <p>Wraps a C linked list comprised of mutable pointers between nodes.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
                            <td><a class='struct' href='struct.CLinkedListMutIter.html'
                                   title='c_linked_list::CLinkedListMutIter'>CLinkedListMutIter</a></td>
-                           <td class='docblock short'>
+                           <td class='docblock-short'>
                                 <p>Iterator over a <code>CLinkedListMut</code>. Returns references to the nodes of the list.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
                            <td><a class='struct' href='struct.CLinkedListMutIterMut.html'
                                   title='c_linked_list::CLinkedListMutIterMut'>CLinkedListMutIterMut</a></td>
-                           <td class='docblock short'>
+                           <td class='docblock-short'>
                                 <p>Iterator over a <code>CLinkedListMut</code>. Returns mutable references to the nodes of the list.</p>
                            </td>
                        </tr></table></section>

@@ -1059,6 +1059,116 @@
 <span id="1015">1015</span>
 <span id="1016">1016</span>
 <span id="1017">1017</span>
+<span id="1018">1018</span>
+<span id="1019">1019</span>
+<span id="1020">1020</span>
+<span id="1021">1021</span>
+<span id="1022">1022</span>
+<span id="1023">1023</span>
+<span id="1024">1024</span>
+<span id="1025">1025</span>
+<span id="1026">1026</span>
+<span id="1027">1027</span>
+<span id="1028">1028</span>
+<span id="1029">1029</span>
+<span id="1030">1030</span>
+<span id="1031">1031</span>
+<span id="1032">1032</span>
+<span id="1033">1033</span>
+<span id="1034">1034</span>
+<span id="1035">1035</span>
+<span id="1036">1036</span>
+<span id="1037">1037</span>
+<span id="1038">1038</span>
+<span id="1039">1039</span>
+<span id="1040">1040</span>
+<span id="1041">1041</span>
+<span id="1042">1042</span>
+<span id="1043">1043</span>
+<span id="1044">1044</span>
+<span id="1045">1045</span>
+<span id="1046">1046</span>
+<span id="1047">1047</span>
+<span id="1048">1048</span>
+<span id="1049">1049</span>
+<span id="1050">1050</span>
+<span id="1051">1051</span>
+<span id="1052">1052</span>
+<span id="1053">1053</span>
+<span id="1054">1054</span>
+<span id="1055">1055</span>
+<span id="1056">1056</span>
+<span id="1057">1057</span>
+<span id="1058">1058</span>
+<span id="1059">1059</span>
+<span id="1060">1060</span>
+<span id="1061">1061</span>
+<span id="1062">1062</span>
+<span id="1063">1063</span>
+<span id="1064">1064</span>
+<span id="1065">1065</span>
+<span id="1066">1066</span>
+<span id="1067">1067</span>
+<span id="1068">1068</span>
+<span id="1069">1069</span>
+<span id="1070">1070</span>
+<span id="1071">1071</span>
+<span id="1072">1072</span>
+<span id="1073">1073</span>
+<span id="1074">1074</span>
+<span id="1075">1075</span>
+<span id="1076">1076</span>
+<span id="1077">1077</span>
+<span id="1078">1078</span>
+<span id="1079">1079</span>
+<span id="1080">1080</span>
+<span id="1081">1081</span>
+<span id="1082">1082</span>
+<span id="1083">1083</span>
+<span id="1084">1084</span>
+<span id="1085">1085</span>
+<span id="1086">1086</span>
+<span id="1087">1087</span>
+<span id="1088">1088</span>
+<span id="1089">1089</span>
+<span id="1090">1090</span>
+<span id="1091">1091</span>
+<span id="1092">1092</span>
+<span id="1093">1093</span>
+<span id="1094">1094</span>
+<span id="1095">1095</span>
+<span id="1096">1096</span>
+<span id="1097">1097</span>
+<span id="1098">1098</span>
+<span id="1099">1099</span>
+<span id="1100">1100</span>
+<span id="1101">1101</span>
+<span id="1102">1102</span>
+<span id="1103">1103</span>
+<span id="1104">1104</span>
+<span id="1105">1105</span>
+<span id="1106">1106</span>
+<span id="1107">1107</span>
+<span id="1108">1108</span>
+<span id="1109">1109</span>
+<span id="1110">1110</span>
+<span id="1111">1111</span>
+<span id="1112">1112</span>
+<span id="1113">1113</span>
+<span id="1114">1114</span>
+<span id="1115">1115</span>
+<span id="1116">1116</span>
+<span id="1117">1117</span>
+<span id="1118">1118</span>
+<span id="1119">1119</span>
+<span id="1120">1120</span>
+<span id="1121">1121</span>
+<span id="1122">1122</span>
+<span id="1123">1123</span>
+<span id="1124">1124</span>
+<span id="1125">1125</span>
+<span id="1126">1126</span>
+<span id="1127">1127</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2015 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -1085,6 +1195,7 @@
 <span class='kw'>use</span> <span class='ident'>error</span>::<span class='ident'>RoutingError</span>;
 <span class='kw'>use</span> <span class='ident'>event</span>::<span class='ident'>Event</span>;
 <span class='kw'>use</span> <span class='ident'>id</span>::{<span class='ident'>FullId</span>, <span class='ident'>PublicId</span>};
+<span class='kw'>use</span> <span class='ident'>itertools</span>::<span class='ident'>Itertools</span>;
 <span class='kw'>use</span> <span class='ident'>lru_time_cache</span>::<span class='ident'>LruCache</span>;
 <span class='kw'>use</span> <span class='ident'>maidsafe_utilities</span>;
 <span class='kw'>use</span> <span class='ident'>maidsafe_utilities</span>::<span class='ident'>serialisation</span>::{<span class='ident'>deserialise</span>, <span class='ident'>serialise</span>};
@@ -1093,12 +1204,16 @@
 <span class='kw'>use</span> <span class='ident'>routing_table</span>::<span class='ident'>Prefix</span>;
 <span class='kw'>use</span> <span class='ident'>rust_sodium</span>::<span class='ident'>crypto</span>::{<span class='ident'>box_</span>, <span class='ident'>sign</span>};
 <span class='kw'>use</span> <span class='ident'>rust_sodium</span>::<span class='ident'>crypto</span>::<span class='ident'>hash</span>::<span class='ident'>sha256</span>;
-<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>collections</span>::<span class='ident'>BTreeMap</span>;
+<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>collections</span>::{<span class='ident'>BTreeMap</span>, <span class='ident'>BTreeSet</span>};
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>fmt</span>::{<span class='self'>self</span>, <span class='ident'>Debug</span>, <span class='ident'>Formatter</span>};
+<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>iter</span>;
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>time</span>::<span class='ident'>Duration</span>;
 <span class='kw'>use</span> <span class='ident'>types</span>::<span class='ident'>MessageId</span>;
 <span class='kw'>use</span> <span class='ident'>utils</span>;
 <span class='kw'>use</span> <span class='ident'>xor_name</span>::<span class='ident'>XorName</span>;
+
+<span class='doccomment'>/// The quorum, as a percentage of the group size.</span>
+<span class='kw'>const</span> <span class='ident'>QUORUM</span>: <span class='ident'>usize</span> <span class='op'>=</span> <span class='number'>60</span>;
 
 <span class='doccomment'>/// The maximal length of a user message part, in bytes.</span>
 <span class='kw'>const</span> <span class='ident'>MAX_PART_LEN</span>: <span class='ident'>usize</span> <span class='op'>=</span> <span class='number'>20</span> <span class='op'>*</span> <span class='number'>1024</span>;
@@ -1157,6 +1272,9 @@
 <span class='doccomment'>/// Allows routing to directly send specific messages between nodes.</span>
 <span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>RustcEncodable</span>, <span class='ident'>RustcDecodable</span>)]</span>
 <span class='kw'>pub</span> <span class='kw'>enum</span> <span class='ident'>DirectMessage</span> {
+    <span class='doccomment'>/// Sent from members of a group message&#39;s source authority to the first hop. The message will</span>
+    <span class='doccomment'>/// only be relayed once enough signatures have been accumulated.</span>
+    <span class='ident'>MessageSignature</span>(<span class='ident'>sha256</span>::<span class='ident'>Digest</span>, <span class='ident'>sign</span>::<span class='ident'>Signature</span>),
     <span class='doccomment'>/// Sent from the bootstrap node to a client in response to `ClientIdentify`.</span>
     <span class='ident'>BootstrapIdentify</span> {
         <span class='doccomment'>/// The bootstrap node&#39;s keys and name.</span>
@@ -1209,12 +1327,12 @@
 <span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>RustcEncodable</span>, <span class='ident'>RustcDecodable</span>)]</span>
 <span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>HopMessage</span> {
     <span class='doccomment'>/// Wrapped signed message.</span>
-    <span class='ident'>content</span>: <span class='ident'>SignedMessage</span>,
+    <span class='kw'>pub</span> <span class='ident'>content</span>: <span class='ident'>SignedMessage</span>,
     <span class='doccomment'>/// Route number; corresponds to the index of the peer in the group of target peers being</span>
     <span class='doccomment'>/// considered for the next hop.</span>
-    <span class='ident'>route</span>: <span class='ident'>u8</span>,
+    <span class='kw'>pub</span> <span class='ident'>route</span>: <span class='ident'>u8</span>,
     <span class='doccomment'>/// Every node this has already been sent to.</span>
-    <span class='ident'>sent_to</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>XorName</span><span class='op'>&gt;</span>,
+    <span class='kw'>pub</span> <span class='ident'>sent_to</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>XorName</span><span class='op'>&gt;</span>,
     <span class='doccomment'>/// Signature to be validated against the neighbouring sender&#39;s public key.</span>
     <span class='ident'>signature</span>: <span class='ident'>sign</span>::<span class='ident'>Signature</span>,
 }
@@ -1224,14 +1342,14 @@
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>(<span class='ident'>content</span>: <span class='ident'>SignedMessage</span>,
                <span class='ident'>route</span>: <span class='ident'>u8</span>,
                <span class='ident'>sent_to</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>XorName</span><span class='op'>&gt;</span>,
-               <span class='ident'>sign_key</span>: <span class='kw-2'>&amp;</span><span class='ident'>sign</span>::<span class='ident'>SecretKey</span>)
+               <span class='ident'>signing_key</span>: <span class='kw-2'>&amp;</span><span class='ident'>sign</span>::<span class='ident'>SecretKey</span>)
                <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>HopMessage</span>, <span class='ident'>RoutingError</span><span class='op'>&gt;</span> {
         <span class='kw'>let</span> <span class='ident'>bytes_to_sign</span> <span class='op'>=</span> <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>serialise</span>(<span class='kw-2'>&amp;</span><span class='ident'>content</span>));
         <span class='prelude-val'>Ok</span>(<span class='ident'>HopMessage</span> {
             <span class='ident'>content</span>: <span class='ident'>content</span>,
             <span class='ident'>route</span>: <span class='ident'>route</span>,
             <span class='ident'>sent_to</span>: <span class='ident'>sent_to</span>,
-            <span class='ident'>signature</span>: <span class='ident'>sign</span>::<span class='ident'>sign_detached</span>(<span class='kw-2'>&amp;</span><span class='ident'>bytes_to_sign</span>, <span class='ident'>sign_key</span>),
+            <span class='ident'>signature</span>: <span class='ident'>sign</span>::<span class='ident'>sign_detached</span>(<span class='kw-2'>&amp;</span><span class='ident'>bytes_to_sign</span>, <span class='ident'>signing_key</span>),
         })
     }
 
@@ -1247,22 +1365,13 @@
             <span class='prelude-val'>Err</span>(<span class='ident'>RoutingError</span>::<span class='ident'>FailedSignature</span>)
         }
     }
+}
 
-    <span class='doccomment'>/// Returns the `SignedMessage` and the `name` of the previous routing node.</span>
-    <span class='doccomment'>///</span>
-    <span class='doccomment'>/// Does not validate the message! [#verify] must be called to ensure that the sender is valid</span>
-    <span class='doccomment'>/// and signed the message.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>content</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='kw-2'>&amp;</span><span class='ident'>SignedMessage</span> {
-        <span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='ident'>content</span>
-    }
-
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>route</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>u8</span> {
-        <span class='self'>self</span>.<span class='ident'>route</span>
-    }
-
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>sent_to</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='kw-2'>&amp;</span><span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>XorName</span><span class='op'>&gt;</span> {
-        <span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='ident'>sent_to</span>
-    }
+<span class='doccomment'>/// A list of a group&#39;s public IDs, together with a list of signatures of a neighbouring group.</span>
+<span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Ord</span>, <span class='ident'>PartialOrd</span>, <span class='ident'>Eq</span>, <span class='ident'>PartialEq</span>, <span class='ident'>Clone</span>, <span class='ident'>Hash</span>, <span class='ident'>RustcEncodable</span>, <span class='ident'>RustcDecodable</span>)]</span>
+<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>GroupList</span> {
+    <span class='comment'>// TODO(MAID-1677): pub signatures: BTreeSet&lt;(PublicId, sign::Signature)&gt;,</span>
+    <span class='kw'>pub</span> <span class='ident'>pub_ids</span>: <span class='ident'>BTreeSet</span><span class='op'>&lt;</span><span class='ident'>PublicId</span><span class='op'>&gt;</span>,
 }
 
 <span class='doccomment'>/// Wrapper around a routing message, signed by the originator of the message.</span>
@@ -1270,34 +1379,83 @@
 <span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>SignedMessage</span> {
     <span class='doccomment'>/// A request or response type message.</span>
     <span class='ident'>content</span>: <span class='ident'>RoutingMessage</span>,
-    <span class='doccomment'>/// Claimed public ID of a node or client.</span>
-    <span class='doccomment'>///</span>
-    <span class='doccomment'>/// For clients this is easily verifiable since their name is computed from the ID. For nodes it</span>
-    <span class='doccomment'>/// needs to be confirmed by their `NodeManager`.</span>
-    <span class='ident'>public_id</span>: <span class='ident'>PublicId</span>,
-    <span class='ident'>signature</span>: <span class='ident'>sign</span>::<span class='ident'>Signature</span>,
+    <span class='doccomment'>/// The lists of the groups involved in routing this message, in chronological order.</span>
+    <span class='ident'>grp_lists</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>GroupList</span><span class='op'>&gt;</span>,
+    <span class='doccomment'>/// The IDs and signatures of the source authority&#39;s members.</span>
+    <span class='ident'>signatures</span>: <span class='ident'>BTreeMap</span><span class='op'>&lt;</span><span class='ident'>PublicId</span>, <span class='ident'>sign</span>::<span class='ident'>Signature</span><span class='op'>&gt;</span>,
 }
 
 <span class='kw'>impl</span> <span class='ident'>SignedMessage</span> {
     <span class='doccomment'>/// Creates a `SignedMessage` with the given `content` and signed by the given `full_id`.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>(<span class='ident'>content</span>: <span class='ident'>RoutingMessage</span>, <span class='ident'>full_id</span>: <span class='kw-2'>&amp;</span><span class='ident'>FullId</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>SignedMessage</span>, <span class='ident'>RoutingError</span><span class='op'>&gt;</span> {
-        <span class='kw'>let</span> <span class='ident'>bytes_to_sign</span> <span class='op'>=</span> <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>serialise</span>(<span class='kw-2'>&amp;</span>(<span class='kw-2'>&amp;</span><span class='ident'>content</span>, <span class='ident'>full_id</span>.<span class='ident'>public_id</span>())));
+        <span class='kw'>let</span> <span class='ident'>sig</span> <span class='op'>=</span> <span class='ident'>sign</span>::<span class='ident'>sign_detached</span>(<span class='kw-2'>&amp;</span><span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>serialise</span>(<span class='kw-2'>&amp;</span><span class='ident'>content</span>)), <span class='ident'>full_id</span>.<span class='ident'>signing_private_key</span>());
         <span class='prelude-val'>Ok</span>(<span class='ident'>SignedMessage</span> {
             <span class='ident'>content</span>: <span class='ident'>content</span>,
-            <span class='ident'>public_id</span>: <span class='op'>*</span><span class='ident'>full_id</span>.<span class='ident'>public_id</span>(),
-            <span class='ident'>signature</span>: <span class='ident'>sign</span>::<span class='ident'>sign_detached</span>(<span class='kw-2'>&amp;</span><span class='ident'>bytes_to_sign</span>, <span class='ident'>full_id</span>.<span class='ident'>signing_private_key</span>()),
+            <span class='ident'>grp_lists</span>: <span class='ident'>Vec</span>::<span class='ident'>new</span>(),
+            <span class='ident'>signatures</span>: <span class='ident'>iter</span>::<span class='ident'>once</span>((<span class='op'>*</span><span class='ident'>full_id</span>.<span class='ident'>public_id</span>(), <span class='ident'>sig</span>)).<span class='ident'>collect</span>(),
         })
     }
 
-    <span class='doccomment'>/// Confirms the signature against the claimed public ID.</span>
+    <span class='doccomment'>/// Confirms the signatures.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>check_integrity</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span>(), <span class='ident'>RoutingError</span><span class='op'>&gt;</span> {
-        <span class='kw'>let</span> <span class='ident'>signed_bytes</span> <span class='op'>=</span> <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>serialise</span>(<span class='kw-2'>&amp;</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='ident'>content</span>, <span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='ident'>public_id</span>)));
-        <span class='kw'>if</span> <span class='ident'>sign</span>::<span class='ident'>verify_detached</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='ident'>signature</span>,
-                                 <span class='kw-2'>&amp;</span><span class='ident'>signed_bytes</span>,
-                                 <span class='self'>self</span>.<span class='ident'>public_id</span>().<span class='ident'>signing_public_key</span>()) {
-            <span class='prelude-val'>Ok</span>(())
-        } <span class='kw'>else</span> {
-            <span class='prelude-val'>Err</span>(<span class='ident'>RoutingError</span>::<span class='ident'>FailedSignature</span>)
+        <span class='kw'>let</span> <span class='ident'>signed_bytes</span> <span class='op'>=</span> <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>serialise</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='ident'>content</span>));
+        <span class='kw'>for</span> (<span class='ident'>pub_id</span>, <span class='ident'>sig</span>) <span class='kw'>in</span> <span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='ident'>signatures</span> {
+            <span class='kw'>if</span> <span class='op'>!</span><span class='ident'>sign</span>::<span class='ident'>verify_detached</span>(<span class='ident'>sig</span>, <span class='kw-2'>&amp;</span><span class='ident'>signed_bytes</span>, <span class='ident'>pub_id</span>.<span class='ident'>signing_public_key</span>()) {
+                <span class='kw'>return</span> <span class='prelude-val'>Err</span>(<span class='ident'>RoutingError</span>::<span class='ident'>FailedSignature</span>);
+            }
+        }
+        <span class='kw'>if</span> <span class='kw'>let</span> <span class='ident'>Authority</span>::<span class='ident'>Client</span> { <span class='kw-2'>ref</span> <span class='ident'>client_key</span>, .. } <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>content</span>.<span class='ident'>src</span> {
+            <span class='kw'>if</span> <span class='kw'>let</span> <span class='prelude-val'>Some</span>(<span class='ident'>pub_id</span>) <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>signatures</span>.<span class='ident'>keys</span>().<span class='ident'>next</span>() {
+                <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>signatures</span>.<span class='ident'>len</span>() <span class='op'>==</span> <span class='number'>1</span> <span class='op'>&amp;&amp;</span> <span class='ident'>pub_id</span>.<span class='ident'>signing_public_key</span>() <span class='op'>==</span> <span class='ident'>client_key</span> {
+                    <span class='kw'>return</span> <span class='prelude-val'>Ok</span>(());
+                }
+            }
+            <span class='kw'>return</span> <span class='prelude-val'>Err</span>(<span class='ident'>RoutingError</span>::<span class='ident'>FailedSignature</span>);
+        }
+        <span class='prelude-val'>Ok</span>(())
+    }
+    <span class='doccomment'>/// Returns whether the message is signed by the given public ID.</span>
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>signed_by</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>pub_id</span>: <span class='kw-2'>&amp;</span><span class='ident'>PublicId</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> {
+        <span class='self'>self</span>.<span class='ident'>signatures</span>.<span class='ident'>contains_key</span>(<span class='ident'>pub_id</span>)
+    }
+
+    <span class='doccomment'>/// Appends the group list to the message. If this is the first group list, it also removes all</span>
+    <span class='doccomment'>/// signatures which don&#39;t correspond to an entry in `group_list`.</span>
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>add_group_list</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>group_list</span>: <span class='ident'>GroupList</span>) {
+        <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>content</span>.<span class='ident'>src</span>.<span class='ident'>is_client</span>() {
+            <span class='kw'>return</span>; <span class='comment'>// Clients are validated based on their names.</span>
+        }
+        <span class='comment'>// TODO: We currently just add empty group lists in clients and joining nodes. Clients will</span>
+        <span class='comment'>// need to know their proxy&#39;s group to verify messages, and joining nodes will have to</span>
+        <span class='comment'>// store their new group lists from the beginning.</span>
+        <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>grp_lists</span>.<span class='ident'>is_empty</span>() <span class='op'>&amp;&amp;</span> <span class='op'>!</span><span class='ident'>group_list</span>.<span class='ident'>pub_ids</span>.<span class='ident'>is_empty</span>() {
+            <span class='comment'>// Drop signatures not associated with any members of the first group list.</span>
+            <span class='kw'>let</span> <span class='ident'>irrelevant_ids</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>signatures</span>
+                .<span class='ident'>keys</span>()
+                .<span class='ident'>filter</span>(<span class='op'>|</span><span class='ident'>pub_id</span><span class='op'>|</span> <span class='op'>!</span><span class='ident'>group_list</span>.<span class='ident'>pub_ids</span>.<span class='ident'>contains</span>(<span class='ident'>pub_id</span>))
+                .<span class='ident'>cloned</span>()
+                .<span class='ident'>collect_vec</span>();
+            <span class='kw'>for</span> <span class='ident'>irrelevant_id</span> <span class='kw'>in</span> <span class='ident'>irrelevant_ids</span> {
+                <span class='kw'>let</span> _ <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>signatures</span>.<span class='ident'>remove</span>(<span class='kw-2'>&amp;</span><span class='ident'>irrelevant_id</span>);
+            }
+        }
+        <span class='self'>self</span>.<span class='ident'>grp_lists</span>.<span class='ident'>push</span>(<span class='ident'>group_list</span>);
+    }
+
+    <span class='doccomment'>/// Adds the given signature if it is new, without validating it. If the collection of group</span>
+    <span class='doccomment'>/// lists isn&#39;t empty, the signature is only added if `pub_id` is a member of the first group</span>
+    <span class='doccomment'>/// list.</span>
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>add_signature</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>pub_id</span>: <span class='ident'>PublicId</span>, <span class='ident'>sig</span>: <span class='ident'>sign</span>::<span class='ident'>Signature</span>) {
+        <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>content</span>.<span class='ident'>src</span>.<span class='ident'>is_group</span>() <span class='op'>&amp;&amp;</span>
+           <span class='self'>self</span>.<span class='ident'>grp_lists</span>.<span class='ident'>first</span>().<span class='ident'>map_or</span>(<span class='bool-val'>true</span>, <span class='op'>|</span><span class='ident'>grp_list</span><span class='op'>|</span> <span class='ident'>grp_list</span>.<span class='ident'>pub_ids</span>.<span class='ident'>contains</span>(<span class='kw-2'>&amp;</span><span class='ident'>pub_id</span>)) {
+            <span class='kw'>let</span> _ <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>signatures</span>.<span class='ident'>insert</span>(<span class='ident'>pub_id</span>, <span class='ident'>sig</span>);
+        }
+    }
+
+    <span class='doccomment'>/// Adds all signatures from the given message, without validating them.</span>
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>add_signatures</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>msg</span>: <span class='ident'>SignedMessage</span>) {
+        <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>content</span>.<span class='ident'>src</span>.<span class='ident'>is_group</span>() {
+            <span class='self'>self</span>.<span class='ident'>signatures</span>.<span class='ident'>extend</span>(<span class='ident'>msg</span>.<span class='ident'>signatures</span>);
         }
     }
 
@@ -1311,14 +1469,50 @@
         <span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='ident'>content</span>
     }
 
-    <span class='doccomment'>/// The `PublicId` associated with the signed message</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>public_id</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='kw-2'>&amp;</span><span class='ident'>PublicId</span> {
-        <span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='ident'>public_id</span>
-    }
-
     <span class='doccomment'>/// The priority Crust should send this message with.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>priority</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>u8</span> {
         <span class='self'>self</span>.<span class='ident'>content</span>.<span class='ident'>priority</span>()
+    }
+
+    <span class='doccomment'>/// Returns whether there are enough signatures from the sender. NOTE: to ensure only validated</span>
+    <span class='doccomment'>/// signatures are counted, first call `remove_invalid_signatures()`.</span>
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>is_fully_signed</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> {
+        <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>content</span>.<span class='ident'>src</span>.<span class='ident'>is_client</span>() {
+            <span class='kw'>return</span> <span class='self'>self</span>.<span class='ident'>signatures</span>.<span class='ident'>len</span>() <span class='op'>==</span> <span class='number'>1</span>;
+        }
+        <span class='self'>self</span>.<span class='ident'>grp_lists</span>.<span class='ident'>first</span>().<span class='ident'>map_or</span>(<span class='bool-val'>false</span>, <span class='op'>|</span><span class='ident'>grp_list</span><span class='op'>|</span> {
+            <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>content</span>.<span class='ident'>src</span>.<span class='ident'>is_group</span>() {
+                <span class='ident'>QUORUM</span> <span class='op'>*</span> <span class='ident'>grp_list</span>.<span class='ident'>pub_ids</span>.<span class='ident'>len</span>() <span class='op'>&lt;</span> <span class='number'>100</span> <span class='op'>*</span> <span class='self'>self</span>.<span class='ident'>signatures</span>.<span class='ident'>len</span>()
+            } <span class='kw'>else</span> {
+                <span class='self'>self</span>.<span class='ident'>signatures</span>.<span class='ident'>len</span>() <span class='op'>==</span> <span class='number'>1</span>
+            }
+        })
+    }
+
+    <span class='doccomment'>/// Removes all signatures which fail validation.</span>
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>remove_invalid_signatures</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) {
+        <span class='kw'>let</span> <span class='ident'>signed_bytes</span> <span class='op'>=</span> <span class='kw'>match</span> <span class='ident'>serialise</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='ident'>content</span>) {
+            <span class='prelude-val'>Ok</span>(<span class='ident'>serialised</span>) <span class='op'>=&gt;</span> <span class='ident'>serialised</span>,
+            <span class='prelude-val'>Err</span>(<span class='ident'>error</span>) <span class='op'>=&gt;</span> {
+                <span class='macro'>info</span><span class='macro'>!</span>(<span class='string'>&quot;Failed to remove invalid signatures from {:?}: {:?}&quot;</span>,
+                      <span class='self'>self</span>,
+                      <span class='ident'>error</span>);
+                <span class='kw'>return</span>;
+            }
+        };
+        <span class='kw'>let</span> <span class='ident'>invalid_signatures</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>signatures</span>
+            .<span class='ident'>iter</span>()
+            .<span class='ident'>filter_map</span>(<span class='op'>|</span>(<span class='ident'>pub_id</span>, <span class='ident'>sig</span>)<span class='op'>|</span> {
+                <span class='kw'>if</span> <span class='ident'>sign</span>::<span class='ident'>verify_detached</span>(<span class='ident'>sig</span>, <span class='kw-2'>&amp;</span><span class='ident'>signed_bytes</span>, <span class='ident'>pub_id</span>.<span class='ident'>signing_public_key</span>()) {
+                    <span class='prelude-val'>None</span>
+                } <span class='kw'>else</span> {
+                    <span class='prelude-val'>Some</span>(<span class='op'>*</span><span class='ident'>pub_id</span>)
+                }
+            })
+            .<span class='ident'>collect_vec</span>();
+        <span class='kw'>for</span> <span class='ident'>invalid_signature</span> <span class='kw'>in</span> <span class='kw-2'>&amp;</span><span class='ident'>invalid_signatures</span> {
+            <span class='kw'>let</span> _ <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>signatures</span>.<span class='ident'>remove</span>(<span class='ident'>invalid_signature</span>);
+        }
     }
 }
 
@@ -1348,22 +1542,14 @@
         <span class='self'>self</span>.<span class='ident'>content</span>.<span class='ident'>priority</span>()
     }
 
-    <span class='doccomment'>/// Replaces this message&#39;s contents with its hash.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>to_grp_msg_hash</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>RoutingMessage</span>, <span class='ident'>RoutingError</span><span class='op'>&gt;</span> {
-        <span class='kw'>let</span> <span class='ident'>content</span> <span class='op'>=</span> <span class='kw'>match</span> <span class='self'>self</span>.<span class='ident'>content</span> {
-            <span class='ident'>MessageContent</span>::<span class='ident'>GetNodeNameResponse</span> { .. } <span class='op'>|</span>
-            <span class='ident'>MessageContent</span>::<span class='ident'>GetCloseGroupResponse</span> { .. } <span class='op'>|</span>
-            <span class='ident'>MessageContent</span>::<span class='ident'>UserMessagePart</span> { .. } <span class='op'>=&gt;</span> {
-                <span class='kw'>let</span> <span class='ident'>serialised_msg</span> <span class='op'>=</span> <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>serialise</span>(<span class='self'>self</span>));
-                <span class='ident'>MessageContent</span>::<span class='ident'>GroupMessageHash</span>(<span class='ident'>sha256</span>::<span class='ident'>hash</span>(<span class='kw-2'>&amp;</span><span class='ident'>serialised_msg</span>), <span class='self'>self</span>.<span class='ident'>priority</span>())
-            }
-            _ <span class='op'>=&gt;</span> <span class='self'>self</span>.<span class='ident'>content</span>.<span class='ident'>clone</span>(),
-        };
-        <span class='prelude-val'>Ok</span>(<span class='ident'>RoutingMessage</span> {
-            <span class='ident'>src</span>: <span class='self'>self</span>.<span class='ident'>src</span>,
-            <span class='ident'>dst</span>: <span class='self'>self</span>.<span class='ident'>dst</span>,
-            <span class='ident'>content</span>: <span class='ident'>content</span>,
-        })
+    <span class='doccomment'>/// Returns a `DirectMessage::MessageSignature` for this message.</span>
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>to_signature</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>,
+                        <span class='ident'>signing_key</span>: <span class='kw-2'>&amp;</span><span class='ident'>sign</span>::<span class='ident'>SecretKey</span>)
+                        <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>DirectMessage</span>, <span class='ident'>RoutingError</span><span class='op'>&gt;</span> {
+        <span class='kw'>let</span> <span class='ident'>serialised_msg</span> <span class='op'>=</span> <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>serialise</span>(<span class='self'>self</span>));
+        <span class='kw'>let</span> <span class='ident'>hash</span> <span class='op'>=</span> <span class='ident'>sha256</span>::<span class='ident'>hash</span>(<span class='kw-2'>&amp;</span><span class='ident'>serialised_msg</span>);
+        <span class='kw'>let</span> <span class='ident'>sig</span> <span class='op'>=</span> <span class='ident'>sign</span>::<span class='ident'>sign_detached</span>(<span class='kw-2'>&amp;</span><span class='ident'>serialised_msg</span>, <span class='ident'>signing_key</span>);
+        <span class='prelude-val'>Ok</span>(<span class='ident'>DirectMessage</span>::<span class='ident'>MessageSignature</span>(<span class='ident'>hash</span>, <span class='ident'>sig</span>))
     }
 }
 
@@ -1444,10 +1630,6 @@
     <span class='doccomment'>/// Acknowledge receipt of any message except an `Ack`. It contains the hash of the</span>
     <span class='doccomment'>/// received message and the priority.</span>
     <span class='ident'>Ack</span>(<span class='ident'>Ack</span>, <span class='ident'>u8</span>),
-    <span class='doccomment'>/// The hash of a `RoutingMessage`. This is sent by the source group authority members as a</span>
-    <span class='doccomment'>/// confirmation, so that only one of them needs to send the full message. The second field is</span>
-    <span class='doccomment'>/// the message priority.</span>
-    <span class='ident'>GroupMessageHash</span>(<span class='ident'>sha256</span>::<span class='ident'>Digest</span>, <span class='ident'>u8</span>),
     <span class='doccomment'>/// Part of a user-facing message</span>
     <span class='ident'>UserMessagePart</span> {
         <span class='doccomment'>/// The hash of this user message.</span>
@@ -1470,7 +1652,6 @@
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>priority</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>u8</span> {
         <span class='kw'>match</span> <span class='op'>*</span><span class='self'>self</span> {
             <span class='ident'>MessageContent</span>::<span class='ident'>Ack</span>(_, <span class='ident'>priority</span>) <span class='op'>|</span>
-            <span class='ident'>MessageContent</span>::<span class='ident'>GroupMessageHash</span>(_, <span class='ident'>priority</span>) <span class='op'>|</span>
             <span class='ident'>MessageContent</span>::<span class='ident'>UserMessagePart</span> { <span class='ident'>priority</span>, .. } <span class='op'>=&gt;</span> <span class='ident'>priority</span>,
             _ <span class='op'>=&gt;</span> <span class='number'>0</span>,
         }
@@ -1480,6 +1661,11 @@
 <span class='kw'>impl</span> <span class='ident'>Debug</span> <span class='kw'>for</span> <span class='ident'>DirectMessage</span> {
     <span class='kw'>fn</span> <span class='ident'>fmt</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>formatter</span>: <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>Formatter</span>) <span class='op'>-&gt;</span> <span class='ident'>fmt</span>::<span class='prelude-ty'>Result</span> {
         <span class='kw'>match</span> <span class='op'>*</span><span class='self'>self</span> {
+            <span class='ident'>DirectMessage</span>::<span class='ident'>MessageSignature</span>(<span class='kw-2'>ref</span> <span class='ident'>digest</span>, _) <span class='op'>=&gt;</span> {
+                <span class='macro'>write</span><span class='macro'>!</span>(<span class='ident'>formatter</span>,
+                       <span class='string'>&quot;MessageSignature ({}, ..)&quot;</span>,
+                       <span class='ident'>utils</span>::<span class='ident'>format_binary_array</span>(<span class='kw-2'>&amp;</span><span class='ident'>digest</span>.<span class='number'>0</span>))
+            }
             <span class='ident'>DirectMessage</span>::<span class='ident'>BootstrapIdentify</span> { <span class='kw-2'>ref</span> <span class='ident'>public_id</span> } <span class='op'>=&gt;</span> {
                 <span class='macro'>write</span><span class='macro'>!</span>(<span class='ident'>formatter</span>, <span class='string'>&quot;BootstrapIdentify {{ {:?} }}&quot;</span>, <span class='ident'>public_id</span>)
             }
@@ -1520,9 +1706,10 @@
 <span class='kw'>impl</span> <span class='ident'>Debug</span> <span class='kw'>for</span> <span class='ident'>SignedMessage</span> {
     <span class='kw'>fn</span> <span class='ident'>fmt</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>formatter</span>: <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>Formatter</span>) <span class='op'>-&gt;</span> <span class='ident'>fmt</span>::<span class='prelude-ty'>Result</span> {
         <span class='macro'>write</span><span class='macro'>!</span>(<span class='ident'>formatter</span>,
-               <span class='string'>&quot;SignedMessage {{ content: {:?}, public_id: {:?}, signature: .. }}&quot;</span>,
+               <span class='string'>&quot;SignedMessage {{ content: {:?}, grp_lists sizes: {:?}, signatures: {:?} }}&quot;</span>,
                <span class='self'>self</span>.<span class='ident'>content</span>,
-               <span class='self'>self</span>.<span class='ident'>public_id</span>)
+               <span class='self'>self</span>.<span class='ident'>grp_lists</span>.<span class='ident'>iter</span>().<span class='ident'>map</span>(<span class='op'>|</span><span class='ident'>grp_list</span><span class='op'>|</span> <span class='ident'>grp_list</span>.<span class='ident'>pub_ids</span>.<span class='ident'>len</span>()).<span class='ident'>collect_vec</span>(),
+               <span class='self'>self</span>.<span class='ident'>signatures</span>.<span class='ident'>keys</span>().<span class='ident'>collect_vec</span>())
     }
 }
 
@@ -1571,12 +1758,6 @@
                 <span class='macro'>write</span><span class='macro'>!</span>(<span class='ident'>formatter</span>, <span class='string'>&quot;OtherGroupMerge {{ {:?}, {:?} }}&quot;</span>, <span class='ident'>prefix</span>, <span class='ident'>group</span>)
             }
             <span class='ident'>MessageContent</span>::<span class='ident'>Ack</span>(<span class='ident'>ack</span>, <span class='ident'>priority</span>) <span class='op'>=&gt;</span> <span class='macro'>write</span><span class='macro'>!</span>(<span class='ident'>formatter</span>, <span class='string'>&quot;Ack({}, {})&quot;</span>, <span class='ident'>ack</span>, <span class='ident'>priority</span>),
-            <span class='ident'>MessageContent</span>::<span class='ident'>GroupMessageHash</span>(<span class='kw-2'>ref</span> <span class='ident'>hash</span>, <span class='ident'>priority</span>) <span class='op'>=&gt;</span> {
-                <span class='macro'>write</span><span class='macro'>!</span>(<span class='ident'>formatter</span>,
-                       <span class='string'>&quot;GroupMessageHash({}, {})&quot;</span>,
-                       <span class='ident'>utils</span>::<span class='ident'>format_binary_array</span>(<span class='kw-2'>&amp;</span><span class='ident'>hash</span>.<span class='number'>0</span>),
-                       <span class='ident'>priority</span>)
-            }
             <span class='ident'>MessageContent</span>::<span class='ident'>UserMessagePart</span> { <span class='ident'>hash</span>,
                                               <span class='ident'>part_count</span>,
                                               <span class='ident'>part_index</span>,
@@ -1943,14 +2124,15 @@
 
 <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>test</span>)]</span>
 <span class='kw'>mod</span> <span class='ident'>tests</span> {
-    <span class='kw'>extern</span> <span class='kw'>crate</span> <span class='ident'>rand</span>;
-
     <span class='kw'>use</span> <span class='ident'>authority</span>::<span class='ident'>Authority</span>;
     <span class='kw'>use</span> <span class='ident'>data</span>::{<span class='ident'>Data</span>, <span class='ident'>ImmutableData</span>};
     <span class='kw'>use</span> <span class='ident'>id</span>::<span class='ident'>FullId</span>;
     <span class='kw'>use</span> <span class='ident'>maidsafe_utilities</span>;
     <span class='kw'>use</span> <span class='ident'>maidsafe_utilities</span>::<span class='ident'>serialisation</span>::<span class='ident'>serialise</span>;
+    <span class='kw'>use</span> <span class='ident'>rand</span>;
     <span class='kw'>use</span> <span class='ident'>rust_sodium</span>::<span class='ident'>crypto</span>::<span class='ident'>sign</span>;
+    <span class='kw'>use</span> <span class='ident'>rust_sodium</span>::<span class='ident'>crypto</span>::<span class='ident'>hash</span>::<span class='ident'>sha256</span>;
+    <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>iter</span>;
     <span class='kw'>use</span> <span class='kw'>super</span>::<span class='op'>*</span>;
     <span class='kw'>use</span> <span class='ident'>types</span>::<span class='ident'>MessageId</span>;
     <span class='kw'>use</span> <span class='ident'>xor_name</span>::<span class='ident'>XorName</span>;
@@ -1966,12 +2148,12 @@
         <span class='kw'>let</span> <span class='ident'>full_id</span> <span class='op'>=</span> <span class='ident'>FullId</span>::<span class='ident'>new</span>();
         <span class='kw'>let</span> <span class='ident'>signed_message_result</span> <span class='op'>=</span> <span class='ident'>SignedMessage</span>::<span class='ident'>new</span>(<span class='ident'>routing_message</span>.<span class='ident'>clone</span>(), <span class='kw-2'>&amp;</span><span class='ident'>full_id</span>);
 
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>signed_message_result</span>.<span class='ident'>is_ok</span>());
-
         <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>signed_message</span> <span class='op'>=</span> <span class='macro'>unwrap</span><span class='macro'>!</span>(<span class='ident'>signed_message_result</span>);
 
         <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>routing_message</span>, <span class='op'>*</span><span class='ident'>signed_message</span>.<span class='ident'>routing_message</span>());
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>full_id</span>.<span class='ident'>public_id</span>(), <span class='ident'>signed_message</span>.<span class='ident'>public_id</span>());
+        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='number'>1</span>, <span class='ident'>signed_message</span>.<span class='ident'>signatures</span>.<span class='ident'>len</span>());
+        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='prelude-val'>Some</span>(<span class='ident'>full_id</span>.<span class='ident'>public_id</span>()),
+                   <span class='ident'>signed_message</span>.<span class='ident'>signatures</span>.<span class='ident'>keys</span>().<span class='ident'>next</span>());
 
         <span class='kw'>let</span> <span class='ident'>check_integrity_result</span> <span class='op'>=</span> <span class='ident'>signed_message</span>.<span class='ident'>check_integrity</span>();
 
@@ -1981,7 +2163,7 @@
         <span class='kw'>let</span> <span class='ident'>bytes_to_sign</span> <span class='op'>=</span> <span class='macro'>unwrap</span><span class='macro'>!</span>(<span class='ident'>serialise</span>(<span class='kw-2'>&amp;</span>(<span class='kw-2'>&amp;</span><span class='ident'>routing_message</span>, <span class='ident'>full_id</span>.<span class='ident'>public_id</span>())));
         <span class='kw'>let</span> <span class='ident'>signature</span> <span class='op'>=</span> <span class='ident'>sign</span>::<span class='ident'>sign_detached</span>(<span class='kw-2'>&amp;</span><span class='ident'>bytes_to_sign</span>, <span class='ident'>full_id</span>.<span class='ident'>signing_private_key</span>());
 
-        <span class='ident'>signed_message</span>.<span class='ident'>signature</span> <span class='op'>=</span> <span class='ident'>signature</span>;
+        <span class='ident'>signed_message</span>.<span class='ident'>signatures</span> <span class='op'>=</span> <span class='ident'>iter</span>::<span class='ident'>once</span>((<span class='op'>*</span><span class='ident'>full_id</span>.<span class='ident'>public_id</span>(), <span class='ident'>signature</span>)).<span class='ident'>collect</span>();
 
         <span class='kw'>let</span> <span class='ident'>check_integrity_result</span> <span class='op'>=</span> <span class='ident'>signed_message</span>.<span class='ident'>check_integrity</span>();
 
@@ -1989,7 +2171,11 @@
     }
 
     <span class='attribute'>#[<span class='ident'>test</span>]</span>
-    <span class='kw'>fn</span> <span class='ident'>grp_msg_hash</span>() {
+    <span class='kw'>fn</span> <span class='ident'>msg_signatures</span>() {
+        <span class='kw'>let</span> <span class='ident'>full_id_0</span> <span class='op'>=</span> <span class='ident'>FullId</span>::<span class='ident'>new</span>();
+        <span class='kw'>let</span> <span class='ident'>full_id_1</span> <span class='op'>=</span> <span class='ident'>FullId</span>::<span class='ident'>new</span>();
+        <span class='kw'>let</span> <span class='ident'>full_id_2</span> <span class='op'>=</span> <span class='ident'>FullId</span>::<span class='ident'>new</span>();
+        <span class='kw'>let</span> <span class='ident'>irrelevant_full_id</span> <span class='op'>=</span> <span class='ident'>FullId</span>::<span class='ident'>new</span>();
         <span class='kw'>let</span> <span class='ident'>data_bytes</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>u8</span><span class='op'>&gt;</span> <span class='op'>=</span> (<span class='number'>0</span>..<span class='number'>10</span>).<span class='ident'>map</span>(<span class='op'>|</span><span class='ident'>i</span><span class='op'>|</span> <span class='ident'>i</span> <span class='kw'>as</span> <span class='ident'>u8</span>).<span class='ident'>collect</span>();
         <span class='kw'>let</span> <span class='ident'>data</span> <span class='op'>=</span> <span class='ident'>Data</span>::<span class='ident'>Immutable</span>(<span class='ident'>ImmutableData</span>::<span class='ident'>new</span>(<span class='ident'>data_bytes</span>));
         <span class='kw'>let</span> <span class='ident'>user_msg</span> <span class='op'>=</span> <span class='ident'>UserMessage</span>::<span class='ident'>Request</span>(<span class='ident'>Request</span>::<span class='ident'>Put</span>(<span class='ident'>data</span>, <span class='ident'>MessageId</span>::<span class='ident'>new</span>()));
@@ -2002,20 +2188,54 @@
             <span class='ident'>dst</span>: <span class='ident'>Authority</span>::<span class='ident'>ClientManager</span>(<span class='ident'>name</span>),
             <span class='ident'>content</span>: <span class='ident'>part</span>,
         };
-        <span class='kw'>let</span> <span class='ident'>hash_msg</span> <span class='op'>=</span> <span class='macro'>unwrap</span><span class='macro'>!</span>(<span class='ident'>routing_message</span>.<span class='ident'>to_grp_msg_hash</span>());
-        <span class='kw'>match</span> <span class='ident'>hash_msg</span>.<span class='ident'>content</span> {
-            <span class='ident'>MessageContent</span>::<span class='ident'>GroupMessageHash</span>(..) <span class='op'>=&gt;</span> (),
-            _ <span class='op'>=&gt;</span> <span class='macro'>panic</span><span class='macro'>!</span>(<span class='string'>&quot;Wrong content for hashed message: {:?}&quot;</span>, <span class='ident'>hash_msg</span>),
-        }
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>hash_msg</span>, <span class='macro'>unwrap</span><span class='macro'>!</span>(<span class='ident'>hash_msg</span>.<span class='ident'>to_grp_msg_hash</span>()));
 
-        <span class='kw'>let</span> <span class='ident'>non_hash_routing_msg</span> <span class='op'>=</span> <span class='ident'>RoutingMessage</span> {
-            <span class='ident'>src</span>: <span class='ident'>Authority</span>::<span class='ident'>ClientManager</span>(<span class='ident'>name</span>),
-            <span class='ident'>dst</span>: <span class='ident'>Authority</span>::<span class='ident'>ClientManager</span>(<span class='ident'>name</span>),
-            <span class='ident'>content</span>: <span class='ident'>MessageContent</span>::<span class='ident'>GetCloseGroup</span>(<span class='ident'>MessageId</span>::<span class='ident'>zero</span>()),
+        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>signed_msg</span> <span class='op'>=</span> <span class='macro'>unwrap</span><span class='macro'>!</span>(<span class='ident'>SignedMessage</span>::<span class='ident'>new</span>(<span class='ident'>routing_message</span>, <span class='kw-2'>&amp;</span><span class='ident'>full_id_0</span>));
+        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>signed_msg</span>.<span class='ident'>signatures</span>.<span class='ident'>len</span>(), <span class='number'>1</span>);
+
+        <span class='comment'>// Add a signature which will not correspond to an ID in the first group list.</span>
+        <span class='kw'>let</span> <span class='ident'>irrelevant_sig</span> <span class='op'>=</span> <span class='kw'>match</span> <span class='macro'>unwrap</span><span class='macro'>!</span>(<span class='ident'>signed_msg</span>.<span class='ident'>routing_message</span>()
+            .<span class='ident'>to_signature</span>(<span class='ident'>irrelevant_full_id</span>.<span class='ident'>signing_private_key</span>())) {
+            <span class='ident'>DirectMessage</span>::<span class='ident'>MessageSignature</span>(_, <span class='ident'>sig</span>) <span class='op'>=&gt;</span> {
+                <span class='ident'>signed_msg</span>.<span class='ident'>add_signature</span>(<span class='op'>*</span><span class='ident'>irrelevant_full_id</span>.<span class='ident'>public_id</span>(), <span class='ident'>sig</span>);
+                <span class='ident'>sig</span>
+            }
+            <span class='ident'>msg</span> <span class='op'>=&gt;</span> <span class='macro'>panic</span><span class='macro'>!</span>(<span class='string'>&quot;Unexpected message: {:?}&quot;</span>, <span class='ident'>msg</span>),
         };
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>non_hash_routing_msg</span>,
-                   <span class='macro'>unwrap</span><span class='macro'>!</span>(<span class='ident'>non_hash_routing_msg</span>.<span class='ident'>to_grp_msg_hash</span>()));
+        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>signed_msg</span>.<span class='ident'>signatures</span>.<span class='ident'>len</span>(), <span class='number'>2</span>);
+
+        <span class='comment'>// Check the irrelevant signature gets removed by `add_group_list()`.</span>
+        <span class='ident'>signed_msg</span>.<span class='ident'>add_group_list</span>(<span class='ident'>GroupList</span> {
+            <span class='ident'>pub_ids</span>: <span class='macro'>vec</span><span class='macro'>!</span>[<span class='op'>*</span><span class='ident'>full_id_0</span>.<span class='ident'>public_id</span>(), <span class='op'>*</span><span class='ident'>full_id_1</span>.<span class='ident'>public_id</span>(), <span class='op'>*</span><span class='ident'>full_id_2</span>.<span class='ident'>public_id</span>()]
+                .<span class='ident'>into_iter</span>()
+                .<span class='ident'>collect</span>(),
+        });
+        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>signed_msg</span>.<span class='ident'>signatures</span>.<span class='ident'>len</span>(), <span class='number'>1</span>);
+        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='op'>!</span><span class='ident'>signed_msg</span>.<span class='ident'>signatures</span>.<span class='ident'>contains_key</span>(<span class='ident'>irrelevant_full_id</span>.<span class='ident'>public_id</span>()));
+        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='op'>!</span><span class='ident'>signed_msg</span>.<span class='ident'>is_fully_signed</span>());
+
+        <span class='comment'>// Add a valid signature for ID 1 and an invalid one for ID 2</span>
+        <span class='kw'>match</span> <span class='macro'>unwrap</span><span class='macro'>!</span>(<span class='ident'>signed_msg</span>.<span class='ident'>routing_message</span>().<span class='ident'>to_signature</span>(<span class='ident'>full_id_1</span>.<span class='ident'>signing_private_key</span>())) {
+            <span class='ident'>DirectMessage</span>::<span class='ident'>MessageSignature</span>(<span class='ident'>hash</span>, <span class='ident'>sig</span>) <span class='op'>=&gt;</span> {
+                <span class='kw'>let</span> <span class='ident'>serialised_msg</span> <span class='op'>=</span> <span class='macro'>unwrap</span><span class='macro'>!</span>(<span class='ident'>serialise</span>(<span class='ident'>signed_msg</span>.<span class='ident'>routing_message</span>()));
+                <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>hash</span>, <span class='ident'>sha256</span>::<span class='ident'>hash</span>(<span class='kw-2'>&amp;</span><span class='ident'>serialised_msg</span>));
+                <span class='ident'>signed_msg</span>.<span class='ident'>add_signature</span>(<span class='op'>*</span><span class='ident'>full_id_1</span>.<span class='ident'>public_id</span>(), <span class='ident'>sig</span>);
+            }
+            <span class='ident'>msg</span> <span class='op'>=&gt;</span> <span class='macro'>panic</span><span class='macro'>!</span>(<span class='string'>&quot;Unexpected message: {:?}&quot;</span>, <span class='ident'>msg</span>),
+        }
+        <span class='kw'>let</span> <span class='ident'>bad_sig</span> <span class='op'>=</span> <span class='ident'>sign</span>::<span class='ident'>Signature</span>([<span class='number'>0</span>; <span class='ident'>sign</span>::<span class='ident'>SIGNATUREBYTES</span>]);
+        <span class='ident'>signed_msg</span>.<span class='ident'>add_signature</span>(<span class='op'>*</span><span class='ident'>full_id_2</span>.<span class='ident'>public_id</span>(), <span class='ident'>bad_sig</span>);
+        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>signed_msg</span>.<span class='ident'>signatures</span>.<span class='ident'>len</span>(), <span class='number'>3</span>);
+        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>signed_msg</span>.<span class='ident'>is_fully_signed</span>());
+
+        <span class='comment'>// Check the bad signature gets removed properly.</span>
+        <span class='ident'>signed_msg</span>.<span class='ident'>remove_invalid_signatures</span>();
+        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>signed_msg</span>.<span class='ident'>signatures</span>.<span class='ident'>len</span>(), <span class='number'>2</span>);
+        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='op'>!</span><span class='ident'>signed_msg</span>.<span class='ident'>signatures</span>.<span class='ident'>contains_key</span>(<span class='ident'>full_id_2</span>.<span class='ident'>public_id</span>()));
+
+        <span class='comment'>// Check an irrelevant signature can&#39;t be added.</span>
+        <span class='ident'>signed_msg</span>.<span class='ident'>add_signature</span>(<span class='op'>*</span><span class='ident'>irrelevant_full_id</span>.<span class='ident'>public_id</span>(), <span class='ident'>irrelevant_sig</span>);
+        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>signed_msg</span>.<span class='ident'>signatures</span>.<span class='ident'>len</span>(), <span class='number'>2</span>);
+        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='op'>!</span><span class='ident'>signed_msg</span>.<span class='ident'>signatures</span>.<span class='ident'>contains_key</span>(<span class='ident'>irrelevant_full_id</span>.<span class='ident'>public_id</span>()));
     }
 
     <span class='attribute'>#[<span class='ident'>test</span>]</span>
@@ -2038,7 +2258,7 @@
 
         <span class='kw'>let</span> <span class='ident'>hop_message</span> <span class='op'>=</span> <span class='macro'>unwrap</span><span class='macro'>!</span>(<span class='ident'>hop_message_result</span>);
 
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>signed_message</span>, <span class='op'>*</span><span class='ident'>hop_message</span>.<span class='ident'>content</span>());
+        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>signed_message</span>, <span class='ident'>hop_message</span>.<span class='ident'>content</span>);
 
         <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>hop_message</span>.<span class='ident'>verify</span>(<span class='kw-2'>&amp;</span><span class='ident'>public_signing_key</span>).<span class='ident'>is_ok</span>());
 

@@ -69,7 +69,7 @@ itself, at the cost of runtime borrow checking.
 <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>z</span>.<span class='ident'>next</span>(), <span class='prelude-val'>Some</span>((<span class='number'>4</span>, <span class='number'>5</span>)));
 <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>rit</span>.<span class='ident'>next</span>(), <span class='prelude-val'>Some</span>(<span class='number'>6</span>));
 <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>z</span>.<span class='ident'>next</span>(), <span class='prelude-val'>Some</span>((<span class='number'>7</span>, <span class='number'>8</span>)));
-<span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>z</span>.<span class='ident'>next</span>(), <span class='prelude-val'>None</span>);</pre>
+<span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>z</span>.<span class='ident'>next</span>(), <span class='prelude-val'>None</span>);<a class='test-arrow' target='_blank' href=''>Run</a></pre>
 
 <p><strong>Panics</strong> in iterator methods if a borrow error is encountered,
 but it can only happen if the <code>RcIter</code> is reentered in for example <code>.next()</code>,

@@ -379,6 +379,9 @@
 <span id="335">335</span>
 <span id="336">336</span>
 <span id="337">337</span>
+<span id="338">338</span>
+<span id="339">339</span>
+<span id="340">340</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2016 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -459,7 +462,7 @@
                                (<span class='self'>self</span>[<span class='ident'>byte_index</span>] <span class='op'>^</span> <span class='ident'>other</span>[<span class='ident'>byte_index</span>]).<span class='ident'>leading_zeros</span>() <span class='kw'>as</span> <span class='ident'>usize</span>;
                     }
                 }
-                <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>l</span> <span class='op'>*</span> <span class='ident'>mem</span>::<span class='ident'>size_of</span>::<span class='op'>&lt;</span><span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>t</span><span class='op'>&gt;</span>()
+                <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>l</span> <span class='op'>*</span> <span class='ident'>mem</span>::<span class='ident'>size_of</span>::<span class='op'>&lt;</span><span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>t</span><span class='op'>&gt;</span>() <span class='op'>*</span> <span class='number'>8</span>
             }
 
             <span class='kw'>fn</span> <span class='ident'>cmp_distance</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>lhs</span>: <span class='kw-2'>&amp;</span>[<span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>t</span>; <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>l</span>], <span class='ident'>rhs</span>: <span class='kw-2'>&amp;</span>[<span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>t</span>; <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>l</span>]) <span class='op'>-&gt;</span> <span class='ident'>Ordering</span> {
@@ -634,12 +637,15 @@
         <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='number'>3</span>, <span class='number'>10u8</span>.<span class='ident'>common_prefix</span>(<span class='kw-2'>&amp;</span><span class='number'>16u8</span>));
         <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='number'>0</span>, <span class='number'>0u16</span>.<span class='ident'>common_prefix</span>(<span class='kw-2'>&amp;</span>(<span class='number'>1</span> <span class='op'>&lt;&lt;</span> <span class='number'>15</span>)));
         <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='number'>11</span>, <span class='number'>10u16</span>.<span class='ident'>common_prefix</span>(<span class='kw-2'>&amp;</span><span class='number'>16u16</span>));
+        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='number'>64</span>, <span class='number'>100u64</span>.<span class='ident'>common_prefix</span>(<span class='kw-2'>&amp;</span><span class='number'>100</span>));
     }
 
     <span class='attribute'>#[<span class='ident'>test</span>]</span>
     <span class='kw'>fn</span> <span class='ident'>common_prefix_array</span>() {
         <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='number'>0</span>, [<span class='number'>0</span>, <span class='number'>0</span>, <span class='number'>0</span>, <span class='number'>0</span>].<span class='ident'>common_prefix</span>(<span class='kw-2'>&amp;</span>[<span class='number'>128u8</span>, <span class='number'>0</span>, <span class='number'>0</span>, <span class='number'>0</span>]));
         <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='number'>11</span>, [<span class='number'>0</span>, <span class='number'>10u8</span>, <span class='number'>0</span>, <span class='number'>0</span>].<span class='ident'>common_prefix</span>(<span class='kw-2'>&amp;</span>[<span class='number'>0</span>, <span class='number'>16u8</span>, <span class='number'>0</span>, <span class='number'>0</span>]));
+        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='number'>31</span>, [<span class='number'>1u8</span>, <span class='number'>2</span>, <span class='number'>3</span>, <span class='number'>4</span>].<span class='ident'>common_prefix</span>(<span class='kw-2'>&amp;</span>[<span class='number'>1</span>, <span class='number'>2</span>, <span class='number'>3</span>, <span class='number'>5</span>]));
+        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='number'>32</span>, [<span class='number'>1u8</span>, <span class='number'>2</span>, <span class='number'>3</span>, <span class='number'>4</span>].<span class='ident'>common_prefix</span>(<span class='kw-2'>&amp;</span>[<span class='number'>1</span>, <span class='number'>2</span>, <span class='number'>3</span>, <span class='number'>4</span>]));
     }
 
     <span class='attribute'>#[<span class='ident'>test</span>]</span>

@@ -60,18 +60,18 @@ Enabled by default. Disable to make the library <code>#![no_std]</code>.</li>
 <table><tr><td><code>pub use Either::{<a class='enum' href='../either/enum.Either.html' title='either::Either'>Left</a>, <a class='enum' href='../either/enum.Either.html' title='either::Either'>Right</a>};</code></td></tr></table><h2 id='macros' class='section-header'><a href="#macros">Macros</a></h2>
 <table>
                        <tr class=' module-item'>
-                           <td><a class='macro' href='macro.try_left!.html'
-                                  title='either::try_left!'>try_left!</a></td>
-                           <td class='docblock short'>
+                           <td><a class='macro' href='macro.try_left.html'
+                                  title='either::try_left'>try_left</a></td>
+                           <td class='docblock-short'>
                                 <p>Macro for unwrapping the left side of an <code>Either</code>, which fails early
 with the opposite side. Can only be used in functions that return
 <code>Either</code> because of the early return of <code>Right</code> that it provides.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
-                           <td><a class='macro' href='macro.try_right!.html'
-                                  title='either::try_right!'>try_right!</a></td>
-                           <td class='docblock short'>
+                           <td><a class='macro' href='macro.try_right.html'
+                                  title='either::try_right'>try_right</a></td>
+                           <td class='docblock-short'>
                                 <p>Dual to <code>try_left!</code>, see its documentation for more information.</p>
                            </td>
                        </tr></table><h2 id='enums' class='section-header'><a href="#enums">Enums</a></h2>
@@ -79,7 +79,7 @@ with the opposite side. Can only be used in functions that return
                        <tr class=' module-item'>
                            <td><a class='enum' href='enum.Either.html'
                                   title='either::Either'>Either</a></td>
-                           <td class='docblock short'>
+                           <td class='docblock-short'>
                                 <p><code>Either</code> represents an alternative holding one value out of
 either of the two possible values.</p>
                            </td>

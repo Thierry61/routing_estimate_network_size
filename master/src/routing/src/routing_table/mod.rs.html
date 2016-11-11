@@ -1162,6 +1162,22 @@
 <span id="1118">1118</span>
 <span id="1119">1119</span>
 <span id="1120">1120</span>
+<span id="1121">1121</span>
+<span id="1122">1122</span>
+<span id="1123">1123</span>
+<span id="1124">1124</span>
+<span id="1125">1125</span>
+<span id="1126">1126</span>
+<span id="1127">1127</span>
+<span id="1128">1128</span>
+<span id="1129">1129</span>
+<span id="1130">1130</span>
+<span id="1131">1131</span>
+<span id="1132">1132</span>
+<span id="1133">1133</span>
+<span id="1134">1134</span>
+<span id="1135">1135</span>
+<span id="1136">1136</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2016 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -1289,6 +1305,7 @@
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>fmt</span>::{<span class='ident'>Binary</span>, <span class='ident'>Debug</span>, <span class='ident'>Formatter</span>};
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>fmt</span>::<span class='prelude-ty'>Result</span> <span class='kw'>as</span> <span class='ident'>FmtResult</span>;
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>hash</span>::<span class='ident'>Hash</span>;
+<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>thread</span>;
 
 <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>test</span>)]</span>
 <span class='kw'>pub</span> <span class='kw'>use</span> <span class='self'>self</span>::<span class='ident'>network_tests</span>::<span class='ident'>verify_network_invariant</span>;
@@ -1862,6 +1879,14 @@
         }
     }
 
+    <span class='doccomment'>/// Returns the group matching the given `name`, if present.</span>
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>get_group</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>name</span>: <span class='kw-2'>&amp;</span><span class='ident'>T</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='kw-2'>&amp;</span><span class='ident'>HashSet</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;&gt;</span> {
+        <span class='kw'>if</span> <span class='kw'>let</span> <span class='prelude-val'>Some</span>(<span class='ident'>prefix</span>) <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>find_group_prefix</span>(<span class='ident'>name</span>) {
+            <span class='kw'>return</span> <span class='self'>self</span>.<span class='ident'>groups</span>.<span class='ident'>get</span>(<span class='kw-2'>&amp;</span><span class='ident'>prefix</span>);
+        }
+        <span class='prelude-val'>None</span>
+    }
+
     <span class='kw'>fn</span> <span class='ident'>should_split_our_group</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>our_group</span>: <span class='kw-2'>&amp;</span><span class='ident'>HashSet</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> {
         <span class='comment'>// Count the number of names which will end up in our group if it is split (this</span>
         <span class='comment'>// implies common prefix is 1 longer than existing prefix).</span>
@@ -1962,13 +1987,6 @@
         <span class='kw'>if</span> <span class='ident'>merging_our_group</span> {
             <span class='self'>self</span>.<span class='ident'>our_group_prefix</span> <span class='op'>=</span> <span class='op'>*</span><span class='ident'>new_prefix</span>;
         }
-    }
-
-    <span class='kw'>fn</span> <span class='ident'>get_group</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>name</span>: <span class='kw-2'>&amp;</span><span class='ident'>T</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='kw-2'>&amp;</span><span class='ident'>HashSet</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;&gt;</span> {
-        <span class='kw'>if</span> <span class='kw'>let</span> <span class='prelude-val'>Some</span>(<span class='ident'>prefix</span>) <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>find_group_prefix</span>(<span class='ident'>name</span>) {
-            <span class='kw'>return</span> <span class='self'>self</span>.<span class='ident'>groups</span>.<span class='ident'>get</span>(<span class='kw-2'>&amp;</span><span class='ident'>prefix</span>);
-        }
-        <span class='prelude-val'>None</span>
     }
 
     <span class='kw'>fn</span> <span class='ident'>get_mut_group</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>name</span>: <span class='kw-2'>&amp;</span><span class='ident'>T</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>HashSet</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;&gt;</span> {
@@ -2089,8 +2107,9 @@
 <span class='kw'>impl</span><span class='op'>&lt;</span><span class='ident'>T</span>: <span class='ident'>Binary</span> <span class='op'>+</span> <span class='ident'>Clone</span> <span class='op'>+</span> <span class='ident'>Copy</span> <span class='op'>+</span> <span class='ident'>Debug</span> <span class='op'>+</span> <span class='ident'>Default</span> <span class='op'>+</span> <span class='ident'>Hash</span> <span class='op'>+</span> <span class='ident'>Xorable</span><span class='op'>&gt;</span> <span class='ident'>Binary</span> <span class='kw'>for</span> <span class='ident'>RoutingTable</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
     <span class='kw'>fn</span> <span class='ident'>fmt</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>formatter</span>: <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>Formatter</span>) <span class='op'>-&gt;</span> <span class='ident'>FmtResult</span> {
         <span class='macro'>try</span><span class='macro'>!</span>(<span class='macro'>writeln</span><span class='macro'>!</span>(<span class='ident'>formatter</span>,
-                      <span class='string'>&quot;RoutingTable {{\n\tour_name: {},\n\tmin_group_size: \
+                      <span class='string'>&quot;RoutingTable {{\n\tour_name: {:?} ({}),\n\tmin_group_size: \
                        {},\n\tour_group_prefix: {:?},&quot;</span>,
+                      <span class='self'>self</span>.<span class='ident'>our_name</span>,
                       <span class='self'>self</span>.<span class='ident'>our_name</span>.<span class='ident'>debug_binary</span>(),
                       <span class='self'>self</span>.<span class='ident'>min_group_size</span>,
                       <span class='self'>self</span>.<span class='ident'>our_group_prefix</span>));
@@ -2107,7 +2126,11 @@
                 } <span class='kw'>else</span> {
                     <span class='string'>&quot;,&quot;</span>
                 };
-                <span class='macro'>try</span><span class='macro'>!</span>(<span class='macro'>writeln</span><span class='macro'>!</span>(<span class='ident'>formatter</span>, <span class='string'>&quot;\t\t{}{}&quot;</span>, <span class='ident'>name</span>.<span class='ident'>debug_binary</span>(), <span class='ident'>comma</span>));
+                <span class='macro'>try</span><span class='macro'>!</span>(<span class='macro'>writeln</span><span class='macro'>!</span>(<span class='ident'>formatter</span>,
+                              <span class='string'>&quot;\t\t{:?} ({}){}&quot;</span>,
+                              <span class='ident'>name</span>,
+                              <span class='ident'>name</span>.<span class='ident'>debug_binary</span>(),
+                              <span class='ident'>comma</span>));
             }
             <span class='kw'>let</span> <span class='ident'>comma</span> <span class='op'>=</span> <span class='kw'>if</span> <span class='ident'>group_index</span> <span class='op'>==</span> <span class='ident'>groups</span>.<span class='ident'>len</span>() <span class='op'>-</span> <span class='number'>1</span> {
                 <span class='string'>&quot;&quot;</span>
@@ -2125,6 +2148,16 @@
         <span class='ident'>Binary</span>::<span class='ident'>fmt</span>(<span class='self'>self</span>, <span class='ident'>formatter</span>)
     }
 }
+
+<span class='kw'>impl</span><span class='op'>&lt;</span><span class='ident'>T</span>: <span class='ident'>Binary</span> <span class='op'>+</span> <span class='ident'>Clone</span> <span class='op'>+</span> <span class='ident'>Copy</span> <span class='op'>+</span> <span class='ident'>Debug</span> <span class='op'>+</span> <span class='ident'>Default</span> <span class='op'>+</span> <span class='ident'>Hash</span> <span class='op'>+</span> <span class='ident'>Xorable</span><span class='op'>&gt;</span> <span class='ident'>Drop</span> <span class='kw'>for</span> <span class='ident'>RoutingTable</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
+    <span class='kw'>fn</span> <span class='ident'>drop</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) {
+        <span class='kw'>if</span> <span class='ident'>thread</span>::<span class='ident'>panicking</span>() {
+            <span class='macro'>trace</span><span class='macro'>!</span>(<span class='string'>&quot;{:?}&quot;</span>, <span class='self'>self</span>);
+        }
+    }
+}
+
+
 
 <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>test</span>)]</span>
 <span class='kw'>mod</span> <span class='ident'>tests</span> {
@@ -2222,7 +2255,6 @@
 
         <span class='kw'>let</span> <span class='ident'>unknown_distant_name</span> <span class='op'>=</span> <span class='macro'>unwrap</span><span class='macro'>!</span>(<span class='ident'>unknown_distant_name</span>);
         <span class='comment'>// These numbers depend on distribution of names</span>
-        <span class='macro'>println</span><span class='macro'>!</span>(<span class='string'>&quot;{:?}&quot;</span>, <span class='ident'>table</span>);
         <span class='kw'>let</span> <span class='ident'>num_known_nodes</span> <span class='op'>=</span> <span class='number'>104</span>;
         <span class='kw'>let</span> <span class='ident'>num_groups</span> <span class='op'>=</span> <span class='number'>8</span>;
         <span class='kw'>let</span> <span class='ident'>len_our_group</span> <span class='op'>=</span> <span class='number'>13</span>;
