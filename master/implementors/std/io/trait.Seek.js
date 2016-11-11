@@ -1,5 +1,5 @@
 (function() {var implementors = {};
-implementors["lazy_static"] = [];implementors["antidote"] = [];implementors["humantime"] = [];implementors["libc"] = [];implementors["regex_syntax"] = [];implementors["itertools"] = [];implementors["num"] = [];implementors["serde"] = [];implementors["serde"] = [];implementors["openssl"] = [];implementors["nix"] = [];implementors["chrono"] = [];implementors["tmp_mio"] = [];implementors["mio"] = [];implementors["ws"] = [];implementors["hyper"] = [];implementors["maidsafe_utilities"] = [];implementors["rust_sodium_sys"] = [];implementors["igd"] = [];implementors["crust"] = [];
+implementors["antidote"] = [];implementors["humantime"] = [];implementors["regex_syntax"] = [];implementors["lazy_static"] = [];implementors["libc"] = [];implementors["num"] = [];implementors["itertools"] = [];implementors["serde"] = [];implementors["serde"] = [];implementors["openssl"] = [];implementors["chrono"] = [];implementors["nix"] = [];implementors["mio"] = [];implementors["tmp_mio"] = [];implementors["ws"] = [];implementors["hyper"] = [];implementors["maidsafe_utilities"] = [];implementors["igd"] = [];implementors["rust_sodium_sys"] = [];implementors["crust"] = [];
 
             if (window.register_implementors) {
                 window.register_implementors(implementors);

@@ -154,6 +154,7 @@
 <span id="110">110</span>
 <span id="111">111</span>
 <span id="112">112</span>
+<span id="113">113</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2015 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -186,7 +187,8 @@
 <span class='kw'>pub</span> <span class='kw'>enum</span> <span class='ident'>Authority</span> {
     <span class='doccomment'>/// Manager of a Client.  XorName is the hash of the Client&#39;s `client_key`.</span>
     <span class='ident'>ClientManager</span>(<span class='ident'>XorName</span>),
-    <span class='doccomment'>/// Manager of a network-addressable element.  XorName is the name of the element in question.</span>
+    <span class='doccomment'>/// Manager of a network-addressable element, i.e. the group matching this name.</span>
+    <span class='doccomment'>/// `XorName` is the name of the element in question.</span>
     <span class='ident'>NaeManager</span>(<span class='ident'>XorName</span>),
     <span class='doccomment'>/// Manager of a ManagedNode.  XorName is that of the ManagedNode.</span>
     <span class='ident'>NodeManager</span>(<span class='ident'>XorName</span>),

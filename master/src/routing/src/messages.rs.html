@@ -1169,6 +1169,63 @@
 <span id="1125">1125</span>
 <span id="1126">1126</span>
 <span id="1127">1127</span>
+<span id="1128">1128</span>
+<span id="1129">1129</span>
+<span id="1130">1130</span>
+<span id="1131">1131</span>
+<span id="1132">1132</span>
+<span id="1133">1133</span>
+<span id="1134">1134</span>
+<span id="1135">1135</span>
+<span id="1136">1136</span>
+<span id="1137">1137</span>
+<span id="1138">1138</span>
+<span id="1139">1139</span>
+<span id="1140">1140</span>
+<span id="1141">1141</span>
+<span id="1142">1142</span>
+<span id="1143">1143</span>
+<span id="1144">1144</span>
+<span id="1145">1145</span>
+<span id="1146">1146</span>
+<span id="1147">1147</span>
+<span id="1148">1148</span>
+<span id="1149">1149</span>
+<span id="1150">1150</span>
+<span id="1151">1151</span>
+<span id="1152">1152</span>
+<span id="1153">1153</span>
+<span id="1154">1154</span>
+<span id="1155">1155</span>
+<span id="1156">1156</span>
+<span id="1157">1157</span>
+<span id="1158">1158</span>
+<span id="1159">1159</span>
+<span id="1160">1160</span>
+<span id="1161">1161</span>
+<span id="1162">1162</span>
+<span id="1163">1163</span>
+<span id="1164">1164</span>
+<span id="1165">1165</span>
+<span id="1166">1166</span>
+<span id="1167">1167</span>
+<span id="1168">1168</span>
+<span id="1169">1169</span>
+<span id="1170">1170</span>
+<span id="1171">1171</span>
+<span id="1172">1172</span>
+<span id="1173">1173</span>
+<span id="1174">1174</span>
+<span id="1175">1175</span>
+<span id="1176">1176</span>
+<span id="1177">1177</span>
+<span id="1178">1178</span>
+<span id="1179">1179</span>
+<span id="1180">1180</span>
+<span id="1181">1181</span>
+<span id="1182">1182</span>
+<span id="1183">1183</span>
+<span id="1184">1184</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2015 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -1553,7 +1610,72 @@
     }
 }
 
+<span class='doccomment'>/// `MessageContent::ConnectionInfo` details, as a stand-alone type.</span>
+<span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Ord</span>, <span class='ident'>PartialOrd</span>, <span class='ident'>Eq</span>, <span class='ident'>PartialEq</span>, <span class='ident'>Clone</span>, <span class='ident'>Hash</span>, <span class='ident'>RustcEncodable</span>, <span class='ident'>RustcDecodable</span>)]</span>
+<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>ConnectionInfo</span> {
+    <span class='doccomment'>/// Encrypted Crust connection info.</span>
+    <span class='kw'>pub</span> <span class='ident'>encrypted_connection_info</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>u8</span><span class='op'>&gt;</span>,
+    <span class='doccomment'>/// Nonce used to provide a salt in the encrypted message.</span>
+    <span class='kw'>pub</span> <span class='ident'>nonce_bytes</span>: [<span class='ident'>u8</span>; <span class='ident'>box_</span>::<span class='ident'>NONCEBYTES</span>],
+    <span class='comment'>// TODO: The receiver should have that in the node_id_cache.</span>
+    <span class='doccomment'>/// The sender&#39;s public ID.</span>
+    <span class='kw'>pub</span> <span class='ident'>public_id</span>: <span class='ident'>PublicId</span>,
+}
+
+<span class='kw'>impl</span> <span class='ident'>ConnectionInfo</span> {
+    <span class='doccomment'>/// Create a `MessageContent` out of this info</span>
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>into_msg</span>(<span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>MessageContent</span> {
+        <span class='ident'>MessageContent</span>::<span class='ident'>ConnectionInfo</span>(<span class='self'>self</span>)
+    }
+}
+
 <span class='doccomment'>/// The routing message types</span>
+<span class='doccomment'>///</span>
+<span class='doccomment'>/// # The bootstrap process</span>
+<span class='doccomment'>///</span>
+<span class='doccomment'>///</span>
+<span class='doccomment'>/// ## Bootstrapping a client</span>
+<span class='doccomment'>///</span>
+<span class='doccomment'>/// A newly created `Core`, A, starts in `Disconnected` state and tries to establish a connection to</span>
+<span class='doccomment'>/// any node B of the network via Crust. When successful, i. e. when receiving an `OnConnect` event,</span>
+<span class='doccomment'>/// it moves to the `Bootstrapping` state.</span>
+<span class='doccomment'>///</span>
+<span class='doccomment'>/// A now sends a `ClientIdentify` message to B, containing A&#39;s signed public ID. B verifies the</span>
+<span class='doccomment'>/// signature and responds with a `BootstrapIdentify`, containing B&#39;s public ID. Once it receives</span>
+<span class='doccomment'>/// that, A goes into the `Client` state and uses B as its proxy to the network.</span>
+<span class='doccomment'>///</span>
+<span class='doccomment'>/// A can now exchange messages with any `Authority`. This completes the bootstrap process for</span>
+<span class='doccomment'>/// clients.</span>
+<span class='doccomment'>///</span>
+<span class='doccomment'>///</span>
+<span class='doccomment'>/// ## Becoming a node</span>
+<span class='doccomment'>///</span>
+<span class='doccomment'>/// If A wants to become a full routing node (`client_restriction == false`), it needs to relocate,</span>
+<span class='doccomment'>/// i. e. change its name to a value chosen by the network, and then add its peers to its routing</span>
+<span class='doccomment'>/// table and get added to their routing tables.</span>
+<span class='doccomment'>///</span>
+<span class='doccomment'>///</span>
+<span class='doccomment'>/// ### Getting a new network name from the `NaeManager`</span>
+<span class='doccomment'>///</span>
+<span class='doccomment'>/// Once in `Client` state, A sends a `GetNodeName` request to the `NaeManager` group authority X</span>
+<span class='doccomment'>/// of A&#39;s current name. X computes a new name and sends it in an `ExpectCloseNode` request to  the</span>
+<span class='doccomment'>/// `NaeManager` Y of A&#39;s new name. Each member of Y caches A&#39;s public ID, and Y sends a</span>
+<span class='doccomment'>/// `GetNodeName` response back to A, which includes the public IDs of the members of Y.</span>
+<span class='doccomment'>///</span>
+<span class='doccomment'>///</span>
+<span class='doccomment'>/// ### Connecting to the close group</span>
+<span class='doccomment'>///</span>
+<span class='doccomment'>/// To the `ManagedNode` for each public ID it receives from members of Y, A sends its</span>
+<span class='doccomment'>/// `ConnectionInfo`. It also caches the ID.</span>
+<span class='doccomment'>///</span>
+<span class='doccomment'>/// For each `ConnectionInfo` that a node Z receives from A, it decides whether it wants A in its</span>
+<span class='doccomment'>/// routing table. If yes, and if A&#39;s ID is in its ID cache, Z sends its own `ConnectionInfo` back</span>
+<span class='doccomment'>/// to A and also attempts to connect to A via Crust. A does the same, once it receives the</span>
+<span class='doccomment'>/// `ConnectionInfo`.</span>
+<span class='doccomment'>///</span>
+<span class='doccomment'>/// Once the connection between A and Z is established and a Crust `OnConnect` event is raised,</span>
+<span class='doccomment'>/// they exchange `NodeIdentify` messages and add each other to their routing tables. When A</span>
+<span class='doccomment'>/// receives its first `NodeIdentify`, it finally moves to the `Node` state.</span>
 <span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Ord</span>, <span class='ident'>PartialOrd</span>, <span class='ident'>Eq</span>, <span class='ident'>PartialEq</span>, <span class='ident'>Clone</span>, <span class='ident'>Hash</span>, <span class='ident'>RustcEncodable</span>, <span class='ident'>RustcDecodable</span>)]</span>
 <span class='kw'>pub</span> <span class='kw'>enum</span> <span class='ident'>MessageContent</span> {
     <span class='comment'>// ---------- Internal ------------</span>
@@ -1567,7 +1689,7 @@
         <span class='doccomment'>/// The message&#39;s unique identifier.</span>
         <span class='ident'>message_id</span>: <span class='ident'>MessageId</span>,
     },
-    <span class='doccomment'>/// Notify a joining node&#39;s `NodeManager` so that it expects a `GetCloseGroup` request from it.</span>
+    <span class='doccomment'>/// Notify a joining node&#39;s `NaeManager` so that it expects a `GetCloseGroup` request from it.</span>
     <span class='ident'>ExpectCloseNode</span> {
         <span class='doccomment'>/// The joining node&#39;s `PublicId` (public keys and name)</span>
         <span class='ident'>expect_id</span>: <span class='ident'>PublicId</span>,
@@ -1582,15 +1704,7 @@
     <span class='doccomment'>/// `NodeManager`&#39;s members.</span>
     <span class='ident'>GetCloseGroup</span>(<span class='ident'>MessageId</span>),
     <span class='doccomment'>/// Send our connection_info encrypted to a node we wish to connect to and have the keys for.</span>
-    <span class='ident'>ConnectionInfo</span> {
-        <span class='doccomment'>/// Encrypted Crust connection info.</span>
-        <span class='ident'>encrypted_connection_info</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>u8</span><span class='op'>&gt;</span>,
-        <span class='doccomment'>/// Nonce used to provide a salt in the encrypted message.</span>
-        <span class='ident'>nonce_bytes</span>: [<span class='ident'>u8</span>; <span class='ident'>box_</span>::<span class='ident'>NONCEBYTES</span>],
-        <span class='comment'>// TODO: The receiver should have that in the node_id_cache.</span>
-        <span class='doccomment'>/// The sender&#39;s public ID.</span>
-        <span class='ident'>public_id</span>: <span class='ident'>PublicId</span>,
-    },
+    <span class='ident'>ConnectionInfo</span>(<span class='ident'>ConnectionInfo</span>),
     <span class='doccomment'>/// Reply with the new `PublicId` for the joining node.</span>
     <span class='doccomment'>///</span>
     <span class='doccomment'>/// Sent from the `NodeManager` to the `Client`.</span>
@@ -1730,7 +1844,7 @@
                        <span class='ident'>message_id</span>)
             }
             <span class='ident'>MessageContent</span>::<span class='ident'>GetCloseGroup</span>(<span class='ident'>id</span>) <span class='op'>=&gt;</span> <span class='macro'>write</span><span class='macro'>!</span>(<span class='ident'>formatter</span>, <span class='string'>&quot;GetCloseGroup({:?})&quot;</span>, <span class='ident'>id</span>),
-            <span class='ident'>MessageContent</span>::<span class='ident'>ConnectionInfo</span> { .. } <span class='op'>=&gt;</span> <span class='macro'>write</span><span class='macro'>!</span>(<span class='ident'>formatter</span>, <span class='string'>&quot;ConnectionInfo {{ .. }}&quot;</span>),
+            <span class='ident'>MessageContent</span>::<span class='ident'>ConnectionInfo</span>(_) <span class='op'>=&gt;</span> <span class='macro'>write</span><span class='macro'>!</span>(<span class='ident'>formatter</span>, <span class='string'>&quot;ConnectionInfo {{ .. }}&quot;</span>),
             <span class='ident'>MessageContent</span>::<span class='ident'>GetNodeNameResponse</span> { <span class='kw-2'>ref</span> <span class='ident'>relocated_id</span>,
                                                   <span class='kw-2'>ref</span> <span class='ident'>groups</span>,
                                                   <span class='kw-2'>ref</span> <span class='ident'>message_id</span> } <span class='op'>=&gt;</span> {
