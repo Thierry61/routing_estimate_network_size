@@ -283,24 +283,6 @@
 <span id="239">239</span>
 <span id="240">240</span>
 <span id="241">241</span>
-<span id="242">242</span>
-<span id="243">243</span>
-<span id="244">244</span>
-<span id="245">245</span>
-<span id="246">246</span>
-<span id="247">247</span>
-<span id="248">248</span>
-<span id="249">249</span>
-<span id="250">250</span>
-<span id="251">251</span>
-<span id="252">252</span>
-<span id="253">253</span>
-<span id="254">254</span>
-<span id="255">255</span>
-<span id="256">256</span>
-<span id="257">257</span>
-<span id="258">258</span>
-<span id="259">259</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2015 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -319,7 +301,6 @@
 <span class='comment'>// Please review the Licences for the specific language governing permissions and limitations</span>
 <span class='comment'>// relating to use of the SAFE Network Software.</span>
 
-<span class='kw'>use</span> <span class='ident'>rustc_serialize</span>::{<span class='ident'>Decodable</span>, <span class='ident'>Decoder</span>, <span class='ident'>DecoderHelpers</span>, <span class='ident'>Encodable</span>, <span class='ident'>Encoder</span>, <span class='ident'>EncoderHelpers</span>};
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>cmp</span>::{<span class='self'>self</span>, <span class='ident'>Ordering</span>};
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>fmt</span>::{<span class='ident'>Binary</span>, <span class='ident'>Debug</span>, <span class='ident'>Formatter</span>};
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>fmt</span>::<span class='prelude-ty'>Result</span> <span class='kw'>as</span> <span class='ident'>FmtResult</span>;
@@ -328,26 +309,29 @@
 
 <span class='doccomment'>/// A group prefix, i.e. a sequence of bits specifying the part of the network&#39;s name space</span>
 <span class='doccomment'>/// consisting of all names that start with this sequence.</span>
-<span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Clone</span>, <span class='ident'>Copy</span>, <span class='ident'>Default</span>, <span class='ident'>Eq</span>)]</span>
+<span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Clone</span>, <span class='ident'>Copy</span>, <span class='ident'>Default</span>, <span class='ident'>Eq</span>, <span class='ident'>RustcDecodable</span>, <span class='ident'>RustcEncodable</span>)]</span>
 <span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>Prefix</span><span class='op'>&lt;</span><span class='ident'>T</span>: <span class='ident'>Clone</span> <span class='op'>+</span> <span class='ident'>Copy</span> <span class='op'>+</span> <span class='ident'>Default</span> <span class='op'>+</span> <span class='ident'>Binary</span> <span class='op'>+</span> <span class='ident'>Xorable</span><span class='op'>&gt;</span> {
-    <span class='ident'>bit_count</span>: <span class='ident'>usize</span>,
+    <span class='ident'>bit_count</span>: <span class='ident'>u16</span>,
     <span class='ident'>name</span>: <span class='ident'>T</span>,
 }
 
 <span class='kw'>impl</span><span class='op'>&lt;</span><span class='ident'>T</span>: <span class='ident'>Clone</span> <span class='op'>+</span> <span class='ident'>Copy</span> <span class='op'>+</span> <span class='ident'>Default</span> <span class='op'>+</span> <span class='ident'>Binary</span> <span class='op'>+</span> <span class='ident'>Xorable</span><span class='op'>&gt;</span> <span class='ident'>Prefix</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
-    <span class='doccomment'>/// Creates a new `Prefix` with the first `bit_count` bits of `name`.</span>
-    <span class='doccomment'>/// Insignificant bits are all set to 0.</span>
+    <span class='doccomment'>/// Creates a new `Prefix` with the first `bit_count` bits of `name`. Insignificant bits are all</span>
+    <span class='doccomment'>/// set to 0. If `bit_count` exceeds the size of `T` in bits, then it is reduced to this lower</span>
+    <span class='doccomment'>/// value.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>(<span class='ident'>bit_count</span>: <span class='ident'>usize</span>, <span class='ident'>name</span>: <span class='ident'>T</span>) <span class='op'>-&gt;</span> <span class='ident'>Prefix</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
         <span class='ident'>Prefix</span> {
-            <span class='ident'>bit_count</span>: <span class='ident'>bit_count</span>,
+            <span class='ident'>bit_count</span>: <span class='ident'>cmp</span>::<span class='ident'>min</span>(<span class='ident'>bit_count</span>, <span class='ident'>T</span>::<span class='ident'>bit_len</span>()) <span class='kw'>as</span> <span class='ident'>u16</span>,
             <span class='ident'>name</span>: <span class='ident'>name</span>.<span class='ident'>set_remaining</span>(<span class='ident'>bit_count</span>, <span class='bool-val'>false</span>),
         }
     }
 
-    <span class='doccomment'>/// Returns `self` with an appended bit: `0` if `bit` is `false`, and `1` if `bit` is `true`.</span>
+    <span class='doccomment'>/// Returns `self` with an appended bit: `0` if `bit` is `false`, and `1` if `bit` is `true`. If</span>
+    <span class='doccomment'>/// `self.bit_count` is already at the maximum for this type, then an unmodified copy of `self`</span>
+    <span class='doccomment'>/// is returned.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>pushed</span>(<span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>bit</span>: <span class='ident'>bool</span>) <span class='op'>-&gt;</span> <span class='ident'>Prefix</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
-        <span class='self'>self</span>.<span class='ident'>name</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>name</span>.<span class='ident'>with_bit</span>(<span class='self'>self</span>.<span class='ident'>bit_count</span>, <span class='ident'>bit</span>);
-        <span class='self'>self</span>.<span class='ident'>bit_count</span> <span class='op'>+=</span> <span class='number'>1</span>;
+        <span class='self'>self</span>.<span class='ident'>name</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>name</span>.<span class='ident'>with_bit</span>(<span class='self'>self</span>.<span class='ident'>bit_count</span>(), <span class='ident'>bit</span>);
+        <span class='self'>self</span>.<span class='ident'>bit_count</span> <span class='op'>=</span> <span class='ident'>cmp</span>::<span class='ident'>min</span>(<span class='self'>self</span>.<span class='ident'>bit_count</span> <span class='op'>+</span> <span class='number'>1</span>, <span class='ident'>T</span>::<span class='ident'>bit_len</span>() <span class='kw'>as</span> <span class='ident'>u16</span>);
         <span class='self'>self</span>
     }
 
@@ -357,36 +341,36 @@
         <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>bit_count</span> <span class='op'>&gt;</span> <span class='number'>0</span> {
             <span class='self'>self</span>.<span class='ident'>bit_count</span> <span class='op'>-=</span> <span class='number'>1</span>;
             <span class='comment'>// unused bits should be zero:</span>
-            <span class='self'>self</span>.<span class='ident'>name</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>name</span>.<span class='ident'>with_bit</span>(<span class='self'>self</span>.<span class='ident'>bit_count</span>, <span class='bool-val'>false</span>);
+            <span class='self'>self</span>.<span class='ident'>name</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>name</span>.<span class='ident'>with_bit</span>(<span class='self'>self</span>.<span class='ident'>bit_count</span>(), <span class='bool-val'>false</span>);
         }
         <span class='self'>self</span>
     }
 
     <span class='doccomment'>/// Returns the number of bits in the prefix.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>bit_count</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>usize</span> {
-        <span class='self'>self</span>.<span class='ident'>bit_count</span>
+        <span class='self'>self</span>.<span class='ident'>bit_count</span> <span class='kw'>as</span> <span class='ident'>usize</span>
     }
 
     <span class='doccomment'>/// Returns `true` if `self` is a prefix of `other` or vice versa.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>is_compatible</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>other</span>: <span class='kw-2'>&amp;</span><span class='ident'>Prefix</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> {
         <span class='kw'>let</span> <span class='ident'>i</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>name</span>.<span class='ident'>common_prefix</span>(<span class='kw-2'>&amp;</span><span class='ident'>other</span>.<span class='ident'>name</span>);
-        <span class='ident'>i</span> <span class='op'>&gt;=</span> <span class='self'>self</span>.<span class='ident'>bit_count</span> <span class='op'>||</span> <span class='ident'>i</span> <span class='op'>&gt;=</span> <span class='ident'>other</span>.<span class='ident'>bit_count</span>
+        <span class='ident'>i</span> <span class='op'>&gt;=</span> <span class='self'>self</span>.<span class='ident'>bit_count</span>() <span class='op'>||</span> <span class='ident'>i</span> <span class='op'>&gt;=</span> <span class='ident'>other</span>.<span class='ident'>bit_count</span>()
     }
 
     <span class='doccomment'>/// Returns `true` if the `other` prefix differs in exactly one bit from this one.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>is_neighbour</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>other</span>: <span class='kw-2'>&amp;</span><span class='ident'>Prefix</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> {
         <span class='kw'>let</span> <span class='ident'>i</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>name</span>.<span class='ident'>common_prefix</span>(<span class='kw-2'>&amp;</span><span class='ident'>other</span>.<span class='ident'>name</span>);
-        <span class='kw'>if</span> <span class='ident'>i</span> <span class='op'>&gt;=</span> <span class='self'>self</span>.<span class='ident'>bit_count</span> <span class='op'>||</span> <span class='ident'>i</span> <span class='op'>&gt;=</span> <span class='ident'>other</span>.<span class='ident'>bit_count</span> {
+        <span class='kw'>if</span> <span class='ident'>i</span> <span class='op'>&gt;=</span> <span class='self'>self</span>.<span class='ident'>bit_count</span>() <span class='op'>||</span> <span class='ident'>i</span> <span class='op'>&gt;=</span> <span class='ident'>other</span>.<span class='ident'>bit_count</span>() {
             <span class='bool-val'>false</span>
         } <span class='kw'>else</span> {
             <span class='kw'>let</span> <span class='ident'>j</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>name</span>.<span class='ident'>with_flipped_bit</span>(<span class='ident'>i</span>).<span class='ident'>common_prefix</span>(<span class='kw-2'>&amp;</span><span class='ident'>other</span>.<span class='ident'>name</span>);
-            <span class='ident'>j</span> <span class='op'>&gt;=</span> <span class='self'>self</span>.<span class='ident'>bit_count</span> <span class='op'>||</span> <span class='ident'>j</span> <span class='op'>&gt;=</span> <span class='ident'>other</span>.<span class='ident'>bit_count</span>
+            <span class='ident'>j</span> <span class='op'>&gt;=</span> <span class='self'>self</span>.<span class='ident'>bit_count</span>() <span class='op'>||</span> <span class='ident'>j</span> <span class='op'>&gt;=</span> <span class='ident'>other</span>.<span class='ident'>bit_count</span>()
         }
     }
 
     <span class='doccomment'>/// Returns the number of common leading bits with the input name, capped with prefix length.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>common_prefix</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>name</span>: <span class='kw-2'>&amp;</span><span class='ident'>T</span>) <span class='op'>-&gt;</span> <span class='ident'>usize</span> {
-        <span class='ident'>cmp</span>::<span class='ident'>min</span>(<span class='self'>self</span>.<span class='ident'>bit_count</span>, <span class='self'>self</span>.<span class='ident'>name</span>.<span class='ident'>common_prefix</span>(<span class='ident'>name</span>))
+        <span class='ident'>cmp</span>::<span class='ident'>min</span>(<span class='self'>self</span>.<span class='ident'>bit_count</span>(), <span class='self'>self</span>.<span class='ident'>name</span>.<span class='ident'>common_prefix</span>(<span class='ident'>name</span>))
     }
 
     <span class='doccomment'>/// Returns the number of common leading bits with the input name.</span>
@@ -396,7 +380,7 @@
 
     <span class='doccomment'>/// Returns `true` if this is a prefix of the given `name`.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>matches</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>name</span>: <span class='kw-2'>&amp;</span><span class='ident'>T</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> {
-        <span class='self'>self</span>.<span class='ident'>name</span>.<span class='ident'>common_prefix</span>(<span class='ident'>name</span>) <span class='op'>&gt;=</span> <span class='self'>self</span>.<span class='ident'>bit_count</span>
+        <span class='self'>self</span>.<span class='ident'>name</span>.<span class='ident'>common_prefix</span>(<span class='ident'>name</span>) <span class='op'>&gt;=</span> <span class='self'>self</span>.<span class='ident'>bit_count</span>()
     }
 
     <span class='doccomment'>/// Compares the distance of `self` and `other` to `target`. Returns `Less` if `self` is closer,</span>
@@ -415,12 +399,12 @@
 
     <span class='doccomment'>/// Returns the smallest name matching the prefix</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>lower_bound</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>T</span> {
-        <span class='self'>self</span>.<span class='ident'>name</span>.<span class='ident'>set_remaining</span>(<span class='self'>self</span>.<span class='ident'>bit_count</span>, <span class='bool-val'>false</span>)
+        <span class='self'>self</span>.<span class='ident'>name</span>.<span class='ident'>set_remaining</span>(<span class='self'>self</span>.<span class='ident'>bit_count</span>(), <span class='bool-val'>false</span>)
     }
 
     <span class='doccomment'>/// Returns the largest name matching the prefix</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>upper_bound</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>T</span> {
-        <span class='self'>self</span>.<span class='ident'>name</span>.<span class='ident'>set_remaining</span>(<span class='self'>self</span>.<span class='ident'>bit_count</span>, <span class='bool-val'>true</span>)
+        <span class='self'>self</span>.<span class='ident'>name</span>.<span class='ident'>set_remaining</span>(<span class='self'>self</span>.<span class='ident'>bit_count</span>(), <span class='bool-val'>true</span>)
     }
 
     <span class='doccomment'>/// Returns whether the namespace defined by `self` is covered by prefixes in the `prefixes`</span>
@@ -451,7 +435,7 @@
         <span class='kw'>if</span> <span class='ident'>i</span> <span class='op'>&gt;=</span> <span class='self'>self</span>.<span class='ident'>bit_count</span>() {
             <span class='op'>*</span><span class='self'>self</span>
         } <span class='kw'>else</span> {
-            <span class='ident'>Prefix</span>::<span class='ident'>new</span>(<span class='self'>self</span>.<span class='ident'>bit_count</span>, <span class='self'>self</span>.<span class='ident'>name</span>.<span class='ident'>with_flipped_bit</span>(<span class='ident'>i</span>))
+            <span class='ident'>Prefix</span>::<span class='ident'>new</span>(<span class='self'>self</span>.<span class='ident'>bit_count</span>(), <span class='self'>self</span>.<span class='ident'>name</span>.<span class='ident'>with_flipped_bit</span>(<span class='ident'>i</span>))
         }
     }
 }
@@ -482,7 +466,7 @@
 
 <span class='kw'>impl</span><span class='op'>&lt;</span><span class='ident'>T</span>: <span class='ident'>Clone</span> <span class='op'>+</span> <span class='ident'>Copy</span> <span class='op'>+</span> <span class='ident'>Default</span> <span class='op'>+</span> <span class='ident'>Binary</span> <span class='op'>+</span> <span class='ident'>Xorable</span><span class='op'>&gt;</span> <span class='ident'>Hash</span> <span class='kw'>for</span> <span class='ident'>Prefix</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
     <span class='kw'>fn</span> <span class='ident'>hash</span><span class='op'>&lt;</span><span class='ident'>H</span>: <span class='ident'>Hasher</span><span class='op'>&gt;</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>state</span>: <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>H</span>) {
-        <span class='kw'>for</span> <span class='ident'>i</span> <span class='kw'>in</span> <span class='number'>0</span>..<span class='self'>self</span>.<span class='ident'>bit_count</span> {
+        <span class='kw'>for</span> <span class='ident'>i</span> <span class='kw'>in</span> <span class='number'>0</span>..<span class='self'>self</span>.<span class='ident'>bit_count</span>() {
             <span class='self'>self</span>.<span class='ident'>name</span>.<span class='ident'>bit</span>(<span class='ident'>i</span>).<span class='ident'>hash</span>(<span class='ident'>state</span>);
         }
     }
@@ -491,7 +475,7 @@
 <span class='kw'>impl</span><span class='op'>&lt;</span><span class='ident'>T</span>: <span class='ident'>Clone</span> <span class='op'>+</span> <span class='ident'>Copy</span> <span class='op'>+</span> <span class='ident'>Default</span> <span class='op'>+</span> <span class='ident'>Binary</span> <span class='op'>+</span> <span class='ident'>Xorable</span><span class='op'>&gt;</span> <span class='ident'>Binary</span> <span class='kw'>for</span> <span class='ident'>Prefix</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
     <span class='kw'>fn</span> <span class='ident'>fmt</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>formatter</span>: <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>Formatter</span>) <span class='op'>-&gt;</span> <span class='ident'>FmtResult</span> {
         <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>binary</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>name</span>.<span class='ident'>binary</span>();
-        <span class='ident'>binary</span>.<span class='ident'>truncate</span>(<span class='self'>self</span>.<span class='ident'>bit_count</span>);
+        <span class='ident'>binary</span>.<span class='ident'>truncate</span>(<span class='self'>self</span>.<span class='ident'>bit_count</span>());
         <span class='macro'>write</span><span class='macro'>!</span>(<span class='ident'>formatter</span>, <span class='string'>&quot;Prefix({})&quot;</span>, <span class='ident'>binary</span>)
     }
 }
@@ -499,30 +483,6 @@
 <span class='kw'>impl</span><span class='op'>&lt;</span><span class='ident'>T</span>: <span class='ident'>Clone</span> <span class='op'>+</span> <span class='ident'>Copy</span> <span class='op'>+</span> <span class='ident'>Default</span> <span class='op'>+</span> <span class='ident'>Binary</span> <span class='op'>+</span> <span class='ident'>Xorable</span><span class='op'>&gt;</span> <span class='ident'>Debug</span> <span class='kw'>for</span> <span class='ident'>Prefix</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
     <span class='kw'>fn</span> <span class='ident'>fmt</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>formatter</span>: <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>Formatter</span>) <span class='op'>-&gt;</span> <span class='ident'>FmtResult</span> {
         <span class='ident'>Binary</span>::<span class='ident'>fmt</span>(<span class='self'>self</span>, <span class='ident'>formatter</span>)
-    }
-}
-
-<span class='kw'>impl</span><span class='op'>&lt;</span><span class='ident'>T</span>: <span class='ident'>Clone</span> <span class='op'>+</span> <span class='ident'>Copy</span> <span class='op'>+</span> <span class='ident'>Default</span> <span class='op'>+</span> <span class='ident'>Binary</span> <span class='op'>+</span> <span class='ident'>Xorable</span><span class='op'>&gt;</span> <span class='ident'>Encodable</span> <span class='kw'>for</span> <span class='ident'>Prefix</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
-    <span class='kw'>fn</span> <span class='ident'>encode</span><span class='op'>&lt;</span><span class='ident'>E</span>: <span class='ident'>Encoder</span><span class='op'>&gt;</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>encoder</span>: <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>E</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span>(), <span class='ident'>E</span>::<span class='ident'>Error</span><span class='op'>&gt;</span> {
-        <span class='kw'>let</span> <span class='ident'>bit_vec</span> <span class='op'>=</span> (<span class='number'>0</span>..<span class='self'>self</span>.<span class='ident'>bit_count</span>).<span class='ident'>map</span>(<span class='op'>|</span><span class='ident'>i</span><span class='op'>|</span> <span class='self'>self</span>.<span class='ident'>name</span>.<span class='ident'>bit</span>(<span class='ident'>i</span>)).<span class='ident'>collect</span>::<span class='op'>&lt;</span><span class='ident'>Vec</span><span class='op'>&lt;</span>_<span class='op'>&gt;&gt;</span>();
-        <span class='ident'>encoder</span>.<span class='ident'>emit_from_vec</span>(<span class='kw-2'>&amp;</span><span class='ident'>bit_vec</span>, <span class='op'>|</span><span class='ident'>encoder</span>, <span class='ident'>element</span><span class='op'>|</span> <span class='ident'>encoder</span>.<span class='ident'>emit_bool</span>(<span class='op'>*</span><span class='ident'>element</span>))
-    }
-}
-
-<span class='kw'>impl</span><span class='op'>&lt;</span><span class='ident'>T</span>: <span class='ident'>Clone</span> <span class='op'>+</span> <span class='ident'>Copy</span> <span class='op'>+</span> <span class='ident'>Default</span> <span class='op'>+</span> <span class='ident'>Binary</span> <span class='op'>+</span> <span class='ident'>Xorable</span><span class='op'>&gt;</span> <span class='ident'>Decodable</span> <span class='kw'>for</span> <span class='ident'>Prefix</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
-    <span class='kw'>fn</span> <span class='ident'>decode</span><span class='op'>&lt;</span><span class='ident'>D</span>: <span class='ident'>Decoder</span><span class='op'>&gt;</span>(<span class='ident'>decoder</span>: <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>D</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>Prefix</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>, <span class='ident'>D</span>::<span class='ident'>Error</span><span class='op'>&gt;</span> {
-        <span class='comment'>// TODO - This is a rough and ready implementation to be replaced by Andreas&#39; upcoming one.</span>
-        <span class='comment'>// This implementation will cause the `split()` function to be incorrect as that depends on</span>
-        <span class='comment'>// `self.name` being the name of the holder.  I don&#39;t know what idiot thought `split()` was</span>
-        <span class='comment'>// a good idea!</span>
-        <span class='kw'>let</span> <span class='ident'>bit_vec</span> <span class='op'>=</span> <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>decoder</span>.<span class='ident'>read_to_vec</span>(<span class='op'>|</span><span class='ident'>decoder</span><span class='op'>|</span> <span class='ident'>decoder</span>.<span class='ident'>read_bool</span>()));
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>name</span> <span class='op'>=</span> <span class='ident'>T</span>::<span class='ident'>default</span>();
-        <span class='kw'>for</span> (<span class='ident'>index</span>, <span class='ident'>element</span>) <span class='kw'>in</span> <span class='ident'>bit_vec</span>.<span class='ident'>iter</span>().<span class='ident'>enumerate</span>() {
-            <span class='kw'>if</span> <span class='ident'>name</span>.<span class='ident'>bit</span>(<span class='ident'>index</span>) <span class='op'>!=</span> <span class='op'>*</span><span class='ident'>element</span> {
-                <span class='ident'>name</span> <span class='op'>=</span> <span class='ident'>name</span>.<span class='ident'>with_flipped_bit</span>(<span class='ident'>index</span>);
-            }
-        }
-        <span class='prelude-val'>Ok</span>(<span class='ident'>Prefix</span>::<span class='ident'>new</span>(<span class='ident'>bit_vec</span>.<span class='ident'>len</span>(), <span class='ident'>name</span>))
     }
 }
 
@@ -559,6 +519,10 @@
 
         <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>str_to_prefix</span>(<span class='string'>b&quot;0101&quot;</span>).<span class='ident'>lower_bound</span>(), <span class='number'>0b01010000</span>);
         <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>str_to_prefix</span>(<span class='string'>b&quot;0101&quot;</span>).<span class='ident'>upper_bound</span>(), <span class='number'>0b01011111</span>);
+
+        <span class='comment'>// Check we handle passing an excessive `bit_count` to `new()`.</span>
+        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>Prefix</span>::<span class='op'>&lt;</span><span class='ident'>u64</span><span class='op'>&gt;</span>::<span class='ident'>new</span>(<span class='number'>64</span>, <span class='number'>0</span>).<span class='ident'>bit_count</span>(), <span class='number'>64</span>);
+        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>Prefix</span>::<span class='op'>&lt;</span><span class='ident'>u64</span><span class='op'>&gt;</span>::<span class='ident'>new</span>(<span class='number'>65</span>, <span class='number'>0</span>).<span class='ident'>bit_count</span>(), <span class='number'>64</span>);
     }
 }
 </pre>

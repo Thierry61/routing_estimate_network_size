@@ -1506,7 +1506,7 @@
             <span class='ident'>needed</span>: <span class='ident'>needed</span>,
             <span class='ident'>merging</span>: <span class='ident'>HashMap</span>::<span class='ident'>new</span>(),
         };
-        <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>result</span>.<span class='ident'>check_invariant</span>());
+        <span class='ident'>result</span>.<span class='ident'>check_invariant</span>()?;
         <span class='prelude-val'>Ok</span>(<span class='ident'>result</span>)
     }
 
@@ -2106,38 +2106,38 @@
 
 <span class='kw'>impl</span><span class='op'>&lt;</span><span class='ident'>T</span>: <span class='ident'>Binary</span> <span class='op'>+</span> <span class='ident'>Clone</span> <span class='op'>+</span> <span class='ident'>Copy</span> <span class='op'>+</span> <span class='ident'>Debug</span> <span class='op'>+</span> <span class='ident'>Default</span> <span class='op'>+</span> <span class='ident'>Hash</span> <span class='op'>+</span> <span class='ident'>Xorable</span><span class='op'>&gt;</span> <span class='ident'>Binary</span> <span class='kw'>for</span> <span class='ident'>RoutingTable</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
     <span class='kw'>fn</span> <span class='ident'>fmt</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>formatter</span>: <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>Formatter</span>) <span class='op'>-&gt;</span> <span class='ident'>FmtResult</span> {
-        <span class='macro'>try</span><span class='macro'>!</span>(<span class='macro'>writeln</span><span class='macro'>!</span>(<span class='ident'>formatter</span>,
-                      <span class='string'>&quot;RoutingTable {{\n\tour_name: {:?} ({}),\n\tmin_group_size: \
-                       {},\n\tour_group_prefix: {:?},&quot;</span>,
-                      <span class='self'>self</span>.<span class='ident'>our_name</span>,
-                      <span class='self'>self</span>.<span class='ident'>our_name</span>.<span class='ident'>debug_binary</span>(),
-                      <span class='self'>self</span>.<span class='ident'>min_group_size</span>,
-                      <span class='self'>self</span>.<span class='ident'>our_group_prefix</span>));
+        <span class='macro'>writeln</span><span class='macro'>!</span>(<span class='ident'>formatter</span>,
+                 <span class='string'>&quot;RoutingTable {{\n\tour_name: {:?} ({}),\n\tmin_group_size: \
+                  {},\n\tour_group_prefix: {:?},&quot;</span>,
+                 <span class='self'>self</span>.<span class='ident'>our_name</span>,
+                 <span class='self'>self</span>.<span class='ident'>our_name</span>.<span class='ident'>debug_binary</span>(),
+                 <span class='self'>self</span>.<span class='ident'>min_group_size</span>,
+                 <span class='self'>self</span>.<span class='ident'>our_group_prefix</span>)?;
         <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>groups</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>groups</span>.<span class='ident'>iter</span>().<span class='ident'>collect_vec</span>();
         <span class='ident'>groups</span>.<span class='ident'>sort_by</span>(<span class='op'>|</span><span class='kw-2'>&amp;</span>(<span class='ident'>lhs_prefix</span>, _), <span class='kw-2'>&amp;</span>(<span class='ident'>rhs_prefix</span>, _)<span class='op'>|</span> {
             <span class='ident'>lhs_prefix</span>.<span class='ident'>max_identical_index</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='ident'>our_name</span>)
                 .<span class='ident'>cmp</span>(<span class='kw-2'>&amp;</span><span class='ident'>rhs_prefix</span>.<span class='ident'>max_identical_index</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='ident'>our_name</span>))
         });
         <span class='kw'>for</span> (<span class='ident'>group_index</span>, <span class='kw-2'>&amp;</span>(<span class='ident'>prefix</span>, <span class='ident'>group</span>)) <span class='kw'>in</span> <span class='ident'>groups</span>.<span class='ident'>iter</span>().<span class='ident'>enumerate</span>() {
-            <span class='macro'>try</span><span class='macro'>!</span>(<span class='macro'>write</span><span class='macro'>!</span>(<span class='ident'>formatter</span>, <span class='string'>&quot;\tgroup {} with {:?}: {{\n&quot;</span>, <span class='ident'>group_index</span>, <span class='ident'>prefix</span>));
+            <span class='macro'>write</span><span class='macro'>!</span>(<span class='ident'>formatter</span>, <span class='string'>&quot;\tgroup {} with {:?}: {{\n&quot;</span>, <span class='ident'>group_index</span>, <span class='ident'>prefix</span>)?;
             <span class='kw'>for</span> (<span class='ident'>name_index</span>, <span class='ident'>name</span>) <span class='kw'>in</span> <span class='ident'>group</span>.<span class='ident'>iter</span>().<span class='ident'>enumerate</span>() {
                 <span class='kw'>let</span> <span class='ident'>comma</span> <span class='op'>=</span> <span class='kw'>if</span> <span class='ident'>name_index</span> <span class='op'>==</span> <span class='ident'>group</span>.<span class='ident'>len</span>() <span class='op'>-</span> <span class='number'>1</span> {
                     <span class='string'>&quot;&quot;</span>
                 } <span class='kw'>else</span> {
                     <span class='string'>&quot;,&quot;</span>
                 };
-                <span class='macro'>try</span><span class='macro'>!</span>(<span class='macro'>writeln</span><span class='macro'>!</span>(<span class='ident'>formatter</span>,
-                              <span class='string'>&quot;\t\t{:?} ({}){}&quot;</span>,
-                              <span class='ident'>name</span>,
-                              <span class='ident'>name</span>.<span class='ident'>debug_binary</span>(),
-                              <span class='ident'>comma</span>));
+                <span class='macro'>writeln</span><span class='macro'>!</span>(<span class='ident'>formatter</span>,
+                         <span class='string'>&quot;\t\t{:?} ({}){}&quot;</span>,
+                         <span class='ident'>name</span>,
+                         <span class='ident'>name</span>.<span class='ident'>debug_binary</span>(),
+                         <span class='ident'>comma</span>)?;
             }
             <span class='kw'>let</span> <span class='ident'>comma</span> <span class='op'>=</span> <span class='kw'>if</span> <span class='ident'>group_index</span> <span class='op'>==</span> <span class='ident'>groups</span>.<span class='ident'>len</span>() <span class='op'>-</span> <span class='number'>1</span> {
                 <span class='string'>&quot;&quot;</span>
             } <span class='kw'>else</span> {
                 <span class='string'>&quot;,&quot;</span>
             };
-            <span class='macro'>try</span><span class='macro'>!</span>(<span class='macro'>writeln</span><span class='macro'>!</span>(<span class='ident'>formatter</span>, <span class='string'>&quot;\t}}{}&quot;</span>, <span class='ident'>comma</span>));
+            <span class='macro'>writeln</span><span class='macro'>!</span>(<span class='ident'>formatter</span>, <span class='string'>&quot;\t}}{}&quot;</span>, <span class='ident'>comma</span>)?;
         }
         <span class='macro'>write</span><span class='macro'>!</span>(<span class='ident'>formatter</span>, <span class='string'>&quot;}}&quot;</span>)
     }

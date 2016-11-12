@@ -254,9 +254,6 @@
 <span id="210">210</span>
 <span id="211">211</span>
 <span id="212">212</span>
-<span id="213">213</span>
-<span id="214">214</span>
-<span id="215">215</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2016 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -297,7 +294,6 @@
     <span class='ident'>unacked_msgs</span>: <span class='ident'>usize</span>,
 
     <span class='ident'>msg_direct_node_identify</span>: <span class='ident'>usize</span>,
-    <span class='ident'>msg_direct_new_node</span>: <span class='ident'>usize</span>,
     <span class='ident'>msg_direct_sig</span>: <span class='ident'>usize</span>,
 
     <span class='ident'>msg_get</span>: <span class='ident'>usize</span>,
@@ -408,7 +404,6 @@
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>count_direct_message</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>msg</span>: <span class='kw-2'>&amp;</span><span class='ident'>DirectMessage</span>) {
         <span class='kw'>match</span> <span class='op'>*</span><span class='ident'>msg</span> {
             <span class='ident'>DirectMessage</span>::<span class='ident'>NodeIdentify</span> { .. } <span class='op'>=&gt;</span> <span class='self'>self</span>.<span class='ident'>msg_direct_node_identify</span> <span class='op'>+=</span> <span class='number'>1</span>,
-            <span class='ident'>DirectMessage</span>::<span class='ident'>NewNode</span>(_) <span class='op'>=&gt;</span> <span class='self'>self</span>.<span class='ident'>msg_direct_new_node</span> <span class='op'>+=</span> <span class='number'>1</span>,
             <span class='ident'>DirectMessage</span>::<span class='ident'>MessageSignature</span>(..) <span class='op'>=&gt;</span> <span class='self'>self</span>.<span class='ident'>msg_direct_sig</span> <span class='op'>+=</span> <span class='number'>1</span>,
             _ <span class='op'>=&gt;</span> <span class='self'>self</span>.<span class='ident'>msg_other</span> <span class='op'>+=</span> <span class='number'>1</span>,
         }
@@ -431,9 +426,8 @@
                   <span class='self'>self</span>.<span class='ident'>msg_other</span>,
                   <span class='self'>self</span>.<span class='ident'>routes</span>,
                   <span class='self'>self</span>.<span class='ident'>unacked_msgs</span>);
-            <span class='macro'>info</span><span class='macro'>!</span>(<span class='string'>&quot;Stats - Direct - NodeIdentify: {}, NewNode: {}, MessageSignature: {}&quot;</span>,
+            <span class='macro'>info</span><span class='macro'>!</span>(<span class='string'>&quot;Stats - Direct - NodeIdentify: {}, MessageSignature: {}&quot;</span>,
                   <span class='self'>self</span>.<span class='ident'>msg_direct_node_identify</span>,
-                  <span class='self'>self</span>.<span class='ident'>msg_direct_new_node</span>,
                   <span class='self'>self</span>.<span class='ident'>msg_direct_sig</span>);
             <span class='macro'>info</span><span class='macro'>!</span>(<span class='string'>&quot;Stats - Hops (Request/Response) - GetNodeName: {}/{}, ExpectCloseNode: {}, \
                    GetCloseGroup: {}/{}, GroupSplit: {}, OwnGroupMerge: {}, OtherGroupMerge: {}, \

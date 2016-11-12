@@ -602,7 +602,7 @@
         <span class='kw'>let</span> <span class='ident'>token</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>timer</span>.<span class='ident'>schedule</span>(<span class='ident'>Duration</span>::<span class='ident'>from_secs</span>(<span class='ident'>BOOTSTRAP_TIMEOUT_SECS</span>));
         <span class='self'>self</span>.<span class='ident'>bootstrap_connection</span> <span class='op'>=</span> <span class='prelude-val'>Some</span>((<span class='ident'>peer_id</span>, <span class='ident'>token</span>));
 
-        <span class='kw'>let</span> <span class='ident'>serialised_public_id</span> <span class='op'>=</span> <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>serialisation</span>::<span class='ident'>serialise</span>(<span class='self'>self</span>.<span class='ident'>full_id</span>.<span class='ident'>public_id</span>()));
+        <span class='kw'>let</span> <span class='ident'>serialised_public_id</span> <span class='op'>=</span> <span class='ident'>serialisation</span>::<span class='ident'>serialise</span>(<span class='self'>self</span>.<span class='ident'>full_id</span>.<span class='ident'>public_id</span>())?;
         <span class='kw'>let</span> <span class='ident'>signature</span> <span class='op'>=</span> <span class='ident'>sign</span>::<span class='ident'>sign_detached</span>(<span class='kw-2'>&amp;</span><span class='ident'>serialised_public_id</span>,
                                             <span class='self'>self</span>.<span class='ident'>full_id</span>.<span class='ident'>signing_private_key</span>());
 

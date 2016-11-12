@@ -602,13 +602,13 @@
                           <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>Transition</span>, <span class='ident'>RoutingError</span><span class='op'>&gt;</span> {
 
         <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>proxy_peer_id</span> <span class='op'>==</span> <span class='ident'>peer_id</span> {
-            <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>hop_msg</span>.<span class='ident'>verify</span>(<span class='self'>self</span>.<span class='ident'>proxy_public_id</span>.<span class='ident'>signing_public_key</span>()));
+            <span class='ident'>hop_msg</span>.<span class='ident'>verify</span>(<span class='self'>self</span>.<span class='ident'>proxy_public_id</span>.<span class='ident'>signing_public_key</span>())?;
         } <span class='kw'>else</span> {
             <span class='kw'>return</span> <span class='prelude-val'>Err</span>(<span class='ident'>RoutingError</span>::<span class='ident'>UnknownConnection</span>(<span class='ident'>peer_id</span>));
         }
 
         <span class='kw'>let</span> <span class='ident'>signed_msg</span> <span class='op'>=</span> <span class='ident'>hop_msg</span>.<span class='ident'>content</span>;
-        <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>signed_msg</span>.<span class='ident'>check_integrity</span>());
+        <span class='ident'>signed_msg</span>.<span class='ident'>check_integrity</span>()?;
 
         <span class='kw'>let</span> <span class='ident'>routing_msg</span> <span class='op'>=</span> <span class='ident'>signed_msg</span>.<span class='ident'>routing_message</span>();
         <span class='kw'>let</span> <span class='ident'>in_authority</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>in_authority</span>(<span class='kw-2'>&amp;</span><span class='ident'>routing_msg</span>.<span class='ident'>dst</span>);
@@ -666,12 +666,12 @@
                          <span class='ident'>priority</span>: <span class='ident'>u8</span>)
                          <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span>(), <span class='ident'>RoutingError</span><span class='op'>&gt;</span> {
         <span class='self'>self</span>.<span class='ident'>stats</span>.<span class='ident'>count_user_message</span>(<span class='kw-2'>&amp;</span><span class='ident'>user_msg</span>);
-        <span class='kw'>for</span> <span class='ident'>part</span> <span class='kw'>in</span> <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>user_msg</span>.<span class='ident'>to_parts</span>(<span class='ident'>priority</span>)) {
-            <span class='macro'>try</span><span class='macro'>!</span>(<span class='self'>self</span>.<span class='ident'>send_routing_message</span>(<span class='ident'>RoutingMessage</span> {
-                <span class='ident'>src</span>: <span class='ident'>src</span>,
-                <span class='ident'>dst</span>: <span class='ident'>dst</span>,
-                <span class='ident'>content</span>: <span class='ident'>part</span>,
-            }));
+        <span class='kw'>for</span> <span class='ident'>part</span> <span class='kw'>in</span> <span class='ident'>user_msg</span>.<span class='ident'>to_parts</span>(<span class='ident'>priority</span>)? {
+            <span class='self'>self</span>.<span class='ident'>send_routing_message</span>(<span class='ident'>RoutingMessage</span> {
+                    <span class='ident'>src</span>: <span class='ident'>src</span>,
+                    <span class='ident'>dst</span>: <span class='ident'>dst</span>,
+                    <span class='ident'>content</span>: <span class='ident'>part</span>,
+                })?;
         }
         <span class='prelude-val'>Ok</span>(())
     }
@@ -778,14 +778,14 @@
             <span class='kw'>return</span> <span class='prelude-val'>Err</span>(<span class='ident'>RoutingError</span>::<span class='ident'>InvalidSource</span>);
         };
 
-        <span class='kw'>let</span> <span class='ident'>signed_msg</span> <span class='op'>=</span> <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>SignedMessage</span>::<span class='ident'>new</span>(<span class='ident'>routing_msg</span>, <span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='ident'>full_id</span>()));
+        <span class='kw'>let</span> <span class='ident'>signed_msg</span> <span class='op'>=</span> <span class='ident'>SignedMessage</span>::<span class='ident'>new</span>(<span class='ident'>routing_msg</span>, <span class='self'>self</span>.<span class='ident'>full_id</span>())?;
 
         <span class='kw'>if</span> <span class='op'>!</span><span class='self'>self</span>.<span class='ident'>add_to_pending_acks</span>(<span class='kw-2'>&amp;</span><span class='ident'>signed_msg</span>, <span class='ident'>route</span>) {
             <span class='kw'>return</span> <span class='prelude-val'>Ok</span>(());
         }
 
         <span class='kw'>if</span> <span class='op'>!</span><span class='self'>self</span>.<span class='ident'>filter_outgoing_routing_msg</span>(<span class='ident'>signed_msg</span>.<span class='ident'>routing_message</span>(), <span class='kw-2'>&amp;</span><span class='ident'>proxy_peer_id</span>, <span class='ident'>route</span>) {
-            <span class='kw'>let</span> <span class='ident'>bytes</span> <span class='op'>=</span> <span class='macro'>try</span><span class='macro'>!</span>(<span class='self'>self</span>.<span class='ident'>to_hop_bytes</span>(<span class='ident'>signed_msg</span>.<span class='ident'>clone</span>(), <span class='ident'>route</span>, <span class='ident'>Vec</span>::<span class='ident'>new</span>()));
+            <span class='kw'>let</span> <span class='ident'>bytes</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>to_hop_bytes</span>(<span class='ident'>signed_msg</span>.<span class='ident'>clone</span>(), <span class='ident'>route</span>)?;
 
             <span class='kw'>if</span> <span class='kw'>let</span> <span class='prelude-val'>Err</span>(<span class='ident'>error</span>) <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>send_or_drop</span>(<span class='kw-2'>&amp;</span><span class='ident'>proxy_peer_id</span>, <span class='ident'>bytes</span>, <span class='ident'>signed_msg</span>.<span class='ident'>priority</span>()) {
                 <span class='macro'>info</span><span class='macro'>!</span>(<span class='string'>&quot;{:?} - Error sending message to {:?}: {:?}.&quot;</span>,

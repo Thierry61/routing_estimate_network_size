@@ -753,7 +753,6 @@
 <span id="709">709</span>
 <span id="710">710</span>
 <span id="711">711</span>
-<span id="712">712</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2015 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -837,7 +836,7 @@
         };
 
         <span class='kw'>if</span> <span class='kw'>let</span> <span class='prelude-val'>Some</span>(<span class='ident'>key</span>) <span class='op'>=</span> <span class='ident'>signing_key</span> {
-            <span class='kw'>let</span> _ <span class='op'>=</span> <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>pub_appendable_data</span>.<span class='ident'>add_signature</span>(<span class='ident'>key</span>));
+            <span class='kw'>let</span> _ <span class='op'>=</span> <span class='ident'>pub_appendable_data</span>.<span class='ident'>add_signature</span>(<span class='ident'>key</span>)?;
         }
         <span class='prelude-val'>Ok</span>(<span class='ident'>pub_appendable_data</span>)
     }
@@ -852,7 +851,7 @@
     <span class='doccomment'>/// The `data` will contain the union of the data items, _excluding_ the `deleted_data` as</span>
     <span class='doccomment'>/// given in the update.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>update_with_other</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>other</span>: <span class='ident'>PubAppendableData</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span>(), <span class='ident'>RoutingError</span><span class='op'>&gt;</span> {
-        <span class='macro'>try</span><span class='macro'>!</span>(<span class='self'>self</span>.<span class='ident'>validate_self_against_successor</span>(<span class='kw-2'>&amp;</span><span class='ident'>other</span>));
+        <span class='self'>self</span>.<span class='ident'>validate_self_against_successor</span>(<span class='kw-2'>&amp;</span><span class='ident'>other</span>)?;
 
         <span class='self'>self</span>.<span class='ident'>name</span> <span class='op'>=</span> <span class='ident'>other</span>.<span class='ident'>name</span>;
         <span class='self'>self</span>.<span class='ident'>version</span> <span class='op'>=</span> <span class='ident'>other</span>.<span class='ident'>version</span>;
@@ -912,8 +911,7 @@
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>validate_self_against_successor</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>,
                                            <span class='ident'>other</span>: <span class='kw-2'>&amp;</span><span class='ident'>PubAppendableData</span>)
                                            <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span>(), <span class='ident'>RoutingError</span><span class='op'>&gt;</span> {
-        <span class='kw'>if</span> <span class='ident'>other</span>.<span class='ident'>current_owner_keys</span>.<span class='ident'>len</span>() <span class='op'>&gt;</span> <span class='number'>1</span> <span class='op'>||</span>
-           <span class='ident'>other</span>.<span class='ident'>previous_owner_keys</span>.<span class='ident'>len</span>() <span class='op'>&gt;</span> <span class='number'>1</span> <span class='op'>||</span>
+        <span class='kw'>if</span> <span class='ident'>other</span>.<span class='ident'>current_owner_keys</span>.<span class='ident'>len</span>() <span class='op'>&gt;</span> <span class='number'>1</span> <span class='op'>||</span> <span class='ident'>other</span>.<span class='ident'>previous_owner_keys</span>.<span class='ident'>len</span>() <span class='op'>&gt;</span> <span class='number'>1</span> <span class='op'>||</span>
            <span class='ident'>other</span>.<span class='ident'>current_owner_keys</span>.<span class='ident'>contains</span>(<span class='kw-2'>&amp;</span><span class='ident'>NO_OWNER_PUB_KEY</span>) {
             <span class='kw'>return</span> <span class='prelude-val'>Err</span>(<span class='ident'>RoutingError</span>::<span class='ident'>InvalidOwners</span>);
         }
@@ -949,7 +947,7 @@
             <span class='kw'>return</span> <span class='prelude-val'>Err</span>(<span class='ident'>RoutingError</span>::<span class='ident'>NotEnoughSignatures</span>);
         }
 
-        <span class='kw'>let</span> <span class='ident'>data</span> <span class='op'>=</span> <span class='macro'>try</span><span class='macro'>!</span>(<span class='self'>self</span>.<span class='ident'>data_to_sign</span>());
+        <span class='kw'>let</span> <span class='ident'>data</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>data_to_sign</span>()?;
         <span class='comment'>// Count valid previous_owner_signatures and refuse if quantity is not enough</span>
 
         <span class='kw'>let</span> <span class='ident'>check_all_keys</span> <span class='op'>=</span>
@@ -983,7 +981,7 @@
     <span class='doccomment'>/// the number of signatures that are still required. If more than 50% of the previous owners</span>
     <span class='doccomment'>/// have signed, 0 is returned and validation is complete.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>add_signature</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>secret_key</span>: <span class='kw-2'>&amp;</span><span class='ident'>SecretKey</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>usize</span>, <span class='ident'>RoutingError</span><span class='op'>&gt;</span> {
-        <span class='kw'>let</span> <span class='ident'>data</span> <span class='op'>=</span> <span class='macro'>try</span><span class='macro'>!</span>(<span class='self'>self</span>.<span class='ident'>data_to_sign</span>());
+        <span class='kw'>let</span> <span class='ident'>data</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>data_to_sign</span>()?;
         <span class='kw'>let</span> <span class='ident'>sig</span> <span class='op'>=</span> <span class='ident'>sign</span>::<span class='ident'>sign_detached</span>(<span class='kw-2'>&amp;</span><span class='ident'>data</span>, <span class='ident'>secret_key</span>);
         <span class='self'>self</span>.<span class='ident'>previous_owner_signatures</span>.<span class='ident'>push</span>(<span class='ident'>sig</span>);
         <span class='kw'>let</span> <span class='ident'>owner_keys</span> <span class='op'>=</span> <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>previous_owner_keys</span>.<span class='ident'>is_empty</span>() {
