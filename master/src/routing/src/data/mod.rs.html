@@ -220,6 +220,18 @@
 <span id="176">176</span>
 <span id="177">177</span>
 <span id="178">178</span>
+<span id="179">179</span>
+<span id="180">180</span>
+<span id="181">181</span>
+<span id="182">182</span>
+<span id="183">183</span>
+<span id="184">184</span>
+<span id="185">185</span>
+<span id="186">186</span>
+<span id="187">187</span>
+<span id="188">188</span>
+<span id="189">189</span>
+<span id="190">190</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2015 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -251,17 +263,37 @@
                                      <span class='ident'>PrivAppendedData</span>};
 <span class='kw'>pub</span> <span class='kw'>use</span> <span class='self'>self</span>::<span class='ident'>structured_data</span>::{<span class='ident'>MAX_STRUCTURED_DATA_SIZE_IN_BYTES</span>, <span class='ident'>StructuredData</span>};
 
-<span class='kw'>use</span> <span class='ident'>rust_sodium</span>::<span class='ident'>crypto</span>::<span class='ident'>sign</span>;
+<span class='kw'>use</span> <span class='ident'>error</span>::<span class='ident'>RoutingError</span>;
+<span class='kw'>use</span> <span class='ident'>rust_sodium</span>::<span class='ident'>crypto</span>::<span class='ident'>sign</span>::{<span class='self'>self</span>, <span class='ident'>PublicKey</span>, <span class='ident'>Signature</span>};
+<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>collections</span>::{<span class='ident'>BTreeMap</span>, <span class='ident'>BTreeSet</span>};
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>fmt</span>::{<span class='self'>self</span>, <span class='ident'>Debug</span>, <span class='ident'>Formatter</span>};
 <span class='kw'>use</span> <span class='ident'>xor_name</span>::<span class='ident'>XorName</span>;
 
 <span class='doccomment'>/// A signing key with no matching private key. Passing ownership to it will make a chunk</span>
 <span class='doccomment'>/// effectively immutable.</span>
-<span class='kw'>pub</span> <span class='kw'>const</span> <span class='ident'>NO_OWNER_PUB_KEY</span>: <span class='ident'>sign</span>::<span class='ident'>PublicKey</span> <span class='op'>=</span> <span class='ident'>sign</span>::<span class='ident'>PublicKey</span>([<span class='number'>0</span>; <span class='ident'>sign</span>::<span class='ident'>PUBLICKEYBYTES</span>]);
+<span class='kw'>pub</span> <span class='kw'>const</span> <span class='ident'>NO_OWNER_PUB_KEY</span>: <span class='ident'>PublicKey</span> <span class='op'>=</span> <span class='ident'>PublicKey</span>([<span class='number'>0</span>; <span class='ident'>sign</span>::<span class='ident'>PUBLICKEYBYTES</span>]);
+
+<span class='doccomment'>/// Confirms *unique and valid* signatures are more than 50% of total owners.</span>
+<span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>verify_signatures</span>(<span class='ident'>owners</span>: <span class='kw-2'>&amp;</span><span class='ident'>BTreeSet</span><span class='op'>&lt;</span><span class='ident'>PublicKey</span><span class='op'>&gt;</span>,
+                         <span class='ident'>data</span>: <span class='kw-2'>&amp;</span>[<span class='ident'>u8</span>],
+                         <span class='ident'>signatures</span>: <span class='kw-2'>&amp;</span><span class='ident'>BTreeMap</span><span class='op'>&lt;</span><span class='ident'>PublicKey</span>, <span class='ident'>Signature</span><span class='op'>&gt;</span>)
+                         <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span>(), <span class='ident'>RoutingError</span><span class='op'>&gt;</span> {
+    <span class='comment'>// Refuse when not enough signatures found</span>
+    <span class='kw'>if</span> <span class='ident'>signatures</span>.<span class='ident'>len</span>() <span class='op'>&lt;</span> (<span class='ident'>owners</span>.<span class='ident'>len</span>() <span class='op'>+</span> <span class='number'>1</span>) <span class='op'>/</span> <span class='number'>2</span> {
+        <span class='kw'>return</span> <span class='prelude-val'>Err</span>(<span class='ident'>RoutingError</span>::<span class='ident'>NotEnoughSignatures</span>);
+    }
+
+    <span class='comment'>// Refuse if there is any invalid signature</span>
+    <span class='kw'>if</span> <span class='op'>!</span><span class='ident'>signatures</span>.<span class='ident'>iter</span>()
+        .<span class='ident'>all</span>(<span class='op'>|</span>(<span class='ident'>pub_key</span>, <span class='ident'>sig</span>)<span class='op'>|</span> <span class='ident'>owners</span>.<span class='ident'>contains</span>(<span class='ident'>pub_key</span>) <span class='op'>&amp;&amp;</span> <span class='ident'>verify_detached</span>(<span class='ident'>sig</span>, <span class='ident'>data</span>, <span class='ident'>pub_key</span>)) {
+        <span class='kw'>return</span> <span class='prelude-val'>Err</span>(<span class='ident'>RoutingError</span>::<span class='ident'>FailedSignature</span>);
+    }
+    <span class='prelude-val'>Ok</span>(())
+}
 
 <span class='comment'>// Returns whether the signature is valid. It explicitly considers any signature for</span>
 <span class='comment'>// `NO_OWNER_PUB_KEY` invalid.</span>
-<span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>verify_detached</span>(<span class='ident'>sig</span>: <span class='kw-2'>&amp;</span><span class='ident'>sign</span>::<span class='ident'>Signature</span>, <span class='ident'>data</span>: <span class='kw-2'>&amp;</span>[<span class='ident'>u8</span>], <span class='ident'>pub_key</span>: <span class='kw-2'>&amp;</span><span class='ident'>sign</span>::<span class='ident'>PublicKey</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> {
+<span class='kw'>fn</span> <span class='ident'>verify_detached</span>(<span class='ident'>sig</span>: <span class='kw-2'>&amp;</span><span class='ident'>Signature</span>, <span class='ident'>data</span>: <span class='kw-2'>&amp;</span>[<span class='ident'>u8</span>], <span class='ident'>pub_key</span>: <span class='kw-2'>&amp;</span><span class='ident'>PublicKey</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> {
     <span class='op'>*</span><span class='ident'>pub_key</span> <span class='op'>!=</span> <span class='ident'>NO_OWNER_PUB_KEY</span> <span class='op'>&amp;&amp;</span> <span class='ident'>sign</span>::<span class='ident'>verify_detached</span>(<span class='ident'>sig</span>, <span class='ident'>data</span>, <span class='ident'>pub_key</span>)
 }
 
@@ -351,22 +383,14 @@
     <span class='kw'>extern</span> <span class='kw'>crate</span> <span class='ident'>rand</span>;
 
     <span class='kw'>use</span> <span class='ident'>rust_sodium</span>::<span class='ident'>crypto</span>::<span class='ident'>hash</span>::<span class='ident'>sha256</span>;
-    <span class='kw'>use</span> <span class='ident'>rust_sodium</span>::<span class='ident'>crypto</span>::<span class='ident'>sign</span>;
     <span class='kw'>use</span> <span class='kw'>super</span>::<span class='op'>*</span>;
+    <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>collections</span>::<span class='ident'>BTreeSet</span>;
     <span class='kw'>use</span> <span class='ident'>xor_name</span>::<span class='ident'>XorName</span>;
 
     <span class='attribute'>#[<span class='ident'>test</span>]</span>
     <span class='kw'>fn</span> <span class='ident'>data_name</span>() {
         <span class='comment'>// name() resolves correctly for StructuredData</span>
-        <span class='kw'>let</span> <span class='ident'>keys</span> <span class='op'>=</span> <span class='ident'>sign</span>::<span class='ident'>gen_keypair</span>();
-        <span class='kw'>let</span> <span class='ident'>owner_keys</span> <span class='op'>=</span> <span class='macro'>vec</span><span class='macro'>!</span>[<span class='ident'>keys</span>.<span class='number'>0</span>];
-        <span class='kw'>match</span> <span class='ident'>StructuredData</span>::<span class='ident'>new</span>(<span class='number'>0</span>,
-                                  <span class='ident'>rand</span>::<span class='ident'>random</span>(),
-                                  <span class='number'>0</span>,
-                                  <span class='macro'>vec</span><span class='macro'>!</span>[],
-                                  <span class='ident'>owner_keys</span>.<span class='ident'>clone</span>(),
-                                  <span class='macro'>vec</span><span class='macro'>!</span>[],
-                                  <span class='prelude-val'>Some</span>(<span class='kw-2'>&amp;</span><span class='ident'>keys</span>.<span class='number'>1</span>)) {
+        <span class='kw'>match</span> <span class='ident'>StructuredData</span>::<span class='ident'>new</span>(<span class='number'>0</span>, <span class='ident'>rand</span>::<span class='ident'>random</span>(), <span class='number'>0</span>, <span class='macro'>vec</span><span class='macro'>!</span>[], <span class='ident'>BTreeSet</span>::<span class='ident'>new</span>()) {
             <span class='prelude-val'>Ok</span>(<span class='ident'>structured_data</span>) <span class='op'>=&gt;</span> {
                 <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>structured_data</span>.<span class='ident'>clone</span>().<span class='ident'>name</span>(),
                            <span class='ident'>Data</span>::<span class='ident'>Structured</span>(<span class='ident'>structured_data</span>.<span class='ident'>clone</span>()).<span class='ident'>name</span>());

@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="rustdoc">
-    <meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/itertools-0.5.5/src/lib.rs`.">
+    <meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/itertools-0.5.6/src/lib.rs`.">
     <meta name="keywords" content="rust, rustlang, rust-lang">
 
     <title>lib.rs.html -- source</title>
@@ -1622,6 +1622,25 @@
 <span id="1578">1578</span>
 <span id="1579">1579</span>
 <span id="1580">1580</span>
+<span id="1581">1581</span>
+<span id="1582">1582</span>
+<span id="1583">1583</span>
+<span id="1584">1584</span>
+<span id="1585">1585</span>
+<span id="1586">1586</span>
+<span id="1587">1587</span>
+<span id="1588">1588</span>
+<span id="1589">1589</span>
+<span id="1590">1590</span>
+<span id="1591">1591</span>
+<span id="1592">1592</span>
+<span id="1593">1593</span>
+<span id="1594">1594</span>
+<span id="1595">1595</span>
+<span id="1596">1596</span>
+<span id="1597">1597</span>
+<span id="1598">1598</span>
+<span id="1599">1599</span>
 </pre><pre class='rust '>
 <span class='attribute'>#<span class='op'>!</span>[<span class='ident'>warn</span>(<span class='ident'>missing_docs</span>)]</span>
 <span class='attribute'>#<span class='op'>!</span>[<span class='ident'>crate_name</span><span class='op'>=</span><span class='string'>&quot;itertools&quot;</span>]</span>
@@ -1676,6 +1695,7 @@
         <span class='ident'>PutBackN</span>,
         <span class='ident'>Batching</span>,
         <span class='ident'>Step</span>,
+        <span class='ident'>MapResults</span>,
         <span class='ident'>Merge</span>,
         <span class='ident'>MergeBy</span>,
         <span class='ident'>MultiPeek</span>,
@@ -2156,6 +2176,24 @@
         <span class='kw'>where</span> <span class='self'>Self</span>: <span class='ident'>Sized</span>
     {
         <span class='ident'>adaptors</span>::<span class='ident'>step</span>(<span class='self'>self</span>, <span class='ident'>n</span>)
+    }
+
+    <span class='doccomment'>/// Return an iterator adaptor that applies the provided closure</span>
+    <span class='doccomment'>/// to every `Result::Ok` value. `Result::Err` values are</span>
+    <span class='doccomment'>/// unchanged.</span>
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// ```</span>
+    <span class='doccomment'>/// use itertools::Itertools;</span>
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// let input = vec![Ok(41), Err(false), Ok(11)];</span>
+    <span class='doccomment'>/// let it = input.into_iter().map_results(|i| i + 1);</span>
+    <span class='doccomment'>/// itertools::assert_equal(it, vec![Ok(42), Err(false), Ok(12)]);</span>
+    <span class='doccomment'>/// ```</span>
+    <span class='kw'>fn</span> <span class='ident'>map_results</span><span class='op'>&lt;</span><span class='ident'>F</span>, <span class='ident'>T</span>, <span class='ident'>U</span>, <span class='ident'>E</span><span class='op'>&gt;</span>(<span class='self'>self</span>, <span class='ident'>f</span>: <span class='ident'>F</span>) <span class='op'>-&gt;</span> <span class='ident'>MapResults</span><span class='op'>&lt;</span><span class='self'>Self</span>, <span class='ident'>F</span><span class='op'>&gt;</span>
+        <span class='kw'>where</span> <span class='self'>Self</span>: <span class='ident'>Iterator</span><span class='op'>&lt;</span><span class='ident'>Item</span> <span class='op'>=</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>T</span>, <span class='ident'>E</span><span class='op'>&gt;&gt;</span> <span class='op'>+</span> <span class='ident'>Sized</span>,
+              <span class='ident'>F</span>: <span class='ident'>FnMut</span>(<span class='ident'>T</span>) <span class='op'>-&gt;</span> <span class='ident'>U</span>,
+    {
+        <span class='ident'>adaptors</span>::<span class='ident'>map_results</span>(<span class='self'>self</span>, <span class='ident'>f</span>)
     }
 
     <span class='doccomment'>/// Return an iterator adaptor that merges the two base iterators in</span>
