@@ -47,7 +47,7 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a id='src-0' class='srclink' href='../src/routing/src/lib.rs.html#18-205' title='goto source code'>[src]</a></span></h1>
+               </span><a id='src-0' class='srclink' href='../src/routing/src/lib.rs.html#18-203' title='goto source code'>[src]</a></span></h1>
 <div class='docblock'><p>Client and node implementations for a resilient decentralised network.</p>
 
 <p>The network is based on the <a href="../kademlia_routing_table/index.html"><code>kademlia_routing_table</code></a> and uses the XOR metric to define the
@@ -185,6 +185,14 @@ routing node.</p>
                                   title='routing::NodeBuilder'>NodeBuilder</a></td>
                            <td class='docblock-short'>
                                 <p>A builder to configure and create a new <code>Node</code>.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='struct' href='struct.NullCache.html'
+                                  title='routing::NullCache'>NullCache</a></td>
+                           <td class='docblock-short'>
+                                <p>A no-op implementation of the <code>Cache</code> trait. Throws everything away on put
+and always returns <code>None</code> on get.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>

@@ -1178,6 +1178,14 @@
 <span id="1134">1134</span>
 <span id="1135">1135</span>
 <span id="1136">1136</span>
+<span id="1137">1137</span>
+<span id="1138">1138</span>
+<span id="1139">1139</span>
+<span id="1140">1140</span>
+<span id="1141">1141</span>
+<span id="1142">1142</span>
+<span id="1143">1143</span>
+<span id="1144">1144</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2016 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -1307,7 +1315,7 @@
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>hash</span>::<span class='ident'>Hash</span>;
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>thread</span>;
 
-<span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>test</span>)]</span>
+<span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>any</span>(<span class='ident'>test</span>, <span class='ident'>feature</span> <span class='op'>=</span> <span class='string'>&quot;use-mock-crust&quot;</span>))]</span>
 <span class='kw'>pub</span> <span class='kw'>use</span> <span class='self'>self</span>::<span class='ident'>network_tests</span>::<span class='ident'>verify_network_invariant</span>;
 
 <span class='kw'>pub</span> <span class='kw'>type</span> <span class='ident'>Groups</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> <span class='op'>=</span> <span class='ident'>HashMap</span><span class='op'>&lt;</span><span class='ident'>Prefix</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>, <span class='ident'>HashSet</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;&gt;</span>;
@@ -1345,17 +1353,17 @@
 
 
 
-<span class='comment'>// A message destination.</span>
+<span class='doccomment'>/// A message destination.</span>
 <span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Copy</span>, <span class='ident'>Clone</span>, <span class='ident'>Debug</span>, <span class='ident'>Eq</span>, <span class='ident'>PartialEq</span>)]</span>
 <span class='kw'>pub</span> <span class='kw'>enum</span> <span class='ident'>Destination</span><span class='op'>&lt;</span><span class='ident'>N</span><span class='op'>&gt;</span> {
-    <span class='comment'>// The group closest to the given name.</span>
+    <span class='doccomment'>/// The group closest to the given name.</span>
     <span class='ident'>Group</span>(<span class='ident'>N</span>),
-    <span class='comment'>// The individual node at the given name.</span>
+    <span class='doccomment'>/// The individual node at the given name.</span>
     <span class='ident'>Node</span>(<span class='ident'>N</span>),
 }
 
 <span class='kw'>impl</span><span class='op'>&lt;</span><span class='ident'>N</span><span class='op'>&gt;</span> <span class='ident'>Destination</span><span class='op'>&lt;</span><span class='ident'>N</span><span class='op'>&gt;</span> {
-    <span class='comment'>// Returns the name of the destination, i.e. the node or group name.</span>
+    <span class='doccomment'>/// Returns the name of the destination, i.e. the node or group name.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>name</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='kw-2'>&amp;</span><span class='ident'>N</span> {
         <span class='kw'>match</span> <span class='op'>*</span><span class='self'>self</span> {
             <span class='ident'>Destination</span>::<span class='ident'>Group</span>(<span class='kw-2'>ref</span> <span class='ident'>name</span>) <span class='op'>|</span>
@@ -1363,7 +1371,7 @@
         }
     }
 
-    <span class='comment'>// Returns `true` if the destination is a group, and `false` if it is an individual node.</span>
+    <span class='doccomment'>/// Returns `true` if the destination is a group, and `false` if it is an individual node.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>is_group</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> {
         <span class='kw'>match</span> <span class='op'>*</span><span class='self'>self</span> {
             <span class='ident'>Destination</span>::<span class='ident'>Group</span>(_) <span class='op'>=&gt;</span> <span class='bool-val'>true</span>,
@@ -1371,7 +1379,7 @@
         }
     }
 
-    <span class='comment'>// Returns `true` if the destination is an individual node, and `false` if it is a group.</span>
+    <span class='doccomment'>/// Returns `true` if the destination is an individual node, and `false` if it is a group.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>is_node</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> {
         <span class='op'>!</span><span class='self'>self</span>.<span class='ident'>is_group</span>()
     }
@@ -1441,12 +1449,13 @@
 
 
 
-<span class='comment'>// A routing table to manage contacts for a node.</span>
-<span class='comment'>//</span>
-<span class='comment'>// It maintains a list of `T`s representing connected peer nodes, and provides algorithms for</span>
-<span class='comment'>// routing messages.</span>
-<span class='comment'>//</span>
-<span class='comment'>// See the [crate documentation](index.html) for details.</span>
+<span class='doccomment'>/// A routing table to manage contacts for a node.</span>
+<span class='doccomment'>///</span>
+<span class='doccomment'>/// It maintains a list of groups (identified by a `Prefix&lt;T&gt;`), each with a</span>
+<span class='doccomment'>/// list node identifiers of type `T` (e.g. `XorName`) representing connected</span>
+<span class='doccomment'>/// peer nodes, and provides algorithms for routing messages.</span>
+<span class='doccomment'>///</span>
+<span class='doccomment'>/// See the [crate documentation](index.html) for details.</span>
 <span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Clone</span>, <span class='ident'>Eq</span>, <span class='ident'>PartialEq</span>)]</span>
 <span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>RoutingTable</span><span class='op'>&lt;</span><span class='ident'>T</span>: <span class='ident'>Binary</span> <span class='op'>+</span> <span class='ident'>Clone</span> <span class='op'>+</span> <span class='ident'>Copy</span> <span class='op'>+</span> <span class='ident'>Debug</span> <span class='op'>+</span> <span class='ident'>Default</span> <span class='op'>+</span> <span class='ident'>Hash</span> <span class='op'>+</span> <span class='ident'>Xorable</span><span class='op'>&gt;</span> {
     <span class='ident'>our_name</span>: <span class='ident'>T</span>,
@@ -1462,7 +1471,7 @@
 }
 
 <span class='kw'>impl</span><span class='op'>&lt;</span><span class='ident'>T</span>: <span class='ident'>Binary</span> <span class='op'>+</span> <span class='ident'>Clone</span> <span class='op'>+</span> <span class='ident'>Copy</span> <span class='op'>+</span> <span class='ident'>Debug</span> <span class='op'>+</span> <span class='ident'>Default</span> <span class='op'>+</span> <span class='ident'>Hash</span> <span class='op'>+</span> <span class='ident'>Xorable</span><span class='op'>&gt;</span> <span class='ident'>RoutingTable</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
-    <span class='doccomment'>/// Create a new RoutingTable.</span>
+    <span class='doccomment'>/// Creates a new `RoutingTable`.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>(<span class='ident'>our_name</span>: <span class='ident'>T</span>, <span class='ident'>min_group_size</span>: <span class='ident'>usize</span>) <span class='op'>-&gt;</span> <span class='self'>Self</span> {
         <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>groups</span> <span class='op'>=</span> <span class='ident'>HashMap</span>::<span class='ident'>new</span>();
         <span class='kw'>let</span> <span class='ident'>our_group_prefix</span> <span class='op'>=</span> <span class='ident'>Prefix</span>::<span class='ident'>new</span>(<span class='number'>0</span>, <span class='ident'>our_name</span>);
@@ -1477,6 +1486,7 @@
         }
     }
 
+    <span class='doccomment'>/// Creates a new `RoutingTable`, using an existing collection of groups.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new_with_groups</span><span class='op'>&lt;</span><span class='ident'>U</span>, <span class='ident'>V</span><span class='op'>&gt;</span>(<span class='ident'>our_name</span>: <span class='ident'>T</span>,
                                  <span class='ident'>min_group_size</span>: <span class='ident'>usize</span>,
                                  <span class='ident'>new_groups</span>: <span class='ident'>U</span>)
@@ -1510,29 +1520,33 @@
         <span class='prelude-val'>Ok</span>(<span class='ident'>result</span>)
     }
 
+    <span class='doccomment'>/// Returns the `Prefix` of our group</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>our_group_prefix</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='kw-2'>&amp;</span><span class='ident'>Prefix</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
         <span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='ident'>our_group_prefix</span>
     }
 
-    <span class='comment'>// Total number of entries in the routing table.</span>
+    <span class='doccomment'>/// Returns the total number of entries in the routing table.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>len</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>usize</span> {
         <span class='self'>self</span>.<span class='ident'>groups</span>.<span class='ident'>values</span>().<span class='ident'>fold</span>(<span class='number'>0</span>, <span class='op'>|</span><span class='ident'>acc</span>, <span class='ident'>group</span><span class='op'>|</span> <span class='ident'>acc</span> <span class='op'>+</span> <span class='ident'>group</span>.<span class='ident'>len</span>())
     }
 
+    <span class='doccomment'>/// Is the table empty? (Returns `true` if no nodes are known; empty groups are ignored.)</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>is_empty</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> {
         <span class='self'>self</span>.<span class='ident'>groups</span>.<span class='ident'>values</span>().<span class='ident'>all</span>(<span class='ident'>HashSet</span>::<span class='ident'>is_empty</span>)
     }
 
+    <span class='doccomment'>/// Iterates over all nodes known by the routing table.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>iter</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>Iter</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
         <span class='ident'>Iter</span> { <span class='ident'>inner</span>: <span class='self'>self</span>.<span class='ident'>groups</span>.<span class='ident'>iter</span>().<span class='ident'>flat_map</span>(<span class='ident'>Iter</span>::<span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>::<span class='ident'>iterate</span>) }
     }
 
+    <span class='doccomment'>/// Collects prefixes of all groups known by the routing table into a `HashSet`.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>prefixes</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>HashSet</span><span class='op'>&lt;</span><span class='ident'>Prefix</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;&gt;</span> {
         <span class='self'>self</span>.<span class='ident'>groups</span>.<span class='ident'>keys</span>().<span class='ident'>cloned</span>().<span class='ident'>collect</span>()
     }
 
-    <span class='comment'>// If our group is the closest one to `name`, returns all names in our group *including ours*,</span>
-    <span class='comment'>// otherwise returns `None`.</span>
+    <span class='doccomment'>/// If our group is the closest one to `name`, returns all names in our group *including ours*,</span>
+    <span class='doccomment'>/// otherwise returns `None`.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>close_names</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>name</span>: <span class='kw-2'>&amp;</span><span class='ident'>T</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>HashSet</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;&gt;</span> {
         <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>our_group_prefix</span>.<span class='ident'>matches</span>(<span class='ident'>name</span>) {
             <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>our_group</span> <span class='op'>=</span> <span class='macro'>unwrap</span><span class='macro'>!</span>(<span class='self'>self</span>.<span class='ident'>groups</span>.<span class='ident'>get</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='ident'>our_group_prefix</span>)).<span class='ident'>clone</span>();
@@ -1543,8 +1557,8 @@
         }
     }
 
-    <span class='comment'>// If our group is the closest one to `name`, returns all names in our group *excluding ours*,</span>
-    <span class='comment'>// otherwise returns `None`.</span>
+    <span class='doccomment'>/// If our group is the closest one to `name`, returns all names in our group *excluding ours*,</span>
+    <span class='doccomment'>/// otherwise returns `None`.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>other_close_names</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>name</span>: <span class='kw-2'>&amp;</span><span class='ident'>T</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>HashSet</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;&gt;</span> {
         <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>our_group_prefix</span>.<span class='ident'>matches</span>(<span class='ident'>name</span>) {
             <span class='prelude-val'>Some</span>(<span class='macro'>unwrap</span><span class='macro'>!</span>(<span class='self'>self</span>.<span class='ident'>groups</span>.<span class='ident'>get</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='ident'>our_group_prefix</span>)).<span class='ident'>clone</span>())
@@ -1563,10 +1577,10 @@
         }
     }
 
-    <span class='comment'>// Returns `Ok(())` if the given contact should be added to the routing table.</span>
-    <span class='comment'>//</span>
-    <span class='comment'>// Returns `Err` if `name` already exists in the routing table, or it doesn&#39;t fall within any</span>
-    <span class='comment'>// of our groups, or it&#39;s our own name.  Otherwise it returns `true`.</span>
+    <span class='doccomment'>/// Returns `Ok(())` if the given contact should be added to the routing table.</span>
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// Returns `Err` if `name` already exists in the routing table, or it doesn&#39;t fall within any</span>
+    <span class='doccomment'>/// of our groups, or it&#39;s our own name.  Otherwise it returns `true`.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>need_to_add</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>name</span>: <span class='kw-2'>&amp;</span><span class='ident'>T</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span>(), <span class='ident'>Error</span><span class='op'>&gt;</span> {
         <span class='kw'>if</span> <span class='op'>*</span><span class='ident'>name</span> <span class='op'>==</span> <span class='self'>self</span>.<span class='ident'>our_name</span> {
             <span class='kw'>return</span> <span class='prelude-val'>Err</span>(<span class='ident'>Error</span>::<span class='ident'>OwnNameDisallowed</span>);
@@ -1582,12 +1596,12 @@
         }
     }
 
-    <span class='comment'>// Returns the collection of groups to which a peer joining our group should connect.</span>
-    <span class='comment'>//</span>
-    <span class='comment'>// This will generally be all the groups in our routing table.  However, if the addition of the</span>
-    <span class='comment'>// new node will cause our group to split, only the groups which will remain neighbours after</span>
-    <span class='comment'>// the split are returned.  Returns `Err(Error::PeerNameUnsuitable)` if `name` is not within our</span>
-    <span class='comment'>// group, or `Err(Error::AlreadyExists)` if `name` is already in our table.</span>
+    <span class='doccomment'>/// Returns the collection of groups to which a peer joining our group should connect.</span>
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// This will generally be all the groups in our routing table.  However, if the addition of the</span>
+    <span class='doccomment'>/// new node will cause our group to split, only the groups which will remain neighbours after</span>
+    <span class='doccomment'>/// the split are returned.  Returns `Err(Error::PeerNameUnsuitable)` if `name` is not within</span>
+    <span class='doccomment'>/// our group, or `Err(Error::AlreadyExists)` if `name` is already in our table.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>expect_add_to_our_group</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>name</span>: <span class='kw-2'>&amp;</span><span class='ident'>T</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>Groups</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>, <span class='ident'>Error</span><span class='op'>&gt;</span> {
         <span class='kw'>if</span> <span class='op'>!</span><span class='self'>self</span>.<span class='ident'>our_group_prefix</span>.<span class='ident'>matches</span>(<span class='ident'>name</span>) {
             <span class='kw'>return</span> <span class='prelude-val'>Err</span>(<span class='ident'>Error</span>::<span class='ident'>PeerNameUnsuitable</span>);
@@ -1612,12 +1626,12 @@
         <span class='prelude-val'>Ok</span>(<span class='ident'>groups</span>)
     }
 
-    <span class='comment'>// Adds a contact to the routing table.</span>
-    <span class='comment'>//</span>
-    <span class='comment'>// Returns `Err` if `name` already existed in the routing table, or it doesn&#39;t fall within any</span>
-    <span class='comment'>// of our groups, or it&#39;s our own name.  Otherwise it returns `Ok(true)` if the addition</span>
-    <span class='comment'>// succeeded and should cause our group to split or `Ok(false)` if the addition succeeded and</span>
-    <span class='comment'>// shouldn&#39;t cause a split.</span>
+    <span class='doccomment'>/// Adds a contact to the routing table.</span>
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// Returns `Err` if `name` already existed in the routing table, or it doesn&#39;t fall within any</span>
+    <span class='doccomment'>/// of our groups, or it&#39;s our own name.  Otherwise it returns `Ok(true)` if the addition</span>
+    <span class='doccomment'>/// succeeded and should cause our group to split or `Ok(false)` if the addition succeeded and</span>
+    <span class='doccomment'>/// shouldn&#39;t cause a split.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>add</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>name</span>: <span class='ident'>T</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>bool</span>, <span class='ident'>Error</span><span class='op'>&gt;</span> {
         <span class='kw'>if</span> <span class='ident'>name</span> <span class='op'>==</span> <span class='self'>self</span>.<span class='ident'>our_name</span> {
             <span class='kw'>return</span> <span class='prelude-val'>Err</span>(<span class='ident'>Error</span>::<span class='ident'>OwnNameDisallowed</span>);
@@ -1647,12 +1661,12 @@
         <span class='prelude-val'>Ok</span>(<span class='self'>self</span>.<span class='ident'>should_split_our_group</span>(<span class='ident'>our_group</span>))
     }
 
-    <span class='comment'>// Splits a group.</span>
-    <span class='comment'>//</span>
-    <span class='comment'>// If the group exists in the routing table, it is split, otherwise this function is a no-op.</span>
-    <span class='comment'>// If any of the groups don&#39;t satisfy the invariant any more (i.e. only differ in one bit from</span>
-    <span class='comment'>// our own prefix), they are removed and those contacts are returned.  If the split is happening</span>
-    <span class='comment'>// to our own group, our new prefix is returned in the optional field.</span>
+    <span class='doccomment'>/// Splits a group.</span>
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// If the group exists in the routing table, it is split, otherwise this function is a no-op.</span>
+    <span class='doccomment'>/// If any of the groups don&#39;t satisfy the invariant any more (i.e. only differ in one bit from</span>
+    <span class='doccomment'>/// our own prefix), they are removed and those contacts are returned.  If the split is</span>
+    <span class='doccomment'>/// happening to our own group, our new prefix is returned in the optional field.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>split</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>prefix</span>: <span class='ident'>Prefix</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>) <span class='op'>-&gt;</span> (<span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>, <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>Prefix</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;&gt;</span>) {
         <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>result</span> <span class='op'>=</span> <span class='macro'>vec</span><span class='macro'>!</span>[];
         <span class='kw'>if</span> <span class='ident'>prefix</span> <span class='op'>==</span> <span class='self'>self</span>.<span class='ident'>our_group_prefix</span> {
@@ -1681,11 +1695,11 @@
         (<span class='ident'>result</span>, <span class='prelude-val'>None</span>)
     }
 
-    <span class='comment'>// Removes a contact from the routing table.</span>
-    <span class='comment'>//</span>
-    <span class='comment'>// If no entry with that name is found, `Err(Error::NoSuchPeer)` is returned.  Otherwise, the</span>
-    <span class='comment'>// entry is removed from the routing table and `RemovalDetails` is returned.  See that struct&#39;s</span>
-    <span class='comment'>// docs for further info.</span>
+    <span class='doccomment'>/// Removes a contact from the routing table.</span>
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// If no entry with that name is found, `Err(Error::NoSuchPeer)` is returned.  Otherwise, the</span>
+    <span class='doccomment'>/// entry is removed from the routing table and `RemovalDetails` is returned.  See that struct&#39;s</span>
+    <span class='doccomment'>/// docs for further info.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>remove</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>name</span>: <span class='kw-2'>&amp;</span><span class='ident'>T</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>RemovalDetails</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>, <span class='ident'>Error</span><span class='op'>&gt;</span> {
         <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>should_merge</span> <span class='op'>=</span> <span class='bool-val'>false</span>;
         <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>removal_details</span> <span class='op'>=</span> <span class='ident'>RemovalDetails</span> {
@@ -1722,11 +1736,11 @@
         <span class='prelude-val'>Ok</span>(<span class='ident'>removal_details</span>)
     }
 
-    <span class='comment'>// When a merge of our own group is triggered (either from our own group or a neighbouring one)</span>
-    <span class='comment'>// this function handles the incoming merge details from the peers within the merging groups.</span>
-    <span class='comment'>//</span>
-    <span class='comment'>// The actual merge of the group is only done once all expected merging groups have provided</span>
-    <span class='comment'>// details.  See the docs for `OwnMergeState` for full details of the return value.</span>
+    <span class='doccomment'>/// When a merge of our own group is triggered (either from our own group or a neighbouring one)</span>
+    <span class='doccomment'>/// this function handles the incoming merge details from the peers within the merging groups.</span>
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// The actual merge of the group is only done once all expected merging groups have provided</span>
+    <span class='doccomment'>/// details.  See the docs for `OwnMergeState` for full details of the return value.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>merge_own_group</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>merge_details</span>: <span class='ident'>OwnMergeDetails</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>) <span class='op'>-&gt;</span> <span class='ident'>OwnMergeState</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
         <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>groups</span>.<span class='ident'>contains_key</span>(<span class='kw-2'>&amp;</span><span class='ident'>merge_details</span>.<span class='ident'>merge_prefix</span>) {
             <span class='macro'>warn</span><span class='macro'>!</span>(<span class='string'>&quot;{:?}: Attempt to call merge_own_group() for an already merged prefix {:?}&quot;</span>,
@@ -1764,12 +1778,12 @@
         }
     }
 
-    <span class='comment'>// Merges all existing compatible groups into the new one defined by `merge_details.prefix`.</span>
-    <span class='comment'>// Our own group is not included in the merge.</span>
-    <span class='comment'>//</span>
-    <span class='comment'>// The appropriate targets (all contacts from `merge_details.groups` which are not currently</span>
-    <span class='comment'>// held in the routing table) are returned so the caller can establish connections to these</span>
-    <span class='comment'>// peers and subsequently add them.</span>
+    <span class='doccomment'>/// Merges all existing compatible groups into the new one defined by `merge_details.prefix`.</span>
+    <span class='doccomment'>/// Our own group is not included in the merge.</span>
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// The appropriate targets (all contacts from `merge_details.groups` which are not currently</span>
+    <span class='doccomment'>/// held in the routing table) are returned so the caller can establish connections to these</span>
+    <span class='doccomment'>/// peers and subsequently add them.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>merge_other_group</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>merge_details</span>: <span class='ident'>OtherMergeDetails</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>) <span class='op'>-&gt;</span> <span class='ident'>HashSet</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
         <span class='self'>self</span>.<span class='ident'>merge</span>(<span class='kw-2'>&amp;</span><span class='ident'>merge_details</span>.<span class='ident'>prefix</span>);
 
@@ -1780,25 +1794,25 @@
             .<span class='ident'>collect</span>()
     }
 
-    <span class='comment'>// Returns a collection of nodes to which a message with the given `Destination` should be sent</span>
-    <span class='comment'>// onwards.  In all non-error cases below, the returned collection will have the members of</span>
-    <span class='comment'>// `exclude` removed, possibly resulting in an empty set being returned.</span>
-    <span class='comment'>//</span>
-    <span class='comment'>// * If the destination is a group:</span>
-    <span class='comment'>//     - if our group is the closest on the network (i.e. our group&#39;s prefix is a prefix of the</span>
-    <span class='comment'>//       destination), returns all other members of our group; otherwise</span>
-    <span class='comment'>//     - if the closest group has more than `route` members, returns the `route`-th member of</span>
-    <span class='comment'>//       this group; otherwise</span>
-    <span class='comment'>//     - returns `Err(Error::CannotRoute)`</span>
-    <span class='comment'>//</span>
-    <span class='comment'>// * If the destination is an individual node:</span>
-    <span class='comment'>//     - if our name *is* the destination, returns an empty set; otherwise</span>
-    <span class='comment'>//     - if the destination name is an entry in the routing table, returns it; otherwise</span>
-    <span class='comment'>//     - if our group is the closest on the network (i.e. our group&#39;s prefix is a prefix of the</span>
-    <span class='comment'>//       destination), this returns `Err(Error::NoSuchPeer)`; otherwise</span>
-    <span class='comment'>//     - if the closest group has more than `route` members, returns the `route`-th member of</span>
-    <span class='comment'>//       this group; otherwise</span>
-    <span class='comment'>//     - returns `Err(Error::CannotRoute)`</span>
+    <span class='doccomment'>/// Returns a collection of nodes to which a message with the given `Destination` should be sent</span>
+    <span class='doccomment'>/// onwards.  In all non-error cases below, the returned collection will have the members of</span>
+    <span class='doccomment'>/// `exclude` removed, possibly resulting in an empty set being returned.</span>
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// * If the destination is a group:</span>
+    <span class='doccomment'>///     - if our group is the closest on the network (i.e. our group&#39;s prefix is a prefix of the</span>
+    <span class='doccomment'>///       destination), returns all other members of our group; otherwise</span>
+    <span class='doccomment'>///     - if the closest group has more than `route` members, returns the `route`-th member of</span>
+    <span class='doccomment'>///       this group; otherwise</span>
+    <span class='doccomment'>///     - returns `Err(Error::CannotRoute)`</span>
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// * If the destination is an individual node:</span>
+    <span class='doccomment'>///     - if our name *is* the destination, returns an empty set; otherwise</span>
+    <span class='doccomment'>///     - if the destination name is an entry in the routing table, returns it; otherwise</span>
+    <span class='doccomment'>///     - if our group is the closest on the network (i.e. our group&#39;s prefix is a prefix of the</span>
+    <span class='doccomment'>///       destination), this returns `Err(Error::NoSuchPeer)`; otherwise</span>
+    <span class='doccomment'>///     - if the closest group has more than `route` members, returns the `route`-th member of</span>
+    <span class='doccomment'>///       this group; otherwise</span>
+    <span class='doccomment'>///     - returns `Err(Error::CannotRoute)`</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>targets</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>,
                    <span class='ident'>dst</span>: <span class='kw-2'>&amp;</span><span class='ident'>Destination</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>,
                    <span class='ident'>exclude</span>: <span class='ident'>T</span>,
@@ -1854,10 +1868,10 @@
         }
     }
 
-    <span class='comment'>// Returns whether a `Destination` represents this node.</span>
-    <span class='comment'>//</span>
-    <span class='comment'>// Returns `true` if `dst` is a single node with name equal to `our_name`, or if `dst` is a</span>
-    <span class='comment'>// group and the closest group is our group.</span>
+    <span class='doccomment'>/// Returns whether a `Destination` represents this node.</span>
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// Returns `true` if `dst` is a single node with name equal to `our_name`, or if `dst` is a</span>
+    <span class='doccomment'>/// group and the closest group is our group.</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>is_recipient</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>dst</span>: <span class='kw-2'>&amp;</span><span class='ident'>Destination</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> {
         <span class='kw'>match</span> <span class='op'>*</span><span class='ident'>dst</span> {
             <span class='ident'>Destination</span>::<span class='ident'>Node</span>(<span class='kw-2'>ref</span> <span class='ident'>target_name</span>) <span class='op'>=&gt;</span> <span class='op'>*</span><span class='ident'>target_name</span> <span class='op'>==</span> <span class='self'>self</span>.<span class='ident'>our_name</span>,
@@ -1865,10 +1879,10 @@
         }
     }
 
-    <span class='comment'>// Returns true if our name is the `route`-th closest to `src_name` in our group.</span>
-    <span class='comment'>//</span>
-    <span class='comment'>// Used when sending a message from a group to decide which one of the group should send the</span>
-    <span class='comment'>// full message (the remainder sending just a hash of the message).</span>
+    <span class='doccomment'>/// Returns true if our name is the `route`-th closest to `src_name` in our group.</span>
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// Used when sending a message from a group to decide which one of the group should send the</span>
+    <span class='doccomment'>/// full message (the remainder sending just a hash of the message).</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>should_route_full_message</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>src_name</span>: <span class='kw-2'>&amp;</span><span class='ident'>T</span>, <span class='ident'>route</span>: <span class='ident'>usize</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> {
         <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>our_group</span> <span class='op'>=</span> <span class='macro'>unwrap</span><span class='macro'>!</span>(<span class='self'>self</span>.<span class='ident'>groups</span>.<span class='ident'>get</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='ident'>our_group_prefix</span>)).<span class='ident'>iter</span>().<span class='ident'>collect_vec</span>();
         <span class='ident'>our_group</span>.<span class='ident'>push</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='ident'>our_name</span>);
@@ -2079,6 +2093,7 @@
         <span class='prelude-val'>Ok</span>(())
     }
 
+    <span class='doccomment'>/// Returns our name</span>
     <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>any</span>(<span class='ident'>test</span>, <span class='ident'>feature</span> <span class='op'>=</span> <span class='string'>&quot;use-mock-crust&quot;</span>))]</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>our_name</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='kw-2'>&amp;</span><span class='ident'>T</span> {
         <span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='ident'>our_name</span>
@@ -2091,7 +2106,8 @@
         <span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='ident'>needed</span>
     }
 
-    <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>test</span>)]</span>
+    <span class='doccomment'>/// Runs the built-in invariant checker</span>
+    <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>any</span>(<span class='ident'>test</span>, <span class='ident'>feature</span> <span class='op'>=</span> <span class='string'>&quot;use-mock-crust&quot;</span>))]</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>verify_invariant</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) {
         <span class='macro'>unwrap</span><span class='macro'>!</span>(<span class='self'>self</span>.<span class='ident'>check_invariant</span>(),
                 <span class='string'>&quot;Invariant not satisfied for RT: {:?}&quot;</span>,

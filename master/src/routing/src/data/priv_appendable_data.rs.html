@@ -573,8 +573,8 @@
                 <span class='ident'>pub_key</span>: <span class='kw-2'>&amp;</span><span class='ident'>box_</span>::<span class='ident'>PublicKey</span>,
                 <span class='ident'>secret_key</span>: <span class='kw-2'>&amp;</span><span class='ident'>box_</span>::<span class='ident'>SecretKey</span>)
                 <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>AppendedData</span>, <span class='ident'>RoutingError</span><span class='op'>&gt;</span> {
-        <span class='kw'>let</span> <span class='ident'>decipher_result</span> <span class='op'>=</span> <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>sealedbox</span>::<span class='ident'>open</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='number'>0</span>, <span class='ident'>pub_key</span>, <span class='ident'>secret_key</span>)
-            .<span class='ident'>map_err</span>(<span class='op'>|</span>()<span class='op'>|</span> <span class='ident'>RoutingError</span>::<span class='ident'>AsymmetricDecryptionFailure</span>));
+        <span class='kw'>let</span> <span class='ident'>decipher_result</span> <span class='op'>=</span> <span class='ident'>sealedbox</span>::<span class='ident'>open</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='number'>0</span>, <span class='ident'>pub_key</span>, <span class='ident'>secret_key</span>)
+            .<span class='ident'>map_err</span>(<span class='op'>|</span>()<span class='op'>|</span> <span class='ident'>RoutingError</span>::<span class='ident'>AsymmetricDecryptionFailure</span>)?;
         <span class='prelude-val'>Ok</span>(<span class='ident'>deserialise</span>(<span class='kw-2'>&amp;</span><span class='ident'>decipher_result</span>)?)
     }
 }

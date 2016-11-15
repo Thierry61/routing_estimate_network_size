@@ -4,10 +4,10 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="rustdoc">
-    <meta name="description" content="API documentation for the Rust `XOR_NAME_BITS` constant in crate `routing`.">
-    <meta name="keywords" content="rust, rustlang, rust-lang, XOR_NAME_BITS">
+    <meta name="description" content="API documentation for the Rust `NullCache` struct in crate `routing`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, NullCache">
 
-    <title>routing::XOR_NAME_BITS - Rust</title>
+    <title>routing::NullCache - Rust</title>
 
     <link rel="stylesheet" type="text/css" href="../rustdoc.css">
     <link rel="stylesheet" type="text/css" href="../main.css">
@@ -28,7 +28,7 @@
 
     <nav class="sidebar">
         <a href='../routing/index.html'><img src='https://raw.githubusercontent.com/maidsafe/QA/master/Images/maidsafe_logo.png' alt='logo' width='100'></a>
-        <p class='location'><a href='index.html'>routing</a></p><script>window.sidebarCurrent = {name: 'XOR_NAME_BITS', ty: 'constant', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+        <p class='location'><a href='index.html'>routing</a></p><script>window.sidebarCurrent = {name: 'NullCache', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script>
     </nav>
 
     <nav class="sub">
@@ -42,14 +42,20 @@
         </form>
     </nav>
 
-    <section id='main' class="content constant">
-<h1 class='fqn'><span class='in-band'>Constant <a href='index.html'>routing</a>::<wbr><a class='constant' href=''>XOR_NAME_BITS</a></span><span class='out-of-band'><span id='render-detail'>
+    <section id='main' class="content struct">
+<h1 class='fqn'><span class='in-band'>Struct <a href='index.html'>routing</a>::<wbr><a class='struct' href=''>NullCache</a></span><span class='out-of-band'><span id='render-detail'>
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a id='src-11430' class='srclink' href='../src/routing/src/xor_name.rs.html#36' title='goto source code'>[src]</a></span></h1>
-<pre class='rust const'>pub const XOR_NAME_BITS: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a><code> = </code><code>XOR_NAME_LEN * 8</code></pre><div class='docblock'><p>Constant bit length of <code>XorName</code>.</p>
-</div></section>
+               </span><a id='src-648' class='srclink' href='../src/routing/src/cache.rs.html#32' title='goto source code'>[src]</a></span></h1>
+<pre class='rust struct'>pub struct NullCache;</pre><div class='docblock'><p>A no-op implementation of the <code>Cache</code> trait. Throws everything away on put
+and always returns <code>None</code> on get.</p>
+</div><h2 id='implementations'>Trait Implementations</h2><h3 class='impl'><span class='in-band'><code>impl <a class='trait' href='../routing/trait.Cache.html' title='routing::Cache'>Cache</a> for <a class='struct' href='../routing/struct.NullCache.html' title='routing::NullCache'>NullCache</a></code></span><span class='out-of-band'><div class='ghost'></div><a id='src-650' class='srclink' href='../src/routing/src/cache.rs.html#34-39' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.get' class='method'><span id='get.v' class='invisible'><code>fn <a href='../routing/trait.Cache.html#tymethod.get' class='fnname'>get</a>(&amp;self, _: &amp;<a class='enum' href='../routing/enum.Request.html' title='routing::Request'>Request</a>) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;<a class='enum' href='../routing/enum.Response.html' title='routing::Response'>Response</a>&gt;</code></span></h4>
+<div class='docblock'><p>Retrieve cached response for the given request.</p>
+</div><h4 id='method.put' class='method'><span id='put.v' class='invisible'><code>fn <a href='../routing/trait.Cache.html#tymethod.put' class='fnname'>put</a>(&amp;self, _: <a class='enum' href='../routing/enum.Response.html' title='routing::Response'>Response</a>)</code></span></h4>
+<div class='docblock'><p>Cache the given response.</p>
+</div></div></section>
     <section id='search' class="content hidden"></section>
 
     <section class="footer"></section>

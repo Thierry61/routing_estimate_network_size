@@ -3319,7 +3319,7 @@
                                          <span class='self'>self</span>.<span class='ident'>full_id</span>.<span class='ident'>encrypting_private_key</span>());
 
         <span class='kw'>let</span> <span class='ident'>serialised_connection_info</span> <span class='op'>=</span>
-            <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>decipher_result</span>.<span class='ident'>map_err</span>(<span class='op'>|</span>()<span class='op'>|</span> <span class='ident'>RoutingError</span>::<span class='ident'>AsymmetricDecryptionFailure</span>));
+            <span class='ident'>decipher_result</span>.<span class='ident'>map_err</span>(<span class='op'>|</span>()<span class='op'>|</span> <span class='ident'>RoutingError</span>::<span class='ident'>AsymmetricDecryptionFailure</span>)?;
         <span class='kw'>let</span> <span class='ident'>their_connection_info</span>: <span class='ident'>PubConnectionInfo</span> <span class='op'>=</span>
             <span class='ident'>serialisation</span>::<span class='ident'>deserialise</span>(<span class='kw-2'>&amp;</span><span class='ident'>serialised_connection_info</span>)?;
         <span class='kw'>let</span> <span class='ident'>peer_id</span> <span class='op'>=</span> <span class='ident'>their_connection_info</span>.<span class='ident'>id</span>();

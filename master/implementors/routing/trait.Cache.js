@@ -1,5 +1,5 @@
 (function() {var implementors = {};
-implementors["bytes"] = [];implementors["mio"] = [];implementors["tmp_mio"] = [];implementors["ws"] = [];implementors["maidsafe_utilities"] = [];implementors["crust"] = [];
+implementors["routing"] = [];
 
             if (window.register_implementors) {
                 window.register_implementors(implementors);

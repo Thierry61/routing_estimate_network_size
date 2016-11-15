@@ -245,8 +245,6 @@
 <span id="201">201</span>
 <span id="202">202</span>
 <span id="203">203</span>
-<span id="204">204</span>
-<span id="205">205</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2015 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -416,10 +414,6 @@
 <span class='kw'>mod</span> <span class='ident'>utils</span>;
 <span class='kw'>mod</span> <span class='ident'>xor_name</span>;
 
-<span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>all</span>(<span class='ident'>test</span>, <span class='ident'>feature</span> <span class='op'>=</span> <span class='string'>&quot;use-mock-crust&quot;</span>))]</span>
-<span class='attribute'>#[<span class='ident'>allow</span>(<span class='ident'>unused</span>)]</span>
-<span class='kw'>mod</span> <span class='ident'>core_tests</span>;
-
 <span class='doccomment'>/// Mock crust</span>
 <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>feature</span> <span class='op'>=</span> <span class='string'>&quot;use-mock-crust&quot;</span>)]</span>
 <span class='kw'>pub</span> <span class='kw'>mod</span> <span class='ident'>mock_crust</span>;
@@ -435,7 +429,7 @@
 <span class='kw'>pub</span> <span class='kw'>const</span> <span class='ident'>TYPE_TAG_DNS_PACKET</span>: <span class='ident'>u64</span> <span class='op'>=</span> <span class='number'>5</span>;
 
 <span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>authority</span>::<span class='ident'>Authority</span>;
-<span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>cache</span>::<span class='ident'>Cache</span>;
+<span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>cache</span>::{<span class='ident'>Cache</span>, <span class='ident'>NullCache</span>};
 <span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>client</span>::<span class='ident'>Client</span>;
 <span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>data</span>::{<span class='ident'>AppendWrapper</span>, <span class='ident'>AppendedData</span>, <span class='ident'>Data</span>, <span class='ident'>DataIdentifier</span>, <span class='ident'>Filter</span>, <span class='ident'>ImmutableData</span>,
                <span class='ident'>MAX_IMMUTABLE_DATA_SIZE_IN_BYTES</span>, <span class='ident'>MAX_PRIV_APPENDABLE_DATA_SIZE_IN_BYTES</span>,
@@ -451,6 +445,8 @@
 <span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>node</span>::{<span class='ident'>Node</span>, <span class='ident'>NodeBuilder</span>};
 <span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>peer_manager</span>::<span class='ident'>MIN_GROUP_SIZE</span>;
 <span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>routing_table</span>::{<span class='ident'>Prefix</span>, <span class='ident'>Xorable</span>};
+<span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>any</span>(<span class='ident'>test</span>, <span class='ident'>feature</span> <span class='op'>=</span> <span class='string'>&quot;use-mock-crust&quot;</span>))]</span>
+<span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>routing_table</span>::{<span class='ident'>Destination</span>, <span class='ident'>RoutingTable</span>, <span class='ident'>verify_network_invariant</span>};
 <span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>types</span>::<span class='ident'>MessageId</span>;
 <span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>xor_name</span>::{<span class='ident'>XOR_NAME_BITS</span>, <span class='ident'>XOR_NAME_LEN</span>, <span class='ident'>XorName</span>, <span class='ident'>XorNameFromHexError</span>};
 </pre>
