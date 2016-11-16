@@ -245,6 +245,9 @@
 <span id="201">201</span>
 <span id="202">202</span>
 <span id="203">203</span>
+<span id="204">204</span>
+<span id="205">205</span>
+<span id="206">206</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2015 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -427,6 +430,9 @@
 <span class='kw'>pub</span> <span class='kw'>const</span> <span class='ident'>TYPE_TAG_SESSION_PACKET</span>: <span class='ident'>u64</span> <span class='op'>=</span> <span class='number'>0</span>;
 <span class='doccomment'>/// Structured Data Tag for DNS Packet Type</span>
 <span class='kw'>pub</span> <span class='kw'>const</span> <span class='ident'>TYPE_TAG_DNS_PACKET</span>: <span class='ident'>u64</span> <span class='op'>=</span> <span class='number'>5</span>;
+
+<span class='doccomment'>/// The quorum, as a percentage of the group size.</span>
+<span class='kw'>pub</span> <span class='kw'>const</span> <span class='ident'>QUORUM</span>: <span class='ident'>usize</span> <span class='op'>=</span> <span class='number'>60</span>;
 
 <span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>authority</span>::<span class='ident'>Authority</span>;
 <span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>cache</span>::{<span class='ident'>Cache</span>, <span class='ident'>NullCache</span>};

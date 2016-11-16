@@ -1215,8 +1215,6 @@
 <span id="1171">1171</span>
 <span id="1172">1172</span>
 <span id="1173">1173</span>
-<span id="1174">1174</span>
-<span id="1175">1175</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2015 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -1256,12 +1254,10 @@
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>fmt</span>::{<span class='self'>self</span>, <span class='ident'>Debug</span>, <span class='ident'>Formatter</span>};
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>iter</span>;
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>time</span>::<span class='ident'>Duration</span>;
+<span class='kw'>use</span> <span class='kw'>super</span>::<span class='ident'>QUORUM</span>;
 <span class='kw'>use</span> <span class='ident'>types</span>::<span class='ident'>MessageId</span>;
 <span class='kw'>use</span> <span class='ident'>utils</span>;
 <span class='kw'>use</span> <span class='ident'>xor_name</span>::<span class='ident'>XorName</span>;
-
-<span class='doccomment'>/// The quorum, as a percentage of the group size.</span>
-<span class='kw'>const</span> <span class='ident'>QUORUM</span>: <span class='ident'>usize</span> <span class='op'>=</span> <span class='number'>60</span>;
 
 <span class='doccomment'>/// The maximal length of a user message part, in bytes.</span>
 <span class='kw'>const</span> <span class='ident'>MAX_PART_LEN</span>: <span class='ident'>usize</span> <span class='op'>=</span> <span class='number'>20</span> <span class='op'>*</span> <span class='number'>1024</span>;
