@@ -1519,7 +1519,7 @@
         }
         <span class='self'>self</span>.<span class='ident'>grp_lists</span>.<span class='ident'>first</span>().<span class='ident'>map_or</span>(<span class='bool-val'>false</span>, <span class='op'>|</span><span class='ident'>grp_list</span><span class='op'>|</span> {
             <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>content</span>.<span class='ident'>src</span>.<span class='ident'>is_group</span>() {
-                <span class='ident'>QUORUM</span> <span class='op'>*</span> <span class='ident'>grp_list</span>.<span class='ident'>pub_ids</span>.<span class='ident'>len</span>() <span class='op'>&lt;</span> <span class='number'>100</span> <span class='op'>*</span> <span class='self'>self</span>.<span class='ident'>signatures</span>.<span class='ident'>len</span>()
+                <span class='ident'>QUORUM</span> <span class='op'>*</span> <span class='ident'>grp_list</span>.<span class='ident'>pub_ids</span>.<span class='ident'>len</span>() <span class='op'>&lt;=</span> <span class='number'>100</span> <span class='op'>*</span> <span class='self'>self</span>.<span class='ident'>signatures</span>.<span class='ident'>len</span>()
             } <span class='kw'>else</span> {
                 <span class='self'>self</span>.<span class='ident'>signatures</span>.<span class='ident'>len</span>() <span class='op'>==</span> <span class='number'>1</span>
             }

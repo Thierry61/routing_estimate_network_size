@@ -1,5 +1,5 @@
 (function() {var implementors = {};
-implementors["nix"] = [];implementors["tmp_mio"] = [];implementors["mio"] = [];implementors["ws"] = [];implementors["maidsafe_utilities"] = [];implementors["crust"] = [];
+implementors["nix"] = [];implementors["mio"] = [];implementors["tmp_mio"] = [];implementors["ws"] = [];implementors["maidsafe_utilities"] = [];implementors["crust"] = [];
 
             if (window.register_implementors) {
                 window.register_implementors(implementors);
