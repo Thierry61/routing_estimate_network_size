@@ -1217,7 +1217,6 @@
 <span id="1173">1173</span>
 <span id="1174">1174</span>
 <span id="1175">1175</span>
-<span id="1176">1176</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2016 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -1958,7 +1957,7 @@
         <span class='kw'>where</span> <span class='ident'>I</span>: <span class='ident'>IntoIterator</span>,
               <span class='ident'>I</span>::<span class='ident'>Item</span>: <span class='ident'>Borrow</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>
     {
-        <span class='comment'>// Count the number of names which will end up in our group if it is split.</span>
+        <span class='comment'>// Count the number of names which will end up in each new group if our group is split.</span>
         <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>new_group_size_0</span> <span class='op'>=</span> <span class='number'>0</span>;
         <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>new_group_size_1</span> <span class='op'>=</span> <span class='number'>0</span>;
         <span class='kw'>for</span> <span class='ident'>name</span> <span class='kw'>in</span> <span class='ident'>our_group</span> {
@@ -1968,8 +1967,7 @@
                 <span class='ident'>new_group_size_1</span> <span class='op'>+=</span> <span class='number'>1</span>;
             }
         }
-        <span class='comment'>// If either of the two new groups will not contain enough entries, return `false` (add 1</span>
-        <span class='comment'>// when considering our own group to also count ourself as a member of this group).</span>
+        <span class='comment'>// If either of the two new groups will not contain enough entries, return `false`.</span>
         <span class='kw'>let</span> <span class='ident'>min_size</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>min_split_size</span>();
         <span class='ident'>new_group_size_0</span> <span class='op'>&gt;=</span> <span class='ident'>min_size</span> <span class='op'>&amp;&amp;</span> <span class='ident'>new_group_size_1</span> <span class='op'>&gt;=</span> <span class='ident'>min_size</span>
     }
