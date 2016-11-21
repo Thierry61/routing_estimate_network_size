@@ -1719,7 +1719,7 @@
     <span class='doccomment'>/// the merge.</span>
     <span class='ident'>OtherGroupMerge</span> {
         <span class='ident'>prefix</span>: <span class='ident'>Prefix</span><span class='op'>&lt;</span><span class='ident'>XorName</span><span class='op'>&gt;</span>,
-        <span class='ident'>group</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>PublicId</span><span class='op'>&gt;</span>,
+        <span class='ident'>group</span>: <span class='ident'>BTreeSet</span><span class='op'>&lt;</span><span class='ident'>PublicId</span><span class='op'>&gt;</span>,
     },
     <span class='doccomment'>/// Acknowledge receipt of any message except an `Ack`. It contains the hash of the</span>
     <span class='doccomment'>/// received message and the priority.</span>
