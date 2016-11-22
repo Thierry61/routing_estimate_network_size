@@ -462,9 +462,9 @@
 <span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>mock_crust</span>::<span class='ident'>crust</span>;
 <span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>node</span>::{<span class='ident'>Node</span>, <span class='ident'>NodeBuilder</span>};
 <span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>peer_manager</span>::<span class='ident'>MIN_GROUP_SIZE</span>;
-<span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>routing_table</span>::{<span class='ident'>Prefix</span>, <span class='ident'>Xorable</span>};
 <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>any</span>(<span class='ident'>test</span>, <span class='ident'>feature</span> <span class='op'>=</span> <span class='string'>&quot;use-mock-crust&quot;</span>))]</span>
 <span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>routing_table</span>::{<span class='ident'>Destination</span>, <span class='ident'>RoutingTable</span>, <span class='ident'>verify_network_invariant</span>};
+<span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>routing_table</span>::{<span class='ident'>Prefix</span>, <span class='ident'>Xorable</span>};
 <span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>types</span>::<span class='ident'>MessageId</span>;
 <span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>xor_name</span>::{<span class='ident'>XOR_NAME_BITS</span>, <span class='ident'>XOR_NAME_LEN</span>, <span class='ident'>XorName</span>, <span class='ident'>XorNameFromHexError</span>};
 

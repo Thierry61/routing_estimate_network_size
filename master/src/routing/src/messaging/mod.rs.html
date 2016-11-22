@@ -81,7 +81,6 @@
 <span id="37">37</span>
 <span id="38">38</span>
 <span id="39">39</span>
-<span id="40">40</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2016 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -119,8 +118,7 @@
 
 <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>test</span>)]</span>
 <span class='kw'>fn</span> <span class='ident'>generate_random_bytes</span>(<span class='ident'>size</span>: <span class='ident'>usize</span>) <span class='op'>-&gt;</span> <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>u8</span><span class='op'>&gt;</span> {
-    <span class='kw'>use</span> <span class='ident'>rand</span>;
-    <span class='kw'>use</span> <span class='ident'>rand</span>::<span class='ident'>Rng</span>;
+    <span class='kw'>use</span> <span class='ident'>rand</span>::{<span class='self'>self</span>, <span class='ident'>Rng</span>};
     <span class='ident'>rand</span>::<span class='ident'>thread_rng</span>().<span class='ident'>gen_iter</span>().<span class='ident'>take</span>(<span class='ident'>size</span>).<span class='ident'>collect</span>()
 }
 </pre>

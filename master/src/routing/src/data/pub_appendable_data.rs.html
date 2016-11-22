@@ -437,7 +437,6 @@
 <span id="393">393</span>
 <span id="394">394</span>
 <span id="395">395</span>
-<span id="396">396</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2015 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -456,13 +455,13 @@
 <span class='comment'>// Please review the Licences for the specific language governing permissions and limitations</span>
 <span class='comment'>// relating to use of the SAFE Network Software.</span>
 
+<span class='kw'>use</span> <span class='ident'>error</span>::<span class='ident'>RoutingError</span>;
 <span class='kw'>use</span> <span class='ident'>maidsafe_utilities</span>::<span class='ident'>serialisation</span>::{<span class='ident'>serialise</span>, <span class='ident'>serialised_size</span>};
 <span class='kw'>use</span> <span class='ident'>rust_sodium</span>::<span class='ident'>crypto</span>::<span class='ident'>sign</span>::{<span class='self'>self</span>, <span class='ident'>PublicKey</span>, <span class='ident'>SecretKey</span>, <span class='ident'>Signature</span>};
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>collections</span>::{<span class='ident'>BTreeMap</span>, <span class='ident'>BTreeSet</span>};
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>fmt</span>::{<span class='self'>self</span>, <span class='ident'>Debug</span>, <span class='ident'>Formatter</span>};
-<span class='kw'>use</span> <span class='ident'>xor_name</span>::<span class='ident'>XorName</span>;
 <span class='kw'>use</span> <span class='kw'>super</span>::{<span class='ident'>AppendWrapper</span>, <span class='ident'>AppendedData</span>, <span class='ident'>DataIdentifier</span>, <span class='ident'>Filter</span>, <span class='ident'>NO_OWNER_PUB_KEY</span>};
-<span class='kw'>use</span> <span class='ident'>error</span>::<span class='ident'>RoutingError</span>;
+<span class='kw'>use</span> <span class='ident'>xor_name</span>::<span class='ident'>XorName</span>;
 
 <span class='doccomment'>/// Maximum allowed size for a public appendable data to grow to</span>
 <span class='kw'>pub</span> <span class='kw'>const</span> <span class='ident'>MAX_PUB_APPENDABLE_DATA_SIZE_IN_BYTES</span>: <span class='ident'>u64</span> <span class='op'>=</span> <span class='number'>102400</span>;
@@ -678,13 +677,12 @@
 
 <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>test</span>)]</span>
 <span class='kw'>mod</span> <span class='ident'>test</span> {
-    <span class='kw'>extern</span> <span class='kw'>crate</span> <span class='ident'>rand</span>;
-    <span class='kw'>use</span> <span class='kw'>super</span>::<span class='op'>*</span>;
-
-    <span class='kw'>use</span> <span class='ident'>rust_sodium</span>::<span class='ident'>crypto</span>::<span class='ident'>sign</span>;
-    <span class='kw'>use</span> <span class='ident'>xor_name</span>::<span class='ident'>XorName</span>;
     <span class='kw'>use</span> <span class='ident'>data</span>::{<span class='self'>self</span>, <span class='ident'>AppendWrapper</span>, <span class='ident'>AppendedData</span>, <span class='ident'>DataIdentifier</span>, <span class='ident'>Filter</span>};
+    <span class='kw'>use</span> <span class='ident'>rand</span>;
+    <span class='kw'>use</span> <span class='ident'>rust_sodium</span>::<span class='ident'>crypto</span>::<span class='ident'>sign</span>;
     <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>collections</span>::<span class='ident'>BTreeSet</span>;
+    <span class='kw'>use</span> <span class='kw'>super</span>::<span class='op'>*</span>;
+    <span class='kw'>use</span> <span class='ident'>xor_name</span>::<span class='ident'>XorName</span>;
 
     <span class='attribute'>#[<span class='ident'>test</span>]</span>
     <span class='kw'>fn</span> <span class='ident'>single_owner</span>() {
