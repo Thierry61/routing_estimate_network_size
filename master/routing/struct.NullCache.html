@@ -47,10 +47,10 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a id='src-648' class='srclink' href='../src/routing/src/cache.rs.html#32' title='goto source code'>[src]</a></span></h1>
+               </span><a id='src-651' class='srclink' href='../src/routing/src/cache.rs.html#32' title='goto source code'>[src]</a></span></h1>
 <pre class='rust struct'>pub struct NullCache;</pre><div class='docblock'><p>A no-op implementation of the <code>Cache</code> trait. Throws everything away on put
 and always returns <code>None</code> on get.</p>
-</div><h2 id='implementations'>Trait Implementations</h2><h3 class='impl'><span class='in-band'><code>impl <a class='trait' href='../routing/trait.Cache.html' title='routing::Cache'>Cache</a> for <a class='struct' href='../routing/struct.NullCache.html' title='routing::NullCache'>NullCache</a></code></span><span class='out-of-band'><div class='ghost'></div><a id='src-650' class='srclink' href='../src/routing/src/cache.rs.html#34-39' title='goto source code'>[src]</a></span></h3>
+</div><h2 id='implementations'>Trait Implementations</h2><h3 class='impl'><span class='in-band'><code>impl <a class='trait' href='../routing/trait.Cache.html' title='routing::Cache'>Cache</a> for <a class='struct' href='../routing/struct.NullCache.html' title='routing::NullCache'>NullCache</a></code></span><span class='out-of-band'><div class='ghost'></div><a id='src-653' class='srclink' href='../src/routing/src/cache.rs.html#34-39' title='goto source code'>[src]</a></span></h3>
 <div class='impl-items'><h4 id='method.get' class='method'><span id='get.v' class='invisible'><code>fn <a href='../routing/trait.Cache.html#tymethod.get' class='fnname'>get</a>(&amp;self, _: &amp;<a class='enum' href='../routing/enum.Request.html' title='routing::Request'>Request</a>) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;<a class='enum' href='../routing/enum.Response.html' title='routing::Response'>Response</a>&gt;</code></span></h4>
 <div class='docblock'><p>Retrieve cached response for the given request.</p>
 </div><h4 id='method.put' class='method'><span id='put.v' class='invisible'><code>fn <a href='../routing/trait.Cache.html#tymethod.put' class='fnname'>put</a>(&amp;self, _: <a class='enum' href='../routing/enum.Response.html' title='routing::Response'>Response</a>)</code></span></h4>

@@ -180,6 +180,7 @@
 <span id="136">136</span>
 <span id="137">137</span>
 <span id="138">138</span>
+<span id="139">139</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2016 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -201,7 +202,7 @@
 <span class='kw'>use</span> <span class='ident'>error</span>::<span class='ident'>RoutingError</span>;
 <span class='kw'>use</span> <span class='ident'>maidsafe_utilities</span>::{<span class='self'>self</span>, <span class='ident'>serialisation</span>};
 <span class='kw'>use</span> <span class='ident'>message_filter</span>::<span class='ident'>MessageFilter</span>;
-<span class='kw'>use</span> <span class='ident'>messages</span>::<span class='ident'>RoutingMessage</span>;
+<span class='kw'>use</span> <span class='ident'>messages</span>::{<span class='ident'>GroupList</span>, <span class='ident'>RoutingMessage</span>};
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>collections</span>::<span class='ident'>HashMap</span>;
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>fmt</span>;
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>time</span>::<span class='ident'>Duration</span>;
@@ -215,6 +216,7 @@
 <span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Clone</span>, <span class='ident'>Debug</span>)]</span>
 <span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>UnacknowledgedMessage</span> {
     <span class='kw'>pub</span> <span class='ident'>routing_msg</span>: <span class='ident'>RoutingMessage</span>,
+    <span class='kw'>pub</span> <span class='ident'>group_list</span>: <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>GroupList</span><span class='op'>&gt;</span>,
     <span class='kw'>pub</span> <span class='ident'>route</span>: <span class='ident'>u8</span>,
     <span class='kw'>pub</span> <span class='ident'>timer_token</span>: <span class='ident'>u64</span>,
 }

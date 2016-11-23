@@ -435,6 +435,15 @@
 <span id="391">391</span>
 <span id="392">392</span>
 <span id="393">393</span>
+<span id="394">394</span>
+<span id="395">395</span>
+<span id="396">396</span>
+<span id="397">397</span>
+<span id="398">398</span>
+<span id="399">399</span>
+<span id="400">400</span>
+<span id="401">401</span>
+<span id="402">402</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2016 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -462,8 +471,8 @@
 <span class='kw'>use</span> <span class='ident'>event</span>::<span class='ident'>Event</span>;
 <span class='kw'>use</span> <span class='ident'>id</span>::{<span class='ident'>FullId</span>, <span class='ident'>PublicId</span>};
 <span class='kw'>use</span> <span class='ident'>maidsafe_utilities</span>::<span class='ident'>serialisation</span>;
-<span class='kw'>use</span> <span class='ident'>messages</span>::{<span class='ident'>HopMessage</span>, <span class='ident'>Message</span>, <span class='ident'>MessageContent</span>, <span class='ident'>RoutingMessage</span>, <span class='ident'>SignedMessage</span>, <span class='ident'>UserMessage</span>,
-               <span class='ident'>UserMessageCache</span>};
+<span class='kw'>use</span> <span class='ident'>messages</span>::{<span class='ident'>GroupList</span>, <span class='ident'>HopMessage</span>, <span class='ident'>Message</span>, <span class='ident'>MessageContent</span>, <span class='ident'>RoutingMessage</span>, <span class='ident'>SignedMessage</span>,
+               <span class='ident'>UserMessage</span>, <span class='ident'>UserMessageCache</span>};
 <span class='kw'>use</span> <span class='ident'>peer_manager</span>::<span class='ident'>MIN_GROUP_SIZE</span>;
 <span class='kw'>use</span> <span class='ident'>routing_message_filter</span>::<span class='ident'>RoutingMessageFilter</span>;
 <span class='kw'>use</span> <span class='ident'>state_machine</span>::<span class='ident'>Transition</span>;
@@ -750,6 +759,15 @@
                 <span class='macro'>debug</span><span class='macro'>!</span>(<span class='string'>&quot;{:?} Failed to send message: {:?}&quot;</span>, <span class='self'>self</span>, <span class='ident'>error</span>);
             }
         }
+    }
+
+    <span class='kw'>fn</span> <span class='ident'>send_routing_message_via_route_with_group_list</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>,
+                                                      <span class='ident'>routing_msg</span>: <span class='ident'>RoutingMessage</span>,
+                                                      <span class='ident'>route</span>: <span class='ident'>u8</span>,
+                                                      <span class='ident'>_group_list</span>: <span class='ident'>GroupList</span>)
+                                                      <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span>(), <span class='ident'>RoutingError</span><span class='op'>&gt;</span> {
+        <span class='comment'>// clients have no group lists</span>
+        <span class='self'>self</span>.<span class='ident'>send_routing_message_via_route</span>(<span class='ident'>routing_msg</span>, <span class='ident'>route</span>)
     }
 
     <span class='kw'>fn</span> <span class='ident'>send_routing_message_via_route</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>,

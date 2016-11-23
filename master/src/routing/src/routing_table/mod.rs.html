@@ -1210,13 +1210,6 @@
 <span id="1166">1166</span>
 <span id="1167">1167</span>
 <span id="1168">1168</span>
-<span id="1169">1169</span>
-<span id="1170">1170</span>
-<span id="1171">1171</span>
-<span id="1172">1172</span>
-<span id="1173">1173</span>
-<span id="1174">1174</span>
-<span id="1175">1175</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2016 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -1837,6 +1830,16 @@
             .<span class='ident'>collect</span>()
     }
 
+    <span class='doccomment'>/// Gets the `route`-th name from a collection of names</span>
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>get_routeth_name</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='ident'>U</span>: <span class='ident'>IntoIterator</span><span class='op'>&lt;</span><span class='ident'>Item</span> <span class='op'>=</span> <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> <span class='ident'>T</span><span class='op'>&gt;&gt;</span>(<span class='ident'>names</span>: <span class='ident'>U</span>,
+                                                               <span class='ident'>dst_name</span>: <span class='kw-2'>&amp;</span><span class='ident'>T</span>,
+                                                               <span class='ident'>route</span>: <span class='ident'>usize</span>)
+                                                               <span class='op'>-&gt;</span> <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> <span class='ident'>T</span> {
+        <span class='kw'>let</span> <span class='ident'>sorted_names</span> <span class='op'>=</span> <span class='ident'>names</span>.<span class='ident'>into_iter</span>()
+            .<span class='ident'>sorted_by</span>(<span class='op'>|</span><span class='kw-2'>&amp;</span><span class='ident'>lhs</span>, <span class='kw-2'>&amp;</span><span class='ident'>rhs</span><span class='op'>|</span> <span class='ident'>dst_name</span>.<span class='ident'>cmp_distance</span>(<span class='ident'>lhs</span>, <span class='ident'>rhs</span>));
+        <span class='ident'>sorted_names</span>[<span class='ident'>route</span> <span class='op'>%</span> <span class='ident'>sorted_names</span>.<span class='ident'>len</span>()]
+    }
+
     <span class='doccomment'>/// Returns the `route`-th node in the given group, sorted by distance to `target`</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>get_routeth_node</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>,
                             <span class='ident'>group</span>: <span class='kw-2'>&amp;</span><span class='ident'>HashSet</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>,
@@ -1844,7 +1847,7 @@
                             <span class='ident'>exclude</span>: <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>,
                             <span class='ident'>route</span>: <span class='ident'>usize</span>)
                             <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>T</span>, <span class='ident'>Error</span><span class='op'>&gt;</span> {
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>names</span> <span class='op'>=</span> <span class='kw'>if</span> <span class='kw'>let</span> <span class='prelude-val'>Some</span>(<span class='ident'>exclude</span>) <span class='op'>=</span> <span class='ident'>exclude</span> {
+        <span class='kw'>let</span> <span class='ident'>names</span> <span class='op'>=</span> <span class='kw'>if</span> <span class='kw'>let</span> <span class='prelude-val'>Some</span>(<span class='ident'>exclude</span>) <span class='op'>=</span> <span class='ident'>exclude</span> {
             <span class='ident'>group</span>.<span class='ident'>iter</span>().<span class='ident'>filter</span>(<span class='op'>|</span><span class='kw-2'>&amp;</span><span class='ident'>x</span><span class='op'>|</span> <span class='op'>*</span><span class='ident'>x</span> <span class='op'>!=</span> <span class='ident'>exclude</span>).<span class='ident'>collect_vec</span>()
         } <span class='kw'>else</span> {
             <span class='ident'>group</span>.<span class='ident'>iter</span>().<span class='ident'>collect_vec</span>()
@@ -1854,12 +1857,7 @@
             <span class='kw'>return</span> <span class='prelude-val'>Err</span>(<span class='ident'>Error</span>::<span class='ident'>CannotRoute</span>);
         }
 
-        <span class='ident'>names</span>.<span class='ident'>sort_by</span>(<span class='op'>|</span><span class='kw-2'>&amp;</span><span class='ident'>lhs</span>, <span class='kw-2'>&amp;</span><span class='ident'>rhs</span><span class='op'>|</span> <span class='ident'>target</span>.<span class='ident'>cmp_distance</span>(<span class='ident'>lhs</span>, <span class='ident'>rhs</span>));
-
-        <span class='comment'>// We wrap around if we don&#39;t have enough names -</span>
-        <span class='comment'>// this should be a rare case only happening when a merge</span>
-        <span class='comment'>// is ongoing, since we only try `MIN_GROUP_SIZE` routes</span>
-        <span class='prelude-val'>Ok</span>(<span class='op'>*</span><span class='op'>*</span><span class='macro'>unwrap</span><span class='macro'>!</span>(<span class='ident'>names</span>.<span class='ident'>get</span>(<span class='ident'>route</span> <span class='op'>%</span> <span class='ident'>names</span>.<span class='ident'>len</span>())))    <span class='comment'>// % names.len() makes it safe</span>
+        <span class='prelude-val'>Ok</span>(<span class='op'>*</span><span class='ident'>RoutingTable</span>::<span class='ident'>get_routeth_name</span>(<span class='ident'>names</span>, <span class='kw-2'>&amp;</span><span class='ident'>target</span>, <span class='ident'>route</span>))
     }
 
     <span class='doccomment'>/// Returns a collection of nodes to which a message with the given `Destination` should be sent</span>
@@ -1923,18 +1921,6 @@
             <span class='ident'>Destination</span>::<span class='ident'>Node</span>(<span class='kw-2'>ref</span> <span class='ident'>target_name</span>) <span class='op'>=&gt;</span> <span class='op'>*</span><span class='ident'>target_name</span> <span class='op'>==</span> <span class='self'>self</span>.<span class='ident'>our_name</span>,
             <span class='ident'>Destination</span>::<span class='ident'>Group</span>(<span class='kw-2'>ref</span> <span class='ident'>target_name</span>) <span class='op'>=&gt;</span> <span class='self'>self</span>.<span class='ident'>our_group_prefix</span>.<span class='ident'>matches</span>(<span class='ident'>target_name</span>),
         }
-    }
-
-    <span class='doccomment'>/// Returns true if our name is the `route`-th closest to `src_name` in our group.</span>
-    <span class='doccomment'>///</span>
-    <span class='doccomment'>/// Used when sending a message from a group to decide which one of the group should send the</span>
-    <span class='doccomment'>/// full message (the remainder sending just a hash of the message).</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>should_route_full_message</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>dst_name</span>: <span class='kw-2'>&amp;</span><span class='ident'>T</span>, <span class='ident'>route</span>: <span class='ident'>usize</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> {
-        <span class='kw'>let</span> <span class='ident'>our_group</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>our_group</span>
-            .<span class='ident'>iter</span>()
-            .<span class='ident'>chain</span>(<span class='ident'>iter</span>::<span class='ident'>once</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='ident'>our_name</span>))
-            .<span class='ident'>sorted_by</span>(<span class='op'>|</span><span class='kw-2'>&amp;</span><span class='ident'>lhs</span>, <span class='kw-2'>&amp;</span><span class='ident'>rhs</span><span class='op'>|</span> <span class='ident'>dst_name</span>.<span class='ident'>cmp_distance</span>(<span class='ident'>lhs</span>, <span class='ident'>rhs</span>));
-        <span class='op'>*</span><span class='ident'>our_group</span>[<span class='ident'>route</span> <span class='op'>%</span> <span class='ident'>our_group</span>.<span class='ident'>len</span>()] <span class='op'>==</span> <span class='self'>self</span>.<span class='ident'>our_name</span>
     }
 
     <span class='doccomment'>/// Returns the group matching the given `name`, if present.</span>
