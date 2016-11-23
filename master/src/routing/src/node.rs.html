@@ -1009,8 +1009,8 @@
     }
 
     <span class='doccomment'>/// Routing table of this node.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>routing_table</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>RoutingTable</span><span class='op'>&lt;</span><span class='ident'>XorName</span><span class='op'>&gt;</span> {
-        <span class='self'>self</span>.<span class='ident'>machine</span>.<span class='ident'>borrow</span>().<span class='ident'>current</span>().<span class='ident'>routing_table</span>().<span class='ident'>clone</span>()
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>routing_table</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>RoutingTable</span><span class='op'>&lt;</span><span class='ident'>XorName</span><span class='op'>&gt;&gt;</span> {
+        <span class='self'>self</span>.<span class='ident'>machine</span>.<span class='ident'>borrow</span>().<span class='ident'>current</span>().<span class='ident'>routing_table</span>().<span class='ident'>cloned</span>()
     }
 
     <span class='doccomment'>/// Resend all unacknowledged messages.</span>
