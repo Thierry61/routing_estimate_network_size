@@ -254,6 +254,10 @@
 <span id="210">210</span>
 <span id="211">211</span>
 <span id="212">212</span>
+<span id="213">213</span>
+<span id="214">214</span>
+<span id="215">215</span>
+<span id="216">216</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2016 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -419,17 +423,20 @@
     <span class='kw'>fn</span> <span class='ident'>increment_msg_total</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) {
         <span class='self'>self</span>.<span class='ident'>msg_total</span> <span class='op'>+=</span> <span class='number'>1</span>;
         <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>msg_total</span> <span class='op'>%</span> <span class='ident'>MSG_LOG_COUNT</span> <span class='op'>==</span> <span class='number'>0</span> {
-            <span class='macro'>info</span><span class='macro'>!</span>(<span class='string'>&quot;Stats - Sent {} messages in total, comprising {} bytes, {} uncategorised, \
+            <span class='macro'>info</span><span class='macro'>!</span>(<span class='ident'>target</span>: <span class='string'>&quot;routing_stats&quot;</span>,
+                  <span class='string'>&quot;Stats - Sent {} messages in total, comprising {} bytes, {} uncategorised, \
                   routes/failed: {:?}/{}&quot;</span>,
                   <span class='self'>self</span>.<span class='ident'>msg_total</span>,
                   <span class='self'>self</span>.<span class='ident'>msg_total_bytes</span>,
                   <span class='self'>self</span>.<span class='ident'>msg_other</span>,
                   <span class='self'>self</span>.<span class='ident'>routes</span>,
                   <span class='self'>self</span>.<span class='ident'>unacked_msgs</span>);
-            <span class='macro'>info</span><span class='macro'>!</span>(<span class='string'>&quot;Stats - Direct - NodeIdentify: {}, MessageSignature: {}&quot;</span>,
+            <span class='macro'>info</span><span class='macro'>!</span>(<span class='ident'>target</span>: <span class='string'>&quot;routing_stats&quot;</span>,
+                  <span class='string'>&quot;Stats - Direct - NodeIdentify: {}, MessageSignature: {}&quot;</span>,
                   <span class='self'>self</span>.<span class='ident'>msg_direct_node_identify</span>,
                   <span class='self'>self</span>.<span class='ident'>msg_direct_sig</span>);
-            <span class='macro'>info</span><span class='macro'>!</span>(<span class='string'>&quot;Stats - Hops (Request/Response) - GetNodeName: {}/{}, ExpectCloseNode: {}, \
+            <span class='macro'>info</span><span class='macro'>!</span>(<span class='ident'>target</span>: <span class='string'>&quot;routing_stats&quot;</span>,
+                  <span class='string'>&quot;Stats - Hops (Request/Response) - GetNodeName: {}/{}, ExpectCloseNode: {}, \
                    GetCloseGroup: {}/{}, GroupSplit: {}, OwnGroupMerge: {}, OtherGroupMerge: {}, \
                    ConnectionInfo: {}, Ack: {}&quot;</span>,
                   <span class='self'>self</span>.<span class='ident'>msg_get_node_name</span>,
@@ -442,7 +449,8 @@
                   <span class='self'>self</span>.<span class='ident'>msg_other_group_merge</span>,
                   <span class='self'>self</span>.<span class='ident'>msg_connection_info</span>,
                   <span class='self'>self</span>.<span class='ident'>msg_ack</span>);
-            <span class='macro'>info</span><span class='macro'>!</span>(<span class='string'>&quot;Stats - User (Request/Success/Failure) - Get: {}/{}/{}, Put: {}/{}/{}, \
+            <span class='macro'>info</span><span class='macro'>!</span>(<span class='ident'>target</span>: <span class='string'>&quot;routing_stats&quot;</span>,
+                  <span class='string'>&quot;Stats - User (Request/Success/Failure) - Get: {}/{}/{}, Put: {}/{}/{}, \
                    Post: {}/{}/{}, Delete: {}/{}/{}, Append: {}/{}/{}, GetAccountInfo: {}/{}/{}, \
                    Refresh: {}&quot;</span>,
                   <span class='self'>self</span>.<span class='ident'>msg_get</span>,
