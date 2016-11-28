@@ -1234,21 +1234,6 @@
 <span id="1190">1190</span>
 <span id="1191">1191</span>
 <span id="1192">1192</span>
-<span id="1193">1193</span>
-<span id="1194">1194</span>
-<span id="1195">1195</span>
-<span id="1196">1196</span>
-<span id="1197">1197</span>
-<span id="1198">1198</span>
-<span id="1199">1199</span>
-<span id="1200">1200</span>
-<span id="1201">1201</span>
-<span id="1202">1202</span>
-<span id="1203">1203</span>
-<span id="1204">1204</span>
-<span id="1205">1205</span>
-<span id="1206">1206</span>
-<span id="1207">1207</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2015 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -1281,14 +1266,14 @@
 <span class='kw'>use</span> <span class='ident'>maidsafe_utilities</span>::<span class='ident'>serialisation</span>::{<span class='ident'>deserialise</span>, <span class='ident'>serialise</span>};
 <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>feature</span> <span class='op'>=</span> <span class='string'>&quot;use-mock-crust&quot;</span>)]</span>
 <span class='kw'>use</span> <span class='ident'>mock_crust</span>::<span class='ident'>crust</span>::<span class='ident'>PeerId</span>;
-<span class='kw'>use</span> <span class='ident'>routing_table</span>::{<span class='ident'>Prefix</span>, <span class='ident'>RoutingTable</span>};
+<span class='kw'>use</span> <span class='ident'>routing_table</span>::{<span class='ident'>Prefix</span>, <span class='ident'>Xorable</span>};
 <span class='kw'>use</span> <span class='ident'>rust_sodium</span>::<span class='ident'>crypto</span>::{<span class='ident'>box_</span>, <span class='ident'>sign</span>};
 <span class='kw'>use</span> <span class='ident'>rust_sodium</span>::<span class='ident'>crypto</span>::<span class='ident'>hash</span>::<span class='ident'>sha256</span>;
-<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>collections</span>::{<span class='ident'>BTreeMap</span>, <span class='ident'>BTreeSet</span>};
+<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>collections</span>::{<span class='ident'>BTreeMap</span>, <span class='ident'>BTreeSet</span>, <span class='ident'>HashSet</span>};
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>fmt</span>::{<span class='self'>self</span>, <span class='ident'>Debug</span>, <span class='ident'>Formatter</span>};
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>iter</span>;
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>time</span>::<span class='ident'>Duration</span>;
-<span class='kw'>use</span> <span class='kw'>super</span>::<span class='ident'>QUORUM</span>;
+<span class='kw'>use</span> <span class='kw'>super</span>::{<span class='ident'>MIN_GROUP_SIZE</span>, <span class='ident'>QUORUM</span>};
 <span class='kw'>use</span> <span class='ident'>types</span>::<span class='ident'>MessageId</span>;
 <span class='kw'>use</span> <span class='ident'>utils</span>;
 <span class='kw'>use</span> <span class='ident'>xor_name</span>::<span class='ident'>XorName</span>;
@@ -1449,25 +1434,6 @@
     <span class='kw'>pub</span> <span class='ident'>pub_ids</span>: <span class='ident'>BTreeSet</span><span class='op'>&lt;</span><span class='ident'>PublicId</span><span class='op'>&gt;</span>,
 }
 
-<span class='kw'>impl</span> <span class='ident'>GroupList</span> {
-    <span class='doccomment'>/// Gets the `route`-th name in the group list.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>get_routeth_name</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>dst_name</span>: <span class='kw-2'>&amp;</span><span class='ident'>XorName</span>, <span class='ident'>route</span>: <span class='ident'>usize</span>) <span class='op'>-&gt;</span> <span class='kw-2'>&amp;</span><span class='ident'>XorName</span> {
-        <span class='ident'>RoutingTable</span>::<span class='ident'>get_routeth_name</span>(<span class='self'>self</span>.<span class='ident'>pub_ids</span>.<span class='ident'>iter</span>().<span class='ident'>map</span>(<span class='op'>|</span><span class='ident'>id</span><span class='op'>|</span> <span class='ident'>id</span>.<span class='ident'>name</span>()), <span class='ident'>dst_name</span>, <span class='ident'>route</span>)
-    }
-
-    <span class='doccomment'>/// Returns true if our name is the `route`-th closest to `src_name` in our group.</span>
-    <span class='doccomment'>///</span>
-    <span class='doccomment'>/// Used when sending a message from a group to decide which one of the group should send the</span>
-    <span class='doccomment'>/// full message (the remainder sending just a hash of the message).</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>should_route_full_message</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>,
-                                     <span class='ident'>our_name</span>: <span class='kw-2'>&amp;</span><span class='ident'>XorName</span>,
-                                     <span class='ident'>dst_name</span>: <span class='kw-2'>&amp;</span><span class='ident'>XorName</span>,
-                                     <span class='ident'>route</span>: <span class='ident'>usize</span>)
-                                     <span class='op'>-&gt;</span> <span class='ident'>bool</span> {
-        <span class='op'>*</span><span class='self'>self</span>.<span class='ident'>get_routeth_name</span>(<span class='ident'>dst_name</span>, <span class='ident'>route</span>) <span class='op'>==</span> <span class='op'>*</span><span class='ident'>our_name</span>
-    }
-}
-
 <span class='doccomment'>/// Wrapper around a routing message, signed by the originator of the message.</span>
 <span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Ord</span>, <span class='ident'>PartialOrd</span>, <span class='ident'>Eq</span>, <span class='ident'>PartialEq</span>, <span class='ident'>Clone</span>, <span class='ident'>Hash</span>, <span class='ident'>RustcEncodable</span>, <span class='ident'>RustcDecodable</span>)]</span>
 <span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>SignedMessage</span> {
@@ -1488,15 +1454,6 @@
             <span class='ident'>grp_lists</span>: <span class='ident'>Vec</span>::<span class='ident'>new</span>(),
             <span class='ident'>signatures</span>: <span class='ident'>iter</span>::<span class='ident'>once</span>((<span class='op'>*</span><span class='ident'>full_id</span>.<span class='ident'>public_id</span>(), <span class='ident'>sig</span>)).<span class='ident'>collect</span>(),
         })
-    }
-
-    <span class='doccomment'>/// Returns the group list of the sender authority</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>sender_group_list</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>GroupList</span><span class='op'>&gt;</span> {
-        <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>grp_lists</span>.<span class='ident'>is_empty</span>() {
-            <span class='prelude-val'>None</span>
-        } <span class='kw'>else</span> {
-            <span class='prelude-val'>Some</span>(<span class='self'>self</span>.<span class='ident'>grp_lists</span>[<span class='number'>0</span>].<span class='ident'>clone</span>())
-        }
     }
 
     <span class='doccomment'>/// Confirms the signatures.</span>
@@ -1585,7 +1542,18 @@
         }
         <span class='self'>self</span>.<span class='ident'>grp_lists</span>.<span class='ident'>first</span>().<span class='ident'>map_or</span>(<span class='bool-val'>false</span>, <span class='op'>|</span><span class='ident'>grp_list</span><span class='op'>|</span> {
             <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>content</span>.<span class='ident'>src</span>.<span class='ident'>is_group</span>() {
-                <span class='ident'>QUORUM</span> <span class='op'>*</span> <span class='ident'>grp_list</span>.<span class='ident'>pub_ids</span>.<span class='ident'>len</span>() <span class='op'>&lt;=</span> <span class='number'>100</span> <span class='op'>*</span> <span class='self'>self</span>.<span class='ident'>signatures</span>.<span class='ident'>len</span>()
+                <span class='kw'>let</span> <span class='ident'>valid_names</span>: <span class='ident'>HashSet</span><span class='op'>&lt;</span>_<span class='op'>&gt;</span> <span class='op'>=</span> <span class='ident'>grp_list</span>.<span class='ident'>pub_ids</span>
+                    .<span class='ident'>iter</span>()
+                    .<span class='ident'>map</span>(<span class='ident'>PublicId</span>::<span class='ident'>name</span>)
+                    .<span class='ident'>sorted_by</span>(<span class='op'>|</span><span class='ident'>lhs</span>, <span class='ident'>rhs</span><span class='op'>|</span> <span class='self'>self</span>.<span class='ident'>content</span>.<span class='ident'>src</span>.<span class='ident'>name</span>().<span class='ident'>cmp_distance</span>(<span class='ident'>lhs</span>, <span class='ident'>rhs</span>))
+                    .<span class='ident'>into_iter</span>()
+                    .<span class='ident'>take</span>(<span class='ident'>MIN_GROUP_SIZE</span>)
+                    .<span class='ident'>collect</span>();
+                <span class='kw'>let</span> <span class='ident'>valid_sigs</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>signatures</span>
+                    .<span class='ident'>keys</span>()
+                    .<span class='ident'>filter</span>(<span class='op'>|</span><span class='ident'>pub_id</span><span class='op'>|</span> <span class='ident'>valid_names</span>.<span class='ident'>contains</span>(<span class='ident'>pub_id</span>.<span class='ident'>name</span>()))
+                    .<span class='ident'>count</span>();
+                <span class='ident'>QUORUM</span> <span class='op'>*</span> <span class='ident'>valid_names</span>.<span class='ident'>len</span>() <span class='op'>&lt;=</span> <span class='number'>100</span> <span class='op'>*</span> <span class='ident'>valid_sigs</span>
             } <span class='kw'>else</span> {
                 <span class='self'>self</span>.<span class='ident'>signatures</span>.<span class='ident'>len</span>() <span class='op'>==</span> <span class='number'>1</span>
             }
@@ -1773,7 +1741,7 @@
         <span class='ident'>message_id</span>: <span class='ident'>MessageId</span>,
     },
     <span class='doccomment'>/// Sent to all connected peers when our own group splits</span>
-    <span class='ident'>GroupSplit</span>(<span class='ident'>Prefix</span><span class='op'>&lt;</span><span class='ident'>XorName</span><span class='op'>&gt;</span>),
+    <span class='ident'>GroupSplit</span>(<span class='ident'>Prefix</span><span class='op'>&lt;</span><span class='ident'>XorName</span><span class='op'>&gt;</span>, <span class='ident'>XorName</span>),
     <span class='doccomment'>/// Sent amongst members of a newly-merged group to allow synchronisation of their routing</span>
     <span class='doccomment'>/// tables before notifying other connected peers of the merge.</span>
     <span class='ident'>OwnGroupMerge</span> {
@@ -1905,7 +1873,9 @@
                        <span class='ident'>close_group_ids</span>,
                        <span class='ident'>message_id</span>)
             }
-            <span class='ident'>MessageContent</span>::<span class='ident'>GroupSplit</span>(<span class='kw-2'>ref</span> <span class='ident'>prefix</span>) <span class='op'>=&gt;</span> <span class='macro'>write</span><span class='macro'>!</span>(<span class='ident'>formatter</span>, <span class='string'>&quot;GroupSplit({:?})&quot;</span>, <span class='ident'>prefix</span>),
+            <span class='ident'>MessageContent</span>::<span class='ident'>GroupSplit</span>(<span class='kw-2'>ref</span> <span class='ident'>prefix</span>, <span class='kw-2'>ref</span> <span class='ident'>joining_node</span>) <span class='op'>=&gt;</span> {
+                <span class='macro'>write</span><span class='macro'>!</span>(<span class='ident'>formatter</span>, <span class='string'>&quot;GroupSplit({:?}, {:?})&quot;</span>, <span class='ident'>prefix</span>, <span class='ident'>joining_node</span>)
+            }
             <span class='ident'>MessageContent</span>::<span class='ident'>OwnGroupMerge</span> { <span class='kw-2'>ref</span> <span class='ident'>sender_prefix</span>, <span class='kw-2'>ref</span> <span class='ident'>merge_prefix</span>, <span class='kw-2'>ref</span> <span class='ident'>groups</span> } <span class='op'>=&gt;</span> {
                 <span class='macro'>write</span><span class='macro'>!</span>(<span class='ident'>formatter</span>,
                        <span class='string'>&quot;OwnGroupMerge {{ {:?}, {:?}, {:?} }}&quot;</span>,

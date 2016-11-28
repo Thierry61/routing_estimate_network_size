@@ -327,7 +327,6 @@
 <span id="283">283</span>
 <span id="284">284</span>
 <span id="285">285</span>
-<span id="286">286</span>
 </pre><pre class='rust '>
 <span class='comment'>// Copyright 2016 MaidSafe.net limited.</span>
 <span class='comment'>//</span>
@@ -479,8 +478,7 @@
             <span class='kw'>let</span> <span class='ident'>routing_msg</span> <span class='op'>=</span> <span class='ident'>RoutingMessage</span> {
                 <span class='ident'>src</span>: <span class='ident'>Authority</span>::<span class='ident'>ClientManager</span>(<span class='ident'>rand</span>::<span class='ident'>random</span>()),
                 <span class='ident'>dst</span>: <span class='ident'>Authority</span>::<span class='ident'>ClientManager</span>(<span class='ident'>rand</span>::<span class='ident'>random</span>()),
-                <span class='ident'>content</span>: <span class='ident'>MessageContent</span>::<span class='ident'>GroupSplit</span>(<span class='ident'>Prefix</span>::<span class='ident'>new</span>(<span class='ident'>rand</span>::<span class='ident'>random</span>::<span class='op'>&lt;</span><span class='ident'>u8</span><span class='op'>&gt;</span>() <span class='kw'>as</span> <span class='ident'>usize</span>,
-                                                                <span class='ident'>rand</span>::<span class='ident'>random</span>())),
+                <span class='ident'>content</span>: <span class='ident'>MessageContent</span>::<span class='ident'>GroupSplit</span>(<span class='ident'>Prefix</span>::<span class='ident'>new</span>(<span class='number'>0</span>, <span class='ident'>rand</span>::<span class='ident'>random</span>()), <span class='ident'>rand</span>::<span class='ident'>random</span>()),
             };
             <span class='kw'>let</span> <span class='ident'>signed_msg</span> <span class='op'>=</span> <span class='macro'>unwrap</span><span class='macro'>!</span>(<span class='ident'>SignedMessage</span>::<span class='ident'>new</span>(<span class='ident'>routing_msg</span>, <span class='ident'>msg_sender_id</span>));
             <span class='kw'>let</span> <span class='ident'>signature_msgs</span> <span class='op'>=</span> <span class='ident'>other_ids</span>.<span class='ident'>map</span>(<span class='op'>|</span><span class='ident'>id</span><span class='op'>|</span> {

@@ -47,13 +47,13 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a id='src-568' class='srclink' href='../src/routing/src/client.rs.html#46-56' title='goto source code'>[src]</a></span></h1>
+               </span><a id='src-565' class='srclink' href='../src/routing/src/client.rs.html#46-56' title='goto source code'>[src]</a></span></h1>
 <pre class='rust struct'>pub struct Client { /* fields omitted */ }</pre><div class='docblock'><p>Interface for sending and receiving messages to and from a network of nodes in the role of a
 client.</p>
 
 <p>A client is connected to the network via one or more nodes. Messages are never routed via a
 client, and a client cannot be part of a group authority.</p>
-</div><h2 id='methods'>Methods</h2><h3 class='impl'><span class='in-band'><code>impl <a class='struct' href='../routing/struct.Client.html' title='routing::Client'>Client</a></code></span><span class='out-of-band'><div class='ghost'></div><a id='src-573' class='srclink' href='../src/routing/src/client.rs.html#58-187' title='goto source code'>[src]</a></span></h3>
+</div><h2 id='methods'>Methods</h2><h3 class='impl'><span class='in-band'><code>impl <a class='struct' href='../routing/struct.Client.html' title='routing::Client'>Client</a></code></span><span class='out-of-band'><div class='ghost'></div><a id='src-570' class='srclink' href='../src/routing/src/client.rs.html#58-187' title='goto source code'>[src]</a></span></h3>
 <div class='impl-items'><h4 id='method.new' class='method'><span id='new.v' class='invisible'><code>fn <a href='#method.new' class='fnname'>new</a>(event_sender: <a class='struct' href='https://doc.rust-lang.org/nightly/std/sync/mpsc/struct.Sender.html' title='std::sync::mpsc::Sender'>Sender</a>&lt;<a class='enum' href='../routing/enum.Event.html' title='routing::Event'>Event</a>&gt;, keys: <a class='enum' href='https://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;<a class='struct' href='../routing/struct.FullId.html' title='routing::FullId'>FullId</a>&gt;) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/result/enum.Result.html' title='core::result::Result'>Result</a>&lt;<a class='struct' href='../routing/struct.Client.html' title='routing::Client'>Client</a>,&nbsp;<a class='enum' href='../routing/enum.RoutingError.html' title='routing::RoutingError'>RoutingError</a>&gt;</code></span></h4>
 <div class='docblock'><p>Create a new <code>Client</code>.</p>
 
@@ -79,7 +79,7 @@ exists to ensure that the client cannot choose its <code>ClientAuthority</code>.
 <div class='docblock'><p>Request account information for the Client calling this function</p>
 </div><h4 id='method.name' class='method'><span id='name.v' class='invisible'><code>fn <a href='#method.name' class='fnname'>name</a>(&amp;self) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/result/enum.Result.html' title='core::result::Result'>Result</a>&lt;<a class='struct' href='../routing/struct.XorName.html' title='routing::XorName'>XorName</a>,&nbsp;<a class='enum' href='../routing/enum.InterfaceError.html' title='routing::InterfaceError'>InterfaceError</a>&gt;</code></span></h4>
 <div class='docblock'><p>Returns the name of this node.</p>
-</div></div><h2 id='implementations'>Trait Implementations</h2><h3 class='impl'><span class='in-band'><code>impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/ops/trait.Drop.html' title='core::ops::Drop'>Drop</a> for <a class='struct' href='../routing/struct.Client.html' title='routing::Client'>Client</a></code></span><span class='out-of-band'><div class='ghost'></div><a id='src-634' class='srclink' href='../src/routing/src/client.rs.html#226-232' title='goto source code'>[src]</a></span></h3>
+</div></div><h2 id='implementations'>Trait Implementations</h2><h3 class='impl'><span class='in-band'><code>impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/ops/trait.Drop.html' title='core::ops::Drop'>Drop</a> for <a class='struct' href='../routing/struct.Client.html' title='routing::Client'>Client</a></code></span><span class='out-of-band'><div class='ghost'></div><a id='src-631' class='srclink' href='../src/routing/src/client.rs.html#226-232' title='goto source code'>[src]</a></span></h3>
 <div class='impl-items'><h4 id='method.drop' class='method'><span id='drop.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/ops/trait.Drop.html#tymethod.drop' class='fnname'>drop</a>(&amp;mut self)</code></span></h4>
 <div class='docblock'><p>A method called when the value goes out of scope. <a href="https://doc.rust-lang.org/nightly/core/ops/trait.Drop.html#tymethod.drop">Read more</a></p>
 </div></div></section>
